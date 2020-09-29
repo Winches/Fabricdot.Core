@@ -3,11 +3,15 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.1</TargetFramework>
     <LangVersion>8.0</LangVersion>
-    <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <PackageOutputPath>../../packages</PackageOutputPath>
     <PackageId>Fabricdot.Infrastructure.EntityFrameworkCore</PackageId>
-    <Authors>cyan</Authors>
+    <Authors>Cyan</Authors>
     <Company></Company>
     <Description>Build DDD infrastructure layer with Entity Framework Core</Description>
+    <PackageProjectUrl>https://github.com/Winches/Fabricdot.Core</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/Winches/Fabricdot.Core</RepositoryUrl>
+    <Version>0.1.2-alpha</Version>
   </PropertyGroup>
 
   <ItemGroup>

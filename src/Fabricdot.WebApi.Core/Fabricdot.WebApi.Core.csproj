@@ -4,11 +4,15 @@
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <OutputType>Library</OutputType>
     <LangVersion>8.0</LangVersion>
-    <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <PackageOutputPath>../../packages</PackageOutputPath>
     <PackageId>Fabricdot.WebApi.Core</PackageId>
-    <Authors>cyan</Authors>
+    <Authors>Cyan</Authors>
     <Company></Company>
     <Description>Build DDD application layer in a simple way</Description>
+    <PackageProjectUrl>https://github.com/Winches/Fabricdot.Core</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/Winches/Fabricdot.Core</RepositoryUrl>
+    <Version>0.1.2-alpha</Version>
   </PropertyGroup>
 
   <ItemGroup>
