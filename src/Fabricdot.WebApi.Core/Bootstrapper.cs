@@ -28,7 +28,7 @@ namespace Fabricdot.WebApi.Core
             try
             {
                 var host = hostBuilder
-                    .ConfigureServices(Register)
+                    //.ConfigureServices(Register)
                     .ConfigureLogging(builder =>
                     {
                         builder.ClearProviders();
@@ -56,10 +56,21 @@ namespace Fabricdot.WebApi.Core
         }
 
         /// <summary>
+        /// add modules
+        /// </summary>
+        /// <param name="hostBuilder"></param>
+        public static void AddModules(this IHostBuilder hostBuilder)
+        {
+            // EF Core uses this method at design time to access the DbContext
+            // https://docs.microsoft.com/en-us/ef/core/miscellaneous/cli/dbcontext-creation
+            hostBuilder.ConfigureServices(Register);
+        }
+
+        /// <summary>
         ///     register modules
         /// </summary>
         /// <param name="services"></param>
-        public static void Register(IServiceCollection services)
+        private static void Register(IServiceCollection services)
         {
             services.RegisterModules(
                 new InfrastructureModule(),
