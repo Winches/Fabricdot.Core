@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Reflection;
 using Fabricdot.Domain.Core.Auditing;
+using Fabricdot.Domain.Core.SharedKernel;
 
 namespace Fabricdot.Infrastructure.Core.Domain.Auditing
 {
@@ -50,15 +51,15 @@ namespace Fabricdot.Infrastructure.Core.Domain.Auditing
                 case null:
                     return;
                 case IAuditEntity _:
-                {
-                    var type = _entity.GetType();
-                    type.GetProperty(nameof(IAuditEntity.LastModifierId))
-                        ?.SetValue(_entity, _userId, BindingFlags.Public | BindingFlags.Instance, null, null, null!);
-                    type.GetProperty(nameof(IAuditEntity.LastModificationTime))
-                        ?.SetValue(_entity, DateTime.Now, BindingFlags.Public | BindingFlags.Instance, null, null,
-                            null!);
-                    break;
-                }
+                    {
+                        var type = _entity.GetType();
+                        type.GetProperty(nameof(IAuditEntity.LastModifierId))
+                            ?.SetValue(_entity, _userId, BindingFlags.Public | BindingFlags.Instance, null, null, null!);
+                        type.GetProperty(nameof(IAuditEntity.LastModificationTime))
+                            ?.SetValue(_entity, SystemClock.Now, BindingFlags.Public | BindingFlags.Instance, null, null,
+                                null!);
+                        break;
+                    }
             }
         }
     }
