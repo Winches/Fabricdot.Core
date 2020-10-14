@@ -51,3 +51,7 @@ Persistence Implementation with EntityFramework Core
 Web Api Library with ASP.NET Core
 
 Provide a couple features,like 'response filter',exception catching and api document.
+
+## Usage
+
+[Web API Template](https://github.com/Winches/Fabricdot.Template)
