@@ -4,18 +4,25 @@ namespace Fabricdot.Domain.Core.SharedKernel
 {
     public static class SystemClock
     {
-        private static DateTime? _customDate;
+        public static DateTimeKind Kind { get; private set; }
 
-        public static DateTime Now => _customDate ?? DateTime.UtcNow;
+        public static DateTime Now => Kind == DateTimeKind.Utc ? DateTime.UtcNow : DateTime.Now;
 
-        public static void Set(DateTime customDate)
+        public static void Configure(DateTimeKind kind)
         {
-            _customDate = customDate;
+            Kind = kind;
         }
 
-        public static void Reset()
+        public static DateTime Normalize(DateTime dateTime)
         {
-            _customDate = null;
+            return Kind == DateTimeKind.Unspecified || Kind == dateTime.Kind
+                ? dateTime
+                : Kind switch
+                {
+                    DateTimeKind.Local when dateTime.Kind == DateTimeKind.Utc => dateTime.ToLocalTime(),
+                    DateTimeKind.Utc when dateTime.Kind == DateTimeKind.Local => dateTime.ToUniversalTime(),
+                    _ => DateTime.SpecifyKind(dateTime, Kind)
+                };
         }
     }
 }
