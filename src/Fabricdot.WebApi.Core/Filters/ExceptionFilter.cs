@@ -1,5 +1,6 @@
 ﻿using System.Threading.Tasks;
 using Fabricdot.Common.Core.Exceptions;
+using Fabricdot.Common.Core.Security;
 using Fabricdot.WebApi.Core.Endpoint;
 using Fabricdot.WebApi.Core.Exceptions;
 using Microsoft.AspNetCore.Mvc;
@@ -12,10 +13,12 @@ namespace Fabricdot.WebApi.Core.Filters
     public class ExceptionFilter : IAsyncExceptionFilter
     {
         private readonly ILogger<ExceptionFilter> _logger;
+        private readonly ICurrentUser _currentUser;
 
-        public ExceptionFilter(ILogger<ExceptionFilter> logger)
+        public ExceptionFilter(ILogger<ExceptionFilter> logger, ICurrentUser currentUser)
         {
             _logger = logger;
+            _currentUser = currentUser;
         }
 
         public async Task OnExceptionAsync(ExceptionContext context)
@@ -28,9 +31,11 @@ namespace Fabricdot.WebApi.Core.Filters
 
         protected virtual bool ShouldHandleException(ExceptionContext context)
         {
-            if (context.ActionDescriptor is ControllerActionDescriptor) return true;
-
-            return false;
+            return context.ActionDescriptor switch
+            {
+                ControllerActionDescriptor _ => true,
+                _ => false
+            };
         }
 
         protected virtual Task HandleException(ExceptionContext context)
@@ -45,14 +50,15 @@ namespace Fabricdot.WebApi.Core.Filters
                 case WarningException warningException:
                     ret.Code = warningException.Code;
                     ret.Message = warningException.Message;
-                    if (exception is ValidationException validationException) ret.Data = validationException.Errors;
+                    if (exception is ValidationException validationException)
+                        ret.Data = validationException.Errors;
 
-                    _logger.LogWarning($"ip={ip}, path={path}, error={warningException.Message}");
+                    _logger.LogWarning($"ip={ip}, path={path}, operator={_currentUser.Id}, error={warningException.Message}");
                     break;
 
                 default:
                     ret.SetUnExcepted(exception.Message);
-                    _logger.LogError(exception, $"ip={ip}, path={path}, error={exception.Message}");
+                    _logger.LogError(exception, $"ip={ip}, path={path}, operator={_currentUser.Id}, error={exception.Message}");
                     break;
             }
 
