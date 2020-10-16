@@ -45,11 +45,11 @@ namespace Fabricdot.Infrastructure.EntityFrameworkCore
                             ModificationAuditEntityInitializer.Init(v.Entity, userid);
                             break;
                         case EntityState.Deleted:
-                            if (_filter.IsEnabled<ISoftDelete>())
+                            if (_filter.IsEnabled<ISoftDelete>() && v.Entity is ISoftDelete)
                             {
+                                v.Reload();//It's will lose navigation property value without calling this method.
                                 SoftDeleteEntityInitializer.Init(v.Entity);
-                                if (v.Entity is ISoftDelete)
-                                    v.State = EntityState.Modified;
+                                v.State = EntityState.Modified;
                             }
 
                             break;
