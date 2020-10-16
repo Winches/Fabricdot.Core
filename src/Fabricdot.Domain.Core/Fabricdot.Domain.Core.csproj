@@ -11,13 +11,17 @@
     <Description>Build DDD domain layer in a simple way</Description>
     <PackageProjectUrl>https://github.com/Winches/Fabricdot.Core</PackageProjectUrl>
     <RepositoryUrl>https://github.com/Winches/Fabricdot.Core</RepositoryUrl>
-    <Version>0.1.2-alpha</Version>
+    <Version>0.1.3-alpha</Version>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="Ardalis.GuardClauses" Version="3.0.0" />
     <PackageReference Include="Ardalis.Specification" Version="4.1.0" />
     <PackageReference Include="MediatR" Version="8.1.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Fabricdot.Common.Core\Fabricdot.Common.Core.csproj" />
   </ItemGroup>
 
 </Project>
