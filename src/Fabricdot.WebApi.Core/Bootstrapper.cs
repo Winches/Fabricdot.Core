@@ -59,11 +59,11 @@ namespace Fabricdot.WebApi.Core
         /// add modules
         /// </summary>
         /// <param name="hostBuilder"></param>
-        public static void AddModules(this IHostBuilder hostBuilder)
+        public static IHostBuilder AddModules(this IHostBuilder hostBuilder)
         {
             // EF Core uses this method at design time to access the DbContext
             // https://docs.microsoft.com/en-us/ef/core/miscellaneous/cli/dbcontext-creation
-            hostBuilder.ConfigureServices(Register);
+            return hostBuilder.ConfigureServices(Register);
         }
 
         /// <summary>
