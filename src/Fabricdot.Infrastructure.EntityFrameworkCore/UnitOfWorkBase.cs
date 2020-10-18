@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Threading.Tasks;
-using Fabricdot.Common.Core.Enumerable;
 using Fabricdot.Common.Core.Security;
 using Fabricdot.Domain.Core.Auditing;
 using Fabricdot.Infrastructure.Core.Data;
@@ -8,6 +7,7 @@ using Fabricdot.Infrastructure.Core.Data.Filters;
 using Fabricdot.Infrastructure.Core.Domain.Auditing;
 using Fabricdot.Infrastructure.Core.Domain.Events;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Fabricdot.Infrastructure.EntityFrameworkCore
@@ -31,32 +31,52 @@ namespace Fabricdot.Infrastructure.EntityFrameworkCore
         public virtual async Task<int> CommitChangesAsync()
         {
             var userid = _currentUser.Id;
-            _context.ChangeTracker.Entries()
-                .ForEach(v =>
+            foreach (var entry in _context.ChangeTracker.Entries())
+            {
+                switch (entry.State)
                 {
-                    switch (v.State)
-                    {
-                        case EntityState.Added:
-                            CreationAuditEntityInitializer.Init(v.Entity, userid);
-                            ModificationAuditEntityInitializer.Init(v.Entity, userid);
-                            break;
+                    case EntityState.Added:
+                        CreationAuditEntityInitializer.Init(entry.Entity, userid);
+                        ModificationAuditEntityInitializer.Init(entry.Entity, userid);
+                        break;
 
-                        case EntityState.Modified:
-                            ModificationAuditEntityInitializer.Init(v.Entity, userid);
-                            break;
-                        case EntityState.Deleted:
-                            if (_filter.IsEnabled<ISoftDelete>() && v.Entity is ISoftDelete)
+                    case EntityState.Modified:
+                        ModificationAuditEntityInitializer.Init(entry.Entity, userid);
+                        break;
+                    case EntityState.Deleted:
+                        if (_filter.IsEnabled<ISoftDelete>())
+                        {
+                            //The State of nested entity is still deleted;
+                            if (entry.Entity is ISoftDelete)
                             {
-                                v.Reload();//It's will lose navigation property value without calling this method.
-                                SoftDeleteEntityInitializer.Init(v.Entity);
-                                v.State = EntityState.Modified;
+                                await entry.ReloadAsync();
+                                SoftDeleteEntityInitializer.Init(entry.Entity);
+                                entry.State = EntityState.Modified;
+                                UpdateNavigationState(entry, EntityState.Unchanged);
                             }
+                        }
 
-                            break;
-                    }
-                });
+                        break;
+                }
+            }
             await _domainEventsDispatcher.DispatchEventsAsync();
             return await _context.SaveChangesAsync();
+        }
+
+        private void UpdateNavigationState(EntityEntry entry, EntityState state)
+        {
+            foreach (var navigationEntry in entry.Navigations)
+            {
+                switch (navigationEntry)
+                {
+                    case ReferenceEntry referenceEntry:
+                        var target = referenceEntry.TargetEntry;
+                        target.State = state;
+                        UpdateNavigationState(target, state);
+                        break;
+
+                }
+            }
         }
 
         public void Dispose()
