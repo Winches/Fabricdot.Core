@@ -30,6 +30,7 @@ namespace Fabricdot.Infrastructure.EntityFrameworkCore
 
         public virtual async Task<int> CommitChangesAsync()
         {
+            await _domainEventsDispatcher.DispatchEventsAsync();
             var userid = _currentUser.Id;
             foreach (var entry in _context.ChangeTracker.Entries())
             {
@@ -59,11 +60,10 @@ namespace Fabricdot.Infrastructure.EntityFrameworkCore
                         break;
                 }
             }
-            await _domainEventsDispatcher.DispatchEventsAsync();
             return await _context.SaveChangesAsync();
         }
 
-        private void UpdateNavigationState(EntityEntry entry, EntityState state)
+        protected void UpdateNavigationState(EntityEntry entry, EntityState state)
         {
             foreach (var navigationEntry in entry.Navigations)
             {
