@@ -11,7 +11,7 @@
     <Description>Build DDD infrastructure layer with Entity Framework Core</Description>
     <PackageProjectUrl>https://github.com/Winches/Fabricdot.Core</PackageProjectUrl>
     <RepositoryUrl>https://github.com/Winches/Fabricdot.Core</RepositoryUrl>
-    <Version>0.1.4-alpha</Version>
+    <Version>0.1.5-alpha</Version>
   </PropertyGroup>
 
   <ItemGroup>
