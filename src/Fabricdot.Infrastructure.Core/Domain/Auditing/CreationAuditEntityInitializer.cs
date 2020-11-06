@@ -1,5 +1,4 @@
-﻿using System;
-using System.Reflection;
+﻿using System.Reflection;
 using Fabricdot.Domain.Core.Auditing;
 using Fabricdot.Domain.Core.SharedKernel;
 
@@ -50,7 +49,7 @@ namespace Fabricdot.Infrastructure.Core.Domain.Auditing
                 case ICreationAuditEntity _:
                     {
                         var type = _entity.GetType();
-                        type.GetProperty(nameof(ICreationAuditEntity.CreationId))
+                        type.GetProperty(nameof(ICreationAuditEntity.CreatorId))
                             ?.SetValue(_entity, _userId, BindingFlags.Public | BindingFlags.Instance, null, null, null!);
                         type.GetProperty(nameof(ICreationAuditEntity.CreationTime))
                             ?.SetValue(_entity, SystemClock.Now, BindingFlags.Public | BindingFlags.Instance, null, null,

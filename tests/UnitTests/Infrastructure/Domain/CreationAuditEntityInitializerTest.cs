@@ -20,7 +20,7 @@ namespace UnitTests.Infrastructure.Domain
             const string userId = "UserId";
             var entity = new TestEntity(1);
             CreationAuditEntityInitializer.Init(entity, userId);
-            Assert.Equal(entity.CreationId, userId);
+            Assert.Equal(entity.CreatorId, userId);
             Assert.NotEqual(default, entity.CreationTime);
         }
     }

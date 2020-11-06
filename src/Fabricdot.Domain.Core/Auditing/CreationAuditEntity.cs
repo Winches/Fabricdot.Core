@@ -5,7 +5,7 @@ namespace Fabricdot.Domain.Core.Auditing
 {
     public abstract class CreationAuditEntity<TKey> : EntityBase<TKey>, ICreationAuditEntity
     {
-        public string CreationId { get; protected set; }
+        public string CreatorId { get; protected set; }
 
         public DateTime CreationTime { get; protected set; }
     }

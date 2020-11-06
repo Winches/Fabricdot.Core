@@ -1,6 +1,6 @@
 ﻿namespace Fabricdot.Domain.Core.Auditing
 {
-    public interface ICreationAuditEntity : IHasCreationTime, IHasCreationId
+    public interface ICreationAuditEntity : IHasCreationTime, IHasCreatorId
     {
     }
 }
