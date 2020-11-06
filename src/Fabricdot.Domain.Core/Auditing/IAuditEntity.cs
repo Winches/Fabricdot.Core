@@ -1,7 +1,6 @@
 ﻿namespace Fabricdot.Domain.Core.Auditing
 {
-    public interface IAuditEntity : IHasModificationTime
+    public interface IAuditEntity : IHasModificationTime, IHasModifierId
     {
-        string LastModifierId { get; }
     }
 }
