@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Threading.Tasks;
-using Fabricdot.Common.Core.Security;
 using Fabricdot.Domain.Core.Auditing;
 using Fabricdot.Infrastructure.Core.Data;
 using Fabricdot.Infrastructure.Core.Data.Filters;
@@ -16,33 +15,40 @@ namespace Fabricdot.Infrastructure.EntityFrameworkCore
     {
         private readonly DbContext _context;
         private readonly IDomainEventsDispatcher _domainEventsDispatcher;
-        private readonly ICurrentUser _currentUser;
+        //private readonly ICurrentUser _currentUser;
         private readonly IDataFilter _filter;
+        private readonly IAuditPropertySetter _auditPropertySetter;
         private bool _disposedValue;
 
         public UnitOfWorkBase(DbContext context, IServiceProvider serviceProvider)
         {
             _context = context;
             _domainEventsDispatcher = serviceProvider.GetRequiredService<IDomainEventsDispatcher>();
-            _currentUser = serviceProvider.GetRequiredService<ICurrentUser>();
+            //_currentUser = serviceProvider.GetRequiredService<ICurrentUser>();
             _filter = serviceProvider.GetRequiredService<IDataFilter>();
+            _auditPropertySetter = serviceProvider.GetRequiredService<IAuditPropertySetter>();
         }
 
         public virtual async Task<int> CommitChangesAsync()
         {
             await _domainEventsDispatcher.DispatchEventsAsync();
-            var userid = _currentUser.Id;
+            //var userid = _currentUser.Id;
             foreach (var entry in _context.ChangeTracker.Entries())
             {
                 switch (entry.State)
                 {
                     case EntityState.Added:
-                        CreationAuditEntityInitializer.Init(entry.Entity, userid);
-                        ModificationAuditEntityInitializer.Init(entry.Entity, userid);
+                        //CreationAuditEntityInitializer.Init(entry.Entity, userid);
+                        //ModificationAuditEntityInitializer.Init(entry.Entity, userid);
+                        _auditPropertySetter.SetCreationProperties(entry.Entity);
+                        _auditPropertySetter.SetModificationProperties(entry.Entity);
+
                         break;
 
                     case EntityState.Modified:
-                        ModificationAuditEntityInitializer.Init(entry.Entity, userid);
+                        //ModificationAuditEntityInitializer.Init(entry.Entity, userid);
+                        _auditPropertySetter.SetCreationProperties(entry.Entity);
+
                         break;
                     case EntityState.Deleted:
                         if (_filter.IsEnabled<ISoftDelete>())
@@ -51,7 +57,8 @@ namespace Fabricdot.Infrastructure.EntityFrameworkCore
                             if (entry.Entity is ISoftDelete)
                             {
                                 await entry.ReloadAsync();
-                                SoftDeleteEntityInitializer.Init(entry.Entity);
+                                //SoftDeleteEntityInitializer.Init(entry.Entity);
+                                _auditPropertySetter.SetDeletionProperties(entry.Entity);
                                 entry.State = EntityState.Modified;
                                 UpdateNavigationState(entry, EntityState.Unchanged);
                             }

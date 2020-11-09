@@ -28,6 +28,7 @@ namespace Fabricdot.Infrastructure.Core.Domain.Auditing
 
         public void SetDeletionProperties(object targetObject)
         {
+            SetIsDeleted(targetObject);
             SetDeletionTime(targetObject);
             SetDeleterId(targetObject);
         }
@@ -71,10 +72,20 @@ namespace Fabricdot.Infrastructure.Core.Domain.Auditing
             Setter(targetObject, nameof(IHasModifierId.LastModifierId), CurrentUser.Id);
         }
 
+        private void SetIsDeleted(object targetObject)
+        {
+            if (targetObject is ISoftDelete softDeleteObject && !softDeleteObject.IsDeleted)
+            {
+                Setter(targetObject, nameof(ISoftDelete.IsDeleted), true);
+            }
+        }
+
         private void SetDeletionTime(object targetObject)
         {
             if (targetObject is IHasDeletionTime objectWithDeletionTime && objectWithDeletionTime.DeletionTime == null)
+            {
                 Setter(targetObject, nameof(IHasDeletionTime.DeletionTime), SystemClock.Now);
+            }
         }
 
         private void SetDeleterId(object targetObject)

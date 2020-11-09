@@ -6,6 +6,7 @@ using Fabricdot.Common.Core.Randoms;
 using Fabricdot.Domain.Core.Services;
 using Fabricdot.Infrastructure.Core.Data.Filters;
 using Fabricdot.Infrastructure.Core.DependencyInjection;
+using Fabricdot.Infrastructure.Core.Domain.Auditing;
 using Fabricdot.Infrastructure.Core.Domain.Events;
 using Fabricdot.Infrastructure.Core.Domain.Services;
 using Fabricdot.Infrastructure.Core.Logging;
@@ -20,6 +21,7 @@ namespace Fabricdot.Infrastructure.Core
         {
             services.AddSingleton<IRandomNumberGenerator, RandomNumberGenerator>()
                 .AddSingleton<IRandomBuilder, RandomBuilder>()
+                .AddTransient<IAuditPropertySetter, AuditPropertySetter>()
                 .AddScoped(typeof(IAppLogger<>), typeof(AppLogger<>));
 
             //repository filter

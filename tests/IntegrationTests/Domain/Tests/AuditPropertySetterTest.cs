@@ -110,6 +110,7 @@ namespace IntegrationTests.Domain.Tests
             Assert.False(string.IsNullOrWhiteSpace(entity.DeleterId));
             Assert.Equal(entity.DeleterId, _currentUser.Id);
             Assert.NotEqual(default, entity.DeletionTime);
+            Assert.True(entity.IsDeleted);
 
             var date = entity.DeletionTime;
             var userId = entity.DeleterId;
