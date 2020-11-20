@@ -5,6 +5,7 @@ using Fabricdot.Infrastructure.Core.Data;
 using Fabricdot.Infrastructure.Core.DependencyInjection;
 using Fabricdot.Infrastructure.Core.Domain.Auditing;
 using IntegrationTests.Data;
+using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -33,6 +34,7 @@ namespace IntegrationTests
                 _services.AddScoped<IFakeRepository, FakeRepository>();
                 _services.AddScoped<ICurrentUser, FakeCurrentUser>();
                 _services.AddTransient<IAuditPropertySetter, AuditPropertySetter>();
+                _services.AddMediatR(typeof(ContainerBuilder).Assembly);
             }
 
             return _services;
