@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Data.Common;
 using Fabricdot.Common.Core.Security;
 using Fabricdot.Infrastructure.Core;
 using Fabricdot.Infrastructure.Core.Data;
@@ -6,6 +7,7 @@ using Fabricdot.Infrastructure.Core.DependencyInjection;
 using Fabricdot.Infrastructure.Core.Domain.Auditing;
 using IntegrationTests.Data;
 using MediatR;
+using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -28,7 +30,10 @@ namespace IntegrationTests
             {
                 _services = new ServiceCollection();
                 _services.RegisterModules(new InfrastructureModule());
-                _services.AddDbContext<FakeDbContext>(opts => { opts.UseInMemoryDatabase("TestAspCore"); });
+                _services.AddDbContext<FakeDbContext>(opts =>
+                {
+                    opts.UseSqlite(CreateInMemoryDatabase());
+                });
                 _services.AddScoped<IEntityChangeTracker, FakeEntityChangeTracker>();
                 _services.AddScoped<IUnitOfWork, FakeUnitOfWork>();
                 _services.AddScoped<IFakeRepository, FakeRepository>();
@@ -38,6 +43,13 @@ namespace IntegrationTests
             }
 
             return _services;
+        }
+
+        private static DbConnection CreateInMemoryDatabase()
+        {
+            var connection = new SqliteConnection("Filename=:memory:");
+            connection.Open();
+            return connection;
         }
     }
 }
