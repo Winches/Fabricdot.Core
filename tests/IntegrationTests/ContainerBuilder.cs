@@ -6,7 +6,7 @@ using Fabricdot.Infrastructure.Core.Data;
 using Fabricdot.Infrastructure.Core.DependencyInjection;
 using Fabricdot.Infrastructure.Core.Domain.Auditing;
 using IntegrationTests.Data;
-using MediatR;
+using IntegrationTests.Data.Repositories;
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
@@ -37,9 +37,10 @@ namespace IntegrationTests
                 _services.AddScoped<IEntityChangeTracker, FakeEntityChangeTracker>();
                 _services.AddScoped<IUnitOfWork, FakeUnitOfWork>();
                 _services.AddScoped<IFakeRepository, FakeRepository>();
+                _services.AddScoped<IBookRepository, BookRepository>();
                 _services.AddScoped<ICurrentUser, FakeCurrentUser>();
                 _services.AddTransient<IAuditPropertySetter, AuditPropertySetter>();
-                _services.AddMediatR(typeof(ContainerBuilder).Assembly);
+                _services.AddTransient<FakeDataBuilder>();
             }
 
             return _services;
