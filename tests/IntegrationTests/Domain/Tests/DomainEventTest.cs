@@ -1,48 +1,42 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
 using Fabricdot.Domain.Core.Events;
-using Fabricdot.Infrastructure.Core.Data;
-using IntegrationTests.Data;
+using IntegrationTests.Data.Entities;
+using IntegrationTests.Data.Repositories;
 using Microsoft.Extensions.DependencyInjection;
 using Xunit;
 
 namespace IntegrationTests.Domain.Tests
 {
-    public class DomainEventTest
+    public class DomainEventTest : TestBase
     {
-        private readonly IFakeRepository _fakeRepository;
-        private readonly IUnitOfWork _unitOfWork;
+        private readonly IBookRepository _bookRepository;
 
-        public class FakeEntityCreatedEventHandler : IDomainEventHandler<EntityCreatedEvent<FakeEntity>>
+        public class BookCreatedEventHandler : IDomainEventHandler<EntityCreatedEvent<Book>>
         {
             /// <inheritdoc />
-            public Task Handle(EntityCreatedEvent<FakeEntity> notification, CancellationToken cancellationToken)
+            public Task Handle(EntityCreatedEvent<Book> notification, CancellationToken cancellationToken)
             {
-                notification.Entity.ChangeName("NewTestDispatchEvents");
+                notification.Entity.ChangeName("CSharpV2");
                 return Task.CompletedTask;
             }
         }
 
         public DomainEventTest()
         {
-            var provider = ContainerBuilder.GetServiceProvider();
-            provider.GetRequiredService<FakeDbContext>().Database.EnsureCreated();
-            _fakeRepository = provider.GetRequiredService<IFakeRepository>();
-            _unitOfWork = provider.GetRequiredService<IUnitOfWork>();
+            _bookRepository = ServiceScope.ServiceProvider.GetRequiredService<IBookRepository>();
         }
 
         [Fact]
         public async Task TestDispatchEvents()
         {
-            const string id = "D5734D1E-7687-4185-9AAD-F2CA94D2B00C";
-            var name = "TestDispatchEvents";
-            var entity = new FakeEntity(id, name);
-            entity.AddDomainEvent(new EntityCreatedEvent<FakeEntity>(entity));
-            await _fakeRepository.AddAsync(entity);
-            await _unitOfWork.CommitChangesAsync();
+            var entity = await _bookRepository.GetByNameAsync("CSharp");
+            entity.AddDomainEvent(new EntityCreatedEvent<Book>(entity));
+            await _bookRepository.UpdateAsync(entity);
+            await UnitOfWork.CommitChangesAsync();
 
-            var newEntity = await _fakeRepository.GetByIdAsync(id);
-            Assert.NotEqual(name, newEntity.Name);
+            var newEntity = await _bookRepository.GetByNameAsync("CSharp");
+            Assert.Null(newEntity);
         }
     }
 }
