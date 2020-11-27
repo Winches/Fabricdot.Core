@@ -19,6 +19,11 @@ namespace IntegrationTests.Data.Entities
             Guard.Against.Null(name, nameof(name));
             Name = name;
         }
+
+        public void ChangeCreatorId(string creatorId)
+        {
+            CreatorId = creatorId;
+        }
     }
 
     public class BookConfiguration : EntityTypeConfigurationBase<Book>

@@ -1,105 +1,65 @@
 ﻿using System.Threading.Tasks;
-using Fabricdot.Domain.Core.Auditing;
-using Fabricdot.Infrastructure.Core.Data;
-using Fabricdot.Infrastructure.Core.Data.Filters;
+using IntegrationTests.Data.Entities;
+using IntegrationTests.Data.Repositories;
 using Microsoft.Extensions.DependencyInjection;
 using Xunit;
 
 namespace IntegrationTests.Data.Tests
 {
-    public class EfRepositoryTest
+    public class EfRepositoryTest : TestBase
     {
-        private readonly IFakeRepository _fakeRepository;
-        private readonly IUnitOfWork _unitOfWork;
+        private readonly IBookRepository _bookRepository;
 
         public EfRepositoryTest()
         {
-            var provider = ContainerBuilder.GetServiceProvider();
-            provider.GetRequiredService<FakeDbContext>().Database.EnsureCreated();
-            _fakeRepository = provider.GetRequiredService<IFakeRepository>();
-            _unitOfWork = provider.GetRequiredService<IUnitOfWork>();
+            var provider = ServiceScope.ServiceProvider;
+            _bookRepository = provider.GetRequiredService<IBookRepository>();
         }
 
         [Fact]
         public async Task TestAdd()
         {
             const string id = "A4C59043-DBEC-4A48-919C-3985809AB6F2";
-            var entity = new FakeEntity(id, "TestAdd");
-            var ret = await _fakeRepository.AddAsync(entity);
-            await _unitOfWork.CommitChangesAsync();
-            Assert.Equal(ret, entity);
-            Assert.Equal(entity.Id, id);
+            var book = new Book(id, "Python");
+            var ret = await _bookRepository.AddAsync(book);
+            await UnitOfWork.CommitChangesAsync();
+
+            Assert.Equal(ret, book);
+            Assert.Equal(book.Id, id);
         }
 
         [Fact]
         public async Task TestUpdate()
         {
-            const string id = "A4C59043-DBEC-4A48-919C-3985809AB6F2";
-            var entity = await _fakeRepository.GetByIdAsync(id);
-            const string name = "TestUpdate";
-            entity.ChangeName(name);
-            await _fakeRepository.UpdateAsync(entity);
-            await _unitOfWork.CommitChangesAsync();
-            var reloadEntity = await _fakeRepository.GetByIdAsync(id);
+            var book = await _bookRepository.GetByNameAsync("CPP");
+            const string name = "CPPV2";
+            book.ChangeName(name);
+            await _bookRepository.UpdateAsync(book);
+            await UnitOfWork.CommitChangesAsync();
+            var reloadEntity = await _bookRepository.GetByNameAsync(name);
 
-            Assert.Equal(entity.Name, name);
-            Assert.Equal(entity, reloadEntity);
+            Assert.Equal(book.Name, name);
+            Assert.Equal(book, reloadEntity);
+        }
+
+        [Fact]
+        public async Task TestDelete()
+        {
+            var book1 = await _bookRepository.GetByNameAsync("CPP");
+            await _bookRepository.DeleteAsync(book1);
+            await UnitOfWork.CommitChangesAsync();
+            var book2 = await _bookRepository.GetByNameAsync("CPP");
+
+            Assert.Null(book2);
         }
 
         [Fact]
         public async Task TestGetById()
         {
-            const string id = "A4C59043-DBEC-4A48-919C-3985809AB6F2";
-            var entity = await _fakeRepository.GetByIdAsync(id);
-            Assert.NotNull(entity);
-            Assert.Equal(entity.Id, id);
+            var book1 = await _bookRepository.GetByNameAsync("CPP");
+            var book2 = await _bookRepository.GetByIdAsync(book1.Id);
+            Assert.NotNull(book2);
+            Assert.Equal(book1.Id, book2.Id);
         }
-
-        #region soft-delete
-
-        [Fact]
-        public async Task TestSoftDelete()
-        {
-            const string id = "26D158E4-01C4-421B-8E72-E0999DB421FC";
-            var entity = await _fakeRepository.GetByIdAsync(id);
-            await _fakeRepository.DeleteAsync(entity);
-            await _unitOfWork.CommitChangesAsync();
-            var target = await _fakeRepository.GetByIdAsync(id);
-            Assert.Null(target);
-        }
-
-        [Fact]
-        public async Task TestGetSoftDeletedEntityInScope()
-        {
-            const string id = "E8231719-DFBF-472C-BA9F-3898CE7852FC";
-            var entity = await _fakeRepository.GetByIdAsync(id);
-            await _fakeRepository.DeleteAsync(entity);
-            await _unitOfWork.CommitChangesAsync();
-
-            var provider = ContainerBuilder.GetServiceProvider();
-            using var scope = provider.GetRequiredService<IDataFilter>().Disable<ISoftDelete>();
-            var target = await _fakeRepository.GetByIdAsync(id);
-            Assert.NotNull(target);
-            Assert.True(target.IsDeleted);
-        }
-
-        [Fact]
-        public async Task TestGetSoftDeletedEntityOutScope()
-        {
-            const string id = "431DE9E8-AC1E-4ED1-9391-287D40953985";
-            var entity = await _fakeRepository.GetByIdAsync(id);
-            await _fakeRepository.DeleteAsync(entity);
-            await _unitOfWork.CommitChangesAsync();
-
-            var provider = ContainerBuilder.GetServiceProvider();
-            using (var _ = provider.GetRequiredService<IDataFilter>().Disable<ISoftDelete>())
-            {
-            }
-
-            var target = await _fakeRepository.GetByIdAsync(id);
-            Assert.Null(target);
-        }
-
-        #endregion
     }
 }

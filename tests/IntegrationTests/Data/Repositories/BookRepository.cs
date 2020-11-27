@@ -17,7 +17,7 @@ namespace IntegrationTests.Data.Repositories
         /// <inheritdoc />
         public async Task<Book> GetByNameAsync(string name)
         {
-            return await Context.Set<Book>().FirstOrDefaultAsync(v => v.Name == name);
+            return await ApplyQueryFilter(Context.Set<Book>()).FirstOrDefaultAsync(v => v.Name == name);
         }
     }
     public interface IBookRepository : IRepository<Book, string>

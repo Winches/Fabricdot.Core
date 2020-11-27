@@ -1,66 +1,19 @@
-﻿using System;
-using Fabricdot.Common.Core.Security;
-using Fabricdot.Domain.Core.Auditing;
-using Fabricdot.Domain.Core.SharedKernel;
+﻿using Fabricdot.Common.Core.Security;
 using Fabricdot.Infrastructure.Core.Domain.Auditing;
+using IntegrationTests.Data.Entities;
 using Microsoft.Extensions.DependencyInjection;
 using Xunit;
 
 namespace IntegrationTests.Domain.Tests
 {
-    public class AuditPropertySetterTest
+    public class AuditPropertySetterTest : TestBase
     {
         private readonly IAuditPropertySetter _auditPropertySetter;
         private readonly ICurrentUser _currentUser;
 
-        public class TestEntity : IHasCreationTime, IHasCreatorId, IHasModificationTime, IHasModifierId, IHasDeleterId,
-            IHasDeletionTime
-        {
-            public TestEntity()
-            {
-            }
-
-            public TestEntity(
-                DateTime creationTime,
-                string creationId,
-                DateTime lastModificationTime,
-                string lastModifierId,
-                string deleterId,
-                DateTime? deletionTime)
-            {
-                CreationTime = creationTime;
-                CreatorId = creationId;
-                LastModificationTime = lastModificationTime;
-                LastModifierId = lastModifierId;
-                DeleterId = deleterId;
-                DeletionTime = deletionTime;
-            }
-
-            /// <inheritdoc />
-            public DateTime CreationTime { get; private set; }
-
-            /// <inheritdoc />
-            public string CreatorId { get; private set; }
-
-            /// <inheritdoc />
-            public DateTime LastModificationTime { get; private set; }
-
-            /// <inheritdoc />
-            public string LastModifierId { get; private set; }
-
-            /// <inheritdoc />
-            public bool IsDeleted { get; private set; } = false;
-
-            /// <inheritdoc />
-            public string DeleterId { get; private set; }
-
-            /// <inheritdoc />
-            public DateTime? DeletionTime { get; private set; }
-        }
-
         public AuditPropertySetterTest()
         {
-            var provider = ContainerBuilder.GetServiceProvider();
+            var provider = ServiceScope.ServiceProvider;
             _auditPropertySetter = provider.GetRequiredService<IAuditPropertySetter>();
             _currentUser = provider.GetRequiredService<ICurrentUser>();
         }
@@ -68,26 +21,27 @@ namespace IntegrationTests.Domain.Tests
         [Fact]
         public void TestSetCreationProperties()
         {
-            var entity = new TestEntity();
+            var entity = new Book("1", "Effective C#");
             _auditPropertySetter.SetCreationProperties(entity);
 
             Assert.False(string.IsNullOrWhiteSpace(entity.CreatorId));
             Assert.Equal(entity.CreatorId, _currentUser.Id);
             Assert.NotEqual(default, entity.CreationTime);
 
-            var date = SystemClock.Now;
-            const string userId = "1";
-            entity = new TestEntity(date, userId, default, default, default, default);
+            //value can not be overwrite
+            entity.ChangeCreatorId("2");
+            var creatorId = entity.CreatorId;
+            var creationTime = entity.CreationTime;
             _auditPropertySetter.SetCreationProperties(entity);
 
-            Assert.Equal(entity.CreatorId, userId);
-            Assert.Equal(entity.CreationTime, date);
+            Assert.Equal(entity.CreatorId, creatorId);
+            Assert.Equal(entity.CreationTime, creationTime);
         }
 
         [Fact]
         public void TestSetModificationProperties()
         {
-            var entity = new TestEntity();
+            var entity = new Book("1", "Effective C#");
             _auditPropertySetter.SetModificationProperties(entity);
 
             Assert.False(string.IsNullOrWhiteSpace(entity.LastModifierId));
@@ -104,7 +58,7 @@ namespace IntegrationTests.Domain.Tests
         [Fact]
         public void TestSetDeletionProperties()
         {
-            var entity = new TestEntity();
+            var entity = new Book("1", "Effective C#");
             _auditPropertySetter.SetDeletionProperties(entity);
 
             Assert.False(string.IsNullOrWhiteSpace(entity.DeleterId));
