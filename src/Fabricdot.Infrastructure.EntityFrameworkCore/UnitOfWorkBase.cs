@@ -45,7 +45,7 @@ namespace Fabricdot.Infrastructure.EntityFrameworkCore
 
                     case EntityState.Modified:
                         UpdateConcurrencyStamp(entry);
-                        _auditPropertySetter.SetCreationProperties(entry.Entity);
+                        _auditPropertySetter.SetModificationProperties(entry.Entity);
 
                         break;
                     case EntityState.Deleted:
