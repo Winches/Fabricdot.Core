@@ -20,6 +20,9 @@ namespace UnitTests.Domain.ValueObjects
         [Fact]
         public void TestCompareTo()
         {
+            Assert.True(CardType.Amex.CompareTo(CardType.Amex) == 0);
+            Assert.True(CardType.Amex.CompareTo(CardType.Visa) < 0);
+            Assert.True(CardType.Visa.CompareTo(CardType.Amex) > 0);
         }
 
         [Fact]
@@ -28,6 +31,14 @@ namespace UnitTests.Domain.ValueObjects
             Assert.Equal(CardType.Amex, new CardType(1, "Amex"));
             Assert.Equal(CardType.Amex, new CardType(1, "Amex1"));
             Assert.NotEqual(CardType.Amex, new CardType(2, "Amex"));
+            Assert.NotEqual(CardType.Amex, new CardType(2, "Amex"));
+        }
+
+        [Fact]
+        public void TestOperator()
+        {
+            Assert.True(CardType.Amex == new CardType(1, "Amex"));
+            Assert.False(CardType.Amex == new CardType(2, "Amex"));
         }
 
         [Fact]

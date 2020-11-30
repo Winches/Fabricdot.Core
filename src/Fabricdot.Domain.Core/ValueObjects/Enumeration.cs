@@ -48,6 +48,21 @@ namespace Fabricdot.Domain.Core.ValueObjects
             return Value.GetHashCode();
         }
 
+        public int CompareTo(object other)
+        {
+            return Value.CompareTo(((Enumeration)other).Value);
+        }
+
+        public static bool operator ==(Enumeration left, Enumeration right)
+        {
+            return left?.Equals(right) ?? false;
+        }
+
+        public static bool operator !=(Enumeration left, Enumeration right)
+        {
+            return !left?.Equals(right) ?? false;
+        }
+
         public static int AbsoluteDifference(Enumeration firstValue, Enumeration secondValue)
         {
             var absoluteDifference = Math.Abs(firstValue.Value - secondValue.Value);
@@ -77,11 +92,6 @@ namespace Fabricdot.Domain.Core.ValueObjects
                 throw new InvalidOperationException($"'{value}' is not a valid {description} in {typeof(T)}");
 
             return matchingItem;
-        }
-
-        public int CompareTo(object other)
-        {
-            return Value.CompareTo(((Enumeration) other).Value);
         }
     }
 }
