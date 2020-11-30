@@ -36,7 +36,6 @@ namespace IntegrationTests
                 });
                 _services.AddScoped<IEntityChangeTracker, FakeEntityChangeTracker>();
                 _services.AddScoped<IUnitOfWork, FakeUnitOfWork>();
-                _services.AddScoped<IFakeRepository, FakeRepository>();
                 _services.AddScoped<IBookRepository, BookRepository>();
                 _services.AddScoped<ICurrentUser, FakeCurrentUser>();
                 _services.AddTransient<IAuditPropertySetter, AuditPropertySetter>();
