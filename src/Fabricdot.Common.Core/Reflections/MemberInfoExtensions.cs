@@ -7,9 +7,9 @@ namespace Fabricdot.Common.Core.Reflections
     public static class MemberInfoExtensions
     {
         /// <summary>
-        ///     获取顶级基类
+        ///     Get type of top base class by given type.
         /// </summary>
-        /// <param name="type">类型</param>
+        /// <param name="type">type</param>
         public static Type GetTopBaseType(this Type type)
         {
             while (true)
@@ -22,16 +22,16 @@ namespace Fabricdot.Common.Core.Reflections
         }
 
         /// <summary>
-        ///     是否集合
+        ///     Gets a type indicating whether the type of collection.
         /// </summary>
-        /// <param name="type">类型</param>
+        /// <param name="type">type</param>
         public static bool IsCollection(this Type type)
         {
             return type.IsArray || IsGenericCollection(type);
         }
 
         /// <summary>
-        ///     是否泛型集合
+        ///     Gets a type indicating whether the type of generic collection.
         /// </summary>
         /// <param name="type">类型</param>
         public static bool IsGenericCollection(this Type type)
@@ -48,9 +48,9 @@ namespace Fabricdot.Common.Core.Reflections
         }
 
         /// <summary>
-        ///     是否布尔类型
+        ///     Gets a member indicating whether the type of Boolean.
         /// </summary>
-        /// <param name="member">成员</param>
+        /// <param name="member">member</param>
         public static bool IsBool(this MemberInfo member)
         {
             if (member == null)
@@ -64,9 +64,9 @@ namespace Fabricdot.Common.Core.Reflections
         }
 
         /// <summary>
-        ///     是否枚举类型
+        ///     Gets a member indicating whether the type of collection.
         /// </summary>
-        /// <param name="member">成员</param>
+        /// <param name="member">member</param>
         public static bool IsEnum(this MemberInfo member)
         {
             if (member == null)
@@ -80,9 +80,9 @@ namespace Fabricdot.Common.Core.Reflections
         }
 
         /// <summary>
-        ///     是否日期类型
+        ///     Gets a type indicating whether the type of DateTime.
         /// </summary>
-        /// <param name="member">成员</param>
+        /// <param name="member">member</param>
         public static bool IsDateTime(this MemberInfo member)
         {
             if (member == null)
@@ -96,9 +96,9 @@ namespace Fabricdot.Common.Core.Reflections
         }
 
         /// <summary>
-        ///     是否整型
+        ///     Gets a type indicating whether the type of Integer.
         /// </summary>
-        /// <param name="member">成员</param>
+        /// <param name="member">member</param>
         public static bool IsInt(this MemberInfo member)
         {
             if (member == null)
@@ -113,9 +113,9 @@ namespace Fabricdot.Common.Core.Reflections
         }
 
         /// <summary>
-        ///     是否数值类型
+        ///     Gets a type indicating whether the type of Number.
         /// </summary>
-        /// <param name="member">成员</param>
+        /// <param name="member">member</param>
         public static bool IsNumber(this MemberInfo member)
         {
             if (member == null)

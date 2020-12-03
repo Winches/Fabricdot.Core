@@ -12,18 +12,18 @@ namespace Fabricdot.Common.Core.Reflections
     public static class Reflection
     {
         /// <summary>
-        ///     获取程序集
+        ///     Get assembly from given name.
         /// </summary>
-        /// <param name="assemblyName">程序集名称</param>
+        /// <param name="assemblyName">assembly name</param>
         public static Assembly GetAssembly(string assemblyName)
         {
             return Assembly.Load(new AssemblyName(assemblyName));
         }
 
         /// <summary>
-        ///     从目录中获取所有程序集
+        ///     Get assemblies from given directory.
         /// </summary>
-        /// <param name="directoryPath">目录绝对路径</param>
+        /// <param name="directoryPath">absolutely path</param>
         public static List<Assembly> GetAssemblies(string directoryPath)
         {
             return Directory.GetFiles(directoryPath, "*.*", SearchOption.AllDirectories)
@@ -34,10 +34,10 @@ namespace Fabricdot.Common.Core.Reflections
         }
 
         /// <summary>
-        ///     查找类型列表
+        ///     Find derived types by given type.Base abstract class is not supported.
         /// </summary>
-        /// <typeparam name="TFind">查找类型</typeparam>
-        /// <param name="assemblies">待查找的程序集列表</param>
+        /// <typeparam name="TFind">base type</typeparam>
+        /// <param name="assemblies">target assemblies</param>
         public static List<Type> FindTypes<TFind>(params Assembly[] assemblies)
         {
             var findType = typeof(TFind);
@@ -45,10 +45,10 @@ namespace Fabricdot.Common.Core.Reflections
         }
 
         /// <summary>
-        ///     查找类型列表
+        ///     Find derived types by given type.Base abstract class is not supported.
         /// </summary>
-        /// <param name="findType">查找类型</param>
-        /// <param name="assemblies">待查找的程序集列表</param>
+        /// <param name="findType">base type</param>
+        /// <param name="assemblies">target assemblies</param>
         public static List<Type> FindTypes(Type findType, params Assembly[] assemblies)
         {
             var result = new List<Type>();
@@ -57,12 +57,6 @@ namespace Fabricdot.Common.Core.Reflections
             return result.Distinct().ToList();
         }
 
-        /// <summary>
-        ///     获取目标及派生类型
-        /// </summary>
-        /// <param name="findType"></param>
-        /// <param name="assembly"></param>
-        /// <returns></returns>
         private static List<Type> GetTypes(Type findType, Assembly assembly)
         {
             var result = new List<Type>();
