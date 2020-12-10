@@ -1,7 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using Fabricdot.Domain.Core.Entities;
 using Fabricdot.Infrastructure.Core.Data;
 using Fabricdot.Infrastructure.EntityFrameworkCore.Extensions;
 using Microsoft.EntityFrameworkCore;
@@ -20,10 +20,10 @@ namespace Fabricdot.Infrastructure.EntityFrameworkCore.Configurations
         {
             builder.ToTable($"{builder.Metadata.ClrType.Name}s");
             ConfigureAssociationProperty(builder);
-
-            TryConfigureConcurrencyStamp(builder);
+            builder.TryConfigure();
         }
 
+        [Obsolete("use 'TryConfigureOwnedValueObject'")]
         protected void ConfigureOwnedNavigation<TRelated>(OwnedNavigationBuilder<T, TRelated> builder)
             where TRelated : class
         {
@@ -35,6 +35,7 @@ namespace Fabricdot.Infrastructure.EntityFrameworkCore.Configurations
                 .ForEach(v => { builder.SetColumnType(v.Name, IdType); });
         }
 
+        [Obsolete]
         private void ConfigureAssociationProperty(EntityTypeBuilder<T> builder)
         {
             var lowerIdName = IdName.ToLower();
@@ -43,17 +44,6 @@ namespace Fabricdot.Infrastructure.EntityFrameworkCore.Configurations
                 .Where(v => v.Name.ToLower().EndsWith(lowerIdName))
                 .ToList()
                 .ForEach(v => { builder.SetColumnType(v.Name, IdType); });
-        }
-
-        public static void TryConfigureConcurrencyStamp(EntityTypeBuilder builder)
-        {
-            if (typeof(IHasConcurrencyStamp).IsAssignableFrom(builder.Metadata.ClrType))
-            {
-                builder.Property(nameof(IHasConcurrencyStamp.ConcurrencyStamp))
-                    .IsConcurrencyToken()
-                    .HasMaxLength(AggregateRootBaseConstant.CONCURRENCY_STAMP_LEN)
-                    .HasColumnName(nameof(IHasConcurrencyStamp.ConcurrencyStamp));
-            }
         }
     }
 }
