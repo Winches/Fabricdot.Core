@@ -12,7 +12,7 @@
     <Description>Provide basic functions for building application</Description>
     <PackageProjectUrl>https://github.com/Winches/Fabricdot.Core</PackageProjectUrl>
     <RepositoryUrl>https://github.com/Winches/Fabricdot.Core</RepositoryUrl>
-    <Version>0.1.2-alpha</Version>
+    <Version>0.1.3-alpha</Version>
   </PropertyGroup>
 
   <ItemGroup>
