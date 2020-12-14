@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using Fabricdot.Common.Core.Enumerable;
 using Fabricdot.Infrastructure.Core.Data;
@@ -17,7 +18,7 @@ namespace Fabricdot.Infrastructure.Core.Domain.Events
             _entityChangeTracker = entityChangeTracker;
         }
 
-        public async Task DispatchEventsAsync()
+        public async Task DispatchEventsAsync(CancellationToken cancellationToken = default)
         {
             var domainEntities = _entityChangeTracker.Entries();
 
@@ -25,12 +26,11 @@ namespace Fabricdot.Infrastructure.Core.Domain.Events
                 .ToList();
 
             domainEntities.ForEach(entity => entity.ClearDomainEvents());
-
             domainEntities.ForEach(entity => entity.ClearDomainEvents());
 
-            var tasks = domainEvents.Select(async domainEvent => { await _mediator.Publish(domainEvent); });
-
-            await Task.WhenAll(tasks);
+            //Task.WhenAll will cause concurrency issue
+            foreach (var domainEvent in domainEvents)
+                await _mediator.Publish(domainEvent, cancellationToken);
         }
     }
 }

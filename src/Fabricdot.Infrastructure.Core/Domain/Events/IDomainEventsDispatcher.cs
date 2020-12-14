@@ -1,9 +1,10 @@
-﻿using System.Threading.Tasks;
+﻿using System.Threading;
+using System.Threading.Tasks;
 
 namespace Fabricdot.Infrastructure.Core.Domain.Events
 {
     public interface IDomainEventsDispatcher
     {
-        Task DispatchEventsAsync();
+        Task DispatchEventsAsync(CancellationToken cancellationToken = default);
     }
 }
