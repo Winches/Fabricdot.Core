@@ -15,34 +15,34 @@ namespace IntegrationTests
 {
     public static class ContainerBuilder
     {
-        private static IServiceProvider _serviceProvider;
-        private static IServiceCollection _services;
+        private static readonly Lazy<IServiceCollection> Services = new Lazy<IServiceCollection>(CreateServices);
+        private static readonly Lazy<IServiceProvider> ServiceProvider = new Lazy<IServiceProvider>(Services.Value.BuildServiceProvider);
+
+        private static IServiceCollection CreateServices()
+        {
+            var services = new ServiceCollection();
+            services.RegisterModules(new InfrastructureModule());
+            services.AddDbContext<FakeDbContext>(opts =>
+            {
+                opts.UseSqlite(CreateInMemoryDatabase());
+            });
+            services.AddScoped<IEntityChangeTracker, FakeEntityChangeTracker>();
+            services.AddScoped<IUnitOfWork, FakeUnitOfWork>();
+            services.AddScoped<IBookRepository, BookRepository>();
+            services.AddScoped<ICurrentUser, FakeCurrentUser>();
+            services.AddTransient<IAuditPropertySetter, AuditPropertySetter>();
+            services.AddTransient<FakeDataBuilder>();
+            return services;
+        }
 
         public static IServiceProvider GetServiceProvider()
         {
-            _serviceProvider ??= GetServices().BuildServiceProvider();
-            return _serviceProvider;
+            return ServiceProvider.Value;
         }
 
         public static IServiceCollection GetServices()
         {
-            if (_services == null)
-            {
-                _services = new ServiceCollection();
-                _services.RegisterModules(new InfrastructureModule());
-                _services.AddDbContext<FakeDbContext>(opts =>
-                {
-                    opts.UseSqlite(CreateInMemoryDatabase());
-                });
-                _services.AddScoped<IEntityChangeTracker, FakeEntityChangeTracker>();
-                _services.AddScoped<IUnitOfWork, FakeUnitOfWork>();
-                _services.AddScoped<IBookRepository, BookRepository>();
-                _services.AddScoped<ICurrentUser, FakeCurrentUser>();
-                _services.AddTransient<IAuditPropertySetter, AuditPropertySetter>();
-                _services.AddTransient<FakeDataBuilder>();
-            }
-
-            return _services;
+            return Services.Value;
         }
 
         private static DbConnection CreateInMemoryDatabase()
