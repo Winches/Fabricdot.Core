@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using Ardalis.Specification;
 using Ardalis.Specification.EntityFrameworkCore;
@@ -20,99 +21,94 @@ namespace Fabricdot.Infrastructure.EntityFrameworkCore
         private readonly IDataFilter _filter;
 
         private DbSet<T> Set => Context.Set<T>();
+        private IQueryable<T> Entities => ApplyQueryFilter(Set);
 
         protected EfRepository(DbContext context, IServiceProvider serviceProvider)
         {
             Context = context;
-            _filter = serviceProvider.GetRequiredService<IDataFilter>();
+            _filter = serviceProvider.GetRequiredService<IDataFilter>();//singleton
         }
 
         /// <inheritdoc />
-        public async Task<T> AddAsync(T entity)
+        public async Task<T> AddAsync(T entity, CancellationToken cancellationToken = default)
         {
-            await Set.AddAsync(entity);
+            await Set.AddAsync(entity, cancellationToken);
             return entity;
         }
 
         /// <inheritdoc />
-        public Task DeleteAsync(T entity)
+        public Task DeleteAsync(T entity, CancellationToken cancellationToken = default)
         {
             Set.Remove(entity);
             return Task.CompletedTask;
         }
 
         /// <inheritdoc />
-        public Task DeleteRangeAsync(IEnumerable<T> entities)
+        public Task DeleteRangeAsync(IEnumerable<T> entities, CancellationToken cancellationToken = default)
         {
             Set.RemoveRange(entities);
             return Task.CompletedTask;
         }
 
         /// <inheritdoc />
-        public async Task<T> GetByIdAsync(TKey id)
+        public async Task<T> GetByIdAsync(TKey id, CancellationToken cancellationToken = default)
         {
-            var entity = await Set.FindAsync(id);
-            return ApplyQueryFilter(entity);
+            return await Entities.SingleOrDefaultAsync(v => Equals(v.Id, id), cancellationToken);
         }
 
         /// <inheritdoc />
-        public async Task<T> GetBySpecAsync(ISpecification<T> specification)
+        public async Task<T> GetBySpecAsync(
+            ISpecification<T> specification,
+            CancellationToken cancellationToken = default)
         {
-            var res = ApplySpecification(specification);
-            var entity = await res.SingleOrDefaultAsync();
-            return ApplyQueryFilter(entity);
+            var entities = ApplySpecification(specification);
+            return await entities.SingleOrDefaultAsync(cancellationToken);
         }
 
         /// <inheritdoc />
-        public async Task<IReadOnlyList<T>> ListAllAsync()
+        public async Task<IReadOnlyList<T>> ListAllAsync(CancellationToken cancellationToken = default)
         {
-            var entities = ApplyQueryFilter(Set);
-            return await entities.ToListAsync();
+            return await Entities.ToListAsync(cancellationToken);
         }
 
         /// <inheritdoc />
-        public async Task<IReadOnlyList<T>> ListAllAsync(ISpecification<T> specification)
+        public async Task<IReadOnlyList<T>> ListAsync(
+            ISpecification<T> specification,
+            CancellationToken cancellationToken = default)
         {
-            var res = ApplySpecification(specification);
-            return await res.ToListAsync();
+            var entities = ApplySpecification(specification);
+            return await entities.ToListAsync(cancellationToken);
         }
 
         /// <inheritdoc />
-        public Task UpdateAsync(T entity)
+        public Task UpdateAsync(T entity, CancellationToken cancellationToken = default)
         {
             Context.Entry(entity).State = EntityState.Modified;
             return Task.CompletedTask;
         }
 
         /// <inheritdoc />
-        public async Task<int> CountAsync(ISpecification<T> specification)
+        public async Task<int> CountAsync(
+            ISpecification<T> specification,
+            CancellationToken cancellationToken = default)
         {
-            var res = ApplySpecification(specification);
-            return await res.CountAsync();
+            var entities = ApplySpecification(specification);
+            return await entities.CountAsync(cancellationToken);
         }
 
         protected IQueryable<T> ApplySpecification(ISpecification<T> specification)
         {
             var evaluator = new SpecificationEvaluator<T>();
-            var entities = ApplyQueryFilter(Set);
-            return evaluator.GetQuery(entities, specification);
+            return evaluator.GetQuery(Entities, specification);
         }
 
         protected IQueryable<T> ApplyQueryFilter(IQueryable<T> entities)
         {
             if (_filter.IsEnabled<ISoftDelete>() && typeof(ISoftDelete).IsAssignableFrom(typeof(T)))
                 // ReSharper disable once SuspiciousTypeConversion.Global
-                return entities.Where(v => ((ISoftDelete) v).IsDeleted == false);
+                return entities.Where(v => ((ISoftDelete)v).IsDeleted == false);
 
             return entities;
-        }
-
-        protected T ApplyQueryFilter(T entity)
-        {
-            // ReSharper disable once SuspiciousTypeConversion.Global
-            if (entity is ISoftDelete softDelete && _filter.IsEnabled<ISoftDelete>())
-                return softDelete.IsDeleted ? null : entity;
-            return entity;
         }
     }
 }
