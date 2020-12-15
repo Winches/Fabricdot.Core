@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using Fabricdot.Domain.Core.Auditing;
 using Fabricdot.Domain.Core.Entities;
 using Fabricdot.Domain.Core.ValueObjects;
@@ -175,13 +176,28 @@ namespace Fabricdot.Infrastructure.EntityFrameworkCore.Extensions
         /// </summary>
         /// <param name="builder"></param>
         /// <param name="propertyName"></param>
-        public static void TryConfigureGuidKey(
+        public static void TryConfigureGuidProperty(
             [NotNull] this EntityTypeBuilder builder,
             [NotNull] string propertyName)
         {
             var prop = builder.Property(propertyName);
-            if (prop.Metadata.ClrType.IsInstanceOfType(typeof(Guid)) ||
-                prop.Metadata.ClrType.IsInstanceOfType(typeof(string)))
+            var clrType = prop.Metadata.ClrType;
+            if (clrType.IsInstanceOfType(typeof(Guid)) || clrType.IsInstanceOfType(typeof(string)))
+                prop.HasColumnType(DataConstant.ID_TYPE);
+        }
+
+        /// <summary>
+        ///     try configure GUID value
+        /// </summary>
+        /// <param name="builder"></param>
+        /// <param name="propertyName"></param>
+        public static void TryConfigureGuidProperty(
+            [NotNull] this OwnedNavigationBuilder builder,
+            [NotNull] string propertyName)
+        {
+            var prop = builder.Property(propertyName);
+            var clrType = prop.Metadata.ClrType;
+            if (clrType.IsInstanceOfType(typeof(Guid)) || clrType.IsInstanceOfType(typeof(string)))
                 prop.HasColumnType(DataConstant.ID_TYPE);
         }
 
@@ -191,10 +207,12 @@ namespace Fabricdot.Infrastructure.EntityFrameworkCore.Extensions
         /// <param name="builder"></param>
         public static void TryConfigureImplicitlyGuidPrimaryKey([NotNull] this EntityTypeBuilder builder)
         {
-            builder.HasKey(DataConstant.ID_NAME);
+            if (!builder.Metadata.IsKeyless)
+                return;
             builder.Property<Guid>(DataConstant.ID_NAME)
                 .ValueGeneratedOnAdd()
                 .HasValueGenerator<GuidValueGenerator>();
+            builder.HasKey(DataConstant.ID_NAME);
         }
 
         /// <summary>
@@ -213,45 +231,49 @@ namespace Fabricdot.Infrastructure.EntityFrameworkCore.Extensions
         }
 
         /// <summary>
-        ///     try configure enumeration type property
+        ///     configure enumeration type property
         /// </summary>
         /// <typeparam name="TEnumeration"></typeparam>
         /// <param name="builder"></param>
         /// <param name="propertyName"></param>
-        public static EntityTypeBuilder TryConfigureEnumeration<TEnumeration>(
+        /// <exception cref="ArgumentException"></exception>
+        public static PropertyBuilder ConfigureEnumeration<TEnumeration>(
             [NotNull] this EntityTypeBuilder builder,
             [NotNull] string propertyName)
             where TEnumeration : Enumeration
         {
             var prop = builder.Property(propertyName);
-            if (typeof(Enumeration).IsAssignableFrom(prop.Metadata.ClrType))
-            {
-                var converter = new ValueConverter<TEnumeration, int>(v => v.Value,
-                    v => Enumeration.FromValue<TEnumeration>(v));
-                prop.HasConversion(converter)
-                    .IsRequired();
-            }
+            if (!typeof(Enumeration).IsAssignableFrom(prop.Metadata.ClrType))
+                throw new ArgumentException($"{propertyName} is not an enumeration type.");
 
-            return builder;
+            var converter = new ValueConverter<TEnumeration, int>(v => v.Value,
+                v => Enumeration.FromValue<TEnumeration>(v));
+            return prop.HasConversion(converter);
+
         }
 
         /// <summary>
-        ///     try configure nested value object
+        ///     configure nested value object
         /// </summary>
         /// <param name="builder"></param>
         /// <param name="propertyName"></param>
         /// <param name="buildAction"></param>
         /// <returns></returns>
-        public static EntityTypeBuilder TryConfigureOwnedValueObject(
+        public static EntityTypeBuilder ConfigureOwnedValueObject(
             [NotNull] this EntityTypeBuilder builder,
             [NotNull] string propertyName,
             [NotNull] Action<OwnedNavigationBuilder> buildAction)
         {
-            builder.OwnsOne(builder.GetClrType(), propertyName, b =>
+            var prop = builder.Metadata.GetNavigations().SingleOrDefault(v => v.Name == propertyName);
+            if (prop == null)
+                throw new ArgumentException($"{propertyName} is not defined.");
+
+            builder.OwnsOne(prop.ClrType, propertyName, b =>
             {
                 b.WithOwner();
                 buildAction.Invoke(b);
             });
+
             return builder;
         }
     }
