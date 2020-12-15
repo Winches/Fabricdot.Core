@@ -24,7 +24,6 @@ namespace Fabricdot.Infrastructure.EntityFrameworkCore
                     .GetInterfaces()
                     .Any(o => o.IsGenericType && o.GetGenericTypeDefinition() == type))
                 .Cast<IEntity<object>>()
-                .Where(v => v.DomainEvents?.Any() ?? false)
                 .ToList();
             return domainEntities;
         }

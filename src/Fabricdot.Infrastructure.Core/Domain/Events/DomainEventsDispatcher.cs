@@ -22,7 +22,8 @@ namespace Fabricdot.Infrastructure.Core.Domain.Events
         {
             var domainEntities = _entityChangeTracker.Entries();
 
-            var domainEvents = domainEntities.SelectMany(x => x.DomainEvents)
+            var domainEvents = domainEntities.Where(v => v.DomainEvents != null)
+                .SelectMany(x => x.DomainEvents)
                 .ToList();
 
             domainEntities.ForEach(entity => entity.ClearDomainEvents());
