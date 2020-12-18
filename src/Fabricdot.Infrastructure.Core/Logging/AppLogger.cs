@@ -12,11 +12,19 @@ namespace Fabricdot.Infrastructure.Core.Logging
             _logger = loggerFactory.CreateLogger<T>();
         }
 
+        /// <inheritdoc />
+        public void LogError(string message, params object[] args)
+        {
+            _logger.LogError(message, args);
+        }
+
+        /// <inheritdoc />
         public void LogWarning(string message, params object[] args)
         {
             _logger.LogWarning(message, args);
         }
 
+        /// <inheritdoc />
         public void LogInformation(string message, params object[] args)
         {
             _logger.LogInformation(message, args);
