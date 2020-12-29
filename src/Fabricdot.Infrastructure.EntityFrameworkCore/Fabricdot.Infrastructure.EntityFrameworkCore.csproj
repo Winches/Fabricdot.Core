@@ -11,13 +11,13 @@
     <Description>Build DDD infrastructure layer with Entity Framework Core</Description>
     <PackageProjectUrl>https://github.com/Winches/Fabricdot.Core</PackageProjectUrl>
     <RepositoryUrl>https://github.com/Winches/Fabricdot.Core</RepositoryUrl>
-    <Version>0.1.8-alpha</Version>
+    <Version>0.1.9-alpha</Version>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="Ardalis.Specification.EntityFrameworkCore" Version="4.1.0" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="3.1.8" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="3.1.8" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="3.1.9" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="3.1.9" />
   </ItemGroup>
 
   <ItemGroup>
