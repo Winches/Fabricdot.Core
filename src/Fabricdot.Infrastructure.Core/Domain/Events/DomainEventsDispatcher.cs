@@ -2,6 +2,7 @@
 using System.Threading;
 using System.Threading.Tasks;
 using Fabricdot.Common.Core.Enumerable;
+using Fabricdot.Domain.Core.Entities;
 using Fabricdot.Infrastructure.Core.Data;
 using MediatR;
 
@@ -9,18 +10,21 @@ namespace Fabricdot.Infrastructure.Core.Domain.Events
 {
     public class DomainEventsDispatcher : IDomainEventsDispatcher
     {
-        private readonly IMediator _mediator;
+        private readonly IPublisher _publisher;
         private readonly IEntityChangeTracker _entityChangeTracker;
 
-        public DomainEventsDispatcher(IMediator mediator, IEntityChangeTracker entityChangeTracker)
+        public DomainEventsDispatcher(IPublisher publisher, IEntityChangeTracker entityChangeTracker)
         {
-            _mediator = mediator;
+            _publisher = publisher;
             _entityChangeTracker = entityChangeTracker;
         }
 
         public async Task DispatchEventsAsync(CancellationToken cancellationToken = default)
         {
-            var domainEntities = _entityChangeTracker.Entries();
+            var domainEntities = _entityChangeTracker.Entries()
+                .Select(v => v.Entity)
+                .Cast<IHasDomainEvents>()
+                .ToArray();
 
             var domainEvents = domainEntities.Where(v => v.DomainEvents != null)
                 .SelectMany(x => x.DomainEvents)
@@ -31,7 +35,7 @@ namespace Fabricdot.Infrastructure.Core.Domain.Events
 
             //Task.WhenAll will cause concurrency issue
             foreach (var domainEvent in domainEvents)
-                await _mediator.Publish(domainEvent, cancellationToken);
+                await _publisher.Publish(domainEvent, cancellationToken);
         }
     }
 }

@@ -53,7 +53,7 @@ namespace Fabricdot.Infrastructure.EntityFrameworkCore
         /// <inheritdoc />
         public async Task<T> GetByIdAsync(TKey id, CancellationToken cancellationToken = default)
         {
-            return await Entities.SingleOrDefaultAsync(v => Equals(v.Id, id), cancellationToken);
+            return await Entities.SingleOrDefaultAsync(v => v.Id.Equals(id), cancellationToken);
         }
 
         /// <inheritdoc />
