@@ -8,7 +8,6 @@ using Microsoft.Extensions.Logging;
 using NLog;
 using NLog.Config;
 using NLog.Web;
-using LogLevel = Microsoft.Extensions.Logging.LogLevel;
 
 namespace Fabricdot.WebApi.Core
 {
@@ -18,9 +17,9 @@ namespace Fabricdot.WebApi.Core
         ///     run host asynchronous
         /// </summary>
         /// <param name="hostBuilder"></param>
-        /// <param name="action"></param>
+        /// <param name="func"></param>
         /// <returns></returns>
-        public static async Task RunAsync(this IHostBuilder hostBuilder, Action<IHost, Logger> action = null)
+        public static async Task RunAsync(this IHostBuilder hostBuilder, Func<IHost, NLog.ILogger, Task> func = null)
         {
             var logger = NLogBuilder.ConfigureNLog("logger.config")
                 .GetCurrentClassLogger();
@@ -33,13 +32,14 @@ namespace Fabricdot.WebApi.Core
                     {
                         builder.ClearProviders();
                         builder.AddConsole();
-                        builder.SetMinimumLevel(LogLevel.Trace);
+                        builder.SetMinimumLevel(Microsoft.Extensions.Logging.LogLevel.Trace);
                     })
                     .UseNLog()
                     .Build();
 
                 LogManager.Configuration.Install(new InstallationContext());
-                action?.Invoke(host, logger);
+                if (func != null)
+                    await func.Invoke(host, logger);
 
                 await host.RunAsync();
                 logger.Trace("app starting..");
@@ -56,7 +56,7 @@ namespace Fabricdot.WebApi.Core
         }
 
         /// <summary>
-        /// add modules
+        ///     add modules
         /// </summary>
         /// <param name="hostBuilder"></param>
         public static IHostBuilder AddModules(this IHostBuilder hostBuilder)
