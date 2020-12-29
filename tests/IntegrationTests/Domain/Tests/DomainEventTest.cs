@@ -119,8 +119,10 @@ namespace IntegrationTests.Domain.Tests
         public async Task TestPublishMultipleEvents()
         {
             var book = await _bookRepository.GetByNameAsync("Rust");
+            book.ChangeCreatorId("99");
             book.AddDomainEvent(new BookChangedEventA(book));
             book.AddDomainEvent(new BookChangedEventB(book));
+            await _bookRepository.UpdateAsync(book);
             await UnitOfWork.CommitChangesAsync();
 
             var book1 = await _bookRepository.GetByNameAsync("Rust-I");
