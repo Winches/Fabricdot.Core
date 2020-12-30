@@ -1,11 +1,11 @@
-﻿using System;
-using System.Linq;
-using AutoMapper;
+﻿using AutoMapper;
 using Fabricdot.Common.Core.Logging;
 using Fabricdot.Common.Core.Randoms;
+using Fabricdot.Common.Core.Reflections;
 using Fabricdot.Domain.Core.Services;
 using Fabricdot.Infrastructure.Core.Data.Filters;
 using Fabricdot.Infrastructure.Core.DependencyInjection;
+using Fabricdot.Infrastructure.Core.Domain;
 using Fabricdot.Infrastructure.Core.Domain.Auditing;
 using Fabricdot.Infrastructure.Core.Domain.Events;
 using Fabricdot.Infrastructure.Core.Domain.Services;
@@ -31,9 +31,10 @@ namespace Fabricdot.Infrastructure.Core
             services.AddSingleton<IIdGenerator, GuidGenerator>()
                 .AddScoped<IDomainEventsDispatcher, DomainEventsDispatcher>();
 
-            var assemblies = AppDomain.CurrentDomain.GetAssemblies()
-                .Where(v => !v.FullName.StartsWith("System") && !v.FullName.StartsWith("Microsoft"))
-                .ToArray(); //todo:encapsulate
+            var assemblies = new TypeFinder().GetAssemblies().ToArray();
+
+            services.AddRepositories(assemblies); //repository
+            services.AddDomainServices(assemblies); //domain service
 
             services.AddMediatR(assemblies) //mediator
                 .AddAutoMapper(assemblies); //mapper
