@@ -21,43 +21,45 @@ namespace Fabricdot.Infrastructure.EntityFrameworkCore
         private readonly IDataFilter _filter;
 
         private DbSet<T> Set => Context.Set<T>();
-        private IQueryable<T> Entities => ApplyQueryFilter(Set);
+        protected IQueryable<T> Entities => ApplyQueryFilter(Set);
 
         protected EfRepository(DbContext context, IServiceProvider serviceProvider)
         {
             Context = context;
-            _filter = serviceProvider.GetRequiredService<IDataFilter>();//singleton
+            _filter = serviceProvider.GetRequiredService<IDataFilter>(); //singleton
         }
 
         /// <inheritdoc />
-        public async Task<T> AddAsync(T entity, CancellationToken cancellationToken = default)
+        public virtual async Task<T> AddAsync(T entity, CancellationToken cancellationToken = default)
         {
             await Set.AddAsync(entity, cancellationToken);
             return entity;
         }
 
         /// <inheritdoc />
-        public Task DeleteAsync(T entity, CancellationToken cancellationToken = default)
+        public virtual Task DeleteAsync(T entity, CancellationToken cancellationToken = default)
         {
             Set.Remove(entity);
             return Task.CompletedTask;
         }
 
         /// <inheritdoc />
-        public Task DeleteRangeAsync(IEnumerable<T> entities, CancellationToken cancellationToken = default)
+        public virtual Task DeleteRangeAsync(IEnumerable<T> entities, CancellationToken cancellationToken = default)
         {
             Set.RemoveRange(entities);
             return Task.CompletedTask;
         }
 
         /// <inheritdoc />
-        public async Task<T> GetByIdAsync(TKey id, CancellationToken cancellationToken = default)
+        public virtual async Task<T> GetByIdAsync(TKey id, CancellationToken cancellationToken = default)
         {
+            // Id of GUID type will become binary parameter when use MySql.Data driver
+            // https://stackoverflow.com/questions/65503169/entity-framework-core-generate-wrong-guid-parameter-with-mysql
             return await Entities.SingleOrDefaultAsync(v => v.Id.Equals(id), cancellationToken);
         }
 
         /// <inheritdoc />
-        public async Task<T> GetBySpecAsync(
+        public virtual async Task<T> GetBySpecAsync(
             ISpecification<T> specification,
             CancellationToken cancellationToken = default)
         {
@@ -66,13 +68,13 @@ namespace Fabricdot.Infrastructure.EntityFrameworkCore
         }
 
         /// <inheritdoc />
-        public async Task<IReadOnlyList<T>> ListAllAsync(CancellationToken cancellationToken = default)
+        public virtual async Task<IReadOnlyList<T>> ListAllAsync(CancellationToken cancellationToken = default)
         {
             return await Entities.ToListAsync(cancellationToken);
         }
 
         /// <inheritdoc />
-        public async Task<IReadOnlyList<T>> ListAsync(
+        public virtual async Task<IReadOnlyList<T>> ListAsync(
             ISpecification<T> specification,
             CancellationToken cancellationToken = default)
         {
@@ -81,14 +83,14 @@ namespace Fabricdot.Infrastructure.EntityFrameworkCore
         }
 
         /// <inheritdoc />
-        public Task UpdateAsync(T entity, CancellationToken cancellationToken = default)
+        public virtual Task UpdateAsync(T entity, CancellationToken cancellationToken = default)
         {
             Context.Entry(entity).State = EntityState.Modified;
             return Task.CompletedTask;
         }
 
         /// <inheritdoc />
-        public async Task<int> CountAsync(
+        public virtual async Task<int> CountAsync(
             ISpecification<T> specification,
             CancellationToken cancellationToken = default)
         {
@@ -106,7 +108,7 @@ namespace Fabricdot.Infrastructure.EntityFrameworkCore
         {
             if (_filter.IsEnabled<ISoftDelete>() && typeof(ISoftDelete).IsAssignableFrom(typeof(T)))
                 // ReSharper disable once SuspiciousTypeConversion.Global
-                return entities.Where(v => ((ISoftDelete)v).IsDeleted == false);
+                return entities.Where(v => ((ISoftDelete) v).IsDeleted == false);
 
             return entities;
         }
