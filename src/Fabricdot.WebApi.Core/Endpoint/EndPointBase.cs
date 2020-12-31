@@ -19,7 +19,8 @@ namespace Fabricdot.WebApi.Core.Endpoint
         private IMapper _mapper;
         private IUnitOfWork _unitOfWork;
         private ICurrentUser _currentUser;
-        private IPublisher _mediator;
+        private IMediator _mediator;
+        private ISender _sender;
         private IAppLogger<object> _logger;
 
         public IServiceProvider ServiceProvider => HttpContext.RequestServices;
@@ -28,7 +29,9 @@ namespace Fabricdot.WebApi.Core.Endpoint
         protected IMapper Mapper => LazyGetRequiredService(ref _mapper);
         protected IUnitOfWork UnitOfWork => LazyGetRequiredService(ref _unitOfWork);
         protected ICurrentUser CurrentUser => LazyGetRequiredService(ref _currentUser);
-        protected IPublisher Mediator => LazyGetRequiredService(ref _mediator);
+        [Obsolete("use Sender")]
+        protected IMediator Mediator => LazyGetRequiredService(ref _mediator);
+        protected ISender Sender => LazyGetRequiredService(ref _sender);
 
         protected TService LazyGetRequiredService<TService>(ref TService reference)
         {
