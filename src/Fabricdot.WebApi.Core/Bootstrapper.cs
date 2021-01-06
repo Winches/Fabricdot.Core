@@ -19,7 +19,7 @@ namespace Fabricdot.WebApi.Core
         /// <param name="hostBuilder"></param>
         /// <param name="func"></param>
         /// <returns></returns>
-        public static async Task RunAsync(this IHostBuilder hostBuilder, Func<IHost, NLog.ILogger, Task> func = null)
+        public static async Task RunAsync(this IHostBuilder hostBuilder, Func<IHost, Task> func = null)
         {
             var logger = NLogBuilder.ConfigureNLog("logger.config")
                 .GetCurrentClassLogger();
@@ -39,7 +39,7 @@ namespace Fabricdot.WebApi.Core
 
                 LogManager.Configuration.Install(new InstallationContext());
                 if (func != null)
-                    await func.Invoke(host, logger);
+                    await func.Invoke(host);
 
                 await host.RunAsync();
                 logger.Trace("app starting..");
@@ -63,6 +63,7 @@ namespace Fabricdot.WebApi.Core
         {
             // EF Core uses this method at design time to access the DbContext
             // https://docs.microsoft.com/en-us/ef/core/miscellaneous/cli/dbcontext-creation
+            // todo:consider use IDesignTimeDbContextFactory
             return hostBuilder.ConfigureServices(Register);
         }
 
