@@ -26,11 +26,15 @@
 
 ### Fabericdot.Common.Core
 
+[![NuGet](https://img.shields.io/nuget/v/Fabricdot.Common.Core.svg)](https://www.nuget.org/packages/Fabricdot.Common.Core)
+
 Common Library
 
 Provide basic functions and contracts.
 
 ### Fabericdot.Domain.Core
+
+[![NuGet](https://img.shields.io/nuget/v/Fabricdot.Domain.Core.svg)](https://www.nuget.org/packages/Fabricdot.Domain.Core)
 
 Domain Library
 
@@ -38,15 +42,21 @@ Build domain layer with abstraction of  `Entity`,`ValueObject`,`Enumeration`,`Do
 
 ### Fabericdot.Infrastructure.Core
 
+[![NuGet](https://img.shields.io/nuget/v/Fabricdot.Infrastructure.Core.svg)](https://www.nuget.org/packages/Fabricdot.Infrastructure.Core)
+
 Infrastructure Library
 
 Provide basic implementation of persistence,CQRS and other  servies,etc.
 
 ### Fabericdot.Infrastructure.EntityFrameworkCore
 
+[![NuGet](https://img.shields.io/nuget/v/Fabricdot.Infrastructure.EntityFrameworkCore.svg)](https://www.nuget.org/packages/Fabricdot.Infrastructure.EntityFrameworkCore)
+
 Persistence Implementation with EntityFramework Core
 
 ### Fabericdot.WebApi.Core
+
+[![NuGet](https://img.shields.io/nuget/v/Fabricdot.WebApi.Core.svg)](https://www.nuget.org/packages/Fabricdot.WebApi.Core)
 
 Web Api Library with ASP.NET Core
 
