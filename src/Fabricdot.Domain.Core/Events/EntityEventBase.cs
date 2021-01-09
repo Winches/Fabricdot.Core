@@ -2,7 +2,7 @@
 
 namespace Fabricdot.Domain.Core.Events
 {
-    public class EntityEventBase<TEntity> : DomainEventBase where TEntity : IEntity<object>
+    public class EntityEventBase<TEntity> : DomainEventBase where TEntity : IHasDomainEvents
     {
         public TEntity Entity { get; }
 
