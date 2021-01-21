@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using Fabricdot.Domain.Core.Auditing;
 using Fabricdot.Domain.Core.Entities;
@@ -33,7 +34,6 @@ namespace Fabricdot.Infrastructure.EntityFrameworkCore
             await _domainEventsDispatcher.DispatchEventsAsync();
             //todo:consider override DbContext method
             foreach (var entry in _context.ChangeTracker.Entries())
-            {
                 switch (entry.State)
                 {
                     case EntityState.Added:
@@ -51,7 +51,6 @@ namespace Fabricdot.Infrastructure.EntityFrameworkCore
                     case EntityState.Deleted:
                         UpdateConcurrencyStamp(entry);
                         if (_filter.IsEnabled<ISoftDelete>())
-                        {
                             //The State of nested entity is still deleted;
                             if (entry.Entity is ISoftDelete)
                             {
@@ -60,11 +59,10 @@ namespace Fabricdot.Infrastructure.EntityFrameworkCore
                                 entry.State = EntityState.Modified;
                                 UpdateNavigationState(entry, EntityState.Unchanged);
                             }
-                        }
 
                         break;
                 }
-            }
+
             return await _context.SaveChangesAsync();
         }
 
@@ -79,26 +77,35 @@ namespace Fabricdot.Infrastructure.EntityFrameworkCore
 
         protected virtual void SetConcurrencyStamp(EntityEntry entry)
         {
-            if (entry.Entity is IHasConcurrencyStamp entity)
-            {
-                entity.ConcurrencyStamp ??= Guid.NewGuid().ToString("N");
-            }
+            if (entry.Entity is IHasConcurrencyStamp entity) entity.ConcurrencyStamp ??= Guid.NewGuid().ToString("N");
         }
 
         protected void UpdateNavigationState(EntityEntry entry, EntityState state)
         {
             foreach (var navigationEntry in entry.Navigations)
-            {
                 switch (navigationEntry)
                 {
                     case ReferenceEntry referenceEntry:
                         var target = referenceEntry.TargetEntry;
-                        target.State = state;
-                        UpdateNavigationState(target, state);
-                        break;
+                        if (target != null)
+                        {
+                            target.State = state;
+                            UpdateNavigationState(target, state);
+                        }
 
+                        break;
+                    case CollectionEntry collectionEntry:
+                        foreach (var item in collectionEntry.CurrentValue ?? Enumerable.Empty<object>())
+                        {
+                            var entityEntry = collectionEntry.FindEntry(item);
+                            if (entityEntry == null)
+                                continue;
+                            entityEntry.State = state;
+                            UpdateNavigationState(entityEntry, state);
+                        }
+
+                        break;
                 }
-            }
         }
 
         public void Dispose()
