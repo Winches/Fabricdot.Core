@@ -31,11 +31,11 @@ namespace Fabricdot.Infrastructure.Core.Domain.Events
                 .ToList();
 
             domainEntities.ForEach(entity => entity.ClearDomainEvents());
-            domainEntities.ForEach(entity => entity.ClearDomainEvents());
 
             //Task.WhenAll will cause concurrency issue
             foreach (var domainEvent in domainEvents)
-                await _publisher.Publish(domainEvent, cancellationToken);
+                //await _publisher.Publish(domainEvent, cancellationToken);
+                await _publisher.Publish(new DomainEventNotification(domainEvent), cancellationToken);
         }
     }
 }

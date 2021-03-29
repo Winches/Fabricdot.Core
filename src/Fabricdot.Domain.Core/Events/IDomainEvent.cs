@@ -1,9 +1,8 @@
 ﻿using System;
-using MediatR;
 
 namespace Fabricdot.Domain.Core.Events
 {
-    public interface IDomainEvent : INotification
+    public interface IDomainEvent
     {
         DateTime OccurredOn { get; }
     }

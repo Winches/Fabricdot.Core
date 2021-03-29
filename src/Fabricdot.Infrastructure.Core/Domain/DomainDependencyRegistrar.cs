@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Reflection;
 using Fabricdot.Common.Core.Reflections;
+using Fabricdot.Domain.Core.Events;
 using Fabricdot.Domain.Core.Services;
 using JetBrains.Annotations;
 using Microsoft.Extensions.DependencyInjection;
@@ -41,6 +42,21 @@ namespace Fabricdot.Infrastructure.Core.Domain
                     if (contract == null)
                         throw new InvalidOperationException($"{v.Name} should implement owned service interface.");
                     services.TryAddScoped(contract, v);
+                });
+            return services;
+        }
+
+        public static IServiceCollection AddDomainEventHandlers(
+            [NotNull] this IServiceCollection services,
+            params Assembly[] assemblies)
+        {
+            var serviceType = typeof(IDomainEventHandler<>);
+            Reflection.FindTypes(serviceType, assemblies)
+                .ForEach(v =>
+                {
+                    var contract = v.GetInterfaces()
+                        .First(i => i.IsInterface && i.IsGenericType && i.GetGenericTypeDefinition() == serviceType);
+                    services.AddTransient(contract, v);
                 });
             return services;
         }

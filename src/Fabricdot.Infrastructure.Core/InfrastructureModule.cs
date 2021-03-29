@@ -35,6 +35,7 @@ namespace Fabricdot.Infrastructure.Core
 
             services.AddRepositories(assemblies); //repository
             services.AddDomainServices(assemblies); //domain service
+            services.AddDomainEventHandlers(assemblies); //domain event handler
 
             services.AddMediatR(assemblies) //mediator
                 .AddAutoMapper(assemblies); //mapper

@@ -22,7 +22,7 @@ namespace IntegrationTests.Domain.Tests
             }
 
             /// <inheritdoc />
-            public async Task Handle(EntityCreatedEvent<Book> notification, CancellationToken cancellationToken)
+            public async Task HandleAsync(EntityCreatedEvent<Book> notification, CancellationToken cancellationToken)
             {
                 var book = new Book("1", $"{notification.Entity.Name}-I");
                 await _bookRepository.AddAsync(book, cancellationToken);
@@ -39,7 +39,7 @@ namespace IntegrationTests.Domain.Tests
             }
 
             /// <inheritdoc />
-            public async Task Handle(EntityCreatedEvent<Book> notification, CancellationToken cancellationToken)
+            public async Task HandleAsync(EntityCreatedEvent<Book> notification, CancellationToken cancellationToken)
             {
                 var book = new Book("2", $"{notification.Entity.Name}-II");
                 await _bookRepository.AddAsync(book, cancellationToken);
@@ -72,7 +72,7 @@ namespace IntegrationTests.Domain.Tests
             }
 
             /// <inheritdoc />
-            public async Task Handle(BookChangedEventA notification, CancellationToken cancellationToken)
+            public async Task HandleAsync(BookChangedEventA notification, CancellationToken cancellationToken)
             {
                 var book = new Book("1", $"{notification.Entity.Name}-I");
                 await _bookRepository.AddAsync(book, cancellationToken);
@@ -89,7 +89,7 @@ namespace IntegrationTests.Domain.Tests
             }
 
             /// <inheritdoc />
-            public async Task Handle(BookChangedEventB notification, CancellationToken cancellationToken)
+            public async Task HandleAsync(BookChangedEventB notification, CancellationToken cancellationToken)
             {
                 var book = new Book("2", $"{notification.Entity.Name}-II");
                 await _bookRepository.AddAsync(book, cancellationToken);
