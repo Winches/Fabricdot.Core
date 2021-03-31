@@ -1,7 +1,9 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System;
+using System.ComponentModel.DataAnnotations;
 
 namespace Fabricdot.WebApi.Core.Models
 {
+    [Obsolete("use PagedResultRequestDto")]//todo:remove this class
     public class PaginationDto
     {
         /// <summary>
