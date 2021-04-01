@@ -1,9 +1,6 @@
-﻿using System.Threading.Tasks;
-using Fabricdot.Common.Core.Exceptions;
-using Fabricdot.Common.Core.Security;
-using Fabricdot.WebApi.Core.Endpoint;
-using Fabricdot.WebApi.Core.Exceptions;
-using Microsoft.AspNetCore.Mvc;
+﻿using System;
+using System.Threading.Tasks;
+using MediatR;
 using Microsoft.AspNetCore.Mvc.Controllers;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.Extensions.Logging;
@@ -13,12 +10,12 @@ namespace Fabricdot.WebApi.Core.Filters
     public class ExceptionFilter : IAsyncExceptionFilter
     {
         private readonly ILogger<ExceptionFilter> _logger;
-        private readonly ICurrentUser _currentUser;
+        private readonly IMediator _mediator;
 
-        public ExceptionFilter(ILogger<ExceptionFilter> logger, ICurrentUser currentUser)
+        public ExceptionFilter(ILogger<ExceptionFilter> logger, IMediator mediator)
         {
             _logger = logger;
-            _currentUser = currentUser;
+            _mediator = mediator;
         }
 
         public async Task OnExceptionAsync(ExceptionContext context)
@@ -38,33 +35,20 @@ namespace Fabricdot.WebApi.Core.Filters
             };
         }
 
-        protected virtual Task HandleException(ExceptionContext context)
+        protected virtual async Task HandleException(ExceptionContext context)
         {
-            var ip = context.HttpContext.Connection.RemoteIpAddress;
-            var path = context.HttpContext.Request.Path;
             var exception = context.Exception;
-            var ret = new Response<object>();
-
-            switch (exception)
+            try
             {
-                case WarningException warningException:
-                    ret.Code = warningException.Code;
-                    ret.Message = warningException.Message;
-                    if (exception is ValidationException validationException)
-                        ret.Data = validationException.Errors;
-
-                    _logger.LogWarning($"ip={ip}, path={path}, operator={_currentUser.Id}, error={warningException.Message}");
-                    break;
-
-                default:
-                    ret.SetUnExcepted(exception.Message);
-                    _logger.LogError(exception, $"ip={ip}, path={path}, operator={_currentUser.Id}, error={exception.Message}");
-                    break;
+                context.Result = await _mediator.Send(new GetExceptionActionResultRequest(exception));
+                context.ExceptionHandled = true;
             }
-
-            context.Result = new ObjectResult(ret);
-            context.ExceptionHandled = true;
-            return Task.CompletedTask;
+            catch (Exception ex)
+            {
+                const string message = "Not captured Exception :{Message}, Reason: {Reason}";
+                _logger.LogError(ex, message, exception.Message, ex.Message);
+                throw;
+            }
         }
     }
 }

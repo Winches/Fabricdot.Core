@@ -9,7 +9,7 @@ namespace Fabricdot.WebApi.Core.Configuration
         {
             options.Filters.AddService<ValidationActionFilter>();
             options.Filters.AddService<ExceptionFilter>();
-            options.Filters.Add<ResponseFilter>();
+            options.Filters.AddService<ResultFilter>();
         }
     }
 }
