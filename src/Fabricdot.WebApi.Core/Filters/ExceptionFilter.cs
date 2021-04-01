@@ -41,6 +41,7 @@ namespace Fabricdot.WebApi.Core.Filters
             try
             {
                 context.Result = await _mediator.Send(new GetExceptionActionResultRequest(exception));
+                await _mediator.Publish(new ActionExceptionThrownEvent(exception));
                 context.ExceptionHandled = true;
             }
             catch (Exception ex)

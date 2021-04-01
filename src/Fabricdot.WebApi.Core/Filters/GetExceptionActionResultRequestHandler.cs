@@ -1,6 +1,7 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
 using Fabricdot.Common.Core.Exceptions;
+using Fabricdot.Core.ExceptionHandling;
 using Fabricdot.WebApi.Core.Endpoint;
 using Fabricdot.WebApi.Core.Exceptions;
 using MediatR;
@@ -16,18 +17,21 @@ namespace Fabricdot.WebApi.Core.Filters
         {
             var exception = request.Exception;
             var ret = new Response<object>();
-            switch (exception)
+            ret.SetUnExcepted(exception.Message);
+
+            if (exception is IHasErrorCode hasErrorCode)
             {
-                //todo:remove code.
-                case WarningException warningException:
-                    ret.Code = warningException.Code;
-                    ret.Message = warningException.Message;
-                    if (exception is ValidationException validationException)
-                        ret.Data = validationException.Errors;
-                    break;
-                default:
-                    ret.SetUnExcepted(exception.Message);
-                    break;
+                ret.Code = hasErrorCode.Code;
+            }
+
+            //todo:remove code
+            if (exception is WarningException warningException)
+            {
+                ret.Code = warningException.Code;
+            }
+            if (exception is ValidationException validationException)
+            {
+                ret.Data = validationException.Errors;
             }
 
             return Task.FromResult<IActionResult>(new ObjectResult(ret));
