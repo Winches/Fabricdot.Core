@@ -21,6 +21,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UnitTests", "tests\UnitTest
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IntegrationTests", "tests\IntegrationTests\IntegrationTests.csproj", "{7717A75D-A040-4BFF-A6AE-0E78CA2420CF}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fabricdot.Core", "src\Fabricdot.Core\Fabricdot.Core.csproj", "{5716680D-C4FE-4F12-B6BF-3FA6838DA267}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -55,6 +57,10 @@ Global
 		{7717A75D-A040-4BFF-A6AE-0E78CA2420CF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7717A75D-A040-4BFF-A6AE-0E78CA2420CF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7717A75D-A040-4BFF-A6AE-0E78CA2420CF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5716680D-C4FE-4F12-B6BF-3FA6838DA267}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5716680D-C4FE-4F12-B6BF-3FA6838DA267}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5716680D-C4FE-4F12-B6BF-3FA6838DA267}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5716680D-C4FE-4F12-B6BF-3FA6838DA267}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -67,6 +73,7 @@ Global
 		{0D4C3E84-047F-4FAB-98D5-C9E93A09FF76} = {E4584D3B-649D-4069-82F1-647552F432FC}
 		{0F3F1F5F-E449-49F1-880E-7EF264334F79} = {331C270C-1154-413D-A0B4-29E4E4ACA7C3}
 		{7717A75D-A040-4BFF-A6AE-0E78CA2420CF} = {331C270C-1154-413D-A0B4-29E4E4ACA7C3}
+		{5716680D-C4FE-4F12-B6BF-3FA6838DA267} = {E4584D3B-649D-4069-82F1-647552F432FC}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {8A1CF1E5-6520-4250-8917-0413CEF753A8}
