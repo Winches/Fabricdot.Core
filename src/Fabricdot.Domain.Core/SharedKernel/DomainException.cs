@@ -1,23 +1,28 @@
 ﻿using System;
-using Fabricdot.Common.Core.Exceptions;
+using Fabricdot.Core.ExceptionHandling;
 
 namespace Fabricdot.Domain.Core.SharedKernel
 {
-    public class DomainException : WarningException
+    public class DomainException : Exception, IHasErrorCode
     {
+        /// <inheritdoc />
+        public int Code { get; }
+
         public DomainException(string message) : base(message)
         {
         }
 
-        public DomainException(string message, int code) : base(message, code)
+        public DomainException(string message, int code) : base(message)
         {
+            Code = code;
         }
 
         public DomainException(
             string message,
             int code,
-            Exception exception) : base(message, code, exception)
+            Exception exception) : base(message, exception)
         {
+            Code = code;
         }
     }
 }
