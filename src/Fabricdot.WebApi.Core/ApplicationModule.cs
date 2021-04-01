@@ -3,7 +3,9 @@ using Fabricdot.Infrastructure.Core.DependencyInjection;
 using Fabricdot.Infrastructure.Core.Security;
 using Fabricdot.WebApi.Core.Filters;
 using Fabricdot.WebApi.Core.Services;
+using Fabricdot.WebApi.Core.Tracing;
 using Fabricdot.WebApi.Core.Validation;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Fabricdot.WebApi.Core
@@ -22,7 +24,12 @@ namespace Fabricdot.WebApi.Core
                 .AddScoped<ICurrentPrincipalAccessor, HttpContextCurrentPrincipalAccessor>()
                 .AddTransient<ICurrentUser, CurrentUser>();
 
+            //tracing
+            services.AddCorrelationId();
+
             services.AddMemoryCache();
+
+            services.AddTransient<IStartupFilter, DefaultStartupFilter>();
         }
     }
 }

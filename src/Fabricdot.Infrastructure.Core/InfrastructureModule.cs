@@ -10,8 +10,11 @@ using Fabricdot.Infrastructure.Core.Domain.Auditing;
 using Fabricdot.Infrastructure.Core.Domain.Events;
 using Fabricdot.Infrastructure.Core.Domain.Services;
 using Fabricdot.Infrastructure.Core.Logging;
+using Fabricdot.Infrastructure.Core.Tracing;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
+using WorkerService.WebApi.Services.Tracing;
 
 namespace Fabricdot.Infrastructure.Core
 {
@@ -23,6 +26,8 @@ namespace Fabricdot.Infrastructure.Core
                 .AddSingleton<IRandomBuilder, RandomBuilder>()
                 .AddTransient<IAuditPropertySetter, AuditPropertySetter>()
                 .AddScoped(typeof(IAppLogger<>), typeof(AppLogger<>));
+
+            services.TryAddSingleton<ICorrelationIdProvider, DefaultCorrelationIdProvider>();
 
             //repository filter
             services.AddSingleton(typeof(IDataFilter<>), typeof(DataFilter<>))
