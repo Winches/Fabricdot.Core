@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using Fabricdot.Common.Core.Logging;
 using Fabricdot.Common.Core.Randoms;
 using Fabricdot.Common.Core.Reflections;
 using Fabricdot.Domain.Core.Services;
@@ -9,7 +8,6 @@ using Fabricdot.Infrastructure.Core.Domain;
 using Fabricdot.Infrastructure.Core.Domain.Auditing;
 using Fabricdot.Infrastructure.Core.Domain.Events;
 using Fabricdot.Infrastructure.Core.Domain.Services;
-using Fabricdot.Infrastructure.Core.Logging;
 using Fabricdot.Infrastructure.Core.Tracing;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
@@ -24,8 +22,7 @@ namespace Fabricdot.Infrastructure.Core
         {
             services.AddSingleton<IRandomNumberGenerator, RandomNumberGenerator>()
                 .AddSingleton<IRandomBuilder, RandomBuilder>()
-                .AddTransient<IAuditPropertySetter, AuditPropertySetter>()
-                .AddScoped(typeof(IAppLogger<>), typeof(AppLogger<>));
+                .AddTransient<IAuditPropertySetter, AuditPropertySetter>();
 
             services.TryAddSingleton<ICorrelationIdProvider, DefaultCorrelationIdProvider>();
 

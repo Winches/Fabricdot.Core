@@ -1,11 +1,11 @@
 ﻿using System;
 using AutoMapper;
-using Fabricdot.Common.Core.Logging;
 using Fabricdot.Infrastructure.Core.Data;
 using Fabricdot.Infrastructure.Core.Security;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 
 namespace Fabricdot.WebApi.Core.Endpoint
 {
@@ -20,11 +20,11 @@ namespace Fabricdot.WebApi.Core.Endpoint
         private ICurrentUser _currentUser;
         private IMediator _mediator;
         private ISender _sender;
-        private IAppLogger<object> _logger;
+        private ILogger<object> _logger;
 
         public IServiceProvider ServiceProvider => HttpContext.RequestServices;
 
-        protected IAppLogger<object> Logger => LazyGetRequiredService(typeof(IAppLogger<>).MakeGenericType(GetType()), ref _logger);
+        protected ILogger<object> Logger => LazyGetRequiredService(typeof(ILogger<>).MakeGenericType(GetType()), ref _logger);
         protected IMapper Mapper => LazyGetRequiredService(ref _mapper);
         protected IUnitOfWork UnitOfWork => LazyGetRequiredService(ref _unitOfWork);
         protected ICurrentUser CurrentUser => LazyGetRequiredService(ref _currentUser);
