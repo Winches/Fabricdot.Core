@@ -1,23 +1,28 @@
 ﻿using System;
-using Fabricdot.Common.Core.Exceptions;
+using Fabricdot.Core.ExceptionHandling;
 
 namespace Fabricdot.Infrastructure.Core.Commands
 {
-    public class CommandException : WarningException
+    public class CommandException : Exception, IHasErrorCode
     {
+        /// <inheritdoc />
+        public int Code { get; }
+
         public CommandException(string message) : base(message)
         {
         }
 
-        public CommandException(string message, int code) : base(message, code)
+        public CommandException(string message, int code) : base(message)
         {
+            Code = code;
         }
 
         public CommandException(
             string message,
             int code,
-            Exception exception) : base(message, code, exception)
+            Exception exception) : base(message, exception)
         {
+            Code = code;
         }
     }
 }

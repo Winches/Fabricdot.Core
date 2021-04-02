@@ -1,8 +1,6 @@
-﻿using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
+﻿using System.Linq;
+using Fabricdot.Core.Validation;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
-using ValidationException = Fabricdot.WebApi.Core.Exceptions.ValidationException;
 
 namespace Fabricdot.WebApi.Core.Validation
 {
@@ -10,15 +8,21 @@ namespace Fabricdot.WebApi.Core.Validation
     {
         public virtual void Validate(ModelStateDictionary modelState)
         {
-            if (modelState.IsValid) return;
+            if (modelState.IsValid)
+                return;
 
-            var errors = new List<ValidationResult>();
+            var notification = CreateNotification(modelState);
+            if (notification.Errors.Any())
+                throw new ValidationFailedException("ModelState is not valid!", notification);
+        }
 
-            foreach (var state in modelState)
-            foreach (var error in state.Value.Errors)
-                errors.Add(new ValidationResult(error.ErrorMessage, new[] {state.Key}));
-
-            if (errors.Any()) throw new ValidationException("ModelState is not valid!", errors);
+        public Notification CreateNotification(ModelStateDictionary modelState)
+        {
+            var notification = new Notification();
+            foreach (var (key, value) in modelState)
+                foreach (var error in value.Errors)
+                    notification.Add(key, new Notification.Error(error.ErrorMessage));
+            return notification;
         }
     }
 }

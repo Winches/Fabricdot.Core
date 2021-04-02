@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Text.Json.Serialization;
 using Ardalis.GuardClauses;
 
 namespace Fabricdot.Core.Validation
@@ -9,6 +10,7 @@ namespace Fabricdot.Core.Validation
     /// </summary>
     public sealed class Notification
     {
+        [JsonConverter(typeof(NotificationErrorConverter))]
         public readonly struct Error
         {
             private readonly string _message;

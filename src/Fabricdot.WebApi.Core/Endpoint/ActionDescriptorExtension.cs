@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
-using Fabricdot.Common.Core.Exceptions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Abstractions;
 using Microsoft.AspNetCore.Mvc.Controllers;
@@ -26,7 +25,7 @@ namespace Fabricdot.WebApi.Core.Endpoint
         public static ControllerActionDescriptor AsControllerActionDescriptor(this ActionDescriptor actionDescriptor)
         {
             if (!actionDescriptor.IsControllerAction())
-                throw new WarningException(
+                throw new InvalidOperationException(
                     $"{nameof(actionDescriptor)} should be type of {typeof(ControllerActionDescriptor).AssemblyQualifiedName}");
 
             return actionDescriptor as ControllerActionDescriptor;
