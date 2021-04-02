@@ -1,5 +1,5 @@
-﻿using Fabricdot.Common.Core.Security;
-using Fabricdot.Infrastructure.Core.Domain.Auditing;
+﻿using Fabricdot.Infrastructure.Core.Domain.Auditing;
+using Fabricdot.Infrastructure.Core.Security;
 using IntegrationTests.Data.Entities;
 using Microsoft.Extensions.DependencyInjection;
 using Xunit;

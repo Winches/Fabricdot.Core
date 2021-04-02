@@ -1,4 +1,4 @@
-﻿using Fabricdot.Common.Core.Security;
+﻿using Fabricdot.Core.Security;
 using Fabricdot.Infrastructure.Core.DependencyInjection;
 using Fabricdot.Infrastructure.Core.Security;
 using Fabricdot.WebApi.Core.Filters;

@@ -2,7 +2,7 @@
 using System.Security.Claims;
 using System.Threading;
 using Fabricdot.Common.Core.Delegates;
-using Fabricdot.Common.Core.Security;
+using Fabricdot.Core.Security;
 using JetBrains.Annotations;
 using Microsoft.AspNetCore.Http;
 

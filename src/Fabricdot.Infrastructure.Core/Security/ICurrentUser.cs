@@ -1,6 +1,6 @@
 ﻿using System.Security.Claims;
 
-namespace Fabricdot.Common.Core.Security
+namespace Fabricdot.Infrastructure.Core.Security
 {
     public interface ICurrentUser
     {

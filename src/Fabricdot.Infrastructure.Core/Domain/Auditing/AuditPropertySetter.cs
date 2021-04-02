@@ -1,7 +1,7 @@
 ﻿using System.Reflection;
-using Fabricdot.Common.Core.Security;
 using Fabricdot.Domain.Core.Auditing;
 using Fabricdot.Domain.Core.SharedKernel;
+using Fabricdot.Infrastructure.Core.Security;
 
 namespace Fabricdot.Infrastructure.Core.Domain.Auditing
 {

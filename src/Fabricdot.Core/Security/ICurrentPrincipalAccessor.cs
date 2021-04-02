@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Security.Claims;
 
-namespace Fabricdot.Common.Core.Security
+namespace Fabricdot.Core.Security
 {
     public interface ICurrentPrincipalAccessor
     {

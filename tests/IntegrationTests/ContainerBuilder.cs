@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Data.Common;
-using Fabricdot.Common.Core.Security;
 using Fabricdot.Infrastructure.Core;
 using Fabricdot.Infrastructure.Core.Data;
 using Fabricdot.Infrastructure.Core.DependencyInjection;
 using Fabricdot.Infrastructure.Core.Domain.Auditing;
+using Fabricdot.Infrastructure.Core.Security;
 using IntegrationTests.Data;
 using IntegrationTests.Data.Repositories;
 using Microsoft.Data.Sqlite;

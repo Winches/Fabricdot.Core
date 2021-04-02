@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Security.Claims;
-using Fabricdot.Common.Core.Security;
+using Fabricdot.Core.Security;
 
 namespace Fabricdot.Infrastructure.Core.Security
 {

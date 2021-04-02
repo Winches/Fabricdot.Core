@@ -1,15 +1,14 @@
 ﻿using System;
 using AutoMapper;
 using Fabricdot.Common.Core.Logging;
-using Fabricdot.Common.Core.Security;
 using Fabricdot.Infrastructure.Core.Data;
+using Fabricdot.Infrastructure.Core.Security;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Fabricdot.WebApi.Core.Endpoint
 {
-    //[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     [Route("api/[controller]")]
     [ApiController]
     public abstract class EndPointBase : ControllerBase

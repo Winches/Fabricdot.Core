@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Security.Claims;
-using Fabricdot.Common.Core.Security;
+using Fabricdot.Infrastructure.Core.Security;
 
 namespace IntegrationTests
 {
