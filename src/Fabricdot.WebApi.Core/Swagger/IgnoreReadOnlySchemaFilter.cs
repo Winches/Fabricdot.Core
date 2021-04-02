@@ -1,5 +1,5 @@
-﻿using System.Linq;
-using Fabricdot.Common.Core.Enumerable;
+﻿using System.Collections.Generic;
+using System.Linq;
 using Fabricdot.Infrastructure.Core.Commands;
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.SwaggerGen;

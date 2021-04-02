@@ -1,4 +1,4 @@
-﻿using Fabricdot.Common.Core.Enumerable;
+﻿using System.Collections.Generic;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Fabricdot.Infrastructure.Core.DependencyInjection

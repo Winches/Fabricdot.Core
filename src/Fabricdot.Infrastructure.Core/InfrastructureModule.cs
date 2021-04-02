@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
-using Fabricdot.Common.Core.Randoms;
-using Fabricdot.Common.Core.Reflections;
+using Fabricdot.Core.Randoms;
+using Fabricdot.Core.Reflection;
 using Fabricdot.Domain.Core.Services;
 using Fabricdot.Infrastructure.Core.Data.Filters;
 using Fabricdot.Infrastructure.Core.DependencyInjection;
@@ -20,7 +20,8 @@ namespace Fabricdot.Infrastructure.Core
     {
         public void Configure(IServiceCollection services)
         {
-            services.AddSingleton<IRandomNumberGenerator, RandomNumberGenerator>()
+            services
+                .AddSingleton<IRandomProvider, DefaultRandomProvider>()
                 .AddSingleton<IRandomBuilder, RandomBuilder>()
                 .AddTransient<IAuditPropertySetter, AuditPropertySetter>();
 

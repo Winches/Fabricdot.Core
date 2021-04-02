@@ -1,7 +1,7 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Fabricdot.Common.Core.Enumerable;
 using Fabricdot.Domain.Core.Entities;
 using Fabricdot.Infrastructure.Core.Data;
 using MediatR;

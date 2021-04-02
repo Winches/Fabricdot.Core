@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Reflection;
-using Fabricdot.Common.Core.Reflections;
+using Fabricdot.Core.Reflection;
 using Fabricdot.Domain.Core.Events;
 using Fabricdot.Domain.Core.Services;
 using JetBrains.Annotations;
@@ -17,7 +17,7 @@ namespace Fabricdot.Infrastructure.Core.Domain
             params Assembly[] assemblies)
         {
             var repositoryType = typeof(IRepository<,>);
-            Reflection.FindTypes(repositoryType, assemblies)
+            ReflectionHelper.FindTypes(repositoryType, assemblies)
                 .ForEach(v =>
                 {
                     var contract = v.GetInterfaces()
@@ -34,7 +34,7 @@ namespace Fabricdot.Infrastructure.Core.Domain
             params Assembly[] assemblies)
         {
             var serviceType = typeof(IDomainService);
-            Reflection.FindTypes(serviceType, assemblies)
+            ReflectionHelper.FindTypes(serviceType, assemblies)
                 .ForEach(v =>
                 {
                     var contract = v.GetInterfaces()
@@ -51,7 +51,7 @@ namespace Fabricdot.Infrastructure.Core.Domain
             params Assembly[] assemblies)
         {
             var serviceType = typeof(IDomainEventHandler<>);
-            Reflection.FindTypes(serviceType, assemblies)
+            ReflectionHelper.FindTypes(serviceType, assemblies)
                 .ForEach(v =>
                 {
                     var contract = v.GetInterfaces()

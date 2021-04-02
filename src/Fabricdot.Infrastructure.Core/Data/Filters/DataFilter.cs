@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.Threading;
-using Fabricdot.Common.Core.Collections;
-using Fabricdot.Common.Core.Delegates;
+using Fabricdot.Core.Delegates;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 

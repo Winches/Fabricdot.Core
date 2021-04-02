@@ -1,4 +1,4 @@
-﻿using Fabricdot.Common.Core.Reflections;
+﻿using Fabricdot.Core.Reflection;
 using Xunit;
 
 namespace UnitTests.Common.Reflections
@@ -38,7 +38,7 @@ namespace UnitTests.Common.Reflections
         [Fact]
         public void TestFindTypesByInterface()
         {
-            var types = Reflection.FindTypes<IAnimal>(typeof(ReflectionTest).Assembly);
+            var types = ReflectionHelper.FindTypes<IAnimal>(typeof(ReflectionTest).Assembly);
             Assert.Equal(3, types.Count);
             Assert.Contains(types, v => v == typeof(Dog));
             Assert.Contains(types, v => v == typeof(GuidDogWithCharacterCode));
@@ -48,7 +48,7 @@ namespace UnitTests.Common.Reflections
         [Fact]
         public void TestFindTypesByGenericInterface()
         {
-            var types = Reflection.FindTypes(typeof(IWorkDog<>), typeof(ReflectionTest).Assembly);
+            var types = ReflectionHelper.FindTypes(typeof(IWorkDog<>), typeof(ReflectionTest).Assembly);
             Assert.Equal(2, types.Count);
             Assert.Contains(types, v => v == typeof(GuidDogWithCharacterCode));
             Assert.Contains(types, v => v == typeof(GuidDogWithNumberCode));
@@ -57,7 +57,7 @@ namespace UnitTests.Common.Reflections
         [Fact]
         public void TestFindTypesByClass()
         {
-            var types = Reflection.FindTypes(typeof(WorkDogBase), typeof(ReflectionTest).Assembly);
+            var types = ReflectionHelper.FindTypes(typeof(WorkDogBase), typeof(ReflectionTest).Assembly);
             Assert.Single(types);
             Assert.Contains(types, v => v == typeof(GuidDogWithNumberCode));
         }
