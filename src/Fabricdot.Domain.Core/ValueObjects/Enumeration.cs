@@ -55,12 +55,14 @@ namespace Fabricdot.Domain.Core.ValueObjects
 
         public static bool operator ==(Enumeration left, Enumeration right)
         {
-            return left?.Equals(right) ?? false;
+            if (left is null ^ right is null)
+                return false;
+            return left?.Equals(right) != false;
         }
 
         public static bool operator !=(Enumeration left, Enumeration right)
         {
-            return !left?.Equals(right) ?? false;
+            return !(left == right);
         }
 
         public static int AbsoluteDifference(Enumeration firstValue, Enumeration secondValue)
