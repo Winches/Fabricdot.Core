@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Ardalis.GuardClauses;
 using Fabricdot.Domain.Core.Events;
 
 namespace Fabricdot.Domain.Core.Entities
@@ -13,9 +14,11 @@ namespace Fabricdot.Domain.Core.Entities
         /// <inheritdoc />
         public override bool Equals(object obj)
         {
-            if (ReferenceEquals(null, obj)) return false;
-            if (ReferenceEquals(this, obj)) return true;
-            return obj.GetType() == GetType() && Equals((EntityBase<TKey>) obj);
+            if (ReferenceEquals(null, obj))
+                return false;
+            if (ReferenceEquals(this, obj))
+                return true;
+            return obj.GetType() == GetType() && Equals((EntityBase<TKey>)obj);
         }
 
         /// <inheritdoc />
@@ -38,6 +41,8 @@ namespace Fabricdot.Domain.Core.Entities
 
         public void AddDomainEvent(IDomainEvent domainEvent)
         {
+            Guard.Against.Null(domainEvent, nameof(domainEvent));
+
             _domainEvents ??= new List<IDomainEvent>();
             _domainEvents.Add(domainEvent);
         }
