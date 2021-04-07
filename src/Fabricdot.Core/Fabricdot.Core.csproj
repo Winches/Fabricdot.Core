@@ -2,6 +2,15 @@
 
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <PackageOutputPath>../../packages</PackageOutputPath>
+    <PackageId>Fabricdot.Core</PackageId>
+    <Authors>Cyan</Authors>
+    <Company></Company>
+    <Description>Basic package</Description>
+    <PackageProjectUrl>https://github.com/Winches/Fabricdot.Core</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/Winches/Fabricdot.Core</RepositoryUrl>
+    <Version>0.1.0-alpha</Version>
   </PropertyGroup>
 
   <ItemGroup>
