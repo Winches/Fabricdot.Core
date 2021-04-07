@@ -8,7 +8,6 @@ namespace Fabricdot.Infrastructure.EntityFrameworkCore.Configurations
     {
         public virtual void Configure(EntityTypeBuilder<T> builder)
         {
-            builder.ToTable($"{builder.Metadata.ClrType.Name}s");
             builder.TryConfigure();
         }
     }
