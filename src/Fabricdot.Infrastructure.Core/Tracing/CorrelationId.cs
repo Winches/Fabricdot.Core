@@ -40,7 +40,9 @@ namespace Fabricdot.Infrastructure.Core.Tracing
 
         public static implicit operator CorrelationId(string value)
         {
-            return Guid.TryParse(value, out var guid) ? new CorrelationId(guid) : null;
+            return Guid.TryParse(value, out var guid) ? new CorrelationId(guid) : throw new ArgumentException("Invalid Correlation Id.", nameof(value));
         }
+
+        public static implicit operator CorrelationId(Guid guid) => new CorrelationId(guid);
     }
 }

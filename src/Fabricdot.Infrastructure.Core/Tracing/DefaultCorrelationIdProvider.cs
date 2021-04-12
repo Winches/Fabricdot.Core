@@ -1,6 +1,4 @@
-﻿using Fabricdot.Infrastructure.Core.Tracing;
-
-namespace WorkerService.WebApi.Services.Tracing
+﻿namespace Fabricdot.Infrastructure.Core.Tracing
 {
     public class DefaultCorrelationIdProvider : ICorrelationIdProvider
     {

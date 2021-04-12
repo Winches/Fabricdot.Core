@@ -12,7 +12,6 @@ using Fabricdot.Infrastructure.Core.Tracing;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
-using WorkerService.WebApi.Services.Tracing;
 
 namespace Fabricdot.Infrastructure.Core
 {
