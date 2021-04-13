@@ -27,6 +27,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fabricdot.Domain.Core.Tests
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fabricdot.Infrastructure.Core.Tests", "tests\Fabricdot.Infrastructure.Core.Tests\Fabricdot.Infrastructure.Core.Tests.csproj", "{C0E4CC0C-8A76-420A-BA79-E7FE08C80B28}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fabricdot.Test.Shared", "tests\Fabricdot.Test.Shared\Fabricdot.Test.Shared.csproj", "{657D3D10-E519-4429-80BB-7105A5BCFF75}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -73,6 +75,10 @@ Global
 		{C0E4CC0C-8A76-420A-BA79-E7FE08C80B28}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C0E4CC0C-8A76-420A-BA79-E7FE08C80B28}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C0E4CC0C-8A76-420A-BA79-E7FE08C80B28}.Release|Any CPU.Build.0 = Release|Any CPU
+		{657D3D10-E519-4429-80BB-7105A5BCFF75}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{657D3D10-E519-4429-80BB-7105A5BCFF75}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{657D3D10-E519-4429-80BB-7105A5BCFF75}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{657D3D10-E519-4429-80BB-7105A5BCFF75}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -88,6 +94,7 @@ Global
 		{1E467214-59DD-4780-BCBC-D0DC58BACB36} = {331C270C-1154-413D-A0B4-29E4E4ACA7C3}
 		{83B6EEFF-83C5-41E5-B297-82ED7690B9F0} = {331C270C-1154-413D-A0B4-29E4E4ACA7C3}
 		{C0E4CC0C-8A76-420A-BA79-E7FE08C80B28} = {331C270C-1154-413D-A0B4-29E4E4ACA7C3}
+		{657D3D10-E519-4429-80BB-7105A5BCFF75} = {331C270C-1154-413D-A0B4-29E4E4ACA7C3}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {8A1CF1E5-6520-4250-8917-0413CEF753A8}

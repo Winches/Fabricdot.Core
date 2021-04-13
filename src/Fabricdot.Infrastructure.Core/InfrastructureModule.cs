@@ -1,4 +1,5 @@
-﻿using AutoMapper;
+﻿using System.Runtime.CompilerServices;
+using AutoMapper;
 using Fabricdot.Core.Randoms;
 using Fabricdot.Core.Reflection;
 using Fabricdot.Domain.Core.Services;
@@ -13,6 +14,7 @@ using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 
+[assembly: InternalsVisibleTo("Fabricdot.Infrastructure.Core.Tests")]
 namespace Fabricdot.Infrastructure.Core
 {
     public sealed class InfrastructureModule : IModule
