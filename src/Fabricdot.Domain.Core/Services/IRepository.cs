@@ -14,6 +14,8 @@ namespace Fabricdot.Domain.Core.Services
 
         Task<IReadOnlyList<T>> ListAsync(ISpecification<T> specification, CancellationToken cancellationToken = default);
 
+        Task<long> CountAsync(CancellationToken cancellationToken = default);
+
         Task<int> CountAsync(ISpecification<T> specification, CancellationToken cancellationToken = default);
 
         Task<T> AddAsync(T entity, CancellationToken cancellationToken = default);

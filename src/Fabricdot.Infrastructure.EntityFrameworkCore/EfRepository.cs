@@ -90,6 +90,12 @@ namespace Fabricdot.Infrastructure.EntityFrameworkCore
         }
 
         /// <inheritdoc />
+        public virtual async Task<long> CountAsync(CancellationToken cancellationToken = default)
+        {
+            return await Entities.CountAsync(cancellationToken);
+        }
+
+        /// <inheritdoc />
         public virtual async Task<int> CountAsync(
             ISpecification<T> specification,
             CancellationToken cancellationToken = default)
@@ -108,7 +114,7 @@ namespace Fabricdot.Infrastructure.EntityFrameworkCore
         {
             if (_filter.IsEnabled<ISoftDelete>() && typeof(ISoftDelete).IsAssignableFrom(typeof(T)))
                 // ReSharper disable once SuspiciousTypeConversion.Global
-                return entities.Where(v => ((ISoftDelete) v).IsDeleted == false);
+                return entities.Where(v => ((ISoftDelete)v).IsDeleted == false);
 
             return entities;
         }
