@@ -1,6 +1,5 @@
 ﻿using Fabricdot.Core.Security;
 using Fabricdot.Infrastructure.Core.DependencyInjection;
-using Fabricdot.Infrastructure.Core.Security;
 using Fabricdot.WebApi.Core.Filters;
 using Fabricdot.WebApi.Core.Services;
 using Fabricdot.WebApi.Core.Tracing;
@@ -21,9 +20,8 @@ namespace Fabricdot.WebApi.Core
                 .AddTransient<IModelStateValidator, ModelStateValidator>();
 
             //principal
-            services.AddHttpContextAccessor()
-                .AddScoped<ICurrentPrincipalAccessor, HttpContextCurrentPrincipalAccessor>()
-                .AddTransient<ICurrentUser, CurrentUser>();
+            services.AddHttpContextAccessor();
+            services.AddSingleton<ICurrentPrincipalAccessor, HttpContextCurrentPrincipalAccessor>();
 
             //tracing
             services.AddCorrelationId();

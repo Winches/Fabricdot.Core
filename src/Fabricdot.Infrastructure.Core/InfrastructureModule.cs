@@ -2,6 +2,7 @@
 using AutoMapper;
 using Fabricdot.Core.Randoms;
 using Fabricdot.Core.Reflection;
+using Fabricdot.Core.Security;
 using Fabricdot.Domain.Core.Services;
 using Fabricdot.Infrastructure.Core.Data.Filters;
 using Fabricdot.Infrastructure.Core.DependencyInjection;
@@ -9,6 +10,7 @@ using Fabricdot.Infrastructure.Core.Domain;
 using Fabricdot.Infrastructure.Core.Domain.Auditing;
 using Fabricdot.Infrastructure.Core.Domain.Events;
 using Fabricdot.Infrastructure.Core.Domain.Services;
+using Fabricdot.Infrastructure.Core.Security;
 using Fabricdot.Infrastructure.Core.Tracing;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
@@ -27,6 +29,10 @@ namespace Fabricdot.Infrastructure.Core
                 .AddTransient<IAuditPropertySetter, AuditPropertySetter>();
 
             services.TryAddSingleton<ICorrelationIdProvider, DefaultCorrelationIdProvider>();
+
+            services
+                .AddSingleton<ICurrentPrincipalAccessor, NullCurrentPrincipalAccessor>()
+                .AddTransient<ICurrentUser, CurrentUser>();
 
             //repository filter
             services.AddSingleton(typeof(IDataFilter<>), typeof(DataFilter<>))
