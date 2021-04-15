@@ -23,7 +23,7 @@ namespace Fabricdot.Infrastructure.Core.Domain.Events
         {
             var domainEntities = _entityChangeTracker.Entries()
                 .Select(v => v.Entity)
-                .Cast<IHasDomainEvents>()
+                .OfType<IHasDomainEvents>()
                 .ToArray();
 
             var domainEvents = domainEntities.Where(v => v.DomainEvents != null)

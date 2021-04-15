@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Linq;
 using Fabricdot.Domain.Core.Entities;
-using Fabricdot.Domain.Core.Events;
 using Xunit;
 
 namespace Fabricdot.Domain.Core.Tests
@@ -41,47 +39,6 @@ namespace Fabricdot.Domain.Core.Tests
         {
             var person = new Person(Guid.NewGuid(), "mike");
             Assert.False(person.Equals(null));
-        }
-
-        [Fact]
-        public void AddDomainEvent_GivenEvent_Correctly()
-        {
-            var person = new Person(Guid.NewGuid(), "mike");
-            var expected = new EntityCreatedEvent<Person>(person);
-            person.AddDomainEvent(expected);
-            var actual = person.DomainEvents.Single();
-
-            Assert.Equal(expected, actual);
-        }
-
-        [Fact]
-        public void AddDomainEvent_GivenNull_ThrownException()
-        {
-            var person = new Person(Guid.NewGuid(), "mike");
-            void Action() => person.AddDomainEvent(null);
-            Assert.Throws<ArgumentNullException>(Action);
-        }
-
-        [Fact]
-        public void RemoveDomainEvent_GivenEvent_Correctly()
-        {
-            var person = new Person(Guid.NewGuid(), "mike");
-            var expected = new EntityCreatedEvent<Person>(person);
-            person.AddDomainEvent(expected);
-            person.RemoveDomainEvent(expected);
-
-            Assert.DoesNotContain(expected, person.DomainEvents);
-        }
-
-        [Fact]
-        public void ClearDomainEvents_EmptyEvents()
-        {
-            var person = new Person(Guid.NewGuid(), "mike");
-            var domainEvent = new EntityCreatedEvent<Person>(person);
-            person.AddDomainEvent(domainEvent);
-            person.ClearDomainEvents();
-
-            Assert.Empty(person.DomainEvents);
         }
     }
 }
