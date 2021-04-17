@@ -2,8 +2,9 @@
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Ardalis.GuardClauses;
+using Fabricdot.Domain.Core.Auditing;
 using Fabricdot.Domain.Core.Entities;
-using Fabricdot.Infrastructure.Core.Data;
 using MediatR;
 
 namespace Fabricdot.Infrastructure.Core.Domain.Events
@@ -11,18 +12,19 @@ namespace Fabricdot.Infrastructure.Core.Domain.Events
     public class DomainEventsDispatcher : IDomainEventsDispatcher
     {
         private readonly IPublisher _publisher;
-        private readonly IEntityChangeTracker _entityChangeTracker;
 
-        public DomainEventsDispatcher(IPublisher publisher, IEntityChangeTracker entityChangeTracker)
+        public DomainEventsDispatcher(IPublisher publisher)
         {
             _publisher = publisher;
-            _entityChangeTracker = entityChangeTracker;
         }
 
-        public async Task DispatchEventsAsync(CancellationToken cancellationToken = default)
+        /// <inheritdoc />
+        public async Task DispatchEventsAsync(
+            ICollection<EntityChangeInfo> changeInfos,
+            CancellationToken cancellationToken = default)
         {
-            var domainEntities = _entityChangeTracker.Entries()
-                .Select(v => v.Entity)
+            Guard.Against.Null(changeInfos, nameof(changeInfos));
+            var domainEntities = changeInfos.Select(v => v.Entity)
                 .OfType<IHasDomainEvents>()
                 .ToArray();
 
@@ -30,11 +32,8 @@ namespace Fabricdot.Infrastructure.Core.Domain.Events
                 .SelectMany(x => x.DomainEvents)
                 .ToList();
 
-            domainEntities.ForEach(entity => entity.ClearDomainEvents());
-
             //Task.WhenAll will cause concurrency issue
             foreach (var domainEvent in domainEvents)
-                //await _publisher.Publish(domainEvent, cancellationToken);
                 await _publisher.Publish(new DomainEventNotification(domainEvent), cancellationToken);
         }
     }

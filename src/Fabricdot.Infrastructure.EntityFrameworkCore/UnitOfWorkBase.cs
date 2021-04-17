@@ -31,9 +31,11 @@ namespace Fabricdot.Infrastructure.EntityFrameworkCore
 
         public virtual async Task<int> CommitChangesAsync()
         {
-            await _domainEventsDispatcher.DispatchEventsAsync();
             //todo:consider override DbContext method
-            foreach (var entry in _context.ChangeTracker.Entries())
+            var entries = _context.ChangeTracker.Entries().ToList();
+            var changeInfos = EntityChangeInfoUtil.GetChangeInfos(entries);
+            await _domainEventsDispatcher.DispatchEventsAsync(changeInfos);
+            foreach (var entry in entries)
                 switch (entry.State)
                 {
                     case EntityState.Added:
@@ -77,7 +79,8 @@ namespace Fabricdot.Infrastructure.EntityFrameworkCore
 
         protected virtual void SetConcurrencyStamp(EntityEntry entry)
         {
-            if (entry.Entity is IHasConcurrencyStamp entity) entity.ConcurrencyStamp ??= Guid.NewGuid().ToString("N");
+            if (entry.Entity is IHasConcurrencyStamp entity)
+                entity.ConcurrencyStamp ??= Guid.NewGuid().ToString("N");
         }
 
         protected void UpdateNavigationState(EntityEntry entry, EntityState state)
