@@ -1,6 +1,5 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
-using Fabricdot.Domain.Core.Entities;
 using Fabricdot.Domain.Core.Events;
 using Fabricdot.Infrastructure.Core.Domain.Events;
 using Fabricdot.Test.Shared;
@@ -12,26 +11,7 @@ namespace Fabricdot.Infrastructure.Core.Tests.Domain.Events
 {
     public class DomainEventNotificationHandlerTests : IntegrationTestBase
     {
-        internal class Employee : AggregateRootBase<int>
-        {
-            public string FirstName { get; private set; }
-
-            public string LastName { get; private set; }
-
-            public string Number { get; private set; }
-
-            public Employee(
-                string firstName,
-                string lastName,
-                string number)
-            {
-                FirstName = firstName;
-                LastName = lastName;
-                Number = number;
-            }
-        }
-
-        internal class OrderCreatedEventHandler1 : IDomainEventHandler<EntityCreatedEvent<Employee>>
+        internal class EmployeeCreatedEventHandler1 : IDomainEventHandler<EntityCreatedEvent<Employee>>
         {
             public static string FirstName { get; private set; }
 
@@ -44,7 +24,7 @@ namespace Fabricdot.Infrastructure.Core.Tests.Domain.Events
             }
         }
 
-        internal class OrderCreatedEventHandler2 : IDomainEventHandler<EntityCreatedEvent<Employee>>
+        internal class EmployeeCreatedEventHandler2 : IDomainEventHandler<EntityCreatedEvent<Employee>>
         {
             public static string LastName { get; private set; }
 
@@ -70,8 +50,8 @@ namespace Fabricdot.Infrastructure.Core.Tests.Domain.Events
         {
             serviceCollection
                 .AddTransient<INotificationHandler<DomainEventNotification>, DomainEventNotificationHandler>()
-                .AddTransient<IDomainEventHandler<EntityCreatedEvent<Employee>>, OrderCreatedEventHandler1>()
-                .AddTransient<IDomainEventHandler<EntityCreatedEvent<Employee>>, OrderCreatedEventHandler2>();
+                .AddTransient<IDomainEventHandler<EntityCreatedEvent<Employee>>, EmployeeCreatedEventHandler1>()
+                .AddTransient<IDomainEventHandler<EntityCreatedEvent<Employee>>, EmployeeCreatedEventHandler2>();
         }
 
         [Fact]
@@ -81,8 +61,8 @@ namespace Fabricdot.Infrastructure.Core.Tests.Domain.Events
             var @event = new EntityCreatedEvent<Employee>(employee);
             await _notificationHandler.Handle(new DomainEventNotification(@event), default);
 
-            Assert.Equal(employee.FirstName, OrderCreatedEventHandler1.FirstName);
-            Assert.Equal(employee.LastName, OrderCreatedEventHandler2.LastName);
+            Assert.Equal(employee.FirstName, EmployeeCreatedEventHandler1.FirstName);
+            Assert.Equal(employee.LastName, EmployeeCreatedEventHandler2.LastName);
         }
 
         [Fact]
