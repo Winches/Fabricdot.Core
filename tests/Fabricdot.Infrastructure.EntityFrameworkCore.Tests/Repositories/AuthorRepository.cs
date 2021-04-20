@@ -1,14 +1,12 @@
-﻿using System;
-using Fabricdot.Infrastructure.EntityFrameworkCore.Tests.Data;
+﻿using Fabricdot.Infrastructure.EntityFrameworkCore.Tests.Data;
 using Fabricdot.Infrastructure.EntityFrameworkCore.Tests.Entities;
 
 namespace Fabricdot.Infrastructure.EntityFrameworkCore.Tests.Repositories
 {
-    internal class AuthorRepository : EfRepository<Author, int>, IAuthorRepository
+    internal class AuthorRepository : EfRepository<FakeDbContext, Author, int>, IAuthorRepository
     {
         /// <inheritdoc />
-        public AuthorRepository(FakeDbContext context, IServiceProvider serviceProvider) : base(context,
-            serviceProvider)
+        public AuthorRepository(FakeDbContext context) : base(context)
         {
         }
     }

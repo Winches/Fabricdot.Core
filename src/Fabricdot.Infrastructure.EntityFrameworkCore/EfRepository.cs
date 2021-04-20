@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -9,44 +8,47 @@ using Fabricdot.Domain.Core.Auditing;
 using Fabricdot.Domain.Core.Entities;
 using Fabricdot.Domain.Core.Services;
 using Fabricdot.Infrastructure.Core.Data.Filters;
+using Fabricdot.Infrastructure.EntityFrameworkCore.Extensions;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace Fabricdot.Infrastructure.EntityFrameworkCore
 {
-    public abstract class EfRepository<T, TKey> : IRepository<T, TKey>
-        where T : class, IAggregateRoot, Domain.Core.Entities.IEntity<TKey>
+    public abstract class EfRepository<TDbContext, T, TKey> : IRepository<T, TKey>
+        where TDbContext : DbContext where T : class, IAggregateRoot, Domain.Core.Entities.IEntity<TKey>
     {
-        protected readonly DbContext Context;
+        protected readonly TDbContext Context;
         private readonly IDataFilter _filter;
 
-        private DbSet<T> Set => Context.Set<T>();
-        protected IQueryable<T> Entities => ApplyQueryFilter(Set);
+        protected IQueryable<T> Entities => ApplyQueryFilter(Context.Set<T>());
 
-        protected EfRepository(DbContext context, IServiceProvider serviceProvider)
+        protected EfRepository(TDbContext context)
         {
             Context = context;
-            _filter = serviceProvider.GetRequiredService<IDataFilter>(); //singleton
+            _filter = context.GetRequiredService<IDataFilter>(); //singleton
         }
 
         /// <inheritdoc />
-        public virtual async Task<T> AddAsync(T entity, CancellationToken cancellationToken = default)
+        public virtual async Task<T> AddAsync(
+            T entity,
+            CancellationToken cancellationToken = default)
         {
-            await Set.AddAsync(entity, cancellationToken);
+            await Context.AddAsync(entity, cancellationToken);
             return entity;
         }
 
         /// <inheritdoc />
         public virtual Task DeleteAsync(T entity, CancellationToken cancellationToken = default)
         {
-            Set.Remove(entity);
+            Context.Remove(entity);
             return Task.CompletedTask;
         }
 
         /// <inheritdoc />
-        public virtual Task DeleteRangeAsync(IEnumerable<T> entities, CancellationToken cancellationToken = default)
+        public virtual Task DeleteRangeAsync(
+            IEnumerable<T> entities,
+            CancellationToken cancellationToken = default)
         {
-            Set.RemoveRange(entities);
+            Context.RemoveRange(entities);
             return Task.CompletedTask;
         }
 
@@ -68,7 +70,8 @@ namespace Fabricdot.Infrastructure.EntityFrameworkCore
         }
 
         /// <inheritdoc />
-        public virtual async Task<IReadOnlyList<T>> ListAllAsync(CancellationToken cancellationToken = default)
+        public virtual async Task<IReadOnlyList<T>> ListAllAsync(
+            CancellationToken cancellationToken = default)
         {
             return await Entities.ToListAsync(cancellationToken);
         }
