@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using Fabricdot.Domain.Core.Auditing;
 using Fabricdot.Domain.Core.Entities;
@@ -13,6 +14,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Fabricdot.Infrastructure.EntityFrameworkCore
 {
+    [Obsolete("conflict with 'DbContextBase'")]
     public class UnitOfWorkBase : IUnitOfWork, IDisposable
     {
         private readonly DbContext _context;
@@ -29,12 +31,12 @@ namespace Fabricdot.Infrastructure.EntityFrameworkCore
             _auditPropertySetter = serviceProvider.GetRequiredService<IAuditPropertySetter>();
         }
 
-        public virtual async Task<int> CommitChangesAsync()
+        public virtual async Task CommitChangesAsync(CancellationToken cancellationToken = default)
         {
             //todo:consider override DbContext method
             var entries = _context.ChangeTracker.Entries().ToList();
             var changeInfos = EntityChangeInfoUtil.GetChangeInfos(entries);
-            await _domainEventsDispatcher.DispatchEventsAsync(changeInfos);
+            await _domainEventsDispatcher.DispatchEventsAsync(changeInfos, cancellationToken);
             foreach (var entry in entries)
                 switch (entry.State)
                 {
@@ -56,7 +58,7 @@ namespace Fabricdot.Infrastructure.EntityFrameworkCore
                             //The State of nested entity is still deleted;
                             if (entry.Entity is ISoftDelete)
                             {
-                                await entry.ReloadAsync();
+                                await entry.ReloadAsync(cancellationToken);
                                 _auditPropertySetter.SetDeletionProperties(entry.Entity);
                                 entry.State = EntityState.Modified;
                                 UpdateNavigationState(entry, EntityState.Unchanged);
@@ -65,7 +67,7 @@ namespace Fabricdot.Infrastructure.EntityFrameworkCore
                         break;
                 }
 
-            return await _context.SaveChangesAsync();
+            await _context.SaveChangesAsync(cancellationToken);
         }
 
         protected virtual void UpdateConcurrencyStamp(EntityEntry entry)

@@ -33,7 +33,8 @@ namespace Fabricdot.Infrastructure.EntityFrameworkCore.Tests
                 opts.UseSqlite(CreateInMemoryDatabase());
             });
             serviceCollection
-                .AddScoped<IUnitOfWork, FakeUnitOfWork>();
+                .AddScoped<IUnitOfWork, EfUnitOfWork<FakeDbContext>>()
+                .AddScoped(typeof(IUnitOfWork<>), typeof(EfUnitOfWork<>));
             serviceCollection.AddTransient<FakeDataBuilder>();
         }
 
