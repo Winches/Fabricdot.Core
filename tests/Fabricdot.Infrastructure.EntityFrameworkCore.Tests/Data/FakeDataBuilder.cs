@@ -1,27 +1,15 @@
 ﻿using System.Threading.Tasks;
-using Fabricdot.Infrastructure.Core.Data;
 using Fabricdot.Infrastructure.EntityFrameworkCore.Tests.Entities;
-using Fabricdot.Infrastructure.EntityFrameworkCore.Tests.Repositories;
 
 namespace Fabricdot.Infrastructure.EntityFrameworkCore.Tests.Data
 {
     public class FakeDataBuilder
     {
         private readonly FakeDbContext _dbContext;
-        private readonly IBookRepository _bookRepository;
-        private readonly IAuthorRepository _authorRepository;
-        private readonly IUnitOfWork _unitOfWork;
 
-        public FakeDataBuilder(
-            FakeDbContext dbContext,
-            IBookRepository bookRepository,
-            IAuthorRepository authorRepository,
-            IUnitOfWork unitOfWork)
+        public FakeDataBuilder(FakeDbContext dbContext)
         {
             _dbContext = dbContext;
-            _bookRepository = bookRepository;
-            _authorRepository = authorRepository;
-            _unitOfWork = unitOfWork;
         }
 
         public async Task BuildAsync()
@@ -42,8 +30,8 @@ namespace Fabricdot.Infrastructure.EntityFrameworkCore.Tests.Data
                 new Book("5", "CPP")
             };
             foreach (var book in books)
-                await _bookRepository.AddAsync(book);
-            await _unitOfWork.CommitChangesAsync();
+                await _dbContext.AddAsync(book);
+            _dbContext.SaveChanges();
         }
 
         private async Task AddAuthors()
@@ -56,8 +44,8 @@ namespace Fabricdot.Infrastructure.EntityFrameworkCore.Tests.Data
                 new Author(4, "Graydon", "Hoare")
             };
             foreach (var author in authors)
-                await _authorRepository.AddAsync(author);
-            await _unitOfWork.CommitChangesAsync();
+                await _dbContext.AddAsync(author);
+            _dbContext.SaveChanges();
         }
     }
 }
