@@ -8,14 +8,15 @@ namespace Fabricdot.Infrastructure.EntityFrameworkCore.Tests.Repositories
     internal class BookRepository : EfRepository<FakeDbContext, Book, string>, IBookRepository
     {
         /// <inheritdoc />
-        public BookRepository(FakeDbContext context) : base(context)
+        public BookRepository(IDbContextProvider<FakeDbContext> dbContextProvider) : base(dbContextProvider)
         {
         }
 
         /// <inheritdoc />
         public async Task<Book> GetByNameAsync(string name)
         {
-            return await Entities.FirstOrDefaultAsync(v => v.Name == name);
+            var queryable = await GetQueryableAsync();
+            return await queryable.FirstOrDefaultAsync(v => v.Name == name);
         }
     }
 }

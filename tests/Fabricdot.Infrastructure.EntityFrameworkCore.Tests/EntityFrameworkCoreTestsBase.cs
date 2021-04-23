@@ -28,13 +28,10 @@ namespace Fabricdot.Infrastructure.EntityFrameworkCore.Tests
         protected override void ConfigureServices(IServiceCollection serviceCollection)
         {
             serviceCollection.RegisterModules(new InfrastructureModule());
-            serviceCollection.AddDbContext<FakeDbContext>(opts =>
+            serviceCollection.AddEfDbContext<FakeDbContext>(opts =>
             {
                 opts.UseSqlite(CreateInMemoryDatabase());
             });
-            serviceCollection
-                .AddScoped<IUnitOfWork, EfUnitOfWork<FakeDbContext>>()
-                .AddScoped(typeof(IUnitOfWork<>), typeof(EfUnitOfWork<>));
             serviceCollection.AddTransient<FakeDataBuilder>();
         }
 

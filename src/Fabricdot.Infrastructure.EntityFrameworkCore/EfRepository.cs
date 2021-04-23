@@ -16,15 +16,27 @@ namespace Fabricdot.Infrastructure.EntityFrameworkCore
     public abstract class EfRepository<TDbContext, T, TKey> : IRepository<T, TKey>
         where TDbContext : DbContext where T : class, IAggregateRoot, Domain.Core.Entities.IEntity<TKey>
     {
-        protected readonly TDbContext Context;
-        private readonly IDataFilter _filter;
+        private readonly IDbContextProvider<TDbContext> _dbContextProvider;
+        private IDataFilter _filter;
 
-        protected IQueryable<T> Entities => ApplyQueryFilter(Context.Set<T>());
 
-        protected EfRepository(TDbContext context)
+        protected EfRepository(IDbContextProvider<TDbContext> dbContextProvider)
         {
-            Context = context;
-            _filter = context.GetRequiredService<IDataFilter>(); //singleton
+            _dbContextProvider = dbContextProvider;
+        }
+
+        protected virtual async Task<DbContext> GetDbContextAsync()
+        {
+            var dbContext = await _dbContextProvider.GetDbContextAsync();
+            _filter = dbContext.GetRequiredService<IDataFilter>();
+            return dbContext;
+        }
+
+        protected virtual async Task<IQueryable<T>> GetQueryableAsync(ISpecification<T> specification = null)
+        {
+            var context = await GetDbContextAsync();
+            var queryable = ApplyQueryFilter(context.Set<T>());
+            return specification == null ? queryable : ApplySpecification(queryable, specification);
         }
 
         /// <inheritdoc />
@@ -32,24 +44,25 @@ namespace Fabricdot.Infrastructure.EntityFrameworkCore
             T entity,
             CancellationToken cancellationToken = default)
         {
-            await Context.AddAsync(entity, cancellationToken);
+            var context = await GetDbContextAsync();
+            await context.AddAsync(entity, cancellationToken);
             return entity;
         }
 
         /// <inheritdoc />
-        public virtual Task DeleteAsync(T entity, CancellationToken cancellationToken = default)
+        public virtual async Task DeleteAsync(T entity, CancellationToken cancellationToken = default)
         {
-            Context.Remove(entity);
-            return Task.CompletedTask;
+            var context = await GetDbContextAsync();
+            context.Remove(entity);
         }
 
         /// <inheritdoc />
-        public virtual Task DeleteRangeAsync(
+        public virtual async Task DeleteRangeAsync(
             IEnumerable<T> entities,
             CancellationToken cancellationToken = default)
         {
-            Context.RemoveRange(entities);
-            return Task.CompletedTask;
+            var context = await GetDbContextAsync();
+            context.RemoveRange(entities);
         }
 
         /// <inheritdoc />
@@ -57,7 +70,8 @@ namespace Fabricdot.Infrastructure.EntityFrameworkCore
         {
             // Id of GUID type will become binary parameter when use MySql.Data driver
             // https://stackoverflow.com/questions/65503169/entity-framework-core-generate-wrong-guid-parameter-with-mysql
-            return await Entities.SingleOrDefaultAsync(v => v.Id.Equals(id), cancellationToken);
+            var queryable = await GetQueryableAsync();
+            return await queryable.SingleOrDefaultAsync(v => v.Id.Equals(id), cancellationToken);
         }
 
         /// <inheritdoc />
@@ -65,15 +79,16 @@ namespace Fabricdot.Infrastructure.EntityFrameworkCore
             ISpecification<T> specification,
             CancellationToken cancellationToken = default)
         {
-            var entities = ApplySpecification(specification);
-            return await entities.SingleOrDefaultAsync(cancellationToken);
+            var queryable = await GetQueryableAsync(specification);
+            return await queryable.SingleOrDefaultAsync(cancellationToken);
         }
 
         /// <inheritdoc />
         public virtual async Task<IReadOnlyList<T>> ListAllAsync(
             CancellationToken cancellationToken = default)
         {
-            return await Entities.ToListAsync(cancellationToken);
+            var queryable = await GetQueryableAsync();
+            return await queryable.ToListAsync(cancellationToken);
         }
 
         /// <inheritdoc />
@@ -81,21 +96,22 @@ namespace Fabricdot.Infrastructure.EntityFrameworkCore
             ISpecification<T> specification,
             CancellationToken cancellationToken = default)
         {
-            var entities = ApplySpecification(specification);
-            return await entities.ToListAsync(cancellationToken);
+            var queryable = await GetQueryableAsync(specification);
+            return await queryable.ToListAsync(cancellationToken);
         }
 
         /// <inheritdoc />
-        public virtual Task UpdateAsync(T entity, CancellationToken cancellationToken = default)
+        public virtual async Task UpdateAsync(T entity, CancellationToken cancellationToken = default)
         {
-            Context.Entry(entity).State = EntityState.Modified;
-            return Task.CompletedTask;
+            var context = await GetDbContextAsync();
+            context.Entry(entity).State = EntityState.Modified;
         }
 
         /// <inheritdoc />
         public virtual async Task<long> CountAsync(CancellationToken cancellationToken = default)
         {
-            return await Entities.CountAsync(cancellationToken);
+            var queryable = await GetQueryableAsync();
+            return await queryable.CountAsync(cancellationToken);
         }
 
         /// <inheritdoc />
@@ -103,23 +119,23 @@ namespace Fabricdot.Infrastructure.EntityFrameworkCore
             ISpecification<T> specification,
             CancellationToken cancellationToken = default)
         {
-            var entities = ApplySpecification(specification);
-            return await entities.CountAsync(cancellationToken);
+            var queryable = await GetQueryableAsync(specification);
+            return await queryable.CountAsync(cancellationToken);
         }
 
-        protected IQueryable<T> ApplySpecification(ISpecification<T> specification)
+        protected virtual IQueryable<T> ApplySpecification(IQueryable<T> queryable, ISpecification<T> specification)
         {
             var evaluator = new SpecificationEvaluator<T>();
-            return evaluator.GetQuery(Entities, specification);
+            return evaluator.GetQuery(queryable, specification);
         }
 
-        protected IQueryable<T> ApplyQueryFilter(IQueryable<T> entities)
+        protected virtual IQueryable<T> ApplyQueryFilter(IQueryable<T> queryable)
         {
             if (_filter.IsEnabled<ISoftDelete>() && typeof(ISoftDelete).IsAssignableFrom(typeof(T)))
                 // ReSharper disable once SuspiciousTypeConversion.Global
-                return entities.Where(v => ((ISoftDelete)v).IsDeleted == false);
+                return queryable.Where(v => ((ISoftDelete)v).IsDeleted == false);
 
-            return entities;
+            return queryable;
         }
     }
 }

@@ -6,7 +6,7 @@ namespace Fabricdot.Infrastructure.EntityFrameworkCore.Tests.Repositories
     internal class AuthorRepository : EfRepository<FakeDbContext, Author, int>, IAuthorRepository
     {
         /// <inheritdoc />
-        public AuthorRepository(FakeDbContext context) : base(context)
+        public AuthorRepository(IDbContextProvider<FakeDbContext> dbContextProvider) : base(dbContextProvider)
         {
         }
     }
