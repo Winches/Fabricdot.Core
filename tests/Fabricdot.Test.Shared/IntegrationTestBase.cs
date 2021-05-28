@@ -1,5 +1,7 @@
 ﻿using System;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
 
 namespace Fabricdot.Test.Shared
 {
@@ -16,7 +18,11 @@ namespace Fabricdot.Test.Shared
         protected void Initialize()
         {
             var serviceCollection = new ServiceCollection();
+            serviceCollection.AddLogging(v => v.AddProvider(NullLoggerProvider.Instance));
             ConfigureServices(serviceCollection);
+
+            if (ServiceProvider != null)
+                return;
             ServiceProvider = serviceCollection.BuildServiceProvider();
             ServiceScope = ServiceProvider.CreateScope();
         }
