@@ -1,4 +1,4 @@
-﻿using System.Runtime.CompilerServices;
+using System.Runtime.CompilerServices;
 using AutoMapper;
 using Fabricdot.Core.Randoms;
 using Fabricdot.Core.Reflection;
@@ -31,7 +31,7 @@ namespace Fabricdot.Infrastructure.Core
             services.TryAddSingleton<ICorrelationIdProvider, DefaultCorrelationIdProvider>();
 
             services
-                .AddSingleton<ICurrentPrincipalAccessor, NullCurrentPrincipalAccessor>()
+                .AddSingleton<ICurrentPrincipalAccessor, DefaultCurrentPrincipalAccessor>()
                 .AddTransient<ICurrentUser, CurrentUser>();
 
             //repository filter
