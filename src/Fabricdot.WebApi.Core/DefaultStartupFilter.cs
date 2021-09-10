@@ -1,5 +1,6 @@
 ﻿using System;
 using Fabricdot.WebApi.Core.Tracing;
+using Fabricdot.WebApi.Core.Uow;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 
@@ -13,6 +14,7 @@ namespace Fabricdot.WebApi.Core
             return builder =>
             {
                 builder.UseCorrelationId();
+                builder.UseUnitOfWork();
                 next(builder);
             };
         }

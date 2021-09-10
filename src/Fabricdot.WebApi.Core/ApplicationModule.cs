@@ -1,8 +1,10 @@
 ﻿using Fabricdot.Core.Security;
 using Fabricdot.Infrastructure.Core.DependencyInjection;
+using Fabricdot.Infrastructure.Core.Uow.Abstractions;
 using Fabricdot.WebApi.Core.Filters;
 using Fabricdot.WebApi.Core.Services;
 using Fabricdot.WebApi.Core.Tracing;
+using Fabricdot.WebApi.Core.Uow;
 using Fabricdot.WebApi.Core.Validation;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
@@ -27,6 +29,10 @@ namespace Fabricdot.WebApi.Core
             services.AddCorrelationId();
 
             services.AddMemoryCache();
+
+            //unit-of-work
+            services.AddSingleton<IUnitOfWorkTransactionBehaviourProvider, HttpUnitOfWorkTransactionBehaviourProvider>();
+            services.AddUnitOfWork();
 
             services.AddTransient<IStartupFilter, DefaultStartupFilter>();
         }
