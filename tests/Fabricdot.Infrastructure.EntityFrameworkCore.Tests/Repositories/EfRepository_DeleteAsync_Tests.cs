@@ -2,15 +2,14 @@
 using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
 using Fabricdot.Infrastructure.EntityFrameworkCore.Tests.Entities;
-using Fabricdot.Infrastructure.EntityFrameworkCore.Tests.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Xunit;
 
-namespace Fabricdot.Infrastructure.EntityFrameworkCore.Tests
+namespace Fabricdot.Infrastructure.EntityFrameworkCore.Tests.Repositories
 {
     [SuppressMessage("ReSharper", "InconsistentNaming")]
-    public class EfRepository_DeleteAsync_Tests : EntityFrameworkCoreTestsBase
+    public class EfRepository_DeleteAsync_Tests : EfRepositoryTestsBase
     {
         private readonly IBookRepository _bookRepository;
         private readonly IAuthorRepository _authorRepository;
@@ -25,22 +24,22 @@ namespace Fabricdot.Infrastructure.EntityFrameworkCore.Tests
         [Fact]
         public async Task DeleteAsync_GivenEntityWithoutISoftDeleted_PhysicalDelete()
         {
-            var book = await DbContext.Set<Book>().FirstOrDefaultAsync(v => v.Name == "Java");
+            var book = await FakeDbContext.Set<Book>().FirstOrDefaultAsync(v => v.Name == "Java");
             await _bookRepository.DeleteAsync(book);
-            await UnitOfWork.CommitChangesAsync();
+            await FakeDbContext.SaveChangesAsync();
 
-            var deletedBook = await DbContext.FindAsync<Book>(book.Id);
+            var deletedBook = await FakeDbContext.FindAsync<Book>(book.Id);
             Assert.Null(deletedBook);
         }
 
         [Fact]
         public async Task DeleteAsync_GivenEntityWithISoftDeleted_SoftDelete()
         {
-            var author = await DbContext.FindAsync<Author>(1);
+            var author = await FakeDbContext.FindAsync<Author>(1);
             await _authorRepository.DeleteAsync(author);
-            await UnitOfWork.CommitChangesAsync();
+            await FakeDbContext.SaveChangesAsync();
 
-            var deletedAuthor = await DbContext.FindAsync<Author>(author.Id);
+            var deletedAuthor = await FakeDbContext.FindAsync<Author>(author.Id);
             Assert.NotNull(deletedAuthor);
             Assert.True(deletedAuthor.IsDeleted);
         }
@@ -53,7 +52,7 @@ namespace Fabricdot.Infrastructure.EntityFrameworkCore.Tests
             async Task Func()
             {
                 await _bookRepository.DeleteAsync(book);
-                await UnitOfWork.CommitChangesAsync();
+                await FakeDbContext.SaveChangesAsync();
             }
 
             await Assert.ThrowsAsync<DbUpdateConcurrencyException>(Func);
@@ -65,7 +64,7 @@ namespace Fabricdot.Infrastructure.EntityFrameworkCore.Tests
             async Task Func()
             {
                 await _bookRepository.DeleteAsync(null);
-                await UnitOfWork.CommitChangesAsync();
+                await FakeDbContext.SaveChangesAsync();
             }
 
             await Assert.ThrowsAsync<ArgumentNullException>(Func);

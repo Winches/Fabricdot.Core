@@ -2,15 +2,14 @@
 using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
 using Fabricdot.Infrastructure.EntityFrameworkCore.Tests.Entities;
-using Fabricdot.Infrastructure.EntityFrameworkCore.Tests.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Xunit;
 
-namespace Fabricdot.Infrastructure.EntityFrameworkCore.Tests
+namespace Fabricdot.Infrastructure.EntityFrameworkCore.Tests.Repositories
 {
     [SuppressMessage("ReSharper", "InconsistentNaming")]
-    public class EfRepository_UpdateAsync_Tests : EntityFrameworkCoreTestsBase
+    public class EfRepository_UpdateAsync_Tests : EfRepositoryTestsBase
     {
         private readonly IBookRepository _bookRepository;
 
@@ -20,17 +19,16 @@ namespace Fabricdot.Infrastructure.EntityFrameworkCore.Tests
             _bookRepository = provider.GetRequiredService<IBookRepository>();
         }
 
-
         [Fact]
         public async Task UpdateAsync_GivenSavedEntity_SaveChanges()
         {
-            var book = await DbContext.Set<Book>().FirstOrDefaultAsync(v => v.Name == "CSharp");
+            var book = await FakeDbContext.Set<Book>().FirstOrDefaultAsync(v => v.Name == "CSharp");
             var expected = "CSharpV2";
             book.ChangeName(expected);
             await _bookRepository.UpdateAsync(book);
-            await UnitOfWork.CommitChangesAsync();
+            await FakeDbContext.SaveChangesAsync();
 
-            var retrievalBook = await DbContext.FindAsync<Book>(book.Id);
+            var retrievalBook = await FakeDbContext.FindAsync<Book>(book.Id);
             var actual = retrievalBook.Name;
             Assert.Equal(expected, actual);
         }

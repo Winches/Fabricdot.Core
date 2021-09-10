@@ -1,16 +1,16 @@
 ﻿using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
+using Fabricdot.Infrastructure.EntityFrameworkCore.Tests.Data;
 using Fabricdot.Infrastructure.EntityFrameworkCore.Tests.Entities;
-using Fabricdot.Infrastructure.EntityFrameworkCore.Tests.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Xunit;
 
-namespace Fabricdot.Infrastructure.EntityFrameworkCore.Tests
+namespace Fabricdot.Infrastructure.EntityFrameworkCore.Tests.Repositories
 {
     [SuppressMessage("ReSharper", "InconsistentNaming")]
-    public class EfRepository_AddAsync_Tests : EntityFrameworkCoreTestsBase
+    public class EfRepository_AddAsync_Tests : EfRepositoryTestsBase
     {
         private readonly IBookRepository _bookRepository;
 
@@ -26,9 +26,9 @@ namespace Fabricdot.Infrastructure.EntityFrameworkCore.Tests
             var id = Guid.NewGuid().ToString();
             var book = new Book(id, "Python");
             var ret = await _bookRepository.AddAsync(book);
-            await UnitOfWork.CommitChangesAsync();
+            await FakeDbContext.SaveChangesAsync();
 
-            var retrievalBook = await DbContext.FindAsync<Book>(id);
+            var retrievalBook = await FakeDbContext.FindAsync<Book>(id);
             var findId = retrievalBook.Id;
 
             Assert.Same(book, ret);
@@ -40,9 +40,9 @@ namespace Fabricdot.Infrastructure.EntityFrameworkCore.Tests
         {
             async Task Func()
             {
-                var book = await DbContext.Set<Book>().FirstOrDefaultAsync(v => v.Name == "CSharp");
+                var book = await FakeDbContext.Set<Book>().FirstOrDefaultAsync(v => v.Name == "CSharp");
                 await _bookRepository.AddAsync(book);
-                await UnitOfWork.CommitChangesAsync();
+                await FakeDbContext.SaveChangesAsync();
             }
 
             await Assert.ThrowsAsync<DbUpdateException>(Func);
@@ -54,7 +54,7 @@ namespace Fabricdot.Infrastructure.EntityFrameworkCore.Tests
             async Task Func()
             {
                 await _bookRepository.AddAsync(null);
-                await UnitOfWork.CommitChangesAsync();
+                await FakeDbContext.SaveChangesAsync();
             }
 
             await Assert.ThrowsAsync<ArgumentNullException>(Func);

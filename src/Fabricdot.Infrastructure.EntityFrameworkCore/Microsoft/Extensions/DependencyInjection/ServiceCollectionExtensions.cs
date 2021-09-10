@@ -1,7 +1,9 @@
-﻿using System;
+using System;
 using Ardalis.GuardClauses;
 using Fabricdot.Infrastructure.EntityFrameworkCore;
+using Fabricdot.Infrastructure.EntityFrameworkCore.Uow;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 
 // ReSharper disable CheckNamespace
 
@@ -26,8 +28,7 @@ namespace Microsoft.Extensions.DependencyInjection
             {
                 optionsAction?.Invoke(provider, opts);
             });
-            serviceCollection.AddScoped(typeof(IUnitOfWork<>), typeof(EfUnitOfWork<>));
-            serviceCollection.AddTransient(typeof(IDbContextProvider<>), typeof(DefaultDbContextProvider<>));
+            serviceCollection.TryAddTransient(typeof(IDbContextProvider<>), typeof(UnitOfWorkDbContextProvider<>));
         }
     }
 }

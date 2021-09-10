@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Linq;
 using Fabricdot.Domain.Core.Auditing;
 using Microsoft.EntityFrameworkCore;
@@ -6,15 +6,14 @@ using Microsoft.EntityFrameworkCore.ChangeTracking;
 
 namespace Fabricdot.Infrastructure.EntityFrameworkCore
 {
-    public class EntityChangeInfoUtil
+    public static class EntityChangeInfoUtil
     {
         public static ICollection<EntityChangeInfo> GetChangeInfos(IEnumerable<EntityEntry> entries)
         {
-            var domainEntities = entries
+            return entries
                 .Select(GetChangeInfo)
                 .Where(v => v != null)
                 .ToList();
-            return domainEntities;
         }
 
         private static EntityChangeInfo GetChangeInfo(EntityEntry entry)

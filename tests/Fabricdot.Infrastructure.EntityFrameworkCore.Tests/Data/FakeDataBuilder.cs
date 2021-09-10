@@ -14,7 +14,6 @@ namespace Fabricdot.Infrastructure.EntityFrameworkCore.Tests.Data
 
         public async Task BuildAsync()
         {
-            await _dbContext.Database.EnsureCreatedAsync();
             await AddBooks();
             await AddAuthors();
         }

@@ -3,14 +3,13 @@ using System.Threading.Tasks;
 using Fabricdot.Domain.Core.Auditing;
 using Fabricdot.Infrastructure.Core.Data.Filters;
 using Fabricdot.Infrastructure.EntityFrameworkCore.Tests.Entities;
-using Fabricdot.Infrastructure.EntityFrameworkCore.Tests.Repositories;
 using Microsoft.Extensions.DependencyInjection;
 using Xunit;
 
-namespace Fabricdot.Infrastructure.EntityFrameworkCore.Tests
+namespace Fabricdot.Infrastructure.EntityFrameworkCore.Tests.Repositories
 {
     [SuppressMessage("ReSharper", "InconsistentNaming")]
-    public class EfRepository_DataFilter_Tests : EntityFrameworkCoreTestsBase
+    public class EfRepository_DataFilter_Tests : EfRepositoryTestsBase
     {
         private readonly IAuthorRepository _authorRepository;
         private readonly IDataFilter _dataFilter;
@@ -25,26 +24,17 @@ namespace Fabricdot.Infrastructure.EntityFrameworkCore.Tests
             _softDeletedAuthor = SoftDeleteAuthor();
         }
 
-        private Author SoftDeleteAuthor()
-        {
-            var author = DbContext.Find<Author>(2);
-            author.MarkDeleted();
-            DbContext.Update(author);
-            DbContext.SaveChanges();
-            return author;
-        }
-
         [Fact]
         public async Task DeleteAsync_GivenSoftDeletedWhenDisableSoftDelete_PhysicalDelete()
         {
             const int authorId = 1;
-            var author = await DbContext.FindAsync<Author>(authorId);
+            var author = await FakeDbContext.FindAsync<Author>(authorId);
 
             using var scope = _dataFilter.Disable<ISoftDelete>();
             await _authorRepository.DeleteAsync(author);
-            await UnitOfWork.CommitChangesAsync();
+            await FakeDbContext.SaveChangesAsync();
 
-            var retrievalAuthor = await DbContext.FindAsync<Author>(authorId);
+            var retrievalAuthor = await FakeDbContext.FindAsync<Author>(authorId);
             Assert.Null(retrievalAuthor);
         }
 
@@ -52,12 +42,12 @@ namespace Fabricdot.Infrastructure.EntityFrameworkCore.Tests
         public async Task DeleteAsync_GivenISoftDeleteWhenEnableSoftDelete_SoftDelete()
         {
             const int authorId = 1;
-            var author = await DbContext.FindAsync<Author>(authorId);
+            var author = await FakeDbContext.FindAsync<Author>(authorId);
             using var scope = _dataFilter.Enable<ISoftDelete>();
             await _authorRepository.DeleteAsync(author);
-            await UnitOfWork.CommitChangesAsync();
+            await FakeDbContext.SaveChangesAsync();
 
-            var retrievalAuthor = await DbContext.FindAsync<Author>(authorId);
+            var retrievalAuthor = await FakeDbContext.FindAsync<Author>(authorId);
             Assert.NotNull(retrievalAuthor);
             Assert.True(retrievalAuthor.IsDeleted);
         }
@@ -78,6 +68,15 @@ namespace Fabricdot.Infrastructure.EntityFrameworkCore.Tests
             using var scope = _dataFilter.Enable<ISoftDelete>();
             var actual = await _authorRepository.GetByIdAsync(author.Id);
             Assert.Null(actual);
+        }
+
+        private Author SoftDeleteAuthor()
+        {
+            var author = FakeDbContext.Find<Author>(2);
+            author.MarkDeleted();
+            FakeDbContext.Update(author);
+            FakeDbContext.SaveChanges();
+            return author;
         }
     }
 }

@@ -4,20 +4,19 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Fabricdot.Infrastructure.EntityFrameworkCore.Tests.Data
 {
-    public class FakeDbContext : DbContextBase
+    public class FakeSecondDbContext : DbContextBase
     {
         /// <inheritdoc />
-        public FakeDbContext([NotNull] DbContextOptions<FakeDbContext> options) : base(options)
+        public FakeSecondDbContext([NotNull] DbContextOptions<FakeSecondDbContext> options) : base(options)
         {
         }
 
-        /// <inheritdoc />
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
             modelBuilder.ApplyConfigurationsFromAssembly(
                 Assembly.GetExecutingAssembly(),
-                v => v.IsAssignableTo(typeof(IDbContextEntityConfiguration<FakeDbContext>)));
+                v => v.IsAssignableTo(typeof(IDbContextEntityConfiguration<FakeSecondDbContext>)));
         }
     }
 }

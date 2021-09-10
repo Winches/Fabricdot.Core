@@ -7,7 +7,7 @@ using Xunit;
 
 namespace Fabricdot.Infrastructure.EntityFrameworkCore.Tests
 {
-    public class ConcurrencyStampTest : EntityFrameworkCoreTestsBase
+    public class ConcurrencyStampTest : EfRepositoryTestsBase
     {
         private readonly IBookRepository _bookRepository;
 
@@ -29,7 +29,7 @@ namespace Fabricdot.Infrastructure.EntityFrameworkCore.Tests
             await Assert.ThrowsAsync<DbUpdateConcurrencyException>(async () =>
             {
                 await _bookRepository.UpdateAsync(book1);
-                await UnitOfWork.CommitChangesAsync();
+                await FakeDbContext.SaveChangesAsync();
             });
         }
 
@@ -44,7 +44,7 @@ namespace Fabricdot.Infrastructure.EntityFrameworkCore.Tests
             await Assert.ThrowsAsync<DbUpdateConcurrencyException>(async () =>
             {
                 await _bookRepository.DeleteAsync(book1);
-                await UnitOfWork.CommitChangesAsync();
+                await FakeDbContext.SaveChangesAsync();
             });
         }
     }
