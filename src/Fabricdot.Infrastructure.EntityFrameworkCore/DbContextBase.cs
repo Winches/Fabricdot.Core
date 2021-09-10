@@ -45,11 +45,11 @@ namespace Fabricdot.Infrastructure.EntityFrameworkCore
         public virtual async Task BeforeSaveChangesAsync(CancellationToken cancellationToken = default)
         {
             var entityEntries = ChangeTracker.Entries().ToList();
-            foreach (var entry in entityEntries)
-                await HandleEntityEntryAsync(entry, cancellationToken);
-
             var changeInfos = EntityChangeInfoUtil.GetChangeInfos(entityEntries);
-            await _domainEventsDispatcher.DispatchEventsAsync(changeInfos, cancellationToken);
+            await DomainEventsDispatcher.DispatchEventsAsync(changeInfos, cancellationToken);
+
+            foreach (var entry in ChangeTracker.Entries())
+                await HandleEntityEntryAsync(entry, cancellationToken);
         }
 
         public virtual Task AfterSaveChangesAsync(CancellationToken cancellationToken = default)
