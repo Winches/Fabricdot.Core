@@ -27,7 +27,8 @@ namespace Fabricdot.WebApi.Core.Uow
             {
                 using var uow = _unitOfWorkManager.Reserve(UnitOfWorkManager.RESERVATION_NAME);
                 await next(context);
-                await uow.CommitChangesAsync(context.RequestAborted);
+                if (uow.IsActive)//Prevent UOW be performed.
+                    await uow.CommitChangesAsync(context.RequestAborted);
                 return;
             }
 

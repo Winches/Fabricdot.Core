@@ -19,7 +19,7 @@ namespace Fabricdot.WebApi.Core.Uow
         {
             var httpContext = _httpContextAccessor.HttpContext;
             var requestUrl = httpContext?.Request.Path.Value;
-            if (httpContext != null && string.IsNullOrEmpty(requestUrl))
+            if (httpContext != null && !string.IsNullOrEmpty(requestUrl))
             {
                 var method = httpContext.Request.Method;
                 return !string.Equals(method, HttpMethod.Get.Method, StringComparison.OrdinalIgnoreCase);

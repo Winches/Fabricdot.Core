@@ -14,7 +14,6 @@ namespace Fabricdot.WebApi.Core
             return builder =>
             {
                 builder.UseCorrelationId();
-                builder.UseUnitOfWork();
                 next(builder);
             };
         }
