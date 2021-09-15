@@ -13,5 +13,7 @@ namespace Fabricdot.Infrastructure.Core.Uow.Abstractions
         ///     Default value is ReadCommitted.
         /// </summary>
         public IsolationLevel IsolationLevel { get; set; } = IsolationLevel.ReadCommitted;
+
+        public UnitOfWorkOptions Clone() => (UnitOfWorkOptions)MemberwiseClone();
     }
 }

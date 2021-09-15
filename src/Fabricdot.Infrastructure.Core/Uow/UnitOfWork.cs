@@ -44,7 +44,7 @@ namespace Fabricdot.Infrastructure.Core.Uow
             _logger = logger ?? NullLogger<UnitOfWork>.Instance;
             ServiceProvider = serviceProvider;
             Id = Guid.NewGuid();
-            Options = options.Value;
+            Options = options.Value.Clone();
             Facade = new UnitOfWorkFacade();
             State = UnitOfWorkState.Allocated;
         }
@@ -66,7 +66,7 @@ namespace Fabricdot.Infrastructure.Core.Uow
             if (State != UnitOfWorkState.Allocated)
                 throw new InvalidOperationException("UnitOfWork is already initialized.");
 
-            Options = options;
+            Options = options.Clone();
             ReservationName = null;
             State = UnitOfWorkState.Initialized;
         }

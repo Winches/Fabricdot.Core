@@ -1,17 +1,17 @@
 using System;
 using System.Data;
-using Fabricdot.Core.Aspects;
 using Fabricdot.Infrastructure.Core.Uow.Abstractions;
 
 namespace Fabricdot.Infrastructure.Core.Uow
 {
-    [AttributeUsage(AttributeTargets.Class | AttributeTargets.Interface | AttributeTargets.Method)]
-    [InterceptorBinding]
+    [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method)]
     public class UnitOfWorkAttribute : Attribute
     {
         public bool? IsTransactional { get; set; }
 
         public IsolationLevel? IsolationLevel { get; set; }
+
+        public bool IsDisabled { get; set; }
 
         public UnitOfWorkAttribute()
         {

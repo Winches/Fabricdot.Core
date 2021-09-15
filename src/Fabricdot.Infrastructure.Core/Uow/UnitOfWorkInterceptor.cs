@@ -10,7 +10,7 @@ using Microsoft.Extensions.Options;
 namespace Fabricdot.Infrastructure.Core.Uow
 {
     [Interceptor(Order = ORDER, Target = typeof(IRepository<>))]
-    [UnitOfWork]
+    [UnitOfWorkInterceptor]
     public class UnitOfWorkInterceptor : IInterceptor, ITransientDependency
     {
         public const int ORDER = 99;
@@ -24,16 +24,23 @@ namespace Fabricdot.Infrastructure.Core.Uow
         /// <inheritdoc />
         public async Task InvokeAsync(IInvocationContext invocationContext)
         {
-            var interceptorAttribute = invocationContext.Method.GetCustomAttribute<UnitOfWorkAttribute>(true)
+            var uowAttribute = invocationContext.Method.GetCustomAttribute<UnitOfWorkAttribute>(true)
                                        ?? invocationContext.Method.DeclaringType
                                                            ?.GetCustomAttribute<UnitOfWorkAttribute>(true);
+
+            if (uowAttribute?.IsDisabled == true)
+            {
+                await invocationContext.ProceedAsync();
+                return;
+            }
+
             using var scope = _serviceScopeFactory.CreateScope();
             var serviceProvider = scope.ServiceProvider;
             //use global isolation level
-            var options = serviceProvider.GetRequiredService<IOptions<UnitOfWorkOptions>>().Value;
-            interceptorAttribute?.Configure(options);
+            var options = serviceProvider.GetRequiredService<IOptions<UnitOfWorkOptions>>().Value.Clone();
+            uowAttribute?.Configure(options);
             //Determine UOW is transactional or not.
-            if (interceptorAttribute?.IsTransactional == null)
+            if (uowAttribute?.IsTransactional == null)
             {
                 var uowTransactionBehaviourProvider = serviceProvider.GetRequiredService<IUnitOfWorkTransactionBehaviourProvider>();
                 options.IsTransactional = uowTransactionBehaviourProvider.GetBehaviour(invocationContext.Method.Name);

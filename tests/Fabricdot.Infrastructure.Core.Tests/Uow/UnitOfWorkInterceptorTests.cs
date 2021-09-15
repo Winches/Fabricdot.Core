@@ -9,14 +9,14 @@ namespace Fabricdot.Infrastructure.Core.Tests.Uow
 {
     public class UnitOfWorkInterceptorTests : IntegrationTestBase
     {
-        private readonly IUnitOfWorkInterceptorTestService _testService;
+        private readonly FakeServiceWithUnitOfWorkInterceptor _testService;
         private readonly IUnitOfWorkManager _unitOfWorkManager;
         private readonly IUnitOfWorkTransactionBehaviourProvider _transactionBehaviourProvider;
 
         public UnitOfWorkInterceptorTests()
         {
             var provider = ServiceScope.ServiceProvider;
-            _testService = provider.GetRequiredService<IUnitOfWorkInterceptorTestService>();
+            _testService = provider.GetRequiredService<FakeServiceWithUnitOfWorkInterceptor>();
             _unitOfWorkManager = provider.GetRequiredService<IUnitOfWorkManager>();
             _transactionBehaviourProvider = provider.GetRequiredService<IUnitOfWorkTransactionBehaviourProvider>();
         }
@@ -26,7 +26,7 @@ namespace Fabricdot.Infrastructure.Core.Tests.Uow
         {
             _testService.UseAutomaticTransactionalUow(uow =>
             {
-                const string actionName = nameof(IUnitOfWorkInterceptorTestService.UseAutomaticTransactionalUow);
+                const string actionName = nameof(FakeServiceWithUnitOfWorkInterceptor.UseAutomaticTransactionalUow);
                 var behaciour = _transactionBehaviourProvider.GetBehaviour(actionName);
                 var isTransactional = uow.Options.IsTransactional;
 
@@ -79,7 +79,7 @@ namespace Fabricdot.Infrastructure.Core.Tests.Uow
         protected sealed override void ConfigureServices(IServiceCollection serviceCollection)
         {
             serviceCollection.RegisterModules(new InfrastructureModule());
-            serviceCollection.AddTransient<IUnitOfWorkInterceptorTestService, UnitOfWorkInterceptorTestService>();
+            serviceCollection.AddTransient<FakeServiceWithUnitOfWorkInterceptor>();
             ServiceProvider = serviceCollection.AddInterceptors();
             ServiceScope = ServiceProvider.CreateScope();
         }
