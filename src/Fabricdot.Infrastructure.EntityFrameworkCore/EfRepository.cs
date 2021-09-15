@@ -19,24 +19,9 @@ namespace Fabricdot.Infrastructure.EntityFrameworkCore
         private readonly IDbContextProvider<TDbContext> _dbContextProvider;
         private IDataFilter _filter;
 
-
         protected EfRepository(IDbContextProvider<TDbContext> dbContextProvider)
         {
             _dbContextProvider = dbContextProvider;
-        }
-
-        protected virtual async Task<DbContext> GetDbContextAsync()
-        {
-            var dbContext = await _dbContextProvider.GetDbContextAsync();
-            _filter = dbContext.GetRequiredService<IDataFilter>();
-            return dbContext;
-        }
-
-        protected virtual async Task<IQueryable<T>> GetQueryableAsync(ISpecification<T> specification = null)
-        {
-            var context = await GetDbContextAsync();
-            var queryable = ApplyQueryFilter(context.Set<T>());
-            return specification == null ? queryable : ApplySpecification(queryable, specification);
         }
 
         /// <inheritdoc />
@@ -84,6 +69,14 @@ namespace Fabricdot.Infrastructure.EntityFrameworkCore
         }
 
         /// <inheritdoc />
+        public virtual async Task<IReadOnlyList<T>> ListAsync(
+            CancellationToken cancellationToken = default)
+        {
+            var queryable = await GetQueryableAsync();
+            return await queryable.ToListAsync(cancellationToken);
+        }
+
+        /// <inheritdoc />
         public virtual async Task<IReadOnlyList<T>> ListAllAsync(
             CancellationToken cancellationToken = default)
         {
@@ -123,6 +116,20 @@ namespace Fabricdot.Infrastructure.EntityFrameworkCore
             return await queryable.CountAsync(cancellationToken);
         }
 
+        protected virtual async Task<DbContext> GetDbContextAsync()
+        {
+            var dbContext = await _dbContextProvider.GetDbContextAsync();
+            _filter = dbContext.GetRequiredService<IDataFilter>();
+            return dbContext;
+        }
+
+        protected virtual async Task<IQueryable<T>> GetQueryableAsync(ISpecification<T> specification = null)
+        {
+            var context = await GetDbContextAsync();
+            var queryable = ApplyQueryFilter(context.Set<T>());
+            return specification == null ? queryable : ApplySpecification(queryable, specification);
+        }
+
         protected virtual IQueryable<T> ApplySpecification(IQueryable<T> queryable, ISpecification<T> specification)
         {
             var evaluator = new SpecificationEvaluator<T>();
@@ -133,7 +140,7 @@ namespace Fabricdot.Infrastructure.EntityFrameworkCore
         {
             if (_filter.IsEnabled<ISoftDelete>() && typeof(ISoftDelete).IsAssignableFrom(typeof(T)))
                 // ReSharper disable once SuspiciousTypeConversion.Global
-                return queryable.Where(v => ((ISoftDelete)v).IsDeleted == false);
+                return queryable.Where(v => !((ISoftDelete)v).IsDeleted);
 
             return queryable;
         }

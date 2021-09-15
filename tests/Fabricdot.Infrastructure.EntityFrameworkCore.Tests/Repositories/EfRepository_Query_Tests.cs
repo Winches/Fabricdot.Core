@@ -90,18 +90,18 @@ namespace Fabricdot.Infrastructure.EntityFrameworkCore.Tests.Repositories
         }
 
         [Fact]
-        public async Task ListAllAsync_ReturnAllEntities()
+        public async Task ListAsync_ReturnAllEntities()
         {
             var expected = await FakeDbContext.Set<Book>().ToListAsync();
-            var actual = await _bookRepository.ListAllAsync();
+            var actual = await _bookRepository.ListAsync();
             Assert.Equal(expected, actual);
         }
 
         [Fact]
-        public async Task ListAllAsync_ReturnAllEntitiesWithoutSoftDeleted()
+        public async Task ListAsync_ReturnAllEntitiesWithoutSoftDeleted()
         {
             var author = _softDeletedAuthor;
-            var actual = await _authorRepository.ListAllAsync();
+            var actual = await _authorRepository.ListAsync();
             Assert.DoesNotContain(author, actual);
         }
 
