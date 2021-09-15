@@ -1,4 +1,5 @@
 ﻿using Fabricdot.WebApi.Core.Filters;
+using Fabricdot.WebApi.Core.Uow;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Fabricdot.WebApi.Core.Configuration
@@ -8,6 +9,7 @@ namespace Fabricdot.WebApi.Core.Configuration
         public static void AddActionFilters(this MvcOptions options)
         {
             options.Filters.AddService<ValidationActionFilter>();
+            options.Filters.AddService<UnitOfWorkActionFilter>();
             options.Filters.AddService<ExceptionFilter>();
             options.Filters.AddService<ResultFilter>();
         }

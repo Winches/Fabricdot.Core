@@ -18,6 +18,7 @@ namespace Fabricdot.WebApi.Core
             //filters
             services.AddScoped<ExceptionFilter>()
                 .AddScoped<ValidationActionFilter>()
+                .AddScoped<UnitOfWorkActionFilter>()
                 .AddScoped<ResultFilter>()
                 .AddTransient<IModelStateValidator, ModelStateValidator>();
 
