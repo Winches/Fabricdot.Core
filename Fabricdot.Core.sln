@@ -5,8 +5,6 @@ VisualStudioVersion = 16.0.30413.136
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fabricdot.Infrastructure.Core", "src\Fabricdot.Infrastructure.Core\Fabricdot.Infrastructure.Core.csproj", "{E0B89F2D-53C2-422A-BDC0-E3C1407B240F}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fabricdot.Common.Core", "src\Fabricdot.Common.Core\Fabricdot.Common.Core.csproj", "{C2864BC6-10B2-4026-A0DA-F813E34C0A0E}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fabricdot.WebApi.Core", "src\Fabricdot.WebApi.Core\Fabricdot.WebApi.Core.csproj", "{7A28E34F-DC7A-473B-ABA0-9E0C129CFFB3}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fabricdot.Infrastructure.EntityFrameworkCore", "src\Fabricdot.Infrastructure.EntityFrameworkCore\Fabricdot.Infrastructure.EntityFrameworkCore.csproj", "{68EDE2DB-3C5D-4F48-88C9-7EC62CD29F1E}"
@@ -29,7 +27,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fabricdot.Test.Shared", "te
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fabricdot.Infrastructure.EntityFrameworkCore.Tests", "tests\Fabricdot.Infrastructure.EntityFrameworkCore.Tests\Fabricdot.Infrastructure.EntityFrameworkCore.Tests.csproj", "{C2693C9C-A149-477A-9A52-AC4A804BB5BA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fabricdot.WebApi.Core.Tests", "tests\Fabricdot.WebApi.Core.Tests\Fabricdot.WebApi.Core.Tests.csproj", "{742DB70F-EDD1-4500-A8B2-B987DA80DB4D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fabricdot.WebApi.Core.Tests", "tests\Fabricdot.WebApi.Core.Tests\Fabricdot.WebApi.Core.Tests.csproj", "{742DB70F-EDD1-4500-A8B2-B987DA80DB4D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -41,10 +39,6 @@ Global
 		{E0B89F2D-53C2-422A-BDC0-E3C1407B240F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E0B89F2D-53C2-422A-BDC0-E3C1407B240F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E0B89F2D-53C2-422A-BDC0-E3C1407B240F}.Release|Any CPU.Build.0 = Release|Any CPU
-		{C2864BC6-10B2-4026-A0DA-F813E34C0A0E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{C2864BC6-10B2-4026-A0DA-F813E34C0A0E}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{C2864BC6-10B2-4026-A0DA-F813E34C0A0E}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{C2864BC6-10B2-4026-A0DA-F813E34C0A0E}.Release|Any CPU.Build.0 = Release|Any CPU
 		{7A28E34F-DC7A-473B-ABA0-9E0C129CFFB3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{7A28E34F-DC7A-473B-ABA0-9E0C129CFFB3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7A28E34F-DC7A-473B-ABA0-9E0C129CFFB3}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -91,7 +85,6 @@ Global
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{E0B89F2D-53C2-422A-BDC0-E3C1407B240F} = {E4584D3B-649D-4069-82F1-647552F432FC}
-		{C2864BC6-10B2-4026-A0DA-F813E34C0A0E} = {E4584D3B-649D-4069-82F1-647552F432FC}
 		{7A28E34F-DC7A-473B-ABA0-9E0C129CFFB3} = {E4584D3B-649D-4069-82F1-647552F432FC}
 		{68EDE2DB-3C5D-4F48-88C9-7EC62CD29F1E} = {E4584D3B-649D-4069-82F1-647552F432FC}
 		{0D4C3E84-047F-4FAB-98D5-C9E93A09FF76} = {E4584D3B-649D-4069-82F1-647552F432FC}
