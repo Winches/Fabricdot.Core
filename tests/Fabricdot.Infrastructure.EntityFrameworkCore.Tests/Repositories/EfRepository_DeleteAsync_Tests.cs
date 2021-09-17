@@ -21,16 +21,16 @@ namespace Fabricdot.Infrastructure.EntityFrameworkCore.Tests.Repositories
             _authorRepository = provider.GetRequiredService<IAuthorRepository>();
         }
 
-        [Fact]
-        public async Task DeleteAsync_GivenEntityWithoutISoftDeleted_PhysicalDelete()
-        {
-            var book = await FakeDbContext.Set<Book>().FirstOrDefaultAsync(v => v.Name == "Java");
-            await _bookRepository.DeleteAsync(book);
-            await FakeDbContext.SaveChangesAsync();
+        //[Fact]
+        //public async Task DeleteAsync_GivenEntityWithoutISoftDeleted_PhysicalDelete()
+        //{
+        //    var book = await FakeDbContext.Set<Book>().FirstOrDefaultAsync(v => v.Name == "Java");
+        //    await _bookRepository.DeleteAsync(book);
+        //    await FakeDbContext.SaveChangesAsync();
 
-            var deletedBook = await FakeDbContext.FindAsync<Book>(book.Id);
-            Assert.Null(deletedBook);
-        }
+        //    var deletedBook = await FakeDbContext.FindAsync<Book>(book.Id);
+        //    Assert.Null(deletedBook);
+        //}
 
         [Fact]
         public async Task DeleteAsync_GivenEntityWithISoftDeleted_SoftDelete()

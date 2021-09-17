@@ -27,20 +27,14 @@ namespace Fabricdot.Infrastructure.EntityFrameworkCore
         /// <inheritdoc />
         protected DbContextBase()
         {
+            Initialize();
         }
 
         /// <inheritdoc />
         protected DbContextBase([NotNull] DbContextOptions options) : base(options)
         {
-            //Initialize();
+            Initialize();
         }
-
-        //private void Initialize()
-        //{
-        //    _dataFilter = this.GetRequiredService<IDataFilter>();
-        //    _auditPropertySetter = this.GetRequiredService<IAuditPropertySetter>();
-        //    _domainEventsDispatcher = this.GetRequiredService<IDomainEventsDispatcher>();
-        //}
 
         public virtual async Task BeforeSaveChangesAsync(CancellationToken cancellationToken = default)
         {
@@ -74,47 +68,24 @@ namespace Fabricdot.Infrastructure.EntityFrameworkCore
             return changes;
         }
 
+        protected void Initialize()
+        {
+            ChangeTracker.CascadeDeleteTiming = CascadeTiming.OnSaveChanges;
+            ChangeTracker.DeleteOrphansTiming = CascadeTiming.Immediate;
+        }
+
         protected virtual void UpdateConcurrencyStamp(object entryEntity)
         {
             if (entryEntity is not IHasConcurrencyStamp entity)
                 return;
             Entry(entity).Property(x => x.ConcurrencyStamp).OriginalValue = entity.ConcurrencyStamp;
-            entity.ConcurrencyStamp = Guid.NewGuid().ToString("N");
+            entity.ConcurrencyStamp = NewConcurrencyStamp();
         }
 
         protected virtual void SetConcurrencyStamp(object entryEntity)
         {
             if (entryEntity is IHasConcurrencyStamp entity)
-                entity.ConcurrencyStamp ??= Guid.NewGuid().ToString("N");
-        }
-
-        protected void UpdateNavigationState(EntityEntry entry, EntityState state)
-        {
-            foreach (var navigationEntry in entry.Navigations)
-                switch (navigationEntry)
-                {
-                    case ReferenceEntry referenceEntry:
-                        var target = referenceEntry.TargetEntry;
-                        if (target != null)
-                        {
-                            target.State = state;
-                            UpdateNavigationState(target, state);
-                        }
-
-                        break;
-
-                    case CollectionEntry collectionEntry:
-                        foreach (var item in collectionEntry.CurrentValue ?? Enumerable.Empty<object>())
-                        {
-                            var entityEntry = collectionEntry.FindEntry(item);
-                            if (entityEntry == null)
-                                continue;
-                            entityEntry.State = state;
-                            UpdateNavigationState(entityEntry, state);
-                        }
-
-                        break;
-                }
+                entity.ConcurrencyStamp ??= NewConcurrencyStamp();
         }
 
         protected virtual async Task HandleEntityEntryAsync(EntityEntry entry, CancellationToken cancellationToken)
@@ -136,20 +107,45 @@ namespace Fabricdot.Infrastructure.EntityFrameworkCore
                     break;
 
                 case EntityState.Deleted:
-                    UpdateConcurrencyStamp(entryEntity);
                     if (!ShouldBeDeleteSoftly(entryEntity))
                         break;
 
                     await entry.ReloadAsync(cancellationToken);
+                    UpdateConcurrencyStamp(entryEntity);
                     AuditPropertySetter.SetDeletionProperties(entryEntity);
                     entry.State = EntityState.Modified;
-                    //The State of nested entity is still deleted;
-                    UpdateNavigationState(entry, EntityState.Unchanged);
 
                     break;
             }
         }
 
+        //protected void UpdateNavigationState(EntityEntry entry, EntityState state)
+        //{
+        //    foreach (var navigationEntry in entry.Navigations)
+        //        switch (navigationEntry)
+        //        {
+        //            case ReferenceEntry referenceEntry:
+        //                var target = referenceEntry.TargetEntry;
+        //                if (target != null)
+        //                {
+        //                    target.State = state;
+        //                    UpdateNavigationState(target, state);
+        //                }
+        //                break;
+        //            case CollectionEntry collectionEntry:
+        //                foreach (var item in collectionEntry.CurrentValue ?? Enumerable.Empty<object>())
+        //                {
+        //                    var entityEntry = collectionEntry.FindEntry(item);
+        //                    if (entityEntry == null)
+        //                        continue;
+        //                    entityEntry.State = state;
+        //                    UpdateNavigationState(entityEntry, state);
+        //                }
+        //                break;
+        //        }
+        //}
         protected bool ShouldBeDeleteSoftly(object entity) => entity is ISoftDelete && DataFilter.IsEnabled<ISoftDelete>();
+
+        private static string NewConcurrencyStamp() => Guid.NewGuid().ToString("N");
     }
 }
