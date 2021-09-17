@@ -132,7 +132,7 @@ namespace Fabricdot.Infrastructure.EntityFrameworkCore
 
         protected virtual IQueryable<T> ApplySpecification(IQueryable<T> queryable, ISpecification<T> specification)
         {
-            var evaluator = new SpecificationEvaluator<T>();
+            var evaluator = new SpecificationEvaluator();
             return evaluator.GetQuery(queryable, specification);
         }
 
