@@ -18,13 +18,17 @@ namespace Fabricdot.Infrastructure.Core.Domain
         {
             var repositoryType = typeof(IRepository<,>);
             ReflectionHelper.FindTypes(repositoryType, assemblies)
-                .ForEach(v =>
+                .ForEach(implementationType =>
                 {
-                    var contract = v.GetInterfaces()
+                    var serviceType = implementationType.GetInterfaces()
                         .FirstOrDefault(i => i.IsInterface && !i.IsGenericType && i.IsAssignableToGenericType(repositoryType));
-                    if (contract == null)
-                        throw new InvalidOperationException($"{v.Name} should implement owned repository interface.");
-                    services.TryAddScoped(contract, v);
+                    if (serviceType == null)
+                        throw new InvalidOperationException($"{implementationType.Name} should implement owned repository interface.");
+
+                    var readonlyRepositoryType = serviceType.GetInterfaces()
+                                                            .Single(v => v.IsGenericType && v.GetGenericTypeDefinition() == typeof(IReadOnlyRepository<,>));
+                    services.TryAddScoped(serviceType, implementationType);
+                    services.TryAddScoped(readonlyRepositoryType, implementationType);
                 });
             return services;
         }

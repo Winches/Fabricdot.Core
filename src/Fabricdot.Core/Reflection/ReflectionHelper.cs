@@ -53,11 +53,11 @@ namespace Fabricdot.Core.Reflection
         {
             var result = new List<Type>();
             foreach (var assembly in assemblies)
-                result.AddRange(GetTypes(findType, assembly));
+                result.AddRange(FindTypes(findType, assembly));
             return result.Distinct().ToList();
         }
 
-        private static IEnumerable<Type> GetTypes(Type findType, Assembly assembly)
+        private static IEnumerable<Type> FindTypes(Type findType, Assembly assembly)
         {
             var result = new List<Type>();
             if (assembly == null)
@@ -73,35 +73,14 @@ namespace Fabricdot.Core.Reflection
             }
 
             foreach (var type in types)
-                AddType(result, findType, type);
-            return result;
-        }
-
-        private static void AddType(
-            ICollection<Type> result,
-            Type findType,
-            Type type)
-        {
-            if (type.IsInterface || type.IsAbstract)
-                return;
-            if (findType.IsAssignableFrom(type) == false && MatchGeneric(findType, type) == false)
-                return;
-            result.Add(type);
-        }
-
-        private static bool MatchGeneric(Type findType, Type type)
-        {
-            if (findType.IsGenericTypeDefinition == false)
-                return false;
-            var definition = findType.GetGenericTypeDefinition();
-            foreach (var implementedInterface in type.FindInterfaces((_, _) => true, null))
             {
-                if (implementedInterface.IsGenericType == false)
+                if (type.IsInterface || type.IsAbstract)
                     continue;
-                return definition.IsAssignableFrom(implementedInterface.GetGenericTypeDefinition());
+                if (findType.IsAssignableFrom(type) || type.IsAssignableToGenericType(findType))
+                    result.Add(type);
             }
 
-            return false;
+            return result;
         }
     }
 }
