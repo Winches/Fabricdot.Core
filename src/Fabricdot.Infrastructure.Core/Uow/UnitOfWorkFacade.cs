@@ -1,21 +1,27 @@
 using System;
 using System.Collections.Generic;
+using System.Threading;
+using System.Threading.Tasks;
 using Ardalis.GuardClauses;
 using Fabricdot.Infrastructure.Core.Uow.Abstractions;
+using Microsoft.Extensions.Logging;
 
 namespace Fabricdot.Infrastructure.Core.Uow
 {
-    public class UnitOfWorkFacade : IUnitOfWorkFacade
+    public class UnitOfWorkFacade : IUnitOfWorkFacade, ISupportSaveChanges
     {
         private readonly Dictionary<string, IDatabaseFacade> _databases;
         private readonly Dictionary<string, ITransactionFacade> _transactions;
+        private readonly ILogger<UnitOfWorkFacade> _logger;
+
         public IReadOnlyCollection<IDatabaseFacade> Databases => _databases.Values;
         public IReadOnlyCollection<ITransactionFacade> Transactions => _transactions.Values;
 
-        public UnitOfWorkFacade()
+        public UnitOfWorkFacade(ILogger<UnitOfWorkFacade> logger)
         {
             _databases = new Dictionary<string, IDatabaseFacade>();
             _transactions = new Dictionary<string, ITransactionFacade>();
+            _logger = logger;
         }
 
         public void AddDatabase(string key, IDatabaseFacade database)
@@ -56,11 +62,37 @@ namespace Fabricdot.Infrastructure.Core.Uow
                 {
                     transaction.Dispose();
                 }
-                catch
+                catch (Exception e)
                 {
-                    //todo:print message
+                    _logger.LogError(e, "Disposing transaction failed");
                 }
             }
+        }
+
+        public virtual async Task SaveChangesAsync(CancellationToken cancellationToken)
+        {
+            foreach (var database in Databases)
+                if (database is ISupportSaveChanges supportSaveChanges)
+                    await supportSaveChanges.SaveChangesAsync(cancellationToken);
+        }
+
+        public virtual async Task CommitAsync(CancellationToken cancellationToken)
+        {
+            foreach (var transaction in Transactions)
+                await transaction.CommitAsync(cancellationToken);
+        }
+
+        public virtual async Task RollbackAsync(CancellationToken cancellationToken)
+        {
+            foreach (var transaction in Transactions)
+                try
+                {
+                    await transaction.RollbackAsync(cancellationToken);
+                }
+                catch (Exception e)
+                {
+                    _logger.LogError(e, "Rollback transaction failed");
+                }
         }
     }
 }

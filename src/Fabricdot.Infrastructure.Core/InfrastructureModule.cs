@@ -1,5 +1,4 @@
 using System;
-using AutoMapper;
 using Fabricdot.Core.Randoms;
 using Fabricdot.Core.Security;
 using Fabricdot.Domain.Core.Services;
@@ -54,7 +53,8 @@ namespace Fabricdot.Infrastructure.Core
                 .AddAutoMapper(assemblies); //mapper
 
             //unit-of-work
-            services.AddTransient<Uow.Abstractions.IUnitOfWork, UnitOfWork>();
+            services.AddTransient<IUnitOfWorkFacade, UnitOfWorkFacade>();
+            services.AddTransient<IUnitOfWork, UnitOfWork>();
             services.AddSingleton<IAmbientUnitOfWork, AmbientUnitOfWork>();
             services.AddSingleton<IUnitOfWorkManager, UnitOfWorkManager>();
             services.AddSingleton<IUnitOfWorkTransactionBehaviourProvider, DefaultUnitOfWorkTransactionBehaviourProvider>();

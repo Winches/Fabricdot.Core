@@ -1,5 +1,7 @@
 using System;
 using System.Collections.Generic;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace Fabricdot.Infrastructure.Core.Uow.Abstractions
 {
@@ -15,5 +17,9 @@ namespace Fabricdot.Infrastructure.Core.Uow.Abstractions
         void AddTransaction(string key, ITransactionFacade transaction);
 
         ITransactionFacade GeTransaction(string key);
+
+        Task CommitAsync(CancellationToken cancellationToken = default);
+
+        Task RollbackAsync(CancellationToken cancellationToken = default);
     }
 }

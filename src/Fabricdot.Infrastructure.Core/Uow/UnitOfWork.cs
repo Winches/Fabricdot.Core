@@ -4,7 +4,6 @@ using System.Threading.Tasks;
 using Ardalis.GuardClauses;
 using Fabricdot.Infrastructure.Core.Uow.Abstractions;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Logging.Abstractions;
 using Microsoft.Extensions.Options;
 
 namespace Fabricdot.Infrastructure.Core.Uow
@@ -39,13 +38,17 @@ namespace Fabricdot.Infrastructure.Core.Uow
         /// <inheritdoc />
         public event EventHandler Disposed;
 
-        public UnitOfWork(IOptions<UnitOfWorkOptions> options, ILogger<UnitOfWork> logger, IServiceProvider serviceProvider)
+        public UnitOfWork(
+            IOptions<UnitOfWorkOptions> options,
+            IServiceProvider serviceProvider,
+            ILogger<UnitOfWork> logger,
+            IUnitOfWorkFacade unitOfWorkFacade)
         {
-            _logger = logger ?? NullLogger<UnitOfWork>.Instance;
-            ServiceProvider = serviceProvider;
+            _logger = logger;
             Id = Guid.NewGuid();
+            ServiceProvider = serviceProvider;
             Options = options.Value.Clone();
-            Facade = new UnitOfWorkFacade();
+            Facade = unitOfWorkFacade;
             State = UnitOfWorkState.Allocated;
         }
 
@@ -80,8 +83,8 @@ namespace Fabricdot.Infrastructure.Core.Uow
                 throw new InvalidOperationException("UnitOfWork is already performed.");
 
             _pending = true;
-            await SavingChangesAsync(cancellationToken);
-            await CommitAsync(cancellationToken);
+            await Facade.SaveChangesAsync(cancellationToken);
+            await Facade.CommitAsync(cancellationToken);
             State = UnitOfWorkState.Performed;
 
             _logger.LogTrace($"{this} :Committed");
@@ -98,7 +101,7 @@ namespace Fabricdot.Infrastructure.Core.Uow
             State = UnitOfWorkState.Disposed;
             //rollback changes when UOW is not committed.
             if (State == UnitOfWorkState.Initialized)
-                RollbackAsync(default).GetAwaiter().GetResult();
+                Facade.RollbackAsync(default).GetAwaiter().GetResult();
 
             Facade.Dispose();
             Disposed?.Invoke(this, EventArgs.Empty);
@@ -108,30 +111,5 @@ namespace Fabricdot.Infrastructure.Core.Uow
 
         /// <inheritdoc />
         public override string ToString() => $"UnitOfWork Id:{Id}";
-
-        protected virtual async Task SavingChangesAsync(CancellationToken cancellationToken)
-        {
-            foreach (var facade in Facade.Databases)
-                if (facade is ISupportSaveChanges supportSaveChanges)
-                    await supportSaveChanges.SaveChangesAsync(cancellationToken);
-        }
-
-        protected virtual async Task CommitAsync(CancellationToken cancellationToken)
-        {
-            foreach (var facade in Facade.Transactions)
-                await facade.CommitAsync(cancellationToken);
-        }
-
-        protected virtual async Task RollbackAsync(CancellationToken cancellationToken)
-        {
-            foreach (var facade in Facade.Transactions)
-                try
-                {
-                    await facade.RollbackAsync(cancellationToken);
-                }
-                catch
-                {
-                }
-        }
     }
 }
