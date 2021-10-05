@@ -80,7 +80,7 @@ namespace Fabricdot.Infrastructure.Core.Tests.Uow
         {
             serviceCollection.RegisterModules(new InfrastructureModule());
             serviceCollection.AddTransient<FakeServiceWithUnitOfWorkInterceptor>();
-            ServiceProvider = serviceCollection.AddInterceptors();
+            ServiceProvider = serviceCollection.AddInterceptors().BuildProxiedServiceProvider();
             ServiceScope = ServiceProvider.CreateScope();
         }
     }

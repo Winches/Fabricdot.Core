@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
+using Ardalis.GuardClauses;
 using AspectCore.Configuration;
 using AspectCore.Extensions.DependencyInjection;
 using Fabricdot.Core.Aspects;
@@ -15,8 +17,10 @@ namespace Microsoft.Extensions.DependencyInjection
     [UsedImplicitly]
     public static class ServiceCollectionExtensions
     {
-        public static IServiceProvider AddInterceptors(this IServiceCollection serviceCollection, Action<IInterceptorOptions> optionBuilderAction = null)
+        public static IServiceCollection AddInterceptors(this IServiceCollection serviceCollection, Action<IInterceptorOptions> optionBuilderAction = null)
         {
+            Guard.Against.Null(serviceCollection, nameof(serviceCollection));
+
             var options = BuildInterceptorOptions(serviceCollection, optionBuilderAction);
             serviceCollection.AddTransient(typeof(AspectCoreInterceptorAdapter<>));
 
@@ -29,8 +33,7 @@ namespace Microsoft.Extensions.DependencyInjection
                         if (adapterType == null)
                             return;
 
-                        var predicate = AspectPredicateUtil.CreatePredicate(interceptorDescriptor);
-                        config.Interceptors.AddServiced(adapterType, predicate);
+                        config.Interceptors.AddServiced(adapterType, CreateInterceptorPredicate(interceptorDescriptor));
                     }
 
                     foreach (var excludeTarget in options.ExcludeTargets)
@@ -38,7 +41,12 @@ namespace Microsoft.Extensions.DependencyInjection
                         config.NonAspectPredicates.AddService(excludeTarget.FullName);
                     }
                 });
+            return serviceCollection;
+        }
 
+        public static IServiceProvider BuildProxiedServiceProvider(this IServiceCollection serviceCollection)
+        {
+            Guard.Against.Null(serviceCollection, nameof(serviceCollection));
             return serviceCollection.BuildDynamicProxyProvider();
         }
 
@@ -69,6 +77,21 @@ namespace Microsoft.Extensions.DependencyInjection
             return interceptorType.IsAssignableTo(typeof(IInterceptor))
                 ? typeof(AspectCoreInterceptorAdapter<>).MakeGenericType(interceptorType)
                 : null;
+        }
+
+        private static AspectPredicate CreateInterceptorPredicate(InterceptorDescriptor interceptorDescriptor)
+        {
+            var predicate = AspectPredicateUtil.CreatePredicate(interceptorDescriptor);
+#if DEBUG
+            bool Adaptar(MethodInfo methodInfo)
+            {
+                var ret = predicate(methodInfo);
+                return ret;
+            }
+            return Adaptar;
+#else
+            return predicate;
+#endif
         }
     }
 }

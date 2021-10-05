@@ -27,7 +27,7 @@ namespace Fabricdot.Infrastructure.Core.Tests.Aspects
             serviceCollection.AddTransient<LoggingInterceptor>();
             serviceCollection.AddTransient<ShouldNotInvokedInterceptor>();
 
-            ServiceProvider = serviceCollection.AddInterceptors();
+            ServiceProvider = serviceCollection.AddInterceptors().BuildProxiedServiceProvider();
         }
 
         protected static void ResetInterceptorsState()

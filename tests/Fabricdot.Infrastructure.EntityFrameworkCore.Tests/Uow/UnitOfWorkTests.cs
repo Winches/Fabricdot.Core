@@ -106,7 +106,7 @@ namespace Fabricdot.Infrastructure.EntityFrameworkCore.Tests.Uow
         {
             base.ConfigureServices(serviceCollection);
 
-            ServiceProvider = serviceCollection.AddInterceptors();
+            ServiceProvider = serviceCollection.AddInterceptors().BuildProxiedServiceProvider();
             ServiceScope = ServiceProvider.CreateScope();
         }
     }
