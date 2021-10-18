@@ -1,16 +1,16 @@
 using System;
 using Fabricdot.Core.Randoms;
 using Fabricdot.Core.Security;
-using Fabricdot.Domain.Core.Services;
+using Fabricdot.Core.UniqueIdentifier;
 using Fabricdot.Infrastructure.Core.Data;
 using Fabricdot.Infrastructure.Core.Data.Filters;
 using Fabricdot.Infrastructure.Core.DependencyInjection;
 using Fabricdot.Infrastructure.Core.Domain;
 using Fabricdot.Infrastructure.Core.Domain.Auditing;
 using Fabricdot.Infrastructure.Core.Domain.Events;
-using Fabricdot.Infrastructure.Core.Domain.Services;
 using Fabricdot.Infrastructure.Core.Security;
 using Fabricdot.Infrastructure.Core.Tracing;
+using Fabricdot.Infrastructure.Core.UniqueIdentifier;
 using Fabricdot.Infrastructure.Core.Uow;
 using Fabricdot.Infrastructure.Core.Uow.Abstractions;
 using MediatR;
@@ -39,8 +39,8 @@ namespace Fabricdot.Infrastructure.Core
                 .AddSingleton<IDataFilter, DataFilter>();
             services.AddTransient<IConnectionStringResolver, DefaultConnectionStringResolver>();
 
-            services.AddSingleton<IIdGenerator, GuidGenerator>()
-                .AddScoped<IDomainEventsDispatcher, DomainEventsDispatcher>();
+            services.AddScoped<IDomainEventsDispatcher, DomainEventsDispatcher>();
+            services.AddSingleton<IGuidGenerator, CombGuidGenerator>();
 
             //var assemblies = new TypeFinder().GetAssemblies().ToArray();
             var assemblies = AppDomain.CurrentDomain.GetAssemblies();
