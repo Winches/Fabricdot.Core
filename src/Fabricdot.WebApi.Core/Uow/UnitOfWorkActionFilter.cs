@@ -43,19 +43,20 @@ namespace Fabricdot.WebApi.Core.Uow
                 return;
             }
 
+            bool IsSucceed(ActionExecutedContext res) => res.Exception == null || res.ExceptionHandled;
             var options = CreateOptions(method, unitOfWorkAttribute);
             if (_unitOfWorkManager.TryBeginReserved(UnitOfWorkManager.RESERVATION_NAME, options))
             {
                 var uow = _unitOfWorkManager.Available;
                 var res = await next();
-                if (res.Exception != null && !res.ExceptionHandled)
+                if (!IsSucceed(res))
                     uow.Dispose();//Rollback changes.
             }
             else
             {
                 using var uow = _unitOfWorkManager.Begin(options);
                 var res = await next();
-                if (uow.IsActive)
+                if (IsSucceed(res) && uow.IsActive)
                     await uow.CommitChangesAsync(context.HttpContext.RequestAborted);
             }
         }
