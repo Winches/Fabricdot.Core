@@ -10,7 +10,7 @@
     <Description>Build DDD infrastructure layer in a simple way</Description>
     <PackageProjectUrl>https://github.com/Winches/Fabricdot.Core</PackageProjectUrl>
     <RepositoryUrl>https://github.com/Winches/Fabricdot.Core</RepositoryUrl>
-    <Version>0.4.0-alpha</Version>
+    <Version>0.4.1-alpha</Version>
   </PropertyGroup>
 
   <ItemGroup>
