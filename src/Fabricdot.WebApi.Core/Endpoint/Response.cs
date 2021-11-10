@@ -4,7 +4,7 @@
     {
         public int Code { get; set; }
 
-        public bool Success => Code == 0;
+        public bool Success { get; set; }
 
         public string Message { get; set; }
 
@@ -21,13 +21,6 @@
 
         public Response(string message, int code)
         {
-            Message = message;
-            Code = code;
-        }
-
-        internal void SetUnExcepted(string message, int code = 911)
-        {
-            Data = default;
             Message = message;
             Code = code;
         }

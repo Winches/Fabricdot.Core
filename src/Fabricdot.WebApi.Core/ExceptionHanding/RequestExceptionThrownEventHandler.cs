@@ -1,22 +1,19 @@
-﻿using System.Threading;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Fabricdot.Core.ExceptionHandling;
+using Fabricdot.Infrastructure.Core.ExceptionHanding;
 using Fabricdot.Infrastructure.Core.Tracing;
-using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 
-namespace Fabricdot.WebApi.Core.Filters
+namespace Fabricdot.WebApi.Core.ExceptionHanding
 {
-    public class ActionExceptionThrownEventHandler :
-        IExceptionThrownEventHandler<ActionExceptionThrownEvent>,
-        INotificationHandler<ActionExceptionThrownEvent>
+    public class RequestExceptionThrownEventHandler : ExceptionThrownEventHandlerBase
     {
         private readonly ILoggerFactory _loggerFactory;
         private readonly ICorrelationIdAccessor _correlationIdAccessor;
         private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public ActionExceptionThrownEventHandler(
+        public RequestExceptionThrownEventHandler(
             ILoggerFactory loggerFactory,
             ICorrelationIdAccessor correlationIdAccessor,
             IHttpContextAccessor httpContextAccessor)
@@ -27,7 +24,7 @@ namespace Fabricdot.WebApi.Core.Filters
         }
 
         /// <inheritdoc />
-        public Task HandleAsync(ActionExceptionThrownEvent @event)
+        public override Task HandleAsync(IExceptionThrownEvent @event)
         {
             var exception = @event.Exception;
             var httpContext = _httpContextAccessor.HttpContext;
@@ -44,12 +41,6 @@ namespace Fabricdot.WebApi.Core.Filters
             }
 
             return Task.CompletedTask;
-        }
-
-        /// <inheritdoc />
-        public async Task Handle(ActionExceptionThrownEvent notification, CancellationToken cancellationToken)
-        {
-            await HandleAsync(notification);
         }
     }
 }

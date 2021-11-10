@@ -1,6 +1,7 @@
 ﻿using Fabricdot.Core.Security;
 using Fabricdot.Infrastructure.Core.DependencyInjection;
 using Fabricdot.Infrastructure.Core.Uow.Abstractions;
+using Fabricdot.WebApi.Core.ExceptionHanding;
 using Fabricdot.WebApi.Core.Filters;
 using Fabricdot.WebApi.Core.Services;
 using Fabricdot.WebApi.Core.Tracing;
@@ -16,7 +17,7 @@ namespace Fabricdot.WebApi.Core
         public void Configure(IServiceCollection services)
         {
             //filters
-            services.AddScoped<ExceptionFilter>()
+            services.AddScoped<ExceptionHandlingFilter>()
                 .AddScoped<ValidationActionFilter>()
                 .AddScoped<UnitOfWorkActionFilter>()
                 .AddScoped<ResultFilter>()

@@ -1,18 +1,22 @@
 ﻿using System;
 using System.Threading.Tasks;
+using Fabricdot.Infrastructure.Core.ExceptionHanding;
 using MediatR;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Controllers;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.Extensions.Logging;
 
-namespace Fabricdot.WebApi.Core.Filters
+namespace Fabricdot.WebApi.Core.ExceptionHanding
 {
-    public class ExceptionFilter : IAsyncExceptionFilter
+    public class ExceptionHandlingFilter : IAsyncExceptionFilter
     {
-        private readonly ILogger<ExceptionFilter> _logger;
+        private readonly ILogger<ExceptionHandlingFilter> _logger;
         private readonly IMediator _mediator;
 
-        public ExceptionFilter(ILogger<ExceptionFilter> logger, IMediator mediator)
+        public ExceptionHandlingFilter(
+            ILogger<ExceptionHandlingFilter> logger,
+            IMediator mediator)
         {
             _logger = logger;
             _mediator = mediator;
@@ -40,8 +44,9 @@ namespace Fabricdot.WebApi.Core.Filters
             var exception = context.Exception;
             try
             {
-                context.Result = await _mediator.Send(new GetExceptionActionResultRequest(exception));
-                await _mediator.Publish(new ActionExceptionThrownEvent(exception));
+                var res = await _mediator.Send(new GetErrorResponseRequest(exception));
+                context.Result = new ObjectResult(res);
+                await _mediator.NotifyExceptionAsync(exception);
                 context.ExceptionHandled = true;
             }
             catch (Exception ex)
