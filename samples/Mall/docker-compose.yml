@@ -1,0 +1,12 @@
+version: '3.4'
+
+services:
+  webapi:
+    image: ${DOCKER_REGISTRY}/mall-webapi:${TAG:-latest}
+    volumes: 
+      - data:/app/wwwroot:rw
+      - data:/app/logs:rw
+
+volumes: 
+  data:
+    external: false

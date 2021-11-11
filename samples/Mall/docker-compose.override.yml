@@ -1,0 +1,17 @@
+version: "3.4"
+
+services:
+  webapi:
+    build:
+      context: .
+      dockerfile: src/Mall.WebApi/Dockerfile
+    env_file: .env
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=http://+:80
+      - ConnectionStrings__Default=${CONNECTIONSTRINGS_DEFAULT}
+      - ConnectionStrings__Log=${CONNECTIONSTRINGS_LOG}
+    ports:
+      - "${WEBAPI_PORT}:80"
+    volumes:
+      - ${APPDATA}/ASP.NET/Https:/root/.aspnet/https:ro

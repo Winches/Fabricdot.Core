@@ -1,0 +1,19 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net5.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Mall.Common\Mall.Common.csproj" />
+    <ProjectReference Include="..\Mall.Domain\Mall.Domain.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Dapper" Version="2.0.123" />
+    <PackageReference Include="Fabricdot.Infrastructure.Core" Version="0.4.1-alpha" />
+    <PackageReference Include="Fabricdot.Infrastructure.EntityFrameworkCore" Version="0.4.1-alpha" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="5.0.10" />
+  </ItemGroup>
+
+</Project>

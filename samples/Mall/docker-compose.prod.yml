@@ -1,0 +1,13 @@
+version: '3.4'
+
+services:
+  webapi:
+    restart: unless-stopped
+    env_file: .env
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Production
+      - ASPNETCORE_URLS=http://+:80
+      - ConnectionStrings__Default=${CONNECTIONSTRINGS_DEFAULT}
+      - ConnectionStrings__Log=${CONNECTIONSTRINGS_LOG}
+    ports:
+      - "${WEBAPI_PORT}:80"
