@@ -7,7 +7,7 @@ using System.Reflection;
 namespace Fabricdot.Core.Reflection
 {
     /// <summary>
-    ///     反射操作
+    ///     Reflection Helper
     /// </summary>
     public static class ReflectionHelper
     {
@@ -34,8 +34,9 @@ namespace Fabricdot.Core.Reflection
         }
 
         /// <summary>
-        ///     Find derived types by given type.Base abstract class is not supported.
+        ///     Find derived types by given type.
         /// </summary>
+        /// <remarks>Abstract class and interface will be ignore.</remarks>
         /// <typeparam name="TFind">base type</typeparam>
         /// <param name="assemblies">target assemblies</param>
         public static List<Type> FindTypes<TFind>(params Assembly[] assemblies)
@@ -45,8 +46,9 @@ namespace Fabricdot.Core.Reflection
         }
 
         /// <summary>
-        ///     Find derived types by given type.Base abstract class is not supported.
+        ///     Find derived types by given type.
         /// </summary>
+        /// <remarks>Abstract class and interface will be ignore.</remarks>
         /// <param name="findType">base type</param>
         /// <param name="assemblies">target assemblies</param>
         public static List<Type> FindTypes(Type findType, params Assembly[] assemblies)
