@@ -6,7 +6,7 @@
 
 ## Using
 
-- dotnet standard 2.1/dotnet core 3.1
+- dotnet 5
 - Entity Framework Core
 - Dapper
 - MediatR
@@ -24,11 +24,11 @@
 
 ## Packages
 
-### Fabericdot.Common.Core
+### Fabericdot.Core
 
-[![NuGet](https://img.shields.io/nuget/v/Fabricdot.Common.Core.svg)](https://www.nuget.org/packages/Fabricdot.Common.Core)
+[![NuGet](https://img.shields.io/nuget/v/Fabricdot.Core.svg)](https://www.nuget.org/packages/Fabricdot.Core)
 
-Common Library
+Core Library
 
 Provide basic functions and contracts.
 
