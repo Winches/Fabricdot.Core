@@ -4,15 +4,20 @@ namespace Fabricdot.Core.System.Text.Json
 {
     public static class JsonExtensions
     {
-        private static readonly JsonSerializerOptions JsonOptions = new JsonSerializerOptions
+        private static readonly JsonSerializerOptions _options = new JsonSerializerOptions(JsonSerializerDefaults.General);
+
+        public static T FromJson<T>(
+            this string json,
+            JsonSerializerOptions options = null)
         {
-            PropertyNameCaseInsensitive = false,
-            PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
-            ReadCommentHandling = JsonCommentHandling.Skip
-        };
+            return JsonSerializer.Deserialize<T>(json, options ?? _options);
+        }
 
-        public static T FromJson<T>(this string json) => JsonSerializer.Deserialize<T>(json, JsonOptions);
-
-        public static string ToJson<T>(this T obj) => JsonSerializer.Serialize(obj, JsonOptions);
+        public static string ToJson<T>(
+            this T obj,
+            JsonSerializerOptions options = null)
+        {
+            return JsonSerializer.Serialize(obj, options ?? _options);
+        }
     }
 }
