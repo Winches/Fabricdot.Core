@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Ardalis.GuardClauses;
-using Fabricdot.Domain.Core.Entities;
+using Fabricdot.Domain.Entities;
 
 namespace Fabricdot.Infrastructure.EntityFrameworkCore.Tests.Entities
 {

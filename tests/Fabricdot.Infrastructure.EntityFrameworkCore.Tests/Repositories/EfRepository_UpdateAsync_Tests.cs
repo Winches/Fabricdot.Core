@@ -23,7 +23,7 @@ namespace Fabricdot.Infrastructure.EntityFrameworkCore.Tests.Repositories
         public async Task UpdateAsync_GivenSavedEntity_SaveChanges()
         {
             var book = await FakeDbContext.Set<Book>().FirstOrDefaultAsync(v => v.Name == "CSharp");
-            var expected = "CSharpV2";
+            const string expected = "CSharpV2";
             book.ChangeName(expected);
             await _bookRepository.UpdateAsync(book);
             await FakeDbContext.SaveChangesAsync();

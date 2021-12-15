@@ -1,11 +1,11 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using System.Threading;
 using System.Threading.Tasks;
-using Fabricdot.Domain.Core.Events;
-using Fabricdot.Domain.Core.SharedKernel;
-using Fabricdot.Infrastructure.Core.Security;
+using Fabricdot.Domain.Events;
+using Fabricdot.Domain.SharedKernel;
 using Fabricdot.Infrastructure.EntityFrameworkCore.Tests.Entities;
 using Fabricdot.Infrastructure.EntityFrameworkCore.Tests.Repositories;
+using Fabricdot.Infrastructure.Security;
 using Microsoft.Extensions.DependencyInjection;
 using Moq;
 using Xunit;
@@ -43,8 +43,8 @@ namespace Fabricdot.Infrastructure.EntityFrameworkCore.Tests
 
             public async Task HandleAsync(EntityChangedEvent<Author> domainEvent, CancellationToken cancellationToken)
             {
-                var author = domainEvent.Entity;
-                await _bookRepository.GetByIdAsync("");
+                //var author = domainEvent.Entity;
+                await _bookRepository.GetByIdAsync("", cancellationToken);
             }
         }
 

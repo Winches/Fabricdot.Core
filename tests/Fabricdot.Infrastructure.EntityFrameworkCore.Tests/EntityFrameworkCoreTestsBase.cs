@@ -1,7 +1,6 @@
 ﻿using System.Data.Common;
-using Fabricdot.Infrastructure.Core;
-using Fabricdot.Infrastructure.Core.Data;
-using Fabricdot.Infrastructure.Core.DependencyInjection;
+using Fabricdot.Infrastructure.Data;
+using Fabricdot.Infrastructure.DependencyInjection;
 using Fabricdot.Infrastructure.EntityFrameworkCore.Tests.Data;
 using Fabricdot.Test.Shared;
 using Microsoft.Data.Sqlite;

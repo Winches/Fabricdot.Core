@@ -1,7 +1,7 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
-using Fabricdot.Domain.Core.Auditing;
-using Fabricdot.Infrastructure.Core.Data.Filters;
+using Fabricdot.Domain.Auditing;
+using Fabricdot.Infrastructure.Data.Filters;
 using Fabricdot.Infrastructure.EntityFrameworkCore.Tests.Entities;
 using Microsoft.Extensions.DependencyInjection;
 using Xunit;

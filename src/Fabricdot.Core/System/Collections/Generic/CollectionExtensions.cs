@@ -10,7 +10,7 @@ namespace System.Collections.Generic
         /// </summary>
         public static bool IsNullOrEmpty<T>(this ICollection<T> source)
         {
-            return source == null || source.Count <= 0;
+            return source == null || source.Count == 0;
         }
 
         /// <summary>
@@ -23,7 +23,8 @@ namespace System.Collections.Generic
         public static IList<T> RemoveAll<T>(this ICollection<T> source, Func<T, bool> predicate)
         {
             var items = source.Where(predicate).ToList();
-            foreach (var item in items) source.Remove(item);
+            foreach (var item in items)
+                source.Remove(item);
 
             return items;
         }

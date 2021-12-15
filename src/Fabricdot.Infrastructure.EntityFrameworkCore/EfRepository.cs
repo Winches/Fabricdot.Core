@@ -4,17 +4,17 @@ using System.Threading;
 using System.Threading.Tasks;
 using Ardalis.Specification;
 using Ardalis.Specification.EntityFrameworkCore;
-using Fabricdot.Domain.Core.Auditing;
-using Fabricdot.Domain.Core.Entities;
-using Fabricdot.Domain.Core.Services;
-using Fabricdot.Infrastructure.Core.Data.Filters;
+using Fabricdot.Domain.Auditing;
+using Fabricdot.Domain.Entities;
+using Fabricdot.Domain.Services;
+using Fabricdot.Infrastructure.Data.Filters;
 using Fabricdot.Infrastructure.EntityFrameworkCore.Extensions;
 using Microsoft.EntityFrameworkCore;
 
 namespace Fabricdot.Infrastructure.EntityFrameworkCore
 {
     public abstract class EfRepository<TDbContext, T, TKey> : IRepository<T, TKey>
-        where TDbContext : DbContext where T : class, IAggregateRoot, Domain.Core.Entities.IEntity<TKey>
+        where TDbContext : DbContext where T : class, IAggregateRoot, Fabricdot.Domain.Entities.IEntity<TKey>
     {
         private readonly IDbContextProvider<TDbContext> _dbContextProvider;
         private IDataFilter _filter;
@@ -53,8 +53,7 @@ namespace Fabricdot.Infrastructure.EntityFrameworkCore
         /// <inheritdoc />
         public virtual async Task<T> GetByIdAsync(TKey id, CancellationToken cancellationToken = default)
         {
-            // Id of GUID type will become binary parameter when use MySql.Data driver
-            // https://stackoverflow.com/questions/65503169/entity-framework-core-generate-wrong-guid-parameter-with-mysql
+            // Id of GUID type will become binary parameter when use MySql.Data driver https://stackoverflow.com/questions/65503169/entity-framework-core-generate-wrong-guid-parameter-with-mysql
             var queryable = await GetQueryableAsync();
             return await queryable.SingleOrDefaultAsync(v => v.Id.Equals(id), cancellationToken);
         }

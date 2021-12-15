@@ -44,7 +44,8 @@ namespace System.Collections.Generic
             TKey key,
             Func<TKey, TValue> factory)
         {
-            if (dictionary.TryGetValue(key, out var obj)) return obj;
+            if (dictionary.TryGetValue(key, out var obj))
+                return obj;
 
             return dictionary[key] = factory(key);
         }

@@ -11,7 +11,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\..\Fabricdot.Core\src\Fabricdot.Core\Fabricdot.Core.csproj" />
+    <ProjectReference Include="..\..\src\Fabricdot.Core\Fabricdot.Core.csproj" />
   </ItemGroup>
 
 </Project>

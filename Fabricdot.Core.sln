@@ -3,13 +3,13 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.30413.136
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fabricdot.Infrastructure.Core", "src\Fabricdot.Infrastructure.Core\Fabricdot.Infrastructure.Core.csproj", "{E0B89F2D-53C2-422A-BDC0-E3C1407B240F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fabricdot.Infrastructure", "src\Fabricdot.Infrastructure\Fabricdot.Infrastructure.csproj", "{E0B89F2D-53C2-422A-BDC0-E3C1407B240F}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fabricdot.WebApi.Core", "src\Fabricdot.WebApi.Core\Fabricdot.WebApi.Core.csproj", "{7A28E34F-DC7A-473B-ABA0-9E0C129CFFB3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fabricdot.WebApi", "src\Fabricdot.WebApi\Fabricdot.WebApi.csproj", "{7A28E34F-DC7A-473B-ABA0-9E0C129CFFB3}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fabricdot.Infrastructure.EntityFrameworkCore", "src\Fabricdot.Infrastructure.EntityFrameworkCore\Fabricdot.Infrastructure.EntityFrameworkCore.csproj", "{68EDE2DB-3C5D-4F48-88C9-7EC62CD29F1E}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fabricdot.Domain.Core", "src\Fabricdot.Domain.Core\Fabricdot.Domain.Core.csproj", "{0D4C3E84-047F-4FAB-98D5-C9E93A09FF76}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fabricdot.Domain", "src\Fabricdot.Domain\Fabricdot.Domain.csproj", "{0D4C3E84-047F-4FAB-98D5-C9E93A09FF76}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{E4584D3B-649D-4069-82F1-647552F432FC}"
 EndProject
@@ -19,15 +19,15 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fabricdot.Core", "src\Fabri
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fabricdot.Core.Tests", "tests\Fabricdot.Core.Tests\Fabricdot.Core.Tests.csproj", "{1E467214-59DD-4780-BCBC-D0DC58BACB36}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fabricdot.Domain.Core.Tests", "tests\Fabricdot.Domain.Core.Tests\Fabricdot.Domain.Core.Tests.csproj", "{83B6EEFF-83C5-41E5-B297-82ED7690B9F0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fabricdot.Domain.Tests", "tests\Fabricdot.Domain.Tests\Fabricdot.Domain.Tests.csproj", "{83B6EEFF-83C5-41E5-B297-82ED7690B9F0}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fabricdot.Infrastructure.Core.Tests", "tests\Fabricdot.Infrastructure.Core.Tests\Fabricdot.Infrastructure.Core.Tests.csproj", "{C0E4CC0C-8A76-420A-BA79-E7FE08C80B28}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fabricdot.Infrastructure.Tests", "tests\Fabricdot.Infrastructure.Tests\Fabricdot.Infrastructure.Tests.csproj", "{C0E4CC0C-8A76-420A-BA79-E7FE08C80B28}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fabricdot.Test.Shared", "tests\Fabricdot.Test.Shared\Fabricdot.Test.Shared.csproj", "{657D3D10-E519-4429-80BB-7105A5BCFF75}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fabricdot.Infrastructure.EntityFrameworkCore.Tests", "tests\Fabricdot.Infrastructure.EntityFrameworkCore.Tests\Fabricdot.Infrastructure.EntityFrameworkCore.Tests.csproj", "{C2693C9C-A149-477A-9A52-AC4A804BB5BA}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fabricdot.WebApi.Core.Tests", "tests\Fabricdot.WebApi.Core.Tests\Fabricdot.WebApi.Core.Tests.csproj", "{742DB70F-EDD1-4500-A8B2-B987DA80DB4D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fabricdot.WebApi.Tests", "tests\Fabricdot.WebApi.Tests\Fabricdot.WebApi.Tests.csproj", "{742DB70F-EDD1-4500-A8B2-B987DA80DB4D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

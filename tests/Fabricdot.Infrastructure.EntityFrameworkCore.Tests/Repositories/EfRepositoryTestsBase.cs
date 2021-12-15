@@ -10,9 +10,8 @@ namespace Fabricdot.Infrastructure.EntityFrameworkCore.Tests.Repositories
     {
         protected FakeDbContext FakeDbContext { get; }
 
-        public EfRepositoryTestsBase()
+        protected EfRepositoryTestsBase()
         {
-            var provider = ServiceScope.ServiceProvider;
             FakeDbContext = GetDbContextAsync<FakeDbContext>().GetAwaiter().GetResult();
         }
 

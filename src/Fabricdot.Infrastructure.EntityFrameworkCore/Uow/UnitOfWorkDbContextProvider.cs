@@ -2,11 +2,10 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 using Fabricdot.Core.DependencyInjection;
-using Fabricdot.Infrastructure.Core.Data;
-using Fabricdot.Infrastructure.Core.Uow.Abstractions;
+using Fabricdot.Infrastructure.Data;
+using Fabricdot.Infrastructure.Uow.Abstractions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
-using IUnitOfWork = Fabricdot.Infrastructure.Core.Uow.Abstractions.IUnitOfWork;
 
 namespace Fabricdot.Infrastructure.EntityFrameworkCore.Uow
 {

@@ -6,11 +6,12 @@ namespace System.Linq
     public static class QueryableExtensions
     {
         public static IQueryable<T> WhereIf<T>(
-            IQueryable<T> query,
+            this IQueryable<T> query,
             Expression<Func<bool>> condition,
             Expression<Func<T, bool>> predicate)
         {
-            if (condition == null) throw new ArgumentNullException(nameof(condition));
+            if (condition == null)
+                throw new ArgumentNullException(nameof(condition));
             return condition.Compile().Invoke() ? query.Where(predicate) : query;
         }
     }

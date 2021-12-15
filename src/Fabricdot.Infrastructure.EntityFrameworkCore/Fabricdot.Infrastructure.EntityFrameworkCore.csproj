@@ -20,7 +20,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Fabricdot.Infrastructure.Core\Fabricdot.Infrastructure.Core.csproj" />
+    <ProjectReference Include="..\Fabricdot.Infrastructure\Fabricdot.Infrastructure.csproj" />
   </ItemGroup>
 
 </Project>

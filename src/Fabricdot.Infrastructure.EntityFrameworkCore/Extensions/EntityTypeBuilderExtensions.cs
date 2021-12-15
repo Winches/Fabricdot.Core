@@ -1,7 +1,7 @@
 ﻿using System;
-using Fabricdot.Domain.Core.Auditing;
-using Fabricdot.Domain.Core.Entities;
-using Fabricdot.Domain.Core.ValueObjects;
+using Fabricdot.Domain.Auditing;
+using Fabricdot.Domain.Entities;
+using Fabricdot.Domain.ValueObjects;
 using JetBrains.Annotations;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
@@ -111,14 +111,6 @@ namespace Fabricdot.Infrastructure.EntityFrameworkCore.Extensions
 
         #region soft-delete
 
-        private static void ConfigureSoftDelete([NotNull] EntityTypeBuilder builder)
-        {
-            builder.Property(nameof(ISoftDelete.IsDeleted))
-                .IsRequired()
-                .HasDefaultValue(false)
-                .HasColumnName(nameof(ISoftDelete.IsDeleted));
-        }
-
         /// <summary>
         ///     try configure soft-delete
         /// </summary>
@@ -169,7 +161,15 @@ namespace Fabricdot.Infrastructure.EntityFrameworkCore.Extensions
             return builder;
         }
 
-        #endregion
+        private static void ConfigureSoftDelete([NotNull] EntityTypeBuilder builder)
+        {
+            builder.Property(nameof(ISoftDelete.IsDeleted))
+                .IsRequired()
+                .HasDefaultValue(false)
+                .HasColumnName(nameof(ISoftDelete.IsDeleted));
+        }
+
+        #endregion soft-delete
 
         /// <summary>
         ///     try configure navigation property

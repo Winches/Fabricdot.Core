@@ -15,7 +15,7 @@ namespace System.Reflection
             return member.MemberType switch
             {
                 MemberTypes.TypeInfo => member.ToString() == "System.Boolean",
-                MemberTypes.Property => IsBool((PropertyInfo) member),
+                MemberTypes.Property => IsBool((PropertyInfo)member),
                 _ => false
             };
         }
@@ -30,8 +30,8 @@ namespace System.Reflection
                 return false;
             return member.MemberType switch
             {
-                MemberTypes.TypeInfo => ((TypeInfo) member).IsEnum,
-                MemberTypes.Property => IsEnum((PropertyInfo) member),
+                MemberTypes.TypeInfo => ((TypeInfo)member).IsEnum,
+                MemberTypes.Property => IsEnum((PropertyInfo)member),
                 _ => false
             };
         }
@@ -47,7 +47,7 @@ namespace System.Reflection
             return member.MemberType switch
             {
                 MemberTypes.TypeInfo => member.ToString() == "System.DateTime",
-                MemberTypes.Property => IsDateTime((PropertyInfo) member),
+                MemberTypes.Property => IsDateTime((PropertyInfo)member),
                 _ => false
             };
         }
@@ -64,7 +64,7 @@ namespace System.Reflection
             {
                 MemberTypes.TypeInfo => member.ToString() == "System.Int32" || member.ToString() == "System.Int16" ||
                                         member.ToString() == "System.Int64",
-                MemberTypes.Property => IsInt((PropertyInfo) member),
+                MemberTypes.Property => IsInt((PropertyInfo)member),
                 _ => false
             };
         }
@@ -83,7 +83,7 @@ namespace System.Reflection
             {
                 MemberTypes.TypeInfo => member.ToString() == "System.Double" || member.ToString() == "System.Decimal" ||
                                         member.ToString() == "System.Single",
-                MemberTypes.Property => IsNumber((PropertyInfo) member),
+                MemberTypes.Property => IsNumber((PropertyInfo)member),
                 _ => false
             };
         }

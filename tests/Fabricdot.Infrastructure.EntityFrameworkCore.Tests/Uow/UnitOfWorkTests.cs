@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Fabricdot.Infrastructure.Core.Uow.Abstractions;
 using Fabricdot.Infrastructure.EntityFrameworkCore.Tests.Entities;
 using Fabricdot.Infrastructure.EntityFrameworkCore.Tests.Repositories;
+using Fabricdot.Infrastructure.Uow.Abstractions;
 using Microsoft.Extensions.DependencyInjection;
 using Xunit;
 

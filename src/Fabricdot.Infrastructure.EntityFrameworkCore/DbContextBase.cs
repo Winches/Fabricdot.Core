@@ -2,11 +2,11 @@
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Fabricdot.Domain.Core.Auditing;
-using Fabricdot.Domain.Core.Entities;
-using Fabricdot.Infrastructure.Core.Data.Filters;
-using Fabricdot.Infrastructure.Core.Domain.Auditing;
-using Fabricdot.Infrastructure.Core.Domain.Events;
+using Fabricdot.Domain.Auditing;
+using Fabricdot.Domain.Entities;
+using Fabricdot.Infrastructure.Data.Filters;
+using Fabricdot.Infrastructure.Domain.Auditing;
+using Fabricdot.Infrastructure.Domain.Events;
 using Fabricdot.Infrastructure.EntityFrameworkCore.Extensions;
 using JetBrains.Annotations;
 using Microsoft.EntityFrameworkCore;

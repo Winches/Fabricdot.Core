@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
-using Fabricdot.Domain.Core.Auditing;
+using Fabricdot.Domain.Auditing;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 
