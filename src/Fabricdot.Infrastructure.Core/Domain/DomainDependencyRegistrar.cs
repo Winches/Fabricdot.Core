@@ -1,4 +1,4 @@
-﻿using System;
+﻿using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 using Fabricdot.Core.Reflection;
@@ -23,7 +23,10 @@ namespace Fabricdot.Infrastructure.Core.Domain
                     var serviceType = implementationType.GetInterfaces()
                         .FirstOrDefault(i => i.IsInterface && !i.IsGenericType && i.IsAssignableToGenericType(repositoryType));
                     if (serviceType == null)
-                        throw new InvalidOperationException($"{implementationType.Name} should implement owned repository interface.");
+                    {
+                        Debug.Print($"{implementationType.Name} do not implement non-generic repository interface.");
+                        return;
+                    }
 
                     var readonlyRepositoryType = serviceType.GetInterfaces()
                                                             .Single(v => v.IsGenericType && v.GetGenericTypeDefinition() == typeof(IReadOnlyRepository<,>));
@@ -37,15 +40,18 @@ namespace Fabricdot.Infrastructure.Core.Domain
             [NotNull] this IServiceCollection services,
             params Assembly[] assemblies)
         {
-            var serviceType = typeof(IDomainService);
-            ReflectionHelper.FindTypes(serviceType, assemblies)
-                .ForEach(v =>
+            var domainServiceType = typeof(IDomainService);
+            ReflectionHelper.FindTypes(domainServiceType, assemblies)
+                .ForEach(implementationType =>
                 {
-                    var contract = v.GetInterfaces()
-                        .FirstOrDefault(i => i.IsInterface && serviceType.IsAssignableFrom(i));
-                    if (contract == null)
-                        throw new InvalidOperationException($"{v.Name} should implement owned service interface.");
-                    services.TryAddScoped(contract, v);
+                    var serviceType = implementationType.GetInterfaces()
+                        .FirstOrDefault(i => i.IsInterface && domainServiceType.IsAssignableFrom(i));
+                    if (serviceType == null)
+                    {
+                        Debug.Print($"{implementationType.Name} do not implement non-generic service interface.");
+                        return;
+                    }
+                    services.TryAddScoped(serviceType, implementationType);
                 });
             return services;
         }
@@ -54,13 +60,13 @@ namespace Fabricdot.Infrastructure.Core.Domain
             [NotNull] this IServiceCollection services,
             params Assembly[] assemblies)
         {
-            var serviceType = typeof(IDomainEventHandler<>);
-            ReflectionHelper.FindTypes(serviceType, assemblies)
-                .ForEach(v =>
+            var eventHandlerType = typeof(IDomainEventHandler<>);
+            ReflectionHelper.FindTypes(eventHandlerType, assemblies)
+                .ForEach(implementationType =>
                 {
-                    var contract = v.GetInterfaces()
-                        .First(i => i.IsInterface && i.IsGenericType && i.GetGenericTypeDefinition() == serviceType);
-                    services.AddTransient(contract, v);
+                    var serviceType = implementationType.GetInterfaces()
+                        .First(i => i.IsInterface && i.IsGenericType && i.GetGenericTypeDefinition() == eventHandlerType);
+                    services.AddTransient(serviceType, implementationType);
                 });
             return services;
         }
