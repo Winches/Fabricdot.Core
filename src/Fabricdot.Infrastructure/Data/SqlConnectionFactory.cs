@@ -1,10 +1,9 @@
 ﻿using System;
 using System.Data;
-using Microsoft.Data.SqlClient;
 
 namespace Fabricdot.Infrastructure.Data
 {
-    public class SqlConnectionFactory : ISqlConnectionFactory, IDisposable
+    public abstract class SqlConnectionFactory : ISqlConnectionFactory, IDisposable
     {
         private readonly string _connectionString;
         private IDbConnection _connection;
@@ -14,21 +13,21 @@ namespace Fabricdot.Infrastructure.Data
             _connectionString = connectionString;
         }
 
+        /// <inheritdoc />
+        ~SqlConnectionFactory()
+        {
+            Dispose(false);
+        }
+
         public IDbConnection GetOpenConnection()
         {
             if (_connection == null || _connection.State != ConnectionState.Open)
             {
-                _connection = new SqlConnection(_connectionString);
+                _connection = CreateConnection(_connectionString);
                 _connection.Open();
             }
 
             return _connection;
-        }
-
-        protected virtual void Dispose(bool disposing)
-        {
-            if (disposing && _connection?.State == ConnectionState.Open)
-                _connection.Dispose();
         }
 
         /// <inheritdoc />
@@ -38,10 +37,12 @@ namespace Fabricdot.Infrastructure.Data
             GC.SuppressFinalize(this);
         }
 
-        /// <inheritdoc />
-        ~SqlConnectionFactory()
+        protected abstract IDbConnection CreateConnection(string connectionString);
+
+        protected virtual void Dispose(bool disposing)
         {
-            Dispose(false);
+            if (disposing && _connection?.State == ConnectionState.Open)
+                _connection.Dispose();
         }
     }
 }
