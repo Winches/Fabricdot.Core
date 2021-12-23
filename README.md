@@ -11,6 +11,8 @@
 - Dapper
 - MediatR
 - Ardalis.Sepcification
+- AspectCore
+- AutoMapper
 
 ## Pattern
 
@@ -32,17 +34,17 @@ Core Library
 
 Provide basic functions and contracts.
 
-### Fabericdot.Domain.Core
+### Fabericdot.Domain
 
-[![NuGet](https://img.shields.io/nuget/v/Fabricdot.Domain.Core.svg)](https://www.nuget.org/packages/Fabricdot.Domain.Core)
+[![NuGet](https://img.shields.io/nuget/v/Fabricdot.Domain.svg)](https://www.nuget.org/packages/Fabricdot.Domain)
 
 Domain Library
 
 Build domain layer with abstraction of  `Entity`,`ValueObject`,`Enumeration`,`DomainService`,`Repository` and `Domain Event`.
 
-### Fabericdot.Infrastructure.Core
+### Fabericdot.Infrastructure
 
-[![NuGet](https://img.shields.io/nuget/v/Fabricdot.Infrastructure.Core.svg)](https://www.nuget.org/packages/Fabricdot.Infrastructure.Core)
+[![NuGet](https://img.shields.io/nuget/v/Fabricdot.Infrastructure.svg)](https://www.nuget.org/packages/Fabricdot.Infrastructure)
 
 Infrastructure Library
 
@@ -52,11 +54,11 @@ Provide basic implementation of persistence,CQRS and other  servies,etc.
 
 [![NuGet](https://img.shields.io/nuget/v/Fabricdot.Infrastructure.EntityFrameworkCore.svg)](https://www.nuget.org/packages/Fabricdot.Infrastructure.EntityFrameworkCore)
 
-Persistence Implementation with EntityFramework Core
+Persistence Implementation with Entity Framework Core
 
-### Fabericdot.WebApi.Core
+### Fabericdot.WebApi
 
-[![NuGet](https://img.shields.io/nuget/v/Fabricdot.WebApi.Core.svg)](https://www.nuget.org/packages/Fabricdot.WebApi.Core)
+[![NuGet](https://img.shields.io/nuget/v/Fabricdot.WebApi.svg)](https://www.nuget.org/packages/Fabricdot.WebApi)
 
 Web Api Library with ASP.NET Core
 
