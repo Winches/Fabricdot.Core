@@ -1,5 +1,4 @@
-﻿using System;
-using System.Threading;
+﻿using System.Threading;
 using System.Threading.Tasks;
 using Fabricdot.WebApi.Endpoint;
 using JetBrains.Annotations;
@@ -13,10 +12,14 @@ namespace Fabricdot.WebApi.Filters
     public class GetActionResultRequestHandler : IRequestHandler<GetActionResultRequest, IActionResult>
     {
         private readonly ResultFilterOptions _options;
+        private readonly ResponseOptions _responseOptions;
 
-        public GetActionResultRequestHandler(IOptions<ResultFilterOptions> options)
+        public GetActionResultRequestHandler(
+            IOptions<ResultFilterOptions> options,
+            IOptions<ResponseOptions> responseOptions)
         {
             _options = options.Value;
+            _responseOptions = responseOptions.Value;
         }
 
         /// <inheritdoc />
@@ -41,7 +44,8 @@ namespace Fabricdot.WebApi.Filters
                     if (declaredType.IsGenericType && declaredType.GetGenericTypeDefinition() == typeof(Response<>))
                         break;
 
-                    var ret = Activator.CreateInstance(typeof(Response<>).MakeGenericType(declaredType), resultValue);
+                    //var ret = Activator.CreateInstance(typeof(Response<>).MakeGenericType(declaredType), resultValue);
+                    var ret = new SuccessResponse(resultValue, _responseOptions.SuccessCode);
                     return Task.FromResult<IActionResult>(new ObjectResult(ret));
 
                 case EmptyResult _:
