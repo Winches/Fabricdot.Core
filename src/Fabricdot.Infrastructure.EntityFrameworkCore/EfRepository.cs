@@ -4,7 +4,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using Ardalis.Specification;
 using Ardalis.Specification.EntityFrameworkCore;
-using Fabricdot.Domain.Auditing;
 using Fabricdot.Domain.Entities;
 using Fabricdot.Domain.Services;
 using Fabricdot.Infrastructure.Data.Filters;
@@ -13,9 +12,11 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Fabricdot.Infrastructure.EntityFrameworkCore
 {
-    public abstract class EfRepository<TDbContext, T, TKey> : IRepository<T, TKey>
-        where TDbContext : DbContext where T : class, IAggregateRoot, Fabricdot.Domain.Entities.IEntity<TKey>
+    public class EfRepository<TDbContext, T, TKey> : IRepository<T, TKey>
+    where TDbContext : DbContext
+    where T : class, IAggregateRoot, Fabricdot.Domain.Entities.IEntity<TKey>
     {
+        private readonly ISpecificationEvaluator _specificationEvaluator = new SpecificationEvaluator();
         private readonly IDbContextProvider<TDbContext> _dbContextProvider;
         private IDataFilter _filter;
 
@@ -111,7 +112,7 @@ namespace Fabricdot.Infrastructure.EntityFrameworkCore
             ISpecification<T> specification,
             CancellationToken cancellationToken = default)
         {
-            var queryable = await GetQueryableAsync(specification);
+            var queryable = await GetQueryableAsync(specification, true);
             return await queryable.CountAsync(cancellationToken);
         }
 
@@ -122,24 +123,32 @@ namespace Fabricdot.Infrastructure.EntityFrameworkCore
             return dbContext;
         }
 
-        protected virtual async Task<IQueryable<T>> GetQueryableAsync(ISpecification<T> specification = null)
+        protected virtual async Task<IQueryable<T>> GetQueryableAsync(
+            ISpecification<T> specification = null,
+            bool evaluateCriteriaOnly = false)
         {
             var context = await GetDbContextAsync();
             var queryable = ApplyQueryFilter(context.Set<T>());
-            return specification == null ? queryable : ApplySpecification(queryable, specification);
+            return specification == null
+                ? queryable
+                : ApplySpecification(queryable, specification, evaluateCriteriaOnly);
         }
 
-        protected virtual IQueryable<T> ApplySpecification(IQueryable<T> queryable, ISpecification<T> specification)
+        protected virtual IQueryable<T> ApplySpecification(
+            IQueryable<T> queryable,
+            ISpecification<T> specification,
+            bool evaluateCriteriaOnly = false)
         {
-            var evaluator = new SpecificationEvaluator();
-            return evaluator.GetQuery(queryable, specification);
+            // Method won't evaluate Take, Skip, Ordering, and Include expressions in the
+            // specification when 'evaluateCriteriaOnly' is true. https://github.com/ardalis/Specification/issues/134
+            return _specificationEvaluator.GetQuery(queryable, specification, evaluateCriteriaOnly);
         }
 
         protected virtual IQueryable<T> ApplyQueryFilter(IQueryable<T> queryable)
         {
-            if (_filter.IsEnabled<ISoftDelete>() && typeof(ISoftDelete).IsAssignableFrom(typeof(T)))
-                // ReSharper disable once SuspiciousTypeConversion.Global
-                return queryable.Where(v => !((ISoftDelete)v).IsDeleted);
+            //if (_filter.IsEnabled<ISoftDelete>() && typeof(ISoftDelete).IsAssignableFrom(typeof(T)))
+            //    // ReSharper disable once SuspiciousTypeConversion.Global
+            //    return queryable.Where(v => !((ISoftDelete)v).IsDeleted);
 
             return queryable;
         }

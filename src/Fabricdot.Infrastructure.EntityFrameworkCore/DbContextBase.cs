@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Threading;
 using System.Threading.Tasks;
 using Fabricdot.Domain.Auditing;
@@ -11,6 +12,8 @@ using Fabricdot.Infrastructure.EntityFrameworkCore.Extensions;
 using JetBrains.Annotations;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
+using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Query;
 
 namespace Fabricdot.Infrastructure.EntityFrameworkCore
 {
@@ -23,6 +26,8 @@ namespace Fabricdot.Infrastructure.EntityFrameworkCore
         protected IDataFilter DataFilter => _dataFilter ??= this.GetRequiredService<IDataFilter>();
         protected IAuditPropertySetter AuditPropertySetter => _auditPropertySetter ??= this.GetRequiredService<IAuditPropertySetter>();
         protected IDomainEventsDispatcher DomainEventsDispatcher => _domainEventsDispatcher ??= this.GetRequiredService<IDomainEventsDispatcher>();
+
+        protected bool HasSoftDeleteFilter => DataFilter?.IsEnabled<ISoftDelete>() ?? false;
 
         /// <inheritdoc />
         protected DbContextBase()
@@ -68,7 +73,44 @@ namespace Fabricdot.Infrastructure.EntityFrameworkCore
             return changes;
         }
 
-        protected void Initialize()
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
+
+            // `DbSet<T>` properties need be configured.
+            foreach (var entityType in modelBuilder.Model.GetEntityTypes())
+            {
+                if (entityType.IsOwned())
+                    return;
+
+                ApplyQueryFilter(modelBuilder, entityType);
+            }
+        }
+
+        protected virtual void ApplyQueryFilter(
+            ModelBuilder modelBuilder,
+            IMutableEntityType mutableEntityType)
+        {
+            if (mutableEntityType.BaseType != null)
+                return;
+
+            var clrType = mutableEntityType.ClrType;
+            LambdaExpression filter = null;
+
+            var parameter = Expression.Parameter(mutableEntityType.ClrType);
+            if (typeof(ISoftDelete).IsAssignableFrom(clrType))
+            {
+                Expression<Func<ISoftDelete, bool>> filterExpr = v => !HasSoftDeleteFilter || !v.IsDeleted;
+                var body = ReplacingExpressionVisitor.Replace(filterExpr.Parameters[0], parameter, filterExpr.Body);
+                filter = Expression.Lambda(body, parameter);
+            }
+            if (filter != null)
+            {
+                modelBuilder.Entity(clrType).HasQueryFilter(filter);
+            }
+        }
+
+        protected virtual void Initialize()
         {
             ChangeTracker.CascadeDeleteTiming = CascadeTiming.OnSaveChanges;
             ChangeTracker.DeleteOrphansTiming = CascadeTiming.Immediate;
@@ -119,31 +161,6 @@ namespace Fabricdot.Infrastructure.EntityFrameworkCore
             }
         }
 
-        //protected void UpdateNavigationState(EntityEntry entry, EntityState state)
-        //{
-        //    foreach (var navigationEntry in entry.Navigations)
-        //        switch (navigationEntry)
-        //        {
-        //            case ReferenceEntry referenceEntry:
-        //                var target = referenceEntry.TargetEntry;
-        //                if (target != null)
-        //                {
-        //                    target.State = state;
-        //                    UpdateNavigationState(target, state);
-        //                }
-        //                break;
-        //            case CollectionEntry collectionEntry:
-        //                foreach (var item in collectionEntry.CurrentValue ?? Enumerable.Empty<object>())
-        //                {
-        //                    var entityEntry = collectionEntry.FindEntry(item);
-        //                    if (entityEntry == null)
-        //                        continue;
-        //                    entityEntry.State = state;
-        //                    UpdateNavigationState(entityEntry, state);
-        //                }
-        //                break;
-        //        }
-        //}
         protected bool ShouldBeDeleteSoftly(object entity) => entity is ISoftDelete && DataFilter.IsEnabled<ISoftDelete>();
 
         private static string NewConcurrencyStamp() => Guid.NewGuid().ToString("N");

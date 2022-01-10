@@ -1,4 +1,5 @@
 ﻿using System.Data.Common;
+using System.Diagnostics;
 using Fabricdot.Infrastructure.Data;
 using Fabricdot.Infrastructure.DependencyInjection;
 using Fabricdot.Infrastructure.EntityFrameworkCore.Tests.Data;
@@ -33,6 +34,8 @@ namespace Fabricdot.Infrastructure.EntityFrameworkCore.Tests
             serviceCollection.AddEfDbContext<FakeDbContext>((_, opts) =>
             {
                 opts.UseSqlite(dbconnection);
+                opts.LogTo(v => Debug.Print(v))
+                    .EnableSensitiveDataLogging();
             });
             serviceCollection.AddEfDbContext<FakeSecondDbContext>((_, opts) =>
             {

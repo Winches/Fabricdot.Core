@@ -2,9 +2,12 @@ using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Threading.Tasks;
+using Fabricdot.Domain.Auditing;
+using Fabricdot.Infrastructure.Data.Filters;
 using Fabricdot.Infrastructure.EntityFrameworkCore.Tests.Entities;
 using Fabricdot.Infrastructure.EntityFrameworkCore.Tests.Repositories;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 using Xunit;
 
 namespace Fabricdot.Infrastructure.EntityFrameworkCore.Tests
@@ -12,6 +15,14 @@ namespace Fabricdot.Infrastructure.EntityFrameworkCore.Tests
     [SuppressMessage("ReSharper", "InconsistentNaming")]
     public class SoftDelete_Cascading_Tests : EfRepositoryTestsBase
     {
+        private readonly IDataFilter _dataFilter;
+
+        public SoftDelete_Cascading_Tests()
+        {
+            var provider = ServiceScope.ServiceProvider;
+            _dataFilter = provider.GetRequiredService<IDataFilter>();
+        }
+
         [Fact]
         public async Task DbContextBase_RemoveEntityOfCascadingCollection_SoftDelete()
         {
@@ -80,6 +91,7 @@ namespace Fabricdot.Infrastructure.EntityFrameworkCore.Tests
 
         private async Task<Book> GetBookWithDetails(string bookId)
         {
+            using var scope = _dataFilter.Disable<ISoftDelete>();
             return await FakeDbContext.Set<Book>()
                                       .Include(v => v.Tags)
                                       .Include(v => v.Contents)
