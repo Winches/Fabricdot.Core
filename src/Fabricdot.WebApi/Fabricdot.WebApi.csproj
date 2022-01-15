@@ -3,15 +3,8 @@
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
     <OutputType>Library</OutputType>
-    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <PackageOutputPath>../../packages</PackageOutputPath>
     <PackageId>Fabricdot.WebApi</PackageId>
-    <Authors>Cyan</Authors>
-    <Company></Company>
     <Description>Build DDD application layer in a simple way</Description>
-    <PackageProjectUrl>https://github.com/Winches/Fabricdot.Core</PackageProjectUrl>
-    <RepositoryUrl>https://github.com/Winches/Fabricdot.Core</RepositoryUrl>
-    <Version>0.5.0-alpha</Version>
   </PropertyGroup>
 
   <ItemGroup>
