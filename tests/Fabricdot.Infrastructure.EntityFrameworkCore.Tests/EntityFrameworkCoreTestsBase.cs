@@ -1,5 +1,6 @@
 ﻿using System.Data.Common;
 using System.Diagnostics;
+using AspectCore.Extensions.DependencyInjection;
 using Fabricdot.Infrastructure.Data;
 using Fabricdot.Infrastructure.DependencyInjection;
 using Fabricdot.Infrastructure.EntityFrameworkCore.Tests.Data;
@@ -42,6 +43,8 @@ namespace Fabricdot.Infrastructure.EntityFrameworkCore.Tests
                 opts.UseSqlite(dbconnection);
             });
             serviceCollection.AddTransient<FakeDataBuilder>();
+            serviceCollection.AddInterceptors();
+            UseServiceProviderFactory<DynamicProxyServiceProviderFactory>();
         }
 
         private static DbConnection CreateInMemoryDatabase(string connectionString)

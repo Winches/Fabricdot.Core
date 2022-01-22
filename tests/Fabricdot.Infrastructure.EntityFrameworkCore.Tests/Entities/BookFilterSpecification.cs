@@ -8,5 +8,15 @@ namespace Fabricdot.Infrastructure.EntityFrameworkCore.Tests.Entities
         {
             Query.Where(v => v.Name == name);
         }
+
+        public BookFilterSpecification(
+            string bookId,
+            bool includeDetails)
+        {
+            Query.Where(v => v.Id == bookId);
+            if (includeDetails)
+                Query.Include(v => v.Tags)
+                     .Include(v => v.Contents);
+        }
     }
 }

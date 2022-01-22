@@ -1,3 +1,4 @@
+using AspectCore.Extensions.DependencyInjection;
 using Fabricdot.Infrastructure.DependencyInjection;
 using Fabricdot.Infrastructure.Uow;
 using Fabricdot.Infrastructure.Uow.Abstractions;
@@ -76,12 +77,12 @@ namespace Fabricdot.Infrastructure.Tests.Uow
             Assert.True(uow.IsActive);
         }
 
-        protected sealed override void ConfigureServices(IServiceCollection serviceCollection)
+        protected override sealed void ConfigureServices(IServiceCollection serviceCollection)
         {
             serviceCollection.RegisterModules(new InfrastructureModule());
             serviceCollection.AddTransient<FakeServiceWithUnitOfWorkInterceptor>();
-            ServiceProvider = serviceCollection.AddInterceptors().BuildProxiedServiceProvider();
-            ServiceScope = ServiceProvider.CreateScope();
+            serviceCollection.AddInterceptors();
+            UseServiceProviderFactory<DynamicProxyServiceProviderFactory>();
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using Fabricdot.Infrastructure.Tests.Aspects.Interceptors;
+﻿using AspectCore.Extensions.DependencyInjection;
+using Fabricdot.Infrastructure.Tests.Aspects.Interceptors;
 using Fabricdot.Test.Shared;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -9,7 +10,6 @@ namespace Fabricdot.Infrastructure.Tests.Aspects
         protected readonly ICalculator Calculator;
         protected readonly ICalculator DerivedCalculator;
 
-
         /// <inheritdoc />
         protected InterceptorTestsBase()
         {
@@ -17,8 +17,15 @@ namespace Fabricdot.Infrastructure.Tests.Aspects
             DerivedCalculator = ServiceProvider.GetRequiredService<DerivedCalculator>();
         }
 
+        protected static void ResetInterceptorsState()
+        {
+            IntegerParameterInterceptor.Parameters = default;
+            IntegerResultInterceptor.Result = default;
+            LoggingInterceptor.IsLogged = default;
+        }
+
         /// <inheritdoc />
-        protected sealed override void ConfigureServices(IServiceCollection serviceCollection)
+        protected override sealed void ConfigureServices(IServiceCollection serviceCollection)
         {
             serviceCollection.AddTransient<ICalculator, Calculator>();
             serviceCollection.AddTransient<DerivedCalculator>();
@@ -26,15 +33,8 @@ namespace Fabricdot.Infrastructure.Tests.Aspects
             serviceCollection.AddTransient<IntegerResultInterceptor>();
             serviceCollection.AddTransient<LoggingInterceptor>();
             serviceCollection.AddTransient<ShouldNotInvokedInterceptor>();
-
-            ServiceProvider = serviceCollection.AddInterceptors().BuildProxiedServiceProvider();
-        }
-
-        protected static void ResetInterceptorsState()
-        {
-            IntegerParameterInterceptor.Parameters = default;
-            IntegerResultInterceptor.Result = default;
-            LoggingInterceptor.IsLogged = default;
+            serviceCollection.AddInterceptors();
+            UseServiceProviderFactory<DynamicProxyServiceProviderFactory>();
         }
     }
 }

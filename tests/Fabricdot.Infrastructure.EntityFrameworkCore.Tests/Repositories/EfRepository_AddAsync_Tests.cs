@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
-using Fabricdot.Infrastructure.EntityFrameworkCore.Tests.Data;
 using Fabricdot.Infrastructure.EntityFrameworkCore.Tests.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
@@ -26,9 +25,8 @@ namespace Fabricdot.Infrastructure.EntityFrameworkCore.Tests.Repositories
             var id = Guid.NewGuid().ToString();
             var book = new Book(id, "Python");
             var ret = await _bookRepository.AddAsync(book);
-            await FakeDbContext.SaveChangesAsync();
 
-            var retrievalBook = await FakeDbContext.FindAsync<Book>(id);
+            var retrievalBook = await _bookRepository.GetByIdAsync(id);
             var findId = retrievalBook.Id;
 
             Assert.Same(book, ret);
@@ -40,9 +38,8 @@ namespace Fabricdot.Infrastructure.EntityFrameworkCore.Tests.Repositories
         {
             async Task Func()
             {
-                var book = await FakeDbContext.Set<Book>().FirstOrDefaultAsync(v => v.Name == "CSharp");
+                var book = await _bookRepository.GetByNameAsync("CSharp");
                 await _bookRepository.AddAsync(book);
-                await FakeDbContext.SaveChangesAsync();
             }
 
             await Assert.ThrowsAsync<DbUpdateException>(Func);
@@ -54,7 +51,6 @@ namespace Fabricdot.Infrastructure.EntityFrameworkCore.Tests.Repositories
             async Task Func()
             {
                 await _bookRepository.AddAsync(null);
-                await FakeDbContext.SaveChangesAsync();
             }
 
             await Assert.ThrowsAsync<ArgumentNullException>(Func);

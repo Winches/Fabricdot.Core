@@ -13,13 +13,18 @@ namespace Fabricdot.Infrastructure.EntityFrameworkCore.Tests.Entities
         public string Name { get; private set; }
         public BookContents Contents { get; internal set; }
 
-        public Book(string id, string name)
+        public Book(
+            string id,
+            string name)
         {
             Name = name;
             Id = id;
         }
 
-        public Book(string id, string name, ICollection<string> tags)
+        public Book(
+            string id,
+            string name,
+            ICollection<string> tags)
         {
             Name = name;
             Id = id;
@@ -37,12 +42,17 @@ namespace Fabricdot.Infrastructure.EntityFrameworkCore.Tests.Entities
             CreatorId = creatorId;
         }
 
-        public void AddTag(string name)
+        public void AddTag(
+            string name,
+            bool isDeleted = false)
         {
             var isExisted = _tags.Any(v => v.Name == name);
             if (isExisted)
                 throw new ArgumentException("Tag already existed.");
-            _tags.Add(new BookTag(name));
+            var bookTag = new BookTag(name);
+            if (isDeleted)
+                bookTag.MarkDeleted();
+            _tags.Add(bookTag);
         }
 
         public void RemoveTag(string name)

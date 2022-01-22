@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
-using Fabricdot.Infrastructure.EntityFrameworkCore.Tests.Entities;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Xunit;
 
@@ -22,13 +20,13 @@ namespace Fabricdot.Infrastructure.EntityFrameworkCore.Tests.Repositories
         [Fact]
         public async Task UpdateAsync_GivenSavedEntity_SaveChanges()
         {
-            var book = await FakeDbContext.Set<Book>().FirstOrDefaultAsync(v => v.Name == "CSharp");
+            const string bookName = "CSharp";
             const string expected = "CSharpV2";
+            var book = await _bookRepository.GetByNameAsync(bookName);
             book.ChangeName(expected);
             await _bookRepository.UpdateAsync(book);
-            await FakeDbContext.SaveChangesAsync();
 
-            var retrievalBook = await FakeDbContext.FindAsync<Book>(book.Id);
+            var retrievalBook = await _bookRepository.GetByIdAsync(book.Id);
             var actual = retrievalBook.Name;
             Assert.Equal(expected, actual);
         }
@@ -49,10 +47,7 @@ namespace Fabricdot.Infrastructure.EntityFrameworkCore.Tests.Repositories
         [Fact]
         public async Task UpdateAsync_GivenNull_ThrowException()
         {
-            async Task Func()
-            {
-                await _bookRepository.UpdateAsync(null);
-            }
+            async Task Func() => await _bookRepository.UpdateAsync(null);
             await Assert.ThrowsAsync<ArgumentNullException>(Func);
         }
     }

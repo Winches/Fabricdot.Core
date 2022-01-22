@@ -4,51 +4,61 @@ using System.Linq;
 using System.Threading.Tasks;
 using Fabricdot.Domain.Auditing;
 using Fabricdot.Infrastructure.Data.Filters;
+using Fabricdot.Infrastructure.EntityFrameworkCore.Tests.Data;
 using Fabricdot.Infrastructure.EntityFrameworkCore.Tests.Entities;
 using Fabricdot.Infrastructure.EntityFrameworkCore.Tests.Repositories;
-using Microsoft.EntityFrameworkCore;
+using Fabricdot.Infrastructure.Uow.Abstractions;
 using Microsoft.Extensions.DependencyInjection;
 using Xunit;
 
 namespace Fabricdot.Infrastructure.EntityFrameworkCore.Tests
 {
     [SuppressMessage("ReSharper", "InconsistentNaming")]
-    public class SoftDelete_Cascading_Tests : EfRepositoryTestsBase
+    public class SoftDelete_Cascading_Tests : EntityFrameworkCoreTestsBase
     {
         private readonly IDataFilter _dataFilter;
+        private readonly IBookRepository _bookRepository;
 
         public SoftDelete_Cascading_Tests()
         {
             var provider = ServiceScope.ServiceProvider;
             _dataFilter = provider.GetRequiredService<IDataFilter>();
+            _bookRepository = provider.GetRequiredService<IBookRepository>();
         }
 
         [Fact]
         public async Task DbContextBase_RemoveEntityOfCascadingCollection_SoftDelete()
         {
-            var book = await BuildBookAsync();
-            var tagName = book.Tags.First().Name;
-            book.RemoveTag(tagName);
-            FakeDbContext.Update(book);
-            await FakeDbContext.SaveChangesAsync();
+            var specification = new BookFilterSpecification(FakeDataBuilder.BookWithTagsId, true);
+            string tagName = null;
+            await UseUowAsync(async () =>
+            {
+                var book = await _bookRepository.GetBySpecAsync(specification);
+                tagName = book.Tags.First().Name;
+                book.RemoveTag(tagName);
+                await _bookRepository.UpdateAsync(book);
+            });
 
-            var retrievalBook = await GetBookWithDetails(book.Id);
-            var tags = retrievalBook.Tags;
-            var tag = tags.SingleOrDefault(v => v.Name == tagName);
+            using var scope = _dataFilter.Disable<ISoftDelete>();
+            var retrievalBook = await _bookRepository.GetBySpecAsync(specification);
+            var tag = retrievalBook.Tags.SingleOrDefault(v => v.Name == tagName);
             Assert.NotNull(tag);
             Assert.True(tag.IsDeleted);
-            Assert.DoesNotContain(tags, v => v.Name != tagName && v.IsDeleted);
         }
 
         [Fact]
         public async Task DbContextBase_RemoveCascadingObject_SoftDelete()
         {
-            var book = await BuildBookAsync();
-            book.Contents = null;
-            FakeDbContext.Update(book);
-            await FakeDbContext.SaveChangesAsync();
+            var specification = new BookFilterSpecification(FakeDataBuilder.BookWithTagsId, true);
+            await UseUowAsync(async () =>
+            {
+                var book = await _bookRepository.GetBySpecAsync(specification);
+                book.Contents = null;
+                await _bookRepository.UpdateAsync(book);
+            });
 
-            var retrievalBook = await GetBookWithDetails(book.Id);
+            using var scope = _dataFilter.Disable<ISoftDelete>();
+            var retrievalBook = await _bookRepository.GetBySpecAsync(specification);
             var contents = retrievalBook.Contents;
             Assert.NotNull(contents);
             Assert.True(contents.IsDeleted);
@@ -57,45 +67,43 @@ namespace Fabricdot.Infrastructure.EntityFrameworkCore.Tests
         [Fact]
         public async Task DbContextBase_RemovePrincpalEntity_KeepCascadingEntitiesState()
         {
-            var book = await BuildBookAsync();
-            var tagName = book.Tags.First().Name;
-            book.RemoveTag(tagName);
-            FakeDbContext.Remove(book);
-            await FakeDbContext.SaveChangesAsync();
+            var specification = new BookFilterSpecification(FakeDataBuilder.BookWithTagsId, true);
+            string tagName = null;
+            await UseUowAsync(async () =>
+            {
+                var book = await _bookRepository.GetBySpecAsync(specification);
+                tagName = book.Tags.First().Name;
+                book.RemoveTag(tagName);
+                await _bookRepository.DeleteAsync(book);
+            });
 
-            var retrievalBook = await GetBookWithDetails(book.Id);
-            var tags = retrievalBook.Tags;
-            var tag = tags.SingleOrDefault(v => v.Name == tagName);
+            using var scope = _dataFilter.Disable<ISoftDelete>();
+            var retrievalBook = await _bookRepository.GetBySpecAsync(specification);
+            var tag = retrievalBook.Tags.SingleOrDefault(v => v.Name == tagName);
             var contents = retrievalBook.Contents;
 
             Assert.NotNull(retrievalBook);
             Assert.True(retrievalBook.IsDeleted);
             Assert.True(tag.IsDeleted);
-            Assert.DoesNotContain(tags, v => v.Name != tagName && v.IsDeleted);
             Assert.NotNull(contents);
             Assert.False(contents.IsDeleted);
         }
 
-        private async Task<Book> BuildBookAsync()
+        [Fact]
+        public async Task DbContextBase_QueryWithCascadingCollection_IgnoreDeletedEntity()
         {
-            var book = new Book(
-                Guid.NewGuid().ToString(),
-                this.GetType().Name,
-                new[] { "Tag1", "Tag2", "Tag3" });
-            book.Contents = new BookContents("Introduce something.");
-            await FakeDbContext.AddAsync(book);
-            await FakeDbContext.SaveChangesAsync();
-
-            return book;
+            var specification = new BookFilterSpecification(FakeDataBuilder.BookWithTagsId, true);
+            using var scope = _dataFilter.Enable<ISoftDelete>();
+            var book = await _bookRepository.GetBySpecAsync(specification);
+            Assert.DoesNotContain(book.Tags, v => v.Name == FakeDataBuilder.DeletedBookTag);
         }
 
-        private async Task<Book> GetBookWithDetails(string bookId)
+        private async Task UseUowAsync(Func<Task> func)
         {
-            using var scope = _dataFilter.Disable<ISoftDelete>();
-            return await FakeDbContext.Set<Book>()
-                                      .Include(v => v.Tags)
-                                      .Include(v => v.Contents)
-                                      .SingleOrDefaultAsync(v => v.Id == bookId);
+            var uowMgr = ServiceScope.ServiceProvider.GetRequiredService<IUnitOfWorkManager>();
+            using var uow = uowMgr.Begin(requireNew: true);
+            await func();
+            await uow.CommitChangesAsync();
         }
     }
 }

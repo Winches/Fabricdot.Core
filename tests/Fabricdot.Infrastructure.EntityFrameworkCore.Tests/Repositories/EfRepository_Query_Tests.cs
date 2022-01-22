@@ -1,8 +1,10 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Threading.Tasks;
+using Fabricdot.Domain.Auditing;
+using Fabricdot.Infrastructure.Data.Filters;
+using Fabricdot.Infrastructure.EntityFrameworkCore.Tests.Data;
 using Fabricdot.Infrastructure.EntityFrameworkCore.Tests.Entities;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Xunit;
 
@@ -13,39 +15,29 @@ namespace Fabricdot.Infrastructure.EntityFrameworkCore.Tests.Repositories
     {
         private readonly IBookRepository _bookRepository;
         private readonly IAuthorRepository _authorRepository;
-        private readonly Author _softDeletedAuthor;
+        private readonly IDataFilter _dataFilter;
 
         public EfRepository_Query_Tests()
         {
             var provider = ServiceScope.ServiceProvider;
             _bookRepository = provider.GetRequiredService<IBookRepository>();
             _authorRepository = provider.GetRequiredService<IAuthorRepository>();
-
-            _softDeletedAuthor = SoftDeleteAuthor();
+            _dataFilter = provider.GetRequiredService<IDataFilter>();
         }
 
         [Theory]
-        [InlineData("CSharp")]
+        [InlineData("1")]
         [InlineData(null)]
         public async Task GetByIdAsync_GivenId_ReturnEntity(string bookId)
         {
-            var expected = await FakeDbContext.FindAsync<Book>(bookId);
             var actual = await _bookRepository.GetByIdAsync(bookId);
-            Assert.Equal(expected, actual);
+            Assert.Equal(bookId, actual?.Id);
         }
 
-        //private async Task<Author> GetSoftDeletedAuthorAsync()
-        //{
-        //    var author = await _authorRepository.GetByIdAsync(1);
-        //    await _authorRepository.DeleteAsync(author);
-        //    await UnitOfWork.CommitChangesAsync();
-        //    return author;
-        //}
         [Fact]
         public async Task GetByIdAsync_GivenSoftDeletedId_ReturnNull()
         {
-            var author = _softDeletedAuthor;
-            var actual = await _authorRepository.GetByIdAsync(author.Id);
+            var actual = await _authorRepository.GetByIdAsync(FakeDataBuilder.DeletedAuthorId);
             Assert.Null(actual);
         }
 
@@ -55,7 +47,7 @@ namespace Fabricdot.Infrastructure.EntityFrameworkCore.Tests.Repositories
         public async Task GetBySpecAsync_GivenSpec_ReturnSpecificEntity(string bookName)
         {
             var specification = new BookFilterSpecification(bookName);
-            var expected = await FakeDbContext.Set<Book>().FirstOrDefaultAsync(v => v.Name == bookName);
+            var expected = await _bookRepository.GetByNameAsync(bookName);
             var actual = await _bookRepository.GetBySpecAsync(specification);
             Assert.Equal(expected, actual);
         }
@@ -63,8 +55,7 @@ namespace Fabricdot.Infrastructure.EntityFrameworkCore.Tests.Repositories
         [Fact]
         public async Task GetBySpecAsync_GivenSoftDeletedSpec_ReturnNull()
         {
-            var author = _softDeletedAuthor;
-            var specification = new AuthorFilterSpecification(author.LastName);
+            var specification = new AuthorFilterSpecification(FakeDataBuilder.DeletedAuthorId);
             var actual = await _authorRepository.GetBySpecAsync(specification);
             Assert.Null(actual);
         }
@@ -75,16 +66,15 @@ namespace Fabricdot.Infrastructure.EntityFrameworkCore.Tests.Repositories
         public async Task ListAsync_GivenSpec_ReturnSpecificEntities(string bookName)
         {
             var specification = new BookFilterSpecification(bookName);
-            var expected = await FakeDbContext.Set<Book>().Where(v => v.Name == bookName).ToListAsync();
-            var actual = await _bookRepository.ListAsync(specification);
+            var expected = await _bookRepository.GetByNameAsync(bookName);
+            var actual = (await _bookRepository.ListAsync(specification)).SingleOrDefault();
             Assert.Equal(expected, actual);
         }
 
         [Fact]
         public async Task ListAsync_GivenSpec_ReturnSpecificEntitiesWithoutSoftDeleted()
         {
-            var author = _softDeletedAuthor;
-            var specification = new AuthorFilterSpecification(author.LastName);
+            var specification = new AuthorFilterSpecification(FakeDataBuilder.DeletedAuthorId);
             var actual = await _authorRepository.ListAsync(specification);
             Assert.Empty(actual);
         }
@@ -92,26 +82,24 @@ namespace Fabricdot.Infrastructure.EntityFrameworkCore.Tests.Repositories
         [Fact]
         public async Task ListAsync_ReturnAllEntities()
         {
-            var expected = await FakeDbContext.Set<Book>().ToListAsync();
             var actual = await _bookRepository.ListAsync();
-            Assert.Equal(expected, actual);
+            Assert.NotEmpty(actual);
         }
 
         [Fact]
         public async Task ListAsync_ReturnAllEntitiesWithoutSoftDeleted()
         {
-            var author = _softDeletedAuthor;
             var actual = await _authorRepository.ListAsync();
-            Assert.DoesNotContain(author, actual);
+            Assert.DoesNotContain(actual, v => v.Id == FakeDataBuilder.DeletedAuthorId);
         }
 
         [Theory]
         [InlineData("CSharp")]
-        [InlineData(null)]
+        [InlineData("Java")]
         public async Task CountAsync_GivenSpec_ReturnCorrectlyCount(string bookName)
         {
             var specification = new BookFilterSpecification(bookName);
-            var expected = await FakeDbContext.Set<Book>().CountAsync(v => v.Name == bookName);
+            var expected = 1;
             var actual = await _bookRepository.CountAsync(specification);
             Assert.Equal(expected, actual);
         }
@@ -119,19 +107,15 @@ namespace Fabricdot.Infrastructure.EntityFrameworkCore.Tests.Repositories
         [Fact]
         public async Task CountAsync_GivenSpec_ReturnCorrectlyCountWithoutSoftDeleted()
         {
-            var author = _softDeletedAuthor;
-            var specification = new AuthorFilterSpecification(author.LastName);
+            var specification = new AuthorFilterSpecification(FakeDataBuilder.DeletedAuthorId);
             var actual = await _authorRepository.CountAsync(specification);
             Assert.Equal(0, actual);
         }
 
-        private Author SoftDeleteAuthor()
+        private async Task<Author> GetDeletedAuthorAsync()
         {
-            var author = FakeDbContext.Find<Author>(2);
-            author.MarkDeleted();
-            FakeDbContext.Update(author);
-            FakeDbContext.SaveChanges();
-            return author;
+            using var scope = _dataFilter.Disable<ISoftDelete>();
+            return await _authorRepository.GetByIdAsync(FakeDataBuilder.DeletedAuthorId);
         }
     }
 }

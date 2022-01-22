@@ -14,5 +14,7 @@ namespace Fabricdot.Infrastructure.EntityFrameworkCore.Tests.Entities
         protected BookTag()
         {
         }
+
+        public void MarkDeleted() => IsDeleted = true;
     }
 }

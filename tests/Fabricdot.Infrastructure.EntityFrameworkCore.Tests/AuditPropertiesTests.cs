@@ -13,7 +13,7 @@ using Xunit;
 namespace Fabricdot.Infrastructure.EntityFrameworkCore.Tests
 {
     [SuppressMessage("ReSharper", "InconsistentNaming")]
-    public class AuditPropertiesTests : EfRepositoryTestsBase
+    public class AuditPropertiesTests : EntityFrameworkCoreTestsBase
     {
         internal class AuthorCreatedEventHandler : IDomainEventHandler<EntityCreatedEvent<Author>>
         {
@@ -24,7 +24,9 @@ namespace Fabricdot.Infrastructure.EntityFrameworkCore.Tests
                 _bookRepository = bookRepository;
             }
 
-            public async Task HandleAsync(EntityCreatedEvent<Author> domainEvent, CancellationToken cancellationToken)
+            public async Task HandleAsync(
+                EntityCreatedEvent<Author> domainEvent,
+                CancellationToken cancellationToken)
             {
                 var author = domainEvent.Entity;
                 var book = new Book(author.Id.ToString(), $"{author.FirstName} Default Book.");
@@ -32,66 +34,58 @@ namespace Fabricdot.Infrastructure.EntityFrameworkCore.Tests
             }
         }
 
-        internal class AuthorChangedEventHandler : IDomainEventHandler<EntityChangedEvent<Author>>
+        private readonly IAuthorRepository _authorRepository;
+        private readonly IBookRepository _bookRepository;
+        private static string CurrentUserId { get; } = "1";
+        private static string CurrentUserName { get; } = "Jason";
+
+        public AuditPropertiesTests()
         {
-            private readonly IBookRepository _bookRepository;
-
-            public AuthorChangedEventHandler(IBookRepository bookRepository)
-            {
-                _bookRepository = bookRepository;
-            }
-
-            public async Task HandleAsync(EntityChangedEvent<Author> domainEvent, CancellationToken cancellationToken)
-            {
-                //var author = domainEvent.Entity;
-                await _bookRepository.GetByIdAsync("", cancellationToken);
-            }
+            var serviceProvider = ServiceScope.ServiceProvider;
+            _authorRepository = serviceProvider.GetService<IAuthorRepository>();
+            _bookRepository = serviceProvider.GetService<IBookRepository>();
         }
 
         [Fact]
         public async Task SaveChangesAsync_CreateEntity_SetCreationProperties()
         {
             var author = new Author(100, "Martin", "Fowler");
-            await FakeDbContext.AddAsync(author);
-            await FakeDbContext.SaveChangesAsync();
+            await _authorRepository.AddAsync(author);
 
             Assert.NotEqual(default, author.CreationTime);
-            Assert.NotNull(author.CreatorId);
+            Assert.Equal(CurrentUserId, author.CreatorId);
         }
 
         [Fact]
         public async Task SaveChangesAsync_CreateEntity_SetModificationProperties()
         {
             var author = new Author(100, "Martin", "Fowler");
-            await FakeDbContext.AddAsync(author);
-            await FakeDbContext.SaveChangesAsync();
+            await _authorRepository.AddAsync(author);
 
             Assert.NotEqual(default, author.LastModificationTime);
-            Assert.NotNull(author.LastModifierId);
+            Assert.Equal(CurrentUserId, author.LastModifierId);
         }
 
         [Fact]
         public async Task SaveChangesAsync_UpdateEntity_SetModificationProperties()
         {
-            var author = await FakeDbContext.FindAsync<Author>(1);
-            FakeDbContext.Update(author);
+            var author = await _authorRepository.GetByIdAsync(1);
             var low = SystemClock.Now;
-            await FakeDbContext.SaveChangesAsync();
+            await _authorRepository.UpdateAsync(author);
             var high = SystemClock.Now;
 
             Assert.InRange(author.LastModificationTime, low, high);
-            Assert.NotNull(author.LastModifierId);
+            Assert.Equal(CurrentUserId, author.LastModifierId);
         }
 
         [Fact]
         public async Task SaveChangesAsync_DeleteEntity_SetDeletionProperties()
         {
-            var author = await FakeDbContext.FindAsync<Author>(1);
-            FakeDbContext.Remove(author);
-            await FakeDbContext.SaveChangesAsync();
+            var author = await _authorRepository.GetByIdAsync(1);
+            await _authorRepository.DeleteAsync(author);
 
             Assert.NotEqual(default, author.DeletionTime);
-            Assert.NotNull(author.DeleterId);
+            Assert.Equal(CurrentUserId, author.DeleterId);
         }
 
         [Fact]
@@ -99,35 +93,20 @@ namespace Fabricdot.Infrastructure.EntityFrameworkCore.Tests
         {
             var author = new Author(100, "Martin", "Fowler");
             author.AddDomainEvent(new EntityCreatedEvent<Author>(author));
-            await FakeDbContext.AddAsync(author);
-            await FakeDbContext.SaveChangesAsync();
+            await _authorRepository.AddAsync(author);
 
-            var book = await FakeDbContext.FindAsync<Book>(author.Id.ToString());
-
-            Assert.NotEqual(default, book.CreationTime);
-            Assert.NotNull(book.CreatorId);
-        }
-
-        [Fact]
-        public async Task SaveChangesAsync_UpdateEntityByDomainEvent_SetModificationProperties()
-        {
-            var author = new Author(100, "Martin", "Fowler");
-            author.AddDomainEvent(new EntityCreatedEvent<Author>(author));
-            await FakeDbContext.AddAsync(author);
-            await FakeDbContext.SaveChangesAsync();
-
-            var book = await FakeDbContext.FindAsync<Book>(author.Id.ToString());
+            var book = await _bookRepository.GetByIdAsync(author.Id.ToString());
 
             Assert.NotEqual(default, book.CreationTime);
-            Assert.NotNull(book.CreatorId);
+            Assert.Equal(CurrentUserId, book.CreatorId);
         }
 
         protected override void ConfigureServices(IServiceCollection serviceCollection)
         {
             base.ConfigureServices(serviceCollection);
             var mock = new Mock<ICurrentUser>();
-            mock.SetupGet(v => v.Id).Returns("1");
-            mock.SetupGet(v => v.UserName).Returns("Jason");
+            mock.SetupGet(v => v.Id).Returns(CurrentUserId);
+            mock.SetupGet(v => v.UserName).Returns(CurrentUserName);
             serviceCollection.AddScoped(_ => mock.Object);
         }
     }

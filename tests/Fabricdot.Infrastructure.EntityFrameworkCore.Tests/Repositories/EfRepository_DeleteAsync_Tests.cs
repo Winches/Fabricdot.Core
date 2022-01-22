@@ -21,27 +21,14 @@ namespace Fabricdot.Infrastructure.EntityFrameworkCore.Tests.Repositories
             _authorRepository = provider.GetRequiredService<IAuthorRepository>();
         }
 
-        //[Fact]
-        //public async Task DeleteAsync_GivenEntityWithoutISoftDeleted_PhysicalDelete()
-        //{
-        //    var book = await FakeDbContext.Set<Book>().FirstOrDefaultAsync(v => v.Name == "Java");
-        //    await _bookRepository.DeleteAsync(book);
-        //    await FakeDbContext.SaveChangesAsync();
-
-        //    var deletedBook = await FakeDbContext.FindAsync<Book>(book.Id);
-        //    Assert.Null(deletedBook);
-        //}
-
         [Fact]
-        public async Task DeleteAsync_GivenEntityWithISoftDeleted_SoftDelete()
+        public async Task DeleteAsync_GivenEntity_DeleteCorrectly()
         {
-            var author = await FakeDbContext.FindAsync<Author>(1);
+            var author = await _authorRepository.GetByIdAsync(1);
             await _authorRepository.DeleteAsync(author);
-            await FakeDbContext.SaveChangesAsync();
 
-            var deletedAuthor = await FakeDbContext.FindAsync<Author>(author.Id);
-            Assert.NotNull(deletedAuthor);
-            Assert.True(deletedAuthor.IsDeleted);
+            var deletedAuthor = await _authorRepository.GetByIdAsync(author.Id);
+            Assert.Null(deletedAuthor);
         }
 
         [Fact]
@@ -49,24 +36,14 @@ namespace Fabricdot.Infrastructure.EntityFrameworkCore.Tests.Repositories
         {
             var book = new Book("10", "Python");
 
-            async Task Func()
-            {
-                await _bookRepository.DeleteAsync(book);
-                await FakeDbContext.SaveChangesAsync();
-            }
-
+            async Task Func() => await _bookRepository.DeleteAsync(book);
             await Assert.ThrowsAsync<DbUpdateConcurrencyException>(Func);
         }
 
         [Fact]
         public async Task DeleteAsync_GivenNull_ThrowException()
         {
-            async Task Func()
-            {
-                await _bookRepository.DeleteAsync(null);
-                await FakeDbContext.SaveChangesAsync();
-            }
-
+            async Task Func() => await _bookRepository.DeleteAsync(null);
             await Assert.ThrowsAsync<ArgumentNullException>(Func);
         }
     }

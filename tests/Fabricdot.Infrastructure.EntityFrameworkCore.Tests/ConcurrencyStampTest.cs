@@ -53,14 +53,5 @@ namespace Fabricdot.Infrastructure.EntityFrameworkCore.Tests
                 await _bookRepository.DeleteAsync(book1);
             });
         }
-
-        /// <inheritdoc />
-        protected override void ConfigureServices(IServiceCollection serviceCollection)
-        {
-            base.ConfigureServices(serviceCollection);
-
-            ServiceProvider = serviceCollection.AddInterceptors().BuildProxiedServiceProvider();
-            ServiceScope = ServiceProvider.CreateScope();
-        }
     }
 }
