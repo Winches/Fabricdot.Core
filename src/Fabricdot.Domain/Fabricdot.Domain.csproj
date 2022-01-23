@@ -12,6 +12,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Fabricdot.Core\Fabricdot.Core.csproj" />
+    <ProjectReference Include="..\Fabricdot.MultiTenancy.Abstractions\Fabricdot.MultiTenancy.Abstractions.csproj" />
   </ItemGroup>
 
 </Project>

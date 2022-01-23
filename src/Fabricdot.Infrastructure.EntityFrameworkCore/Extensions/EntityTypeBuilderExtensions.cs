@@ -2,6 +2,7 @@
 using Fabricdot.Domain.Auditing;
 using Fabricdot.Domain.Entities;
 using Fabricdot.Domain.ValueObjects;
+using Fabricdot.MultiTenancy.Abstractions;
 using JetBrains.Annotations;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
@@ -38,6 +39,8 @@ namespace Fabricdot.Infrastructure.EntityFrameworkCore.Extensions
             builder.TryConfigureSoftDelete();
             builder.TryConfigureDeletionTime();
             builder.TryConfigureDeleterId();
+
+            builder.TryConfigureMultiTenant();
         }
 
         /// <summary>
@@ -170,6 +173,16 @@ namespace Fabricdot.Infrastructure.EntityFrameworkCore.Extensions
         }
 
         #endregion soft-delete
+
+        public static void TryConfigureMultiTenant([NotNull] this EntityTypeBuilder builder)
+        {
+            if (!typeof(IMultiTenant).IsAssignableFrom(builder.GetClrType()))
+                return;
+
+            builder.Property(nameof(IMultiTenant.TenantId))
+                   .IsRequired(false)
+                   .HasColumnName(nameof(IMultiTenant.TenantId));
+        }
 
         /// <summary>
         ///     try configure navigation property

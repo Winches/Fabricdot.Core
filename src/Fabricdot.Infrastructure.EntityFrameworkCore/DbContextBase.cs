@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 using Fabricdot.Domain.Auditing;
@@ -9,9 +10,11 @@ using Fabricdot.Infrastructure.Data.Filters;
 using Fabricdot.Infrastructure.Domain.Auditing;
 using Fabricdot.Infrastructure.Domain.Events;
 using Fabricdot.Infrastructure.EntityFrameworkCore.Extensions;
+using Fabricdot.MultiTenancy.Abstractions;
 using JetBrains.Annotations;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
+using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Query;
 
@@ -22,12 +25,16 @@ namespace Fabricdot.Infrastructure.EntityFrameworkCore
         private IDataFilter _dataFilter;
         private IAuditPropertySetter _auditPropertySetter;
         private IDomainEventsDispatcher _domainEventsDispatcher;
+        private ICurrentTenant _currentTenant;
 
         protected IDataFilter DataFilter => _dataFilter ??= this.GetRequiredService<IDataFilter>();
         protected IAuditPropertySetter AuditPropertySetter => _auditPropertySetter ??= this.GetRequiredService<IAuditPropertySetter>();
         protected IDomainEventsDispatcher DomainEventsDispatcher => _domainEventsDispatcher ??= this.GetRequiredService<IDomainEventsDispatcher>();
+        protected ICurrentTenant CurrentTenant => _currentTenant ??= this.GetService<ICurrentTenant>();
 
         protected bool HasSoftDeleteFilter => DataFilter?.IsEnabled<ISoftDelete>() ?? false;
+        protected bool HasMultiTenantFilter => DataFilter?.IsEnabled<IMultiTenant>() ?? false;
+        protected Guid? CurrentTenantId => CurrentTenant?.Id;
 
         /// <inheritdoc />
         protected DbContextBase()
@@ -104,6 +111,21 @@ namespace Fabricdot.Infrastructure.EntityFrameworkCore
                 var body = ReplacingExpressionVisitor.Replace(filterExpr.Parameters[0], parameter, filterExpr.Body);
                 filter = Expression.Lambda(body, parameter);
             }
+            if (typeof(IMultiTenant).IsAssignableFrom(clrType))
+            {
+                Expression<Func<IMultiTenant, bool>> filterExpr = v => !HasMultiTenantFilter || v.TenantId == CurrentTenantId;
+                var body = ReplacingExpressionVisitor.Replace(filterExpr.Parameters[0], parameter, filterExpr.Body);
+
+                if (filter == null)
+                {
+                    filter = Expression.Lambda(body, parameter);
+                }
+                else
+                {
+                    filter = Expression.Lambda(Expression.AndAlso(filter.Body, body), parameter);
+                }
+            }
+
             if (filter != null)
             {
                 modelBuilder.Entity(clrType).HasQueryFilter(filter);
@@ -130,6 +152,24 @@ namespace Fabricdot.Infrastructure.EntityFrameworkCore
                 entity.ConcurrencyStamp ??= NewConcurrencyStamp();
         }
 
+        protected virtual void SetTenantId(object entryEntity)
+        {
+            if (entryEntity is IMultiTenant multiTenant)
+            {
+                var propertyInfo = multiTenant.GetType().GetProperty(nameof(IMultiTenant.TenantId));
+                if (propertyInfo?.CanWrite ?? false)
+                {
+                    propertyInfo.SetValue(
+                        multiTenant,
+                        CurrentTenantId,
+                        BindingFlags.Public | BindingFlags.Instance,
+                        null,
+                        null,
+                        null);
+                }
+            }
+        }
+
         protected virtual async Task HandleEntityEntryAsync(EntityEntry entry, CancellationToken cancellationToken)
         {
             var entryEntity = entry.Entity;
@@ -139,7 +179,7 @@ namespace Fabricdot.Infrastructure.EntityFrameworkCore
                     SetConcurrencyStamp(entryEntity);
                     AuditPropertySetter.SetCreationProperties(entryEntity);
                     AuditPropertySetter.SetModificationProperties(entryEntity);
-
+                    SetTenantId(entryEntity);
                     break;
 
                 case EntityState.Modified:

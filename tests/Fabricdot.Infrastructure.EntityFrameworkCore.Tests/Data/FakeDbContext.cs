@@ -15,6 +15,8 @@ namespace Fabricdot.Infrastructure.EntityFrameworkCore.Tests.Data
 
         public DbSet<BookContents> BookContents { get; set; }
 
+        public DbSet<Employee> Employees { get; set; }
+
         /// <inheritdoc />
         public FakeDbContext([NotNull] DbContextOptions<FakeDbContext> options) : base(options)
         {

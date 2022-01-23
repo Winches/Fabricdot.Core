@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using Castle.Core.Internal;
 using Fabricdot.Infrastructure.EntityFrameworkCore.Tests.Entities;
 
@@ -10,6 +11,7 @@ namespace Fabricdot.Infrastructure.EntityFrameworkCore.Tests.Data
         public static int DeletedAuthorId => 2;
         public static string BookWithTagsId => "f00015fe-e5a7-419a-a235-a897a5f7df8c";
         public static string DeletedBookTag => "DeletedTag";
+        public static Guid TenantId => new("86b2b1b1-ef3d-46e2-a4c6-5a1df6f694d4");
 
         public FakeDataBuilder(FakeDbContext dbContext)
         {
@@ -20,6 +22,7 @@ namespace Fabricdot.Infrastructure.EntityFrameworkCore.Tests.Data
         {
             await AddBooks();
             await AddAuthors();
+            await AddEmployeesAsync();
         }
 
         private async Task AddBooks()
@@ -58,6 +61,21 @@ namespace Fabricdot.Infrastructure.EntityFrameworkCore.Tests.Data
 
             foreach (var author in authors)
                 await _dbContext.AddAsync(author);
+            _dbContext.SaveChanges();
+        }
+
+        private async Task AddEmployeesAsync()
+        {
+            var employees = new[]
+            {
+                new Employee(Guid.NewGuid(),"Name1",TenantId),
+                new Employee(Guid.NewGuid(),"Name2",TenantId),
+                new Employee(Guid.NewGuid(),"Name3",TenantId),
+                new Employee(Guid.NewGuid(),"Name4"),
+            };
+
+            foreach (var employee in employees)
+                await _dbContext.AddAsync(employee);
             _dbContext.SaveChanges();
         }
     }
