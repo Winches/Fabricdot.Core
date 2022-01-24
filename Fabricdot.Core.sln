@@ -33,7 +33,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fabricdot.MultiTenancy", "s
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fabricdot.MultiTenancy.AspNetCore", "src\Fabricdot.MultiTenancy.AspNetCore\Fabricdot.MultiTenancy.AspNetCore.csproj", "{8637A278-528E-4AED-A232-4E51131E3C9A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fabricdot.MultiTenancy.Abstractions", "src\Fabricdot.MultiTenancy.Abstractions\Fabricdot.MultiTenancy.Abstractions.csproj", "{D47A058D-4D56-4C48-8248-7472E4C6567E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fabricdot.MultiTenancy.Abstractions", "src\Fabricdot.MultiTenancy.Abstractions\Fabricdot.MultiTenancy.Abstractions.csproj", "{D47A058D-4D56-4C48-8248-7472E4C6567E}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fabricdot.MultiTenancy.Tests", "tests\Fabricdot.MultiTenancy.Tests\Fabricdot.MultiTenancy.Tests.csproj", "{92548E77-3D7B-47C0-9ACA-E7530EDFA06D}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fabricdot.MultiTenancy.AspNetCore.Tests", "tests\Fabricdot.MultiTenancy.AspNetCore.Tests\Fabricdot.MultiTenancy.AspNetCore.Tests.csproj", "{1720C705-5B44-4948-88F0-30797AC8BF19}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -97,6 +101,14 @@ Global
 		{D47A058D-4D56-4C48-8248-7472E4C6567E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D47A058D-4D56-4C48-8248-7472E4C6567E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D47A058D-4D56-4C48-8248-7472E4C6567E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{92548E77-3D7B-47C0-9ACA-E7530EDFA06D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{92548E77-3D7B-47C0-9ACA-E7530EDFA06D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{92548E77-3D7B-47C0-9ACA-E7530EDFA06D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{92548E77-3D7B-47C0-9ACA-E7530EDFA06D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1720C705-5B44-4948-88F0-30797AC8BF19}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1720C705-5B44-4948-88F0-30797AC8BF19}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1720C705-5B44-4948-88F0-30797AC8BF19}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1720C705-5B44-4948-88F0-30797AC8BF19}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -116,6 +128,8 @@ Global
 		{4368C038-D306-40DF-B142-E29D98B79FA2} = {E4584D3B-649D-4069-82F1-647552F432FC}
 		{8637A278-528E-4AED-A232-4E51131E3C9A} = {E4584D3B-649D-4069-82F1-647552F432FC}
 		{D47A058D-4D56-4C48-8248-7472E4C6567E} = {E4584D3B-649D-4069-82F1-647552F432FC}
+		{92548E77-3D7B-47C0-9ACA-E7530EDFA06D} = {331C270C-1154-413D-A0B4-29E4E4ACA7C3}
+		{1720C705-5B44-4948-88F0-30797AC8BF19} = {331C270C-1154-413D-A0B4-29E4E4ACA7C3}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {8A1CF1E5-6520-4250-8917-0413CEF753A8}
