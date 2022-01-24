@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Fabricdot.MultiTenancy.Abstractions
+namespace Fabricdot.MultiTenancy
 {
     public class TenantNotFoundException : Exception
     {

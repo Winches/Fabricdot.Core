@@ -1,7 +1,8 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
+using Fabricdot.MultiTenancy.Abstractions;
 
-namespace Fabricdot.MultiTenancy.Abstractions
+namespace Fabricdot.MultiTenancy
 {
     public class TenantContextProvider : ITenantContextProvider
     {

@@ -1,7 +1,8 @@
 ﻿using Fabricdot.Infrastructure.DependencyInjection;
+using Fabricdot.MultiTenancy.Abstractions;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Fabricdot.MultiTenancy.Abstractions
+namespace Fabricdot.MultiTenancy
 {
     public class MultiTenancyModule : IModule
     {
