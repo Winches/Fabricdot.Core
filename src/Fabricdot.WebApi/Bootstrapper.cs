@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
+using Ardalis.GuardClauses;
 using Fabricdot.Infrastructure;
 using Fabricdot.Infrastructure.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection;
@@ -55,27 +56,14 @@ namespace Fabricdot.WebApi
             }
         }
 
-        /// <summary>
-        ///     add modules
-        /// </summary>
-        /// <param name="hostBuilder"></param>
-        public static IHostBuilder AddModules(this IHostBuilder hostBuilder)
+        public static IServiceCollection AddBasicModules(this IServiceCollection services)
         {
-            // EF Core uses this method at design time to access the DbContext
-            // https://docs.microsoft.com/en-us/ef/core/miscellaneous/cli/dbcontext-creation
-            // todo:consider use IDesignTimeDbContextFactory
-            return hostBuilder.ConfigureServices(Register);
-        }
+            Guard.Against.Null(services, nameof(services));
 
-        /// <summary>
-        ///     register modules
-        /// </summary>
-        /// <param name="services"></param>
-        private static void Register(IServiceCollection services)
-        {
             services.RegisterModules(
                 new InfrastructureModule(),
                 new ApplicationModule());
+            return services;
         }
     }
 }
