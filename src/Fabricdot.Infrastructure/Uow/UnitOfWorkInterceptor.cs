@@ -9,7 +9,7 @@ using Microsoft.Extensions.Options;
 
 namespace Fabricdot.Infrastructure.Uow
 {
-    [Interceptor(Order = ORDER, Target = typeof(IRepository))]
+    [Interceptor(Order = ORDER, Target = typeof(IHasUnitOfWorkScope))]
     [UnitOfWorkInterceptor]
     public class UnitOfWorkInterceptor : IInterceptor, ITransientDependency
     {

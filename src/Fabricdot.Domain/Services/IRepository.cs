@@ -6,7 +6,7 @@ using Fabricdot.Domain.Entities;
 
 namespace Fabricdot.Domain.Services
 {
-    public interface IRepository
+    public interface IRepository: IHasUnitOfWorkScope
     {
     }
 
