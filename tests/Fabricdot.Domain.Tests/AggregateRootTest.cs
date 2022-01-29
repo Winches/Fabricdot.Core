@@ -6,9 +6,9 @@ using Xunit;
 
 namespace Fabricdot.Domain.Tests
 {
-    public class AggregateRootBaseTest
+    public class AggregateRootTest
     {
-        public class Book : AggregateRootBase<Guid>
+        public class Book : AggregateRoot<Guid>
         {
         }
 

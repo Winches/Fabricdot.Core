@@ -2,17 +2,12 @@
 
 namespace Fabricdot.Domain.Entities
 {
-    public abstract class EntityBase<TKey> : IEntity<TKey>
+    public abstract class Entity<TKey> : IEntity<TKey>
     {
         /// <summary>
         ///     identity key
         /// </summary>
         public TKey Id { get; protected set; }
-
-        protected bool Equals(EntityBase<TKey> other)
-        {
-            return EqualityComparer<TKey>.Default.Equals(Id, other.Id);
-        }
 
         /// <inheritdoc />
         public override bool Equals(object obj)
@@ -21,7 +16,7 @@ namespace Fabricdot.Domain.Entities
                 return false;
             if (ReferenceEquals(this, obj))
                 return true;
-            return obj.GetType() == GetType() && Equals((EntityBase<TKey>)obj);
+            return obj.GetType() == GetType() && Equals((Entity<TKey>)obj);
         }
 
         /// <inheritdoc />
@@ -32,5 +27,10 @@ namespace Fabricdot.Domain.Entities
 
         /// <inheritdoc />
         public override string ToString() => $"Entity:{GetType().Name}, Id:{Id}";
+
+        protected bool Equals(Entity<TKey> other)
+        {
+            return EqualityComparer<TKey>.Default.Equals(Id, other.Id);
+        }
     }
 }

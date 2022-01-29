@@ -4,9 +4,9 @@ using Xunit;
 
 namespace Fabricdot.Domain.Tests
 {
-    public class EntityBaseTest
+    public class EntityTest
     {
-        internal class Person : EntityBase<Guid>
+        internal class Person : Entity<Guid>
         {
             public string Name { get; private set; }
 

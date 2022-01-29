@@ -3,7 +3,7 @@ using Fabricdot.Domain.Entities;
 
 namespace Fabricdot.Domain.Auditing
 {
-    public abstract class CreationAuditEntity<TKey> : EntityBase<TKey>, ICreationAuditEntity
+    public abstract class CreationAuditEntity<TKey> : Entity<TKey>, ICreationAuditEntity
     {
         public string CreatorId { get; protected set; }
 

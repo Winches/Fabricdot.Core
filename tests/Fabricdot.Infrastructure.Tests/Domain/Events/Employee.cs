@@ -2,7 +2,7 @@
 
 namespace Fabricdot.Infrastructure.Tests.Domain.Events
 {
-    internal class Employee : AggregateRootBase<int>
+    internal class Employee : AggregateRoot<int>
     {
         public string FirstName { get; private set; }
 

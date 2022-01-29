@@ -53,7 +53,7 @@ namespace Fabricdot.Infrastructure.EntityFrameworkCore.Extensions
                 builder.Property(nameof(IHasConcurrencyStamp.ConcurrencyStamp))
                     .IsConcurrencyToken()
                     .IsRequired()
-                    .HasMaxLength(AggregateRootBaseConstant.CONCURRENCY_STAMP_LEN)
+                    .HasMaxLength(AggregateRootConstants.ConcurrencyStampLength)
                     .HasColumnName(nameof(IHasConcurrencyStamp.ConcurrencyStamp));
             return builder;
         }

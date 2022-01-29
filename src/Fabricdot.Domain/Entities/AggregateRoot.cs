@@ -5,7 +5,7 @@ using Fabricdot.Domain.Events;
 
 namespace Fabricdot.Domain.Entities
 {
-    public abstract class AggregateRootBase<TKey> : EntityBase<TKey>, IAggregateRoot, IHasDomainEvents,
+    public abstract class AggregateRoot<TKey> : Entity<TKey>, IAggregateRoot, IHasDomainEvents,
         IHasConcurrencyStamp
     {
         private readonly List<IDomainEvent> _domainEvents = new List<IDomainEvent>();
@@ -18,7 +18,7 @@ namespace Fabricdot.Domain.Entities
         /// <inheritdoc />
         public string ConcurrencyStamp { get; set; }
 
-        protected AggregateRootBase()
+        protected AggregateRoot()
         {
             ConcurrencyStamp = Guid.NewGuid().ToString("N");
         }
