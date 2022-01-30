@@ -2,6 +2,7 @@ using System;
 using Fabricdot.Core.Randoms;
 using Fabricdot.Core.Security;
 using Fabricdot.Core.UniqueIdentifier;
+using Fabricdot.Domain.Events;
 using Fabricdot.Infrastructure.Data;
 using Fabricdot.Infrastructure.Data.Filters;
 using Fabricdot.Infrastructure.DependencyInjection;
@@ -39,7 +40,7 @@ namespace Fabricdot.Infrastructure
                 .AddSingleton<IDataFilter, DataFilter>();
             services.AddTransient<IConnectionStringResolver, DefaultConnectionStringResolver>();
 
-            services.AddScoped<IDomainEventsDispatcher, DomainEventsDispatcher>();
+            services.AddScoped<IDomainEventPublisher, DomainEventPublisher>();
             services.AddSingleton<IGuidGenerator, CombGuidGenerator>();
 
             //var assemblies = new TypeFinder().GetAssemblies().ToArray();

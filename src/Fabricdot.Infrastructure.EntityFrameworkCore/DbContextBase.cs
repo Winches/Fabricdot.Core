@@ -6,9 +6,9 @@ using System.Threading;
 using System.Threading.Tasks;
 using Fabricdot.Domain.Auditing;
 using Fabricdot.Domain.Entities;
+using Fabricdot.Domain.Events;
 using Fabricdot.Infrastructure.Data.Filters;
 using Fabricdot.Infrastructure.Domain.Auditing;
-using Fabricdot.Infrastructure.Domain.Events;
 using Fabricdot.Infrastructure.EntityFrameworkCore.Extensions;
 using Fabricdot.MultiTenancy.Abstractions;
 using JetBrains.Annotations;
@@ -24,12 +24,12 @@ namespace Fabricdot.Infrastructure.EntityFrameworkCore
     {
         private IDataFilter _dataFilter;
         private IAuditPropertySetter _auditPropertySetter;
-        private IDomainEventsDispatcher _domainEventsDispatcher;
+        private IDomainEventPublisher _domainEventPublisher;
         private ICurrentTenant _currentTenant;
 
         protected IDataFilter DataFilter => _dataFilter ??= this.GetRequiredService<IDataFilter>();
         protected IAuditPropertySetter AuditPropertySetter => _auditPropertySetter ??= this.GetRequiredService<IAuditPropertySetter>();
-        protected IDomainEventsDispatcher DomainEventsDispatcher => _domainEventsDispatcher ??= this.GetRequiredService<IDomainEventsDispatcher>();
+        protected IDomainEventPublisher DomainEventPublisher => _domainEventPublisher ??= this.GetRequiredService<IDomainEventPublisher>();
         protected ICurrentTenant CurrentTenant => _currentTenant ??= this.GetService<ICurrentTenant>();
 
         protected bool HasSoftDeleteFilter => DataFilter?.IsEnabled<ISoftDelete>() ?? false;
@@ -52,7 +52,11 @@ namespace Fabricdot.Infrastructure.EntityFrameworkCore
         {
             var entityEntries = ChangeTracker.Entries().ToList();
             var changeInfos = EntityChangeInfoUtil.GetChangeInfos(entityEntries);
-            await DomainEventsDispatcher.DispatchEventsAsync(changeInfos, cancellationToken);
+
+            var domainEntities = changeInfos.Select(v => v.Entity)
+                                            .OfType<IHasDomainEvents>()
+                                            .ToArray();
+            await DomainEventPublisher.PublishAsync(domainEntities, cancellationToken);
 
             foreach (var entry in ChangeTracker.Entries())
                 await HandleEntityEntryAsync(entry, cancellationToken);

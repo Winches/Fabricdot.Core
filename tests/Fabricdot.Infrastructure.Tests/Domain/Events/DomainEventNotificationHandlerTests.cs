@@ -60,7 +60,7 @@ namespace Fabricdot.Infrastructure.Tests.Domain.Events
         public async Task Handle_NonSubscription_DoNothing()
         {
             var employee = new Employee("Allen", "Yeager", "1");
-            var @event = new EntityDeletedEvent<Employee>(employee);
+            var @event = new EntityRemovedEvent<Employee>(employee);
             await _notificationHandler.Handle(new DomainEventNotification(@event), default);
         }
 
