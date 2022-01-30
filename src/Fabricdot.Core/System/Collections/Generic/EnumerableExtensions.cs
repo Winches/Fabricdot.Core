@@ -55,6 +55,11 @@ namespace System.Collections.Generic
             return string.Join(separator, source);
         }
 
+        public static string JoinAsString(this IEnumerable<string> source, char separator)
+        {
+            return string.Join(separator, source);
+        }
+
         public static IEnumerable<T> WhereIf<T>(
             IQueryable<T> query,
             Expression<Func<bool>> condition,

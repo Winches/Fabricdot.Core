@@ -1,10 +1,27 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Concurrent;
+using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Linq;
+using System.Reflection;
+using Fabricdot.Domain.SharedKernel;
 
 namespace Fabricdot.Domain.ValueObjects
 {
-    public abstract class ValueObject
+    public abstract class ValueObject : IEquatable<ValueObject>
     {
+        private static readonly ConcurrentDictionary<Type, IReadOnlyCollection<PropertyInfo>> _properties = new();
+
+        public static bool operator ==(ValueObject left, ValueObject right)
+        {
+            return Equals(left, right);
+        }
+
+        public static bool operator !=(ValueObject left, ValueObject right)
+        {
+            return !Equals(left, right);
+        }
+
         public override bool Equals(object obj)
         {
             if (obj == null || obj.GetType() != GetType())
@@ -28,24 +45,35 @@ namespace Fabricdot.Domain.ValueObjects
 
         public override int GetHashCode()
         {
-            return GetAtomicValues()
-                .Select(x => x != null ? x.GetHashCode() : 0)
-                .Aggregate((x, y) => x ^ y);
+            return GetAtomicValues().Select(x => x?.GetHashCode() ?? 0)
+                                    .Aggregate((x, y) => x ^ y);
         }
 
-        protected static bool EqualOperator(ValueObject left, ValueObject right)
+        public override string ToString()
         {
-            if (left is null ^ right is null)
-                return false;
-
-            return left?.Equals(right) != false;
+            return $"{{{GetProperties().Select(v => $"{v.Name}: {v.GetValue(this)}").JoinAsString(',')}}}";
         }
 
-        protected static bool NotEqualOperator(ValueObject left, ValueObject right)
+        public bool Equals(ValueObject other)
         {
-            return !EqualOperator(left, right);
+            return Equals((object)other);
         }
 
-        protected abstract IEnumerable<object> GetAtomicValues();
+        protected virtual IEnumerable<PropertyInfo> GetProperties()
+        {
+            return _properties.GetOrAdd(
+                GetType(),
+                t => t
+                    .GetTypeInfo()
+                    .GetProperties(BindingFlags.Instance | BindingFlags.Public)
+                    .Where(v => !v.IsDefined(typeof(IgnoreMemberAttribute)))
+                    .OrderBy(p => p.Name)
+                    .ToImmutableList());
+        }
+
+        protected virtual IEnumerable<object> GetAtomicValues()
+        {
+            return GetProperties().Select(x => x.GetValue(this));
+        }
     }
 }

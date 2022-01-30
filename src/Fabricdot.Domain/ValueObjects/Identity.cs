@@ -1,6 +1,9 @@
-﻿namespace Fabricdot.Domain.ValueObjects
+﻿using System;
+
+namespace Fabricdot.Domain.ValueObjects
 {
-    public abstract class Identity<T> : SingleValueObject<T>, IIdentity<T>
+    // TODO: refactor
+    public abstract class Identity<T> : SingleValueObject<T>, IIdentity<T> where T : IComparable
     {
         /// <inheritdoc />
         protected Identity(T value) : base(value)
