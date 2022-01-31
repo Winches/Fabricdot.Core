@@ -25,7 +25,7 @@ namespace Fabricdot.WebApi
 
             //principal
             services.AddHttpContextAccessor();
-            services.AddSingleton<ICurrentPrincipalAccessor, HttpContextCurrentPrincipalAccessor>();
+            services.AddSingleton<IPrincipalAccessor, HttpContextPrincipalAccessor>();
 
             //tracing
             services.AddCorrelationId();

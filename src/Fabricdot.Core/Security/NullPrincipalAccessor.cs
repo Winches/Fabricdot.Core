@@ -4,7 +4,7 @@ using Fabricdot.Core.DependencyInjection;
 
 namespace Fabricdot.Core.Security
 {
-    public class NullCurrentPrincipalAccessor : ICurrentPrincipalAccessor, ISingletonDependency
+    public class NullPrincipalAccessor : IPrincipalAccessor, ISingletonDependency
     {
         /// <inheritdoc />
         public ClaimsPrincipal Principal { get; } = new ClaimsPrincipal();

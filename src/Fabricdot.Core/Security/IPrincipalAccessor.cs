@@ -3,7 +3,7 @@ using System.Security.Claims;
 
 namespace Fabricdot.Core.Security
 {
-    public interface ICurrentPrincipalAccessor
+    public interface IPrincipalAccessor
     {
         ClaimsPrincipal Principal { get; }
 

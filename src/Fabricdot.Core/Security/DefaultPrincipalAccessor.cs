@@ -5,7 +5,7 @@ using Fabricdot.Core.Delegates;
 
 namespace Fabricdot.Core.Security
 {
-    public class DefaultCurrentPrincipalAccessor : ICurrentPrincipalAccessor
+    public class DefaultPrincipalAccessor : IPrincipalAccessor
     {
         private readonly AsyncLocal<ClaimsPrincipal> _currentPrincipal = new AsyncLocal<ClaimsPrincipal>();
 

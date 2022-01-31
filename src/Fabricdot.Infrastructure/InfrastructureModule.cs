@@ -32,7 +32,7 @@ namespace Fabricdot.Infrastructure
             services.TryAddSingleton<ICorrelationIdProvider, DefaultCorrelationIdProvider>();
 
             services
-                .AddSingleton<ICurrentPrincipalAccessor, DefaultCurrentPrincipalAccessor>()
+                .AddSingleton<IPrincipalAccessor, DefaultPrincipalAccessor>()
                 .AddTransient<ICurrentUser, CurrentUser>();
 
             //repository filter

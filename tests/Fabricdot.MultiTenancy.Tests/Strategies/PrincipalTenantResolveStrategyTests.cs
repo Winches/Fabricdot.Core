@@ -49,7 +49,7 @@ namespace Fabricdot.MultiTenancy.Tests.Strategies
 
         protected override void ConfigureServices(IServiceCollection serviceCollection)
         {
-            var mock = new Mock<ICurrentPrincipalAccessor>();
+            var mock = new Mock<IPrincipalAccessor>();
             mock.SetupGet(v => v.Principal).Returns(() => CurrentPrincipal);
             serviceCollection.AddScoped(_ => mock.Object);
             new MultiTenancyModule().Configure(serviceCollection);

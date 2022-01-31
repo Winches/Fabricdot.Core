@@ -4,11 +4,11 @@ using Microsoft.AspNetCore.Http;
 
 namespace Fabricdot.WebApi.Securirty
 {
-    public class HttpContextCurrentPrincipalAccessor : DefaultCurrentPrincipalAccessor
+    public class HttpContextPrincipalAccessor : DefaultPrincipalAccessor
     {
         private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public HttpContextCurrentPrincipalAccessor(IHttpContextAccessor httpContextAccessor)
+        public HttpContextPrincipalAccessor(IHttpContextAccessor httpContextAccessor)
         {
             _httpContextAccessor = httpContextAccessor;
         }

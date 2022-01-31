@@ -11,7 +11,7 @@ namespace Fabricdot.MultiTenancy.Strategies
 
         public Task<string> ResolveIdentifierAsync(TenantResolveContext context)
         {
-            var principalAccessor = context.ServiceProvider.GetRequiredService<ICurrentPrincipalAccessor>();
+            var principalAccessor = context.ServiceProvider.GetRequiredService<IPrincipalAccessor>();
             var principal = principalAccessor.Principal;
             if (principal?.Identity is not { IsAuthenticated: true })
                 return Task.FromResult<string>(null);

@@ -9,7 +9,7 @@ namespace Fabricdot.Infrastructure.Security
     {
         private static readonly Claim[] EmptyClaimsArray = Array.Empty<Claim>();
 
-        private readonly ICurrentPrincipalAccessor _principalAccessor;
+        private readonly IPrincipalAccessor _principalAccessor;
 
         public virtual bool IsAuthenticated => !string.IsNullOrEmpty(Id);
 
@@ -21,7 +21,7 @@ namespace Fabricdot.Infrastructure.Security
 
         public virtual string[] Roles => FindClaims(ClaimTypes.Role).Select(c => c.Value).ToArray();
 
-        public CurrentUser(ICurrentPrincipalAccessor principalAccessor)
+        public CurrentUser(IPrincipalAccessor principalAccessor)
         {
             _principalAccessor = principalAccessor;
         }

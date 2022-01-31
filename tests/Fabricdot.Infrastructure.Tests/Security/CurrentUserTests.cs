@@ -25,7 +25,7 @@ namespace Fabricdot.Infrastructure.Tests.Security
         /// <inheritdoc />
         protected override void ConfigureServices(IServiceCollection serviceCollection)
         {
-            var mock = new Mock<ICurrentPrincipalAccessor>();
+            var mock = new Mock<IPrincipalAccessor>();
             mock.SetupGet(v => v.Principal).Returns(() => ClaimsPrincipal);
             serviceCollection.AddScoped(_ => mock.Object);
             serviceCollection.AddScoped<ICurrentUser, CurrentUser>();
