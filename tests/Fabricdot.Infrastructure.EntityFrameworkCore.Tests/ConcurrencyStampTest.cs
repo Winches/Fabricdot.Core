@@ -1,6 +1,5 @@
 ﻿using System.Threading.Tasks;
-using Fabricdot.Domain.Auditing;
-using Fabricdot.Infrastructure.Data.Filters;
+using Fabricdot.Infrastructure.Domain.Services;
 using Fabricdot.Infrastructure.EntityFrameworkCore.Tests.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
@@ -11,13 +10,11 @@ namespace Fabricdot.Infrastructure.EntityFrameworkCore.Tests
     public class ConcurrencyStampTest : EntityFrameworkCoreTestsBase
     {
         private readonly IBookRepository _bookRepository;
-        private readonly IDataFilter _dataFilter;
 
         public ConcurrencyStampTest()
         {
             var provider = ServiceScope.ServiceProvider;
             _bookRepository = provider.GetRequiredService<IBookRepository>();
-            _dataFilter = provider.GetRequiredService<IDataFilter>();
         }
 
         [Fact]
@@ -32,7 +29,6 @@ namespace Fabricdot.Infrastructure.EntityFrameworkCore.Tests
 
             await Assert.ThrowsAsync<DbUpdateConcurrencyException>(async () =>
             {
-                using var scope = _dataFilter.Disable<ISoftDelete>();
                 await _bookRepository.UpdateAsync(book1);
             });
         }
@@ -49,8 +45,7 @@ namespace Fabricdot.Infrastructure.EntityFrameworkCore.Tests
 
             await Assert.ThrowsAsync<DbUpdateConcurrencyException>(async () =>
             {
-                using var scope = _dataFilter.Disable<ISoftDelete>();
-                await _bookRepository.DeleteAsync(book1);
+                await _bookRepository.HardDeleteAsync(book1);
             });
         }
     }

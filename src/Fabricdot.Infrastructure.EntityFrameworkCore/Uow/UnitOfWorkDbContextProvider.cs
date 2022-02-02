@@ -12,22 +12,22 @@ namespace Fabricdot.Infrastructure.EntityFrameworkCore.Uow
     public class UnitOfWorkDbContextProvider<TDbContext> : IDbContextProvider<TDbContext>, ITransientDependency
         where TDbContext : DbContext
     {
-        private readonly IUnitOfWorkManager _unitOfWorkManager;
-
         private readonly IConnectionStringResolver _connectionStringResolver;
+
+        public IUnitOfWorkManager UnitOfWorkManager { get; }
 
         public UnitOfWorkDbContextProvider(
             IUnitOfWorkManager unitOfWorkManager,
             IConnectionStringResolver connectionStringResolver)
         {
-            _unitOfWorkManager = unitOfWorkManager;
+            UnitOfWorkManager = unitOfWorkManager;
             _connectionStringResolver = connectionStringResolver;
         }
 
         /// <inheritdoc />
         public virtual async Task<TDbContext> GetDbContextAsync(CancellationToken cancellationToken = default)
         {
-            var unitOfWork = _unitOfWorkManager.Available;
+            var unitOfWork = UnitOfWorkManager.Available;
             if (unitOfWork == null)
                 throw new InvalidOperationException("There is no available unit-of-work");
 
@@ -70,8 +70,8 @@ namespace Fabricdot.Infrastructure.EntityFrameworkCore.Uow
         {
             var unitOfWorkOptions = unitOfWork.Options;
             var key = GetFacadeKey(true);
-            var transaction = unitOfWork.Facade.GeTransaction(key) as EfTransactionFacade; //find by connection string
-            if (transaction == null)
+            //find by connection string
+            if (unitOfWork.Facade.GeTransaction(key) is not EfTransactionFacade transaction)
             {
                 var dbContextTransaction =
                     await dbContext.Database.BeginTransactionAsync(unitOfWorkOptions.IsolationLevel, cancellationToken);

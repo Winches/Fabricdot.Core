@@ -22,31 +22,6 @@ namespace Fabricdot.Infrastructure.EntityFrameworkCore.Tests.Repositories
         }
 
         [Fact]
-        public async Task DeleteAsync_GivenSoftDeletedWhenDisableSoftDelete_PhysicalDelete()
-        {
-            const int authorId = 1;
-            var author = await _authorRepository.GetByIdAsync(authorId);
-
-            using var scope = _dataFilter.Disable<ISoftDelete>();
-            await _authorRepository.DeleteAsync(author);
-
-            var retrievalAuthor = await _authorRepository.GetByIdAsync(authorId);
-            Assert.Null(retrievalAuthor);
-        }
-
-        [Fact]
-        public async Task DeleteAsync_GivenISoftDeleteWhenEnableSoftDelete_SoftDelete()
-        {
-            const int authorId = 1;
-            var author = await _authorRepository.GetByIdAsync(authorId);
-            using var scope = _dataFilter.Enable<ISoftDelete>();
-            await _authorRepository.DeleteAsync(author);
-
-            var retrievalAuthor = await _authorRepository.GetByIdAsync(authorId);
-            Assert.Null(retrievalAuthor);
-        }
-
-        [Fact]
         public async Task GetByIdAsync_GivenSoftDeletedWhenDisableSoftDelete_ReturnEntity()
         {
             using var scope = _dataFilter.Disable<ISoftDelete>();

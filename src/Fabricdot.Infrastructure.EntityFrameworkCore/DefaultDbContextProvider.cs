@@ -2,6 +2,7 @@
 using System.Threading;
 using System.Threading.Tasks;
 using Fabricdot.Core.DependencyInjection;
+using Fabricdot.Infrastructure.Uow.Abstractions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -11,6 +12,8 @@ namespace Fabricdot.Infrastructure.EntityFrameworkCore
         where TDbContext : DbContext
     {
         private readonly IServiceProvider _serviceProvider;
+
+        public IUnitOfWorkManager UnitOfWorkManager => _serviceProvider.GetRequiredService<IUnitOfWorkManager>();
 
         public DefaultDbContextProvider(IServiceProvider serviceProvider)
         {

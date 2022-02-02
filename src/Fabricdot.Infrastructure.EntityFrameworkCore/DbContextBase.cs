@@ -10,6 +10,8 @@ using Fabricdot.Domain.Events;
 using Fabricdot.Infrastructure.Data.Filters;
 using Fabricdot.Infrastructure.Domain.Auditing;
 using Fabricdot.Infrastructure.EntityFrameworkCore.Extensions;
+using Fabricdot.Infrastructure.Uow;
+using Fabricdot.Infrastructure.Uow.Abstractions;
 using Fabricdot.MultiTenancy.Abstractions;
 using JetBrains.Annotations;
 using Microsoft.EntityFrameworkCore;
@@ -22,11 +24,13 @@ namespace Fabricdot.Infrastructure.EntityFrameworkCore
 {
     public abstract class DbContextBase : DbContext
     {
+        private IUnitOfWorkManager _unitOfWorkManager;
         private IDataFilter _dataFilter;
         private IAuditPropertySetter _auditPropertySetter;
         private IDomainEventPublisher _domainEventPublisher;
         private ICurrentTenant _currentTenant;
 
+        protected IUnitOfWorkManager UnitOfWorkManager => _unitOfWorkManager ??= this.GetRequiredService<IUnitOfWorkManager>();
         protected IDataFilter DataFilter => _dataFilter ??= this.GetRequiredService<IDataFilter>();
         protected IAuditPropertySetter AuditPropertySetter => _auditPropertySetter ??= this.GetRequiredService<IAuditPropertySetter>();
         protected IDomainEventPublisher DomainEventPublisher => _domainEventPublisher ??= this.GetRequiredService<IDomainEventPublisher>();
@@ -120,14 +124,9 @@ namespace Fabricdot.Infrastructure.EntityFrameworkCore
                 Expression<Func<IMultiTenant, bool>> filterExpr = v => !HasMultiTenantFilter || v.TenantId == CurrentTenantId;
                 var body = ReplacingExpressionVisitor.Replace(filterExpr.Parameters[0], parameter, filterExpr.Body);
 
-                if (filter == null)
-                {
-                    filter = Expression.Lambda(body, parameter);
-                }
-                else
-                {
-                    filter = Expression.Lambda(Expression.AndAlso(filter.Body, body), parameter);
-                }
+                filter = filter == null
+                    ? Expression.Lambda(body, parameter)
+                    : Expression.Lambda(Expression.AndAlso(filter.Body, body), parameter);
             }
 
             if (filter != null)
@@ -193,7 +192,7 @@ namespace Fabricdot.Infrastructure.EntityFrameworkCore
                     break;
 
                 case EntityState.Deleted:
-                    if (!ShouldBeDeleteSoftly(entryEntity))
+                    if (!ShouldSoftDelete(entryEntity))
                         break;
 
                     await entry.ReloadAsync(cancellationToken);
@@ -205,7 +204,10 @@ namespace Fabricdot.Infrastructure.EntityFrameworkCore
             }
         }
 
-        protected bool ShouldBeDeleteSoftly(object entity) => entity is ISoftDelete && DataFilter.IsEnabled<ISoftDelete>();
+        protected virtual bool ShouldSoftDelete(object entity)
+        {
+            return entity is ISoftDelete && !(UnitOfWorkManager.Available?.GetHardDeletedSet()?.Contains(entity) ?? false);
+        }
 
         private static string NewConcurrencyStamp() => Guid.NewGuid().ToString("N");
     }

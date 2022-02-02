@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Fabricdot.Infrastructure.Uow.Abstractions;
@@ -23,6 +24,9 @@ namespace Fabricdot.Infrastructure.Uow
 
         /// <inheritdoc />
         public string ReservationName => _parent.ReservationName;
+
+        /// <inheritdoc />
+        public IDictionary<object, object> Items => _parent.Items;
 
         /// <inheritdoc />
         public IServiceProvider ServiceProvider => _parent.ServiceProvider;

@@ -6,7 +6,7 @@ namespace Fabricdot.Infrastructure.Uow
 {
     public static class UnitOfWorkManagerExtensions
     {
-        public static void Begin(
+        public static IUnitOfWork Begin(
             this IUnitOfWorkManager unitOfWorkManager,
             bool requireNew = false,
             bool? isTransactional = null,
@@ -19,7 +19,7 @@ namespace Fabricdot.Infrastructure.Uow
             if (isolationLevel.HasValue)
                 options.IsolationLevel = isolationLevel.Value;
 
-            unitOfWorkManager.Begin(options, requireNew);
+            return unitOfWorkManager.Begin(options, requireNew);
         }
     }
 }

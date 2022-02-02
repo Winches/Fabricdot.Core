@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Ardalis.GuardClauses;
@@ -19,6 +20,9 @@ namespace Fabricdot.Infrastructure.Uow
 
         /// <inheritdoc />
         public Guid Id { get; }
+
+        /// <inheritdoc />
+        public IDictionary<object, object> Items { get; }
 
         /// <inheritdoc />
         public IServiceProvider ServiceProvider { get; }
@@ -50,6 +54,7 @@ namespace Fabricdot.Infrastructure.Uow
             Options = options.Value.Clone();
             Facade = unitOfWorkFacade;
             State = UnitOfWorkState.Allocated;
+            Items = new Dictionary<object, object>();
         }
 
         public virtual void Reserve(string name)
