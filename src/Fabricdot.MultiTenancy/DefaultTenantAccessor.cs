@@ -7,9 +7,15 @@ namespace Fabricdot.MultiTenancy
 {
     public class DefaultTenantAccessor : ITenantAccessor
     {
+        public static readonly DefaultTenantAccessor Instance = new();
+
         private readonly AsyncLocal<ITenant> _tenant = new();
 
         public ITenant Tenant => _tenant.Value;
+
+        private DefaultTenantAccessor()
+        {
+        }
 
         public virtual IDisposable Change(ITenant tenant) => SetCurrent(tenant);
 

@@ -10,7 +10,7 @@ namespace Fabricdot.MultiTenancy.Tests
 
         public TenantAccessorTests()
         {
-            _tenantAccessor = new DefaultTenantAccessor();
+            _tenantAccessor = DefaultTenantAccessor.Instance;
         }
 
         [Fact]

@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Fabricdot.Domain.Internal;
 
 namespace Fabricdot.Domain.Entities
 {
@@ -9,14 +10,16 @@ namespace Fabricdot.Domain.Entities
         /// </summary>
         public TKey Id { get; protected set; }
 
+        protected Entity()
+        {
+            EntityInitializer.Instance.Initialize(this);
+        }
+
         /// <inheritdoc />
         public override bool Equals(object obj)
         {
-            if (ReferenceEquals(null, obj))
-                return false;
-            if (ReferenceEquals(this, obj))
-                return true;
-            return obj.GetType() == GetType() && Equals((Entity<TKey>)obj);
+            return obj is not null
+                && (ReferenceEquals(this, obj) || (obj.GetType() == GetType() && Equals((Entity<TKey>)obj)));
         }
 
         /// <inheritdoc />

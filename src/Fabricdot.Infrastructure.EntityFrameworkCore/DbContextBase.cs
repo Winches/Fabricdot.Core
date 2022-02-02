@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Linq;
 using System.Linq.Expressions;
-using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 using Fabricdot.Domain.Auditing;
@@ -155,23 +154,23 @@ namespace Fabricdot.Infrastructure.EntityFrameworkCore
                 entity.ConcurrencyStamp ??= NewConcurrencyStamp();
         }
 
-        protected virtual void SetTenantId(object entryEntity)
-        {
-            if (entryEntity is IMultiTenant multiTenant)
-            {
-                var propertyInfo = multiTenant.GetType().GetProperty(nameof(IMultiTenant.TenantId));
-                if (propertyInfo?.CanWrite ?? false)
-                {
-                    propertyInfo.SetValue(
-                        multiTenant,
-                        CurrentTenantId,
-                        BindingFlags.Public | BindingFlags.Instance,
-                        null,
-                        null,
-                        null);
-                }
-            }
-        }
+        //protected virtual void SetTenantId(object entryEntity)
+        //{
+        //    if (entryEntity is IMultiTenant multiTenant)
+        //    {
+        //        var propertyInfo = multiTenant.GetType().GetProperty(nameof(IMultiTenant.TenantId));
+        //        if (propertyInfo?.CanWrite ?? false)
+        //        {
+        //            propertyInfo.SetValue(
+        //                multiTenant,
+        //                CurrentTenantId,
+        //                BindingFlags.Public | BindingFlags.Instance,
+        //                null,
+        //                null,
+        //                null);
+        //        }
+        //    }
+        //}
 
         protected virtual async Task HandleEntityEntryAsync(EntityEntry entry, CancellationToken cancellationToken)
         {
@@ -182,7 +181,7 @@ namespace Fabricdot.Infrastructure.EntityFrameworkCore
                     SetConcurrencyStamp(entryEntity);
                     AuditPropertySetter.SetCreationProperties(entryEntity);
                     AuditPropertySetter.SetModificationProperties(entryEntity);
-                    SetTenantId(entryEntity);
+                    //SetTenantId(entryEntity);
                     break;
 
                 case EntityState.Modified:
