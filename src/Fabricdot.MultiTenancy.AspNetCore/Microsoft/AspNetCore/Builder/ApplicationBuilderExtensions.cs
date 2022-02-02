@@ -1,7 +1,7 @@
 ﻿using Ardalis.GuardClauses;
-using Microsoft.AspNetCore.Builder;
+using Fabricdot.MultiTenancy.AspNetCore;
 
-namespace Fabricdot.MultiTenancy.AspNetCore.Microsoft.AspNetCore.Builder
+namespace Microsoft.AspNetCore.Builder
 {
     public static class ApplicationBuilderExtensions
     {
