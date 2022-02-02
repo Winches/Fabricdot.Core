@@ -6,6 +6,7 @@ namespace Fabricdot.MultiTenancy
 {
     public static class TenantAccessorExtensions
     {
+        [Obsolete("Use ICurrentTenant", true)]
         public static IDisposable Change(
             this ITenantAccessor tenantAccessor,
             Guid tenantId,

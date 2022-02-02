@@ -17,5 +17,15 @@ namespace Fabricdot.MultiTenancy
         {
             _tenantAccessor = tenantAccessor;
         }
+
+        public IDisposable Change(
+            Guid? tenantId,
+            string tenantName = null)
+        {
+            var tenant = tenantId.HasValue
+                ? new TenantInfo(tenantId.Value, tenantName)
+                : null;
+            return _tenantAccessor.Change(tenant);
+        }
     }
 }
