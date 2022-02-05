@@ -64,6 +64,14 @@ Web Api Library with ASP.NET Core
 
 Provide a couple features,like 'response filter',exception catching and api document.
 
+### Fabericdot.MultiTenancy
+
+[![NuGet](https://img.shields.io/nuget/v/Fabricdot.MultiTenancy.svg)](https://www.nuget.org/packages/Fabricdot.MultiTenancy)
+
+Multi-tenancy kit
+
+Provide components to build multi-tenancy application.
+
 ## Usage
 
 [Web API Template](https://github.com/Winches/Fabricdot.Template)
