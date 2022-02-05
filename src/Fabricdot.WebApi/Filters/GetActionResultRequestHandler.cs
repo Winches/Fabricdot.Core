@@ -1,4 +1,6 @@
-﻿using System.Threading;
+﻿using System;
+using System.Reflection;
+using System.Threading;
 using System.Threading.Tasks;
 using Fabricdot.WebApi.Endpoint;
 using JetBrains.Annotations;
@@ -11,15 +13,12 @@ namespace Fabricdot.WebApi.Filters
     [UsedImplicitly]
     public class GetActionResultRequestHandler : IRequestHandler<GetActionResultRequest, IActionResult>
     {
-        private readonly ResultFilterOptions _options;
-        private readonly ResponseOptions _responseOptions;
+        protected static Type ResponseType => typeof(Response<>);
+        protected ResponseOptions Options { get; }
 
-        public GetActionResultRequestHandler(
-            IOptions<ResultFilterOptions> options,
-            IOptions<ResponseOptions> responseOptions)
+        public GetActionResultRequestHandler(IOptions<ResponseOptions> options)
         {
-            _options = options.Value;
-            _responseOptions = responseOptions.Value;
+            Options = options.Value;
         }
 
         /// <inheritdoc />
@@ -28,6 +27,7 @@ namespace Fabricdot.WebApi.Filters
             var context = request.Context;
             var originalResult = context.Result;
 
+            var ret = new SuccessResponse(null, Options.SuccessCode);
             switch (originalResult)
             {
                 //OkObjectResult, NotFoundObjectResult,BadRequestObjectResult CreatedResult
@@ -35,35 +35,18 @@ namespace Fabricdot.WebApi.Filters
                     var resultValue = objectResult.Value;
                     if (originalResult is BadRequestObjectResult || originalResult is NotFoundObjectResult)
                         break;
-
-                    if (resultValue == null)
-                        return GetEmptyResult();
-
                     //instance of Response
-                    var declaredType = objectResult.DeclaredType;
-                    if (declaredType.IsGenericType && declaredType.GetGenericTypeDefinition() == typeof(Response<>))
+                    if (objectResult.DeclaredType?.IsAssignableToGenericType(ResponseType) ?? false)
                         break;
 
-                    //var ret = Activator.CreateInstance(typeof(Response<>).MakeGenericType(declaredType), resultValue);
-                    var ret = new SuccessResponse(resultValue, _responseOptions.SuccessCode);
+                    ret.Data = resultValue;
                     return Task.FromResult<IActionResult>(new ObjectResult(ret));
 
                 case EmptyResult _:
-                    if (_options.IncludeEmptyResult)
-                        return GetEmptyResult();
-                    break;
-
-                case ContentResult _:
-                    break;
-
-                //OKResult, NoContentResult, UnauthorizedResult, NotFoundResult, BadRequestResult
-                case StatusCodeResult _:
-                    break;
+                    return Task.FromResult<IActionResult>(new ObjectResult(ret));
             }
 
             return Task.FromResult(originalResult);
         }
-
-        private static Task<IActionResult> GetEmptyResult() => Task.FromResult<IActionResult>(new ObjectResult(NullResponse.Null));
     }
 }
