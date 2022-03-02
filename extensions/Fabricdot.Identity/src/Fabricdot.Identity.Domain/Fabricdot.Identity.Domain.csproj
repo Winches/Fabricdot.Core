@@ -1,0 +1,15 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net5.0</TargetFramework>
+	<PackageId>Fabricdot.Identity.Domain</PackageId>
+	<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+	<PackageOutputPath>../../packages</PackageOutputPath>
+  </PropertyGroup>
+  
+    <ItemGroup>
+      <PackageReference Include="Fabricdot.Domain" Version="0.5.2-alpha" />
+    <PackageReference Include="Microsoft.Extensions.Identity.Core" Version="5.0.13" />
+  </ItemGroup>
+
+</Project>

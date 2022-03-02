@@ -1,0 +1,19 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net5.0</TargetFramework>
+    <PackageId>Fabricdot.Identity</PackageId>
+	<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <PackageOutputPath>../../packages</PackageOutputPath>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Fabricdot.Infrastructure.EntityFrameworkCore" Version="0.5.2-alpha" />
+    <PackageReference Include="Microsoft.AspNetCore.Identity" Version="2.2.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Fabricdot.Identity.Domain\Fabricdot.Identity.Domain.csproj" />
+  </ItemGroup>
+  
+</Project>
