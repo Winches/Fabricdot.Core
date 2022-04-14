@@ -138,7 +138,8 @@ Task("Publish")
             // Push the package.
             var settings = new DotNetNuGetPushSettings {
                 ApiKey = apiKey,
-                Source = "https://api.nuget.org/v3/index.json"
+                Source = "https://api.nuget.org/v3/index.json",
+                SkipDuplicate = true
             };
 
             DotNetNuGetPush(package.PackagePath.FullPath, settings);
