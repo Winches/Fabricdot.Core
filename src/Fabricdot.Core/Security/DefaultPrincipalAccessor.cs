@@ -2,9 +2,12 @@
 using System.Security.Claims;
 using System.Threading;
 using Fabricdot.Core.Delegates;
+using Fabricdot.Core.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Fabricdot.Core.Security
 {
+    [Dependency(ServiceLifetime.Singleton)]
     public class DefaultPrincipalAccessor : IPrincipalAccessor
     {
         private readonly AsyncLocal<ClaimsPrincipal> _currentPrincipal = new AsyncLocal<ClaimsPrincipal>();

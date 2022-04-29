@@ -1,7 +1,10 @@
 ﻿using System;
+using Fabricdot.Core.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Fabricdot.Core.Randoms
 {
+    [Dependency(ServiceLifetime.Singleton)]
     public class DefaultRandomProvider : IRandomProvider
     {
         private readonly Random _random;

@@ -1,9 +1,12 @@
 ﻿using System;
 using System.Text;
 using Ardalis.GuardClauses;
+using Fabricdot.Core.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Fabricdot.Core.Randoms
 {
+    [Dependency(ServiceLifetime.Singleton)]
     public class RandomBuilder : IRandomBuilder
     {
         private const string NUMBER = "0123456789";

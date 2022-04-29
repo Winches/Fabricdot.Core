@@ -1,33 +1,28 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿// ReSharper disable once CheckNamespace
 
-// ReSharper disable once CheckNamespace
 namespace System.Reflection
 {
     public static class AttributeExtensions
     {
-        /// <summary>
-        ///     get attributes
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="type"></param>
-        /// <param name="inherit"></param>
-        /// <returns></returns>
-        public static IEnumerable<T> GetAttributes<T>(this Type type, bool inherit = false) where T : class
+        public static bool IsDefined<T>(
+            this Type type,
+            bool inherit = false) where T : Attribute
         {
-            return type.GetCustomAttributes(typeof(T), inherit).Cast<T>();
+            return type.IsDefined(typeof(T), inherit);
         }
 
-        /// <summary>
-        ///     get attributes
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="type"></param>
-        /// <param name="inherit"></param>
-        /// <returns></returns>
-        public static IEnumerable<T> GetAttributes<T>(this MemberInfo type, bool inherit = false) where T : class
+        public static bool IsDefined<T>(
+            this MemberInfo memberInfo,
+            bool inherit = false) where T : Attribute
         {
-            return type.GetCustomAttributes(typeof(T), inherit).Cast<T>();
+            return memberInfo.IsDefined(typeof(T), inherit);
+        }
+
+        public static bool IsDefined<T>(
+            this ParameterInfo parameterInfo,
+            bool inherit = false) where T : Attribute
+        {
+            return parameterInfo.IsDefined(typeof(T), inherit);
         }
     }
 }

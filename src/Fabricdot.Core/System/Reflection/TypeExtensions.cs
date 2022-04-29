@@ -1,12 +1,15 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 
 // ReSharper disable once CheckNamespace
 namespace System.Reflection
 {
     public static class TypeExtensions
     {
-        public static bool IsAssignableToGenericType(this Type givenType, Type genericType)
+        public static bool IsAssignableToGenericType(
+            this Type givenType,
+            Type genericType)
         {
             if (givenType == null)
                 throw new ArgumentNullException(nameof(givenType));
@@ -48,37 +51,65 @@ namespace System.Reflection
             }
         }
 
-        /// <summary>
-        ///     Gets a type indicating whether the type of collection.
-        /// </summary>
-        /// <param name="type">type</param>
-        public static bool IsCollection(this Type type)
+        public static bool IsInNamespace(
+            this Type type,
+            string @namespace)
         {
-            return type.IsArray || IsGenericCollection(type);
-        }
+            var typeNamespace = type.Namespace ?? string.Empty;
 
-        /// <summary>
-        ///     Gets a type indicating whether the type of generic collection.
-        /// </summary>
-        /// <param name="type">类型</param>
-        public static bool IsGenericCollection(this Type type)
-        {
-            if (!type.IsGenericType)
+            if (@namespace.Length > typeNamespace.Length)
                 return false;
-            var typeDefinition = type.GetGenericTypeDefinition();
-            return typeDefinition == typeof(IEnumerable<>)
-                   || typeDefinition == typeof(IReadOnlyCollection<>)
-                   || typeDefinition == typeof(IReadOnlyList<>)
-                   || typeDefinition == typeof(ICollection<>)
-                   || typeDefinition == typeof(IList<>)
-                   || typeDefinition == typeof(List<>);
+
+            var typeSubNamespace = typeNamespace[..@namespace.Length];
+
+            if (typeSubNamespace.Equals(@namespace, StringComparison.Ordinal))
+            {
+                //exactly the same
+                if (typeNamespace.Length == @namespace.Length)
+                    return true;
+
+                //is a subnamespace?
+                return typeNamespace[@namespace.Length] == '.';
+            }
+
+            return false;
         }
 
-        internal static bool HasConstructorParameterOfType(this Type type, Predicate<Type> predicate)
+        public static bool IsInNamespaces(
+            this Type type,
+            IEnumerable<string> namespaces)
         {
-            return type.GetTypeInfo().GetConstructors()
-                .Any(c => c.GetParameters()
-                    .Any(p => predicate(p.ParameterType)));
+            if (type is null)
+                throw new ArgumentNullException(nameof(type));
+
+            if (namespaces is null)
+                throw new ArgumentNullException(nameof(namespaces));
+
+            return namespaces.Any(v => type.IsInNamespace(v));
+        }
+
+        public static bool IsNonAbstractClass(
+            this Type type,
+            bool publicOnly)
+        {
+            if (type is null)
+                throw new ArgumentNullException(nameof(type));
+
+            if (type.IsSpecialName)
+                return false;
+
+            if (type.IsClass && !type.IsAbstract)
+            {
+                if (type.IsDefined<CompilerGeneratedAttribute>(true))
+                    return false;
+
+                if (publicOnly)
+                    return type.IsPublic || type.IsNestedPublic;
+
+                return true;
+            }
+
+            return false;
         }
     }
 }

@@ -10,6 +10,7 @@ namespace Fabricdot.Core.Configuration
             ConfigurationBuilderOptions options = null,
             Action<IConfigurationBuilder> builderAction = null)
         {
+            options ??= new ConfigurationBuilderOptions();
             var basePath = options.BasePath.IsNullOrEmpty()
                 ? Directory.GetCurrentDirectory()
                 : options.BasePath;

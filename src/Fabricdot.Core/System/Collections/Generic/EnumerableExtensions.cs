@@ -1,13 +1,13 @@
-﻿using System.Linq;
-using System.Linq.Expressions;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 
 // ReSharper disable once CheckNamespace
 namespace System.Collections.Generic
 {
     public static class EnumerableExtensions
     {
-        public static void ForEach<T>(this IEnumerable<T> source, Action<T> action)
+        public static void ForEach<T>(
+            this IEnumerable<T> source,
+            Action<T> action)
         {
             if (source is null)
                 throw new ArgumentNullException(nameof(source));
@@ -19,7 +19,9 @@ namespace System.Collections.Generic
                 action.Invoke(item);
         }
 
-        public static void ForEach<T>(this IEnumerable<T> source, Action<T, int> action)
+        public static void ForEach<T>(
+            this IEnumerable<T> source,
+            Action<T, int> action)
         {
             if (source is null)
                 throw new ArgumentNullException(nameof(source));
@@ -33,7 +35,9 @@ namespace System.Collections.Generic
                 action.Invoke(enumerator.Current, index++);
         }
 
-        public static async Task ForEachAsync<T>(this IEnumerable<T> source, Func<T, int, Task> func)
+        public static async Task ForEachAsync<T>(
+            this IEnumerable<T> source,
+            Func<T, int, Task> func)
         {
             if (source is null)
                 throw new ArgumentNullException(nameof(source));
@@ -50,24 +54,18 @@ namespace System.Collections.Generic
             }
         }
 
-        public static string JoinAsString(this IEnumerable<string> source, string separator)
+        public static string JoinAsString(
+            this IEnumerable<string> source,
+            string separator)
         {
             return string.Join(separator, source);
         }
 
-        public static string JoinAsString(this IEnumerable<string> source, char separator)
+        public static string JoinAsString(
+            this IEnumerable<string> source,
+            char separator)
         {
             return string.Join(separator, source);
-        }
-
-        public static IEnumerable<T> WhereIf<T>(
-            IQueryable<T> query,
-            Expression<Func<bool>> condition,
-            Expression<Func<T, bool>> predicate)
-        {
-            if (condition == null)
-                throw new ArgumentNullException(nameof(condition));
-            return condition.Compile().Invoke() ? query.Where(predicate) : query;
         }
     }
 }

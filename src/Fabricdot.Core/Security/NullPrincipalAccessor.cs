@@ -4,6 +4,7 @@ using Fabricdot.Core.DependencyInjection;
 
 namespace Fabricdot.Core.Security
 {
+    [IgnoreDependency]
     public class NullPrincipalAccessor : IPrincipalAccessor, ISingletonDependency
     {
         /// <inheritdoc />

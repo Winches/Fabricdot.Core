@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using Ardalis.GuardClauses;
 
 namespace Fabricdot.Core.Reflection
 {
@@ -83,6 +84,20 @@ namespace Fabricdot.Core.Reflection
             }
 
             return result;
+        }
+
+        public static IReadOnlyCollection<Type> GetTypes(Assembly assembly)
+        {
+            Guard.Against.Null(assembly, nameof(assembly));
+
+            try
+            {
+                return assembly.GetTypes();
+            }
+            catch (ReflectionTypeLoadException ex)
+            {
+                return ex.Types;
+            }
         }
     }
 }

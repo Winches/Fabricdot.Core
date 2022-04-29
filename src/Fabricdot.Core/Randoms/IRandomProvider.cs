@@ -1,10 +1,9 @@
-﻿using Fabricdot.Core.DependencyInjection;
-
-namespace Fabricdot.Core.Randoms
+﻿namespace Fabricdot.Core.Randoms
 {
-    public interface IRandomProvider : ISingletonDependency
+    public interface IRandomProvider
     {
         int Next();
+
         int Next(int min, int max);
     }
 }
