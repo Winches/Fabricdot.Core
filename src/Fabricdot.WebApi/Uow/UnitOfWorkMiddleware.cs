@@ -1,12 +1,15 @@
 using System.Linq;
 using System.Threading.Tasks;
+using Fabricdot.Core.DependencyInjection;
 using Fabricdot.Infrastructure.Uow;
 using Fabricdot.Infrastructure.Uow.Abstractions;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 
 namespace Fabricdot.WebApi.Uow
 {
+    [Dependency(ServiceLifetime.Transient)]
     public class UnitOfWorkMiddleware : IMiddleware
     {
         private readonly HttpUnitOfWorkOptions _options;

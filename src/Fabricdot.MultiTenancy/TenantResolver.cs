@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
+using Fabricdot.Core.DependencyInjection;
 using Fabricdot.MultiTenancy.Abstractions;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -8,6 +9,7 @@ using Microsoft.Extensions.Options;
 
 namespace Fabricdot.MultiTenancy
 {
+    [Dependency(ServiceLifetime.Transient)]
     public class TenantResolver : ITenantResolver
     {
         private readonly MultiTenancyOptions _options;

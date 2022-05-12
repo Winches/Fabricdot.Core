@@ -1,9 +1,12 @@
 ﻿using System.Linq;
+using Fabricdot.Core.DependencyInjection;
 using Fabricdot.Core.Validation;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Fabricdot.WebApi.Validation
 {
+    [Dependency(ServiceLifetime.Transient)]
     public class ModelStateValidator : IModelStateValidator
     {
         public virtual void Validate(ModelStateDictionary modelState)

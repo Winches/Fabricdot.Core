@@ -1,11 +1,12 @@
 ﻿using System;
+using Fabricdot.Core.DependencyInjection;
 using Fabricdot.Infrastructure.Uow;
 using Fabricdot.Infrastructure.Uow.Abstractions;
 
 namespace Fabricdot.Infrastructure.Tests.Uow
 {
     [UnitOfWorkInterceptor]
-    public class FakeServiceWithUnitOfWorkInterceptor
+    public class FakeServiceWithUnitOfWorkInterceptor : ITransientDependency
     {
         private readonly IUnitOfWorkManager _unitOfWorkManager;
 

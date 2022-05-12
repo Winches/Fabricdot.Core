@@ -1,9 +1,12 @@
-﻿using Fabricdot.Infrastructure.Tracing;
+﻿using Fabricdot.Core.DependencyInjection;
+using Fabricdot.Infrastructure.Tracing;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 
 namespace Fabricdot.WebApi.Tracing
 {
+    [Dependency(ServiceLifetime.Scoped)]
     public class HttpContextCorrelationIdAccessor : ICorrelationIdAccessor
     {
         private readonly CorrelationIdOptions _options;
@@ -23,7 +26,7 @@ namespace Fabricdot.WebApi.Tracing
         }
 
         public HttpContextCorrelationIdAccessor(
-                    IOptions<CorrelationIdOptions> options,
+            IOptions<CorrelationIdOptions> options,
             IHttpContextAccessor httpContextAccessor)
         {
             _options = options.Value;

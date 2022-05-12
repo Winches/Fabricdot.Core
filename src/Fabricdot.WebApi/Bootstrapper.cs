@@ -1,9 +1,5 @@
 ﻿using System;
 using System.Threading.Tasks;
-using Ardalis.GuardClauses;
-using Fabricdot.Infrastructure;
-using Fabricdot.Infrastructure.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using NLog;
@@ -12,6 +8,7 @@ using NLog.Web;
 
 namespace Fabricdot.WebApi
 {
+    [Obsolete("Remove in next version")]
     public static class Bootstrapper
     {
         /// <summary>
@@ -54,16 +51,6 @@ namespace Fabricdot.WebApi
                 logger.Trace("app shutting..");
                 LogManager.Shutdown();
             }
-        }
-
-        public static IServiceCollection AddBasicModules(this IServiceCollection services)
-        {
-            Guard.Against.Null(services, nameof(services));
-
-            services.RegisterModules(
-                new InfrastructureModule(),
-                new ApplicationModule());
-            return services;
         }
     }
 }

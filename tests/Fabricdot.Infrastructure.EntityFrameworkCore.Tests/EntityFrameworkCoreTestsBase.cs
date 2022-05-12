@@ -1,19 +1,11 @@
-﻿using System.Data.Common;
-using System.Diagnostics;
-using AspectCore.Extensions.DependencyInjection;
-using Fabricdot.Infrastructure.Data;
-using Fabricdot.Infrastructure.DependencyInjection;
+﻿using Fabricdot.Infrastructure.DependencyInjection;
 using Fabricdot.Infrastructure.EntityFrameworkCore.Tests.Data;
 using Fabricdot.Test.Shared;
-using Microsoft.Data.Sqlite;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Infrastructure;
-using Microsoft.EntityFrameworkCore.Storage;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Fabricdot.Infrastructure.EntityFrameworkCore.Tests
 {
-    public abstract class EntityFrameworkCoreTestsBase : IntegrationTestBase
+    public abstract class EntityFrameworkCoreTestsBase : IntegrationTestBase<EntityFrameworkCoreTestModule>
     {
         protected EntityFrameworkCoreTestsBase()
         {
@@ -25,44 +17,7 @@ namespace Fabricdot.Infrastructure.EntityFrameworkCore.Tests
         /// <inheritdoc />
         protected override void ConfigureServices(IServiceCollection serviceCollection)
         {
-            const string connectionString = "Filename=:memory:";
-            serviceCollection.Configure<DbConnectionOptions>(options =>
-            {
-                options.ConnectionStrings.Default = connectionString;
-            });
-            serviceCollection.RegisterModules(new InfrastructureModule());
-            var dbconnection = CreateInMemoryDatabase(connectionString);
-            serviceCollection.AddEfDbContext<FakeDbContext>((_, opts) =>
-            {
-                opts.UseSqlite(dbconnection);
-                opts.LogTo(v => Debug.Print(v))
-                    .EnableSensitiveDataLogging();
-            });
-            serviceCollection.AddEfDbContext<FakeSecondDbContext>((_, opts) =>
-            {
-                opts.UseSqlite(dbconnection);
-            });
-            serviceCollection.AddTransient<FakeDataBuilder>();
-            serviceCollection.AddInterceptors();
-            UseServiceProviderFactory<DynamicProxyServiceProviderFactory>();
-        }
-
-        private static DbConnection CreateInMemoryDatabase(string connectionString)
-        {
-            var connection = new SqliteConnection(connectionString);
-            connection.Open();
-            using (var db = new FakeDbContext(new DbContextOptionsBuilder<FakeDbContext>().UseSqlite(connection).Options))
-            {
-                //db.Database.EnsureCreated();
-                db.Database.GetService<IRelationalDatabaseCreator>().CreateTables();
-            }
-            using (var secondDb = new FakeSecondDbContext(new DbContextOptionsBuilder<FakeSecondDbContext>().UseSqlite(connection).Options))
-            {
-                //secondDb.Database.EnsureCreated();
-                secondDb.Database.GetService<IRelationalDatabaseCreator>().CreateTables();
-            }
-
-            return connection;
+            UseServiceProviderFactory<FabricdotServiceProviderFactory>();
         }
     }
 }

@@ -1,11 +1,12 @@
 ﻿using System.Reflection;
+using Fabricdot.Core.DependencyInjection;
 using Fabricdot.Domain.Auditing;
 using Fabricdot.Domain.SharedKernel;
 using Fabricdot.Infrastructure.Security;
 
 namespace Fabricdot.Infrastructure.Domain.Auditing
 {
-    public class AuditPropertySetter : IAuditPropertySetter
+    public class AuditPropertySetter : IAuditPropertySetter, ITransientDependency
     {
         protected ICurrentUser CurrentUser { get; }
 

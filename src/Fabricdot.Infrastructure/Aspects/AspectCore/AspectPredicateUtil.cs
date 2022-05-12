@@ -2,14 +2,13 @@
 using System.Reflection;
 using Ardalis.GuardClauses;
 using AspectCore.Configuration;
-using Fabricdot.Core.Aspects;
 using Fabricdot.Infrastructure.Aspects.AspectCore.Configuration;
 
 namespace Fabricdot.Infrastructure.Aspects.AspectCore
 {
     public static class AspectPredicateUtil
     {
-        private static readonly AspectPredicate NonPredicate = _ => false;
+        private static readonly AspectPredicate _nonPredicate = _ => false;
 
         public static AspectPredicate IsDefined<TAttribute>(bool inherit) where TAttribute : Attribute =>
             IsDefined(typeof(TAttribute), inherit);
@@ -49,22 +48,24 @@ namespace Fabricdot.Infrastructure.Aspects.AspectCore
 
         public static AspectPredicate CreatePredicate(InterceptorDescriptor interceptorDescriptor)
         {
-            var predicate = IsDefined<DisableAspectAttribute>(true)
-                .Not();
+            //var predicate = IsDefined<DisableAspectAttribute>(true)
+            //    .Not();
 
-            if (interceptorDescriptor.TargetType == null && interceptorDescriptor.BindingType == null)
-                return predicate;
+            //if (interceptorDescriptor.TargetType == null && interceptorDescriptor.BindingType == null)
+            //    return predicate;
 
             var targetPredicate = interceptorDescriptor.TargetType != null
                 ? IsAssignableTo(interceptorDescriptor.TargetType)
-                : NonPredicate;
+                : _nonPredicate;
             var attributePredicate = interceptorDescriptor.BindingType != null
                 ? IsDefined(
                     interceptorDescriptor.BindingType,
                     true)
-                : NonPredicate;
+                : _nonPredicate;
 
-            return predicate.And(targetPredicate.Or(attributePredicate));
+            //return predicate.And(targetPredicate.Or(attributePredicate));
+
+            return targetPredicate.Or(attributePredicate);
         }
     }
 }

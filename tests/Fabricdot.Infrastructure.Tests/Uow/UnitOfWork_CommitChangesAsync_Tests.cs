@@ -1,7 +1,6 @@
 using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
-using Fabricdot.Infrastructure.DependencyInjection;
 using Fabricdot.Infrastructure.Uow.Abstractions;
 using Fabricdot.Test.Shared;
 using Microsoft.Extensions.DependencyInjection;
@@ -10,7 +9,7 @@ using Xunit;
 namespace Fabricdot.Infrastructure.Tests.Uow
 {
     [SuppressMessage("ReSharper", "InconsistentNaming")]
-    public class UnitOfWork_CommitChangesAsync_Tests : IntegrationTestBase
+    public class UnitOfWork_CommitChangesAsync_Tests : IntegrationTestBase<InfrastructureTestModule>
     {
         private readonly IUnitOfWorkManager _unitOfWorkManager;
 
@@ -72,12 +71,6 @@ namespace Fabricdot.Infrastructure.Tests.Uow
             uow.Dispose();
             async Task testCode() => await uow.CommitChangesAsync();
             await Assert.ThrowsAsync<InvalidOperationException>(testCode);
-        }
-
-        /// <inheritdoc />
-        protected override void ConfigureServices(IServiceCollection serviceCollection)
-        {
-            serviceCollection.RegisterModules(new InfrastructureModule());
         }
     }
 }

@@ -1,10 +1,12 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
 using Fabricdot.Core.Aspects;
+using Fabricdot.Core.DependencyInjection;
 
 namespace Fabricdot.Infrastructure.Tests.Aspects.Interceptors
 {
-    internal class IntegerParameterInterceptor : IParameterInterceptor
+    [ServiceContract(typeof(IParameterInterceptor))]
+    internal class IntegerParameterInterceptor : IParameterInterceptor, ITransientDependency
     {
         public static int[] Parameters { get; set; }
 

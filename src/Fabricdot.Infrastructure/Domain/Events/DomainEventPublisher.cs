@@ -1,12 +1,15 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
+using Fabricdot.Core.DependencyInjection;
 using Fabricdot.Core.Reflection;
 using Fabricdot.Domain.Events;
 using MediatR;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
 namespace Fabricdot.Infrastructure.Domain.Events
 {
+    [Dependency(ServiceLifetime.Scoped)]
     internal class DomainEventPublisher : IDomainEventPublisher
     {
         private readonly ILogger<DomainEventPublisher> _logger;

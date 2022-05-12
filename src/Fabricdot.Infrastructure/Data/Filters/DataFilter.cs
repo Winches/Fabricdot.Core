@@ -3,12 +3,13 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Threading;
 using Fabricdot.Core.Delegates;
+using Fabricdot.Core.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 
 namespace Fabricdot.Infrastructure.Data.Filters
 {
-    public class DataFilter : IDataFilter
+    public class DataFilter : IDataFilter, ISingletonDependency
     {
         private readonly ConcurrentDictionary<Type, object> _filters;
 
@@ -44,6 +45,10 @@ namespace Fabricdot.Infrastructure.Data.Filters
 
     public class DataFilter<TFilter> : IDataFilter<TFilter> where TFilter : class
     {
+        private readonly DataFilterOptions _options;
+
+        private readonly AsyncLocal<DataFilterState> _filter;
+
         public bool IsEnabled
         {
             get
@@ -52,9 +57,6 @@ namespace Fabricdot.Infrastructure.Data.Filters
                 return _filter.Value.IsEnabled;
             }
         }
-
-        private readonly DataFilterOptions _options;
-        private readonly AsyncLocal<DataFilterState> _filter;
 
         public DataFilter(IOptions<DataFilterOptions> options)
         {

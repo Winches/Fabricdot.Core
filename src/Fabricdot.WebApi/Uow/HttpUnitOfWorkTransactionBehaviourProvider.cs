@@ -1,10 +1,15 @@
 ﻿using System;
 using System.Net.Http;
+using Fabricdot.Core.DependencyInjection;
 using Fabricdot.Infrastructure.Uow;
+using Fabricdot.Infrastructure.Uow.Abstractions;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Fabricdot.WebApi.Uow
 {
+    [ServiceContract(typeof(IUnitOfWorkTransactionBehaviourProvider))]
+    [Dependency(ServiceLifetime.Singleton, RegisterBehavior = RegistrationBehavior.Replace)]
     public class HttpUnitOfWorkTransactionBehaviourProvider : DefaultUnitOfWorkTransactionBehaviourProvider
     {
         private readonly IHttpContextAccessor _httpContextAccessor;

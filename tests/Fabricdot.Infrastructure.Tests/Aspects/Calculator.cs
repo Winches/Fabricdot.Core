@@ -1,6 +1,8 @@
-﻿namespace Fabricdot.Infrastructure.Tests.Aspects
+﻿using Fabricdot.Core.DependencyInjection;
+
+namespace Fabricdot.Infrastructure.Tests.Aspects
 {
-    public class Calculator : ICalculator
+    public class Calculator : ICalculator, ITransientDependency
     {
         /// <inheritdoc />
         public virtual int Plus(int left, int right) => left + right;

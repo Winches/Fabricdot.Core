@@ -1,8 +1,11 @@
 ﻿using System;
+using Fabricdot.Core.DependencyInjection;
 using Fabricdot.MultiTenancy.Abstractions;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Fabricdot.MultiTenancy
 {
+    [Dependency(ServiceLifetime.Transient)]
     public class CurrentTenant : ICurrentTenant
     {
         private readonly ITenantAccessor _tenantAccessor;

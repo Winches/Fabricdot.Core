@@ -1,10 +1,13 @@
 ﻿using System;
 using System.Linq;
 using System.Security.Claims;
+using Fabricdot.Core.DependencyInjection;
 using Fabricdot.Core.Security;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Fabricdot.Infrastructure.Security
 {
+    [Dependency(ServiceLifetime.Transient)]
     public class CurrentUser : ICurrentUser
     {
         private static readonly Claim[] EmptyClaimsArray = Array.Empty<Claim>();

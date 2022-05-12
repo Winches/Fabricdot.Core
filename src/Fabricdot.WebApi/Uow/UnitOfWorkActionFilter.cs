@@ -1,14 +1,18 @@
 using System.Reflection;
 using System.Threading.Tasks;
+using Fabricdot.Core.DependencyInjection;
 using Fabricdot.Infrastructure.Uow;
 using Fabricdot.Infrastructure.Uow.Abstractions;
 using Fabricdot.WebApi.Endpoint;
 using Microsoft.AspNetCore.Mvc.Controllers;
 using Microsoft.AspNetCore.Mvc.Filters;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 
 namespace Fabricdot.WebApi.Uow
 {
+    [ServiceContract(typeof(UnitOfWorkActionFilter))]
+    [Dependency(ServiceLifetime.Scoped)]
     public class UnitOfWorkActionFilter : IAsyncActionFilter
     {
         private readonly UnitOfWorkOptions _options;

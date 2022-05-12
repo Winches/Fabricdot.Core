@@ -1,7 +1,9 @@
-﻿using Fabricdot.Infrastructure.Tests.Aspects.Interceptors;
+﻿using Fabricdot.Core.DependencyInjection;
+using Fabricdot.Infrastructure.Tests.Aspects.Interceptors;
 
 namespace Fabricdot.Infrastructure.Tests.Aspects
 {
+    [ServiceContract(typeof(DerivedCalculator))]
     public class DerivedCalculator : Calculator, IShouldNotInvokedInterceptorEnabled
     {
         /// <inheritdoc />

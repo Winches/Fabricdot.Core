@@ -1,10 +1,12 @@
 ﻿using System.Threading.Tasks;
+using Fabricdot.Core.DependencyInjection;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Fabricdot.WebApi.Tests
 {
-    public class ActionMiddleware : IMiddleware
+    [ServiceContract(typeof(ActionMiddleware))]
+    public class ActionMiddleware : IMiddleware, ITransientDependency
     {
         public async Task InvokeAsync(HttpContext context, RequestDelegate next)
         {

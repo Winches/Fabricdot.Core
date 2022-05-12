@@ -11,32 +11,14 @@ using Xunit;
 
 namespace Fabricdot.Infrastructure.Tests.Security
 {
-    public class CurrentUserTests : IntegrationTestBase
+    public class CurrentUserTests : IntegrationTestBase<InfrastructureTestModule>
     {
-        public static ClaimsPrincipal ClaimsPrincipal { get; set; }
-
         private readonly ICurrentUser _currentUser;
+        public static ClaimsPrincipal ClaimsPrincipal { get; set; }
 
         public CurrentUserTests()
         {
             _currentUser = ServiceProvider.GetRequiredService<ICurrentUser>();
-        }
-
-        /// <inheritdoc />
-        protected override void ConfigureServices(IServiceCollection serviceCollection)
-        {
-            var mock = new Mock<IPrincipalAccessor>();
-            mock.SetupGet(v => v.Principal).Returns(() => ClaimsPrincipal);
-            serviceCollection.AddScoped(_ => mock.Object);
-            serviceCollection.AddScoped<ICurrentUser, CurrentUser>();
-        }
-
-        private static ClaimsPrincipal CreateClaimsPrincipal(params Claim[] claims)
-        {
-            var claimsPrincipal = new ClaimsPrincipal();
-            var claimsIdentity = new ClaimsIdentity(claims ?? Array.Empty<Claim>(), "Bearer");
-            claimsPrincipal.AddIdentity(claimsIdentity);
-            return claimsPrincipal;
         }
 
         public static IEnumerable<object[]> GetClaimPrincipals()
@@ -107,7 +89,28 @@ namespace Fabricdot.Infrastructure.Tests.Security
             ClaimsPrincipal = CreateClaimsPrincipal();
             var condition = _currentUser.IsInRole(null);
             Assert.False(condition);
+        }
 
+        /// <inheritdoc />
+        protected override void ConfigureServices(IServiceCollection serviceCollection)
+        {
+            var mock = new Mock<IPrincipalAccessor>();
+            mock.SetupGet(v => v.Principal).Returns(() => ClaimsPrincipal);
+            serviceCollection.AddScoped(_ => mock.Object);
+            //serviceCollection.AddScoped<ICurrentUser, CurrentUser>();
+        }
+
+        protected IDisposable ChangeCurrentPrincipal(ClaimsPrincipal claimsPrincipal)
+        {
+            return ServiceScope.ServiceProvider.GetRequiredService<IPrincipalAccessor>().Change(claimsPrincipal);
+        }
+
+        private static ClaimsPrincipal CreateClaimsPrincipal(params Claim[] claims)
+        {
+            var claimsPrincipal = new ClaimsPrincipal();
+            var claimsIdentity = new ClaimsIdentity(claims ?? Array.Empty<Claim>(), "Bearer");
+            claimsPrincipal.AddIdentity(claimsIdentity);
+            return claimsPrincipal;
         }
     }
 }

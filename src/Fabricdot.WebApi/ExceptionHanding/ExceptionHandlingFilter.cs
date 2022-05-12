@@ -1,14 +1,18 @@
 ﻿using System;
 using System.Threading.Tasks;
+using Fabricdot.Core.DependencyInjection;
 using Fabricdot.Infrastructure.ExceptionHanding;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Controllers;
 using Microsoft.AspNetCore.Mvc.Filters;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
 namespace Fabricdot.WebApi.ExceptionHanding
 {
+    [ServiceContract(typeof(ExceptionHandlingFilter))]
+    [Dependency(ServiceLifetime.Scoped)]
     public class ExceptionHandlingFilter : IAsyncExceptionFilter
     {
         private readonly ILogger<ExceptionHandlingFilter> _logger;

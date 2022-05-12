@@ -10,7 +10,7 @@ using Moq;
 
 namespace Fabricdot.Infrastructure.Tests.Domain.Auditing
 {
-    public abstract class AuditPropertySetterTestBase : IntegrationTestBase
+    public abstract class AuditPropertySetterTestBase : IntegrationTestBase<InfrastructureTestModule>
     {
         public class FakeAuditObject : FullAuditEntity<int>
         {
@@ -46,16 +46,6 @@ namespace Fabricdot.Infrastructure.Tests.Domain.Auditing
             CurrentUser = ServiceProvider.GetRequiredService<ICurrentUser>();
         }
 
-        /// <inheritdoc />
-        protected override void ConfigureServices(IServiceCollection serviceCollection)
-        {
-            serviceCollection.AddTransient<IAuditPropertySetter, AuditPropertySetter>();
-            var mock = new Mock<ICurrentUser>();
-            mock.SetupGet(v => v.Id).Returns("1");
-            mock.SetupGet(v => v.UserName).Returns("Jason");
-            serviceCollection.AddScoped(_ => mock.Object);
-        }
-
         public static FakeAuditObject GetAuditedObject(bool isDeleted = false)
         {
             return new FakeAuditObject(SystemClock.Now,
@@ -78,6 +68,16 @@ namespace Fabricdot.Infrastructure.Tests.Domain.Auditing
         {
             yield return new object[] { null };
             yield return new[] { new object() };
+        }
+
+        /// <inheritdoc />
+        protected override void ConfigureServices(IServiceCollection serviceCollection)
+        {
+            //serviceCollection.AddTransient<IAuditPropertySetter, AuditPropertySetter>();
+            var mock = new Mock<ICurrentUser>();
+            mock.SetupGet(v => v.Id).Returns("1");
+            mock.SetupGet(v => v.UserName).Returns("Jason");
+            serviceCollection.AddScoped(_ => mock.Object);
         }
     }
 }

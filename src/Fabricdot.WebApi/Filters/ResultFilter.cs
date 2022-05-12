@@ -1,10 +1,14 @@
 ﻿using System.Threading.Tasks;
+using Fabricdot.Core.DependencyInjection;
 using MediatR;
 using Microsoft.AspNetCore.Mvc.Controllers;
 using Microsoft.AspNetCore.Mvc.Filters;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Fabricdot.WebApi.Filters
 {
+    [ServiceContract(typeof(ResultFilter))]
+    [Dependency(ServiceLifetime.Scoped)]
     public class ResultFilter : IAsyncResultFilter
     {
         private readonly ISender _sender;

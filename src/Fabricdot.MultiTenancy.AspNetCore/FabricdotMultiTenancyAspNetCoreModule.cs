@@ -1,16 +1,17 @@
 ﻿using System;
-using Fabricdot.Infrastructure.DependencyInjection;
-using Fabricdot.MultiTenancy.Abstractions;
+using Fabricdot.Core.Modularity;
 using Fabricdot.MultiTenancy.AspNetCore.Strategies;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Fabricdot.MultiTenancy.AspNetCore
 {
-    public class MultiTenancyAspNetCoreModule : IModule
+    [Requires(typeof(FabricdotMultiTenancyModule))]
+    [Exports]
+    public class FabricdotMultiTenancyAspNetCoreModule : ModuleBase
     {
-        public void Configure(IServiceCollection services)
+        public override void ConfigureServices(ConfigureServiceContext context)
         {
-            new MultiTenancyModule().Configure(services);
+            var services = context.Services;
 
             services.Configure((Action<MultiTenancyOptions>)(opts =>
             {
@@ -20,9 +21,6 @@ namespace Fabricdot.MultiTenancy.AspNetCore
                 resolveStrategies.Add(new HeaderTenantResolveStrategy());
                 resolveStrategies.Add(new CookieTenantResolveStrategy());
             }));
-
-            services.AddSingleton<IMultiTenancyExceptionHandler, MultiTenancyExceptionHandler>();
-            services.AddTransient<MultiTenancyMiddleware>();
         }
     }
 }

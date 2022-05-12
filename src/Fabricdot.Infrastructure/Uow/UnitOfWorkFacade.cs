@@ -3,11 +3,14 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Ardalis.GuardClauses;
+using Fabricdot.Core.DependencyInjection;
 using Fabricdot.Infrastructure.Uow.Abstractions;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
 namespace Fabricdot.Infrastructure.Uow
 {
+    [Dependency(ServiceLifetime.Transient)]
     public class UnitOfWorkFacade : IUnitOfWorkFacade, ISupportSaveChanges
     {
         private readonly Dictionary<string, IDatabaseFacade> _databases;

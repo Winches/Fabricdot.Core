@@ -1,4 +1,3 @@
-using AspectCore.Extensions.DependencyInjection;
 using Fabricdot.Infrastructure.DependencyInjection;
 using Fabricdot.Infrastructure.Uow;
 using Fabricdot.Infrastructure.Uow.Abstractions;
@@ -8,7 +7,7 @@ using Xunit;
 
 namespace Fabricdot.Infrastructure.Tests.Uow
 {
-    public class UnitOfWorkInterceptorTests : IntegrationTestBase
+    public class UnitOfWorkInterceptorTests : IntegrationTestBase<InfrastructureTestModule>
     {
         private readonly FakeServiceWithUnitOfWorkInterceptor _testService;
         private readonly IUnitOfWorkManager _unitOfWorkManager;
@@ -77,12 +76,9 @@ namespace Fabricdot.Infrastructure.Tests.Uow
             Assert.True(uow.IsActive);
         }
 
-        protected override sealed void ConfigureServices(IServiceCollection serviceCollection)
+        protected override void ConfigureServices(IServiceCollection serviceCollection)
         {
-            serviceCollection.RegisterModules(new InfrastructureModule());
-            serviceCollection.AddTransient<FakeServiceWithUnitOfWorkInterceptor>();
-            serviceCollection.AddInterceptors();
-            UseServiceProviderFactory<DynamicProxyServiceProviderFactory>();
+            UseServiceProviderFactory<FabricdotServiceProviderFactory>();
         }
     }
 }

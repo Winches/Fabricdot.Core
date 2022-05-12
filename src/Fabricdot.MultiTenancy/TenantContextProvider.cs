@@ -1,9 +1,12 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
+using Fabricdot.Core.DependencyInjection;
 using Fabricdot.MultiTenancy.Abstractions;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Fabricdot.MultiTenancy
 {
+    [Dependency(ServiceLifetime.Transient)]
     public class TenantContextProvider : ITenantContextProvider
     {
         private readonly ITenantResolver _tenantResolver;

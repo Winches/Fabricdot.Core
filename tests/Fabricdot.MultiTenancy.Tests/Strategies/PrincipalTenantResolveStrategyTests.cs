@@ -10,7 +10,7 @@ using Xunit;
 
 namespace Fabricdot.MultiTenancy.Tests.Strategies
 {
-    public class PrincipalTenantResolveStrategyTests : IntegrationTestBase
+    public class PrincipalTenantResolveStrategyTests : IntegrationTestBase<MultiTenancyTestModule>
     {
         private readonly PrincipalTenantResolveStrategy _strategy;
         protected static ClaimsPrincipal CurrentPrincipal { get; set; }
@@ -52,7 +52,6 @@ namespace Fabricdot.MultiTenancy.Tests.Strategies
             var mock = new Mock<IPrincipalAccessor>();
             mock.SetupGet(v => v.Principal).Returns(() => CurrentPrincipal);
             serviceCollection.AddScoped(_ => mock.Object);
-            new MultiTenancyModule().Configure(serviceCollection);
         }
     }
 }

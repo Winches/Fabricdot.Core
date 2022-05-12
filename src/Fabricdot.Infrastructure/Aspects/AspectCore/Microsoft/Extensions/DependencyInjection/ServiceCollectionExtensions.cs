@@ -36,6 +36,7 @@ namespace Microsoft.Extensions.DependencyInjection
                         config.Interceptors.AddServiced(adapterType, CreateInterceptorPredicate(interceptorDescriptor));
                     }
 
+                    config.NonAspectPredicates.Add(AspectPredicateUtil.IsDefined<DisableAspectAttribute>(true));
                     foreach (var excludeTarget in options.ExcludeTargets)
                     {
                         config.NonAspectPredicates.AddService(excludeTarget.FullName);

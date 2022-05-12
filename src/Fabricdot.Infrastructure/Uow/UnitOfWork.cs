@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Ardalis.GuardClauses;
+using Fabricdot.Core.DependencyInjection;
 using Fabricdot.Infrastructure.Uow.Abstractions;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
@@ -12,6 +14,7 @@ namespace Fabricdot.Infrastructure.Uow
     /// <summary>
     ///     Inspire by ABP unit-of-work
     /// </summary>
+    [Dependency(ServiceLifetime.Transient)]
     public class UnitOfWork : IUnitOfWork
     {
         protected UnitOfWorkState State;

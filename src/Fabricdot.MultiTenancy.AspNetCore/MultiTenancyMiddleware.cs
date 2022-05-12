@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
+using Fabricdot.Core.DependencyInjection;
 using Fabricdot.Infrastructure.Uow.Abstractions;
 using Fabricdot.MultiTenancy.Abstractions;
 using Microsoft.AspNetCore.Http;
@@ -7,6 +8,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Fabricdot.MultiTenancy.AspNetCore
 {
+    [Dependency(ServiceLifetime.Transient)]
     public class MultiTenancyMiddleware : IMiddleware
     {
         private readonly ITenantContextProvider _tenantContextProvider;

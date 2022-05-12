@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using Ardalis.GuardClauses;
 
 // ReSharper disable once CheckNamespace
 namespace System
@@ -9,20 +10,13 @@ namespace System
 
         public static bool IsNullOrWhiteSpace(this string str) => string.IsNullOrWhiteSpace(str);
 
-        public static string[] Split(
-            this string str,
-            string separator,
-            StringSplitOptions options = StringSplitOptions.None)
-        {
-            return str.Split(new[] { separator }, options);
-        }
-
-
         public static string Repeat(
             this string s,
             int times,
             string separator = default)
         {
+            Guard.Against.Negative(times, nameof(times));
+
             return string.Join(separator, Enumerable.Repeat(s, times));
         }
 
@@ -31,6 +25,8 @@ namespace System
             int times,
             string separator = default)
         {
+            Guard.Against.Negative(times, nameof(times));
+
             return string.Join(separator, Enumerable.Repeat(s, times));
         }
     }

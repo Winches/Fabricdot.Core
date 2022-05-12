@@ -1,6 +1,5 @@
 using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
-using Fabricdot.Infrastructure.DependencyInjection;
 using Fabricdot.Infrastructure.Uow.Abstractions;
 using Fabricdot.Test.Shared;
 using Microsoft.Extensions.DependencyInjection;
@@ -9,7 +8,7 @@ using Xunit;
 namespace Fabricdot.Infrastructure.Tests.Uow
 {
     [SuppressMessage("ReSharper", "InconsistentNaming")]
-    public class UnitOfWorkManager_Available_Tests : IntegrationTestBase
+    public class UnitOfWorkManager_Available_Tests : IntegrationTestBase<InfrastructureTestModule>
     {
         private readonly IUnitOfWorkManager _unitOfWorkManager;
 
@@ -92,12 +91,6 @@ namespace Fabricdot.Infrastructure.Tests.Uow
             }
             availableUow = _unitOfWorkManager.Available;
             Assert.Null(availableUow);
-        }
-
-        /// <inheritdoc />
-        protected override void ConfigureServices(IServiceCollection serviceCollection)
-        {
-            serviceCollection.RegisterModules(new InfrastructureModule());
         }
     }
 }

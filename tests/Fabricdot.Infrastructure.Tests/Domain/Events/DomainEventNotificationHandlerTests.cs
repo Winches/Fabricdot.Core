@@ -9,7 +9,7 @@ using Xunit;
 
 namespace Fabricdot.Infrastructure.Tests.Domain.Events
 {
-    public class DomainEventNotificationHandlerTests : IntegrationTestBase
+    public class DomainEventNotificationHandlerTests : IntegrationTestBase<InfrastructureTestModule>
     {
         internal class EmployeeCreatedEventHandler1 : IDomainEventHandler<EntityCreatedEvent<Employee>>
         {
@@ -62,15 +62,6 @@ namespace Fabricdot.Infrastructure.Tests.Domain.Events
             var employee = new Employee("Allen", "Yeager", "1");
             var @event = new EntityRemovedEvent<Employee>(employee);
             await _notificationHandler.Handle(new DomainEventNotification(@event), default);
-        }
-
-        /// <inheritdoc />
-        protected override void ConfigureServices(IServiceCollection serviceCollection)
-        {
-            serviceCollection
-                .AddTransient<INotificationHandler<DomainEventNotification>, DomainEventNotificationHandler>()
-                .AddTransient<IDomainEventHandler<EntityCreatedEvent<Employee>>, EmployeeCreatedEventHandler1>()
-                .AddTransient<IDomainEventHandler<EntityCreatedEvent<Employee>>, EmployeeCreatedEventHandler2>();
         }
     }
 }

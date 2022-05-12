@@ -1,11 +1,11 @@
-﻿using AspectCore.Extensions.DependencyInjection;
+﻿using Fabricdot.Infrastructure.DependencyInjection;
 using Fabricdot.Infrastructure.Tests.Aspects.Interceptors;
 using Fabricdot.Test.Shared;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Fabricdot.Infrastructure.Tests.Aspects
 {
-    public abstract class InterceptorTestsBase : IntegrationTestBase
+    public abstract class InterceptorTestsBase : IntegrationTestBase<InfrastructureTestModule>
     {
         protected readonly ICalculator Calculator;
         protected readonly ICalculator DerivedCalculator;
@@ -24,17 +24,9 @@ namespace Fabricdot.Infrastructure.Tests.Aspects
             LoggingInterceptor.IsLogged = default;
         }
 
-        /// <inheritdoc />
-        protected override sealed void ConfigureServices(IServiceCollection serviceCollection)
+        protected override void ConfigureServices(IServiceCollection serviceCollection)
         {
-            serviceCollection.AddTransient<ICalculator, Calculator>();
-            serviceCollection.AddTransient<DerivedCalculator>();
-            serviceCollection.AddTransient<IParameterInterceptor, IntegerParameterInterceptor>();
-            serviceCollection.AddTransient<IntegerResultInterceptor>();
-            serviceCollection.AddTransient<LoggingInterceptor>();
-            serviceCollection.AddTransient<ShouldNotInvokedInterceptor>();
-            serviceCollection.AddInterceptors();
-            UseServiceProviderFactory<DynamicProxyServiceProviderFactory>();
+            UseServiceProviderFactory<FabricdotServiceProviderFactory>();
         }
     }
 }

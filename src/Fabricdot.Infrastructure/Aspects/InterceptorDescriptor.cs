@@ -30,6 +30,9 @@ namespace Fabricdot.Infrastructure.Aspects
                     "Interceptor must derived from IInterceptorMetadata", nameof(interceptorType));
             }
 
+            if(targetType is null && bindingType is null)
+                throw new ArgumentException("Target type and binding type both is null.");
+
             InterceptorType = interceptorType;
             Order = order;
             TargetType = targetType;
@@ -49,7 +52,7 @@ namespace Fabricdot.Infrastructure.Aspects
 
         public static InterceptorDescriptor Create([NotNull] Type interceptorType)
         {
-            var attributes = interceptorType.GetCustomAttributes().ToArray();
+            var attributes = interceptorType.GetCustomAttributes(true).ToArray();
             var interceptorAttribute = attributes.OfType<InterceptorAttribute>().SingleOrDefault();
             var bindingAttribute =
                 attributes.FirstOrDefault(v => v.GetType().IsDefined(typeof(InterceptorBindingAttribute), true));

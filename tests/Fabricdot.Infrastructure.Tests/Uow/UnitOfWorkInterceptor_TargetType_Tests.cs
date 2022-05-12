@@ -1,12 +1,11 @@
-﻿using AspectCore.Extensions.DependencyInjection;
-using Fabricdot.Infrastructure.DependencyInjection;
+﻿using Fabricdot.Infrastructure.DependencyInjection;
 using Fabricdot.Test.Shared;
 using Microsoft.Extensions.DependencyInjection;
 using Xunit;
 
 namespace Fabricdot.Infrastructure.Tests.Uow
 {
-    public class UnitOfWorkInterceptor_TargetType_Tests : IntegrationTestBase
+    public class UnitOfWorkInterceptor_TargetType_Tests : IntegrationTestBase<InfrastructureTestModule>
     {
         private readonly IFakeServiceWithUowScope _testService;
 
@@ -28,10 +27,7 @@ namespace Fabricdot.Infrastructure.Tests.Uow
 
         protected override void ConfigureServices(IServiceCollection serviceCollection)
         {
-            serviceCollection.RegisterModules(new InfrastructureModule());
-            serviceCollection.AddTransient<IFakeServiceWithUowScope, FakeServiceWithUowScope>();
-            serviceCollection.AddInterceptors();
-            UseServiceProviderFactory<DynamicProxyServiceProviderFactory>();
+            UseServiceProviderFactory<FabricdotServiceProviderFactory>();
         }
     }
 }

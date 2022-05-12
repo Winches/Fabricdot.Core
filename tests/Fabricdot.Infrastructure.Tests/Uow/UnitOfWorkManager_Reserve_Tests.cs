@@ -1,7 +1,6 @@
 using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
-using Fabricdot.Infrastructure.DependencyInjection;
 using Fabricdot.Infrastructure.Uow.Abstractions;
 using Fabricdot.Test.Shared;
 using Microsoft.Extensions.DependencyInjection;
@@ -10,7 +9,7 @@ using Xunit;
 namespace Fabricdot.Infrastructure.Tests.Uow
 {
     [SuppressMessage("ReSharper", "InconsistentNaming")]
-    public class UnitOfWorkManager_Reserve_Tests : IntegrationTestBase
+    public class UnitOfWorkManager_Reserve_Tests : IntegrationTestBase<InfrastructureTestModule>
     {
         private readonly IUnitOfWorkManager _unitOfWorkManager;
 
@@ -70,11 +69,6 @@ namespace Fabricdot.Infrastructure.Tests.Uow
         {
             void testCode() => _unitOfWorkManager.BeginReserved("1");
             Assert.Throws<InvalidOperationException>(testCode);
-        }
-
-        protected override void ConfigureServices(IServiceCollection serviceCollection)
-        {
-            serviceCollection.RegisterModules(new InfrastructureModule());
         }
 
         private void AssertReservedUow(string name, IUnitOfWork unitOfWork)

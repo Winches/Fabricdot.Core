@@ -1,10 +1,13 @@
 ﻿using System.Threading.Tasks;
+using Fabricdot.Core.DependencyInjection;
 using Fabricdot.Infrastructure.Tracing;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 
 namespace Fabricdot.WebApi.Tracing
 {
+    [Dependency(ServiceLifetime.Transient)]
     public class CorrelationMiddleware : IMiddleware
     {
         private readonly CorrelationIdOptions _idOptions;

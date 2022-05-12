@@ -1,10 +1,14 @@
 ﻿using System.Threading.Tasks;
+using Fabricdot.Core.DependencyInjection;
 using Fabricdot.WebApi.Endpoint;
 using Fabricdot.WebApi.Validation;
 using Microsoft.AspNetCore.Mvc.Filters;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Fabricdot.WebApi.Filters
 {
+    [ServiceContract(typeof(ValidationActionFilter))]
+    [Dependency(ServiceLifetime.Scoped)]
     public class ValidationActionFilter : IAsyncActionFilter
     {
         private readonly IModelStateValidator _validator;

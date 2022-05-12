@@ -1,10 +1,13 @@
 ﻿using System;
 using System.Net;
 using System.Threading.Tasks;
+using Fabricdot.Core.DependencyInjection;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Fabricdot.MultiTenancy.AspNetCore
 {
+    [Dependency(ServiceLifetime.Singleton)]
     public class MultiTenancyExceptionHandler : IMultiTenancyExceptionHandler
     {
         public async Task HandleAsync(HttpContext context, Exception exception)
