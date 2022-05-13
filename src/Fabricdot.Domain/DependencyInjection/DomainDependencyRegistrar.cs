@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
 using Fabricdot.Core.DependencyInjection;
 using Fabricdot.Domain.Events;
 using Fabricdot.Domain.Services;

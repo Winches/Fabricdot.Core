@@ -1,18 +1,11 @@
 ﻿using System.Linq;
+using Ardalis.GuardClauses;
 
 // ReSharper disable once CheckNamespace
 namespace System.Collections.Generic
 {
     public static class CollectionExtensions
     {
-        /// <summary>
-        ///     Checks collection object is null or has no item.
-        /// </summary>
-        public static bool IsNullOrEmpty<T>(this ICollection<T> source)
-        {
-            return source == null || source.Count == 0;
-        }
-
         /// <summary>
         ///     Removes all items from the collection those satisfy the given <paramref
         ///     name="predicate" />.
@@ -21,8 +14,13 @@ namespace System.Collections.Generic
         /// <param name="source">The collection</param>
         /// <param name="predicate">The condition to remove the items</param>
         /// <returns>List of removed items</returns>
-        public static IList<T> RemoveAll<T>(this ICollection<T> source, Func<T, bool> predicate)
+        public static IList<T> RemoveAll<T>(
+            this ICollection<T> source,
+            Func<T, bool> predicate)
         {
+            Guard.Against.Null(source, nameof(source));
+            Guard.Against.Null(predicate, nameof(predicate));
+
             var items = source.Where(predicate).ToList();
             foreach (var item in items)
                 source.Remove(item);
@@ -40,6 +38,8 @@ namespace System.Collections.Generic
             this ICollection<T> source,
             T item)
         {
+            Guard.Against.Null(source, nameof(source));
+
             if (source.Contains(item))
                 return;
 

@@ -1,19 +1,30 @@
-﻿using System.Threading.Tasks;
+﻿using System.Linq;
+using System.Threading.Tasks;
+using Ardalis.GuardClauses;
 
 // ReSharper disable once CheckNamespace
 namespace System.Collections.Generic
 {
     public static class EnumerableExtensions
     {
-        public static void ForEach<T>(
-            this IEnumerable<T> source,
-            Action<T> action)
+        /// <summary>
+        ///     Checks enumerable object is null or has no item.
+        /// </summary>
+        public static bool IsNullOrEmpty<T>(this IEnumerable<T> source)
         {
-            if (source is null)
-                throw new ArgumentNullException(nameof(source));
+            return source switch
+            {
+                ICollection<T> collection => source == null || collection.Count == 0,
+                _ => source?.Any() != true
+            };
+        }
 
-            if (action is null)
-                throw new ArgumentNullException(nameof(action));
+        public static void ForEach<T>(
+                this IEnumerable<T> source,
+                Action<T> action)
+        {
+            Guard.Against.Null(source, nameof(source));
+            Guard.Against.Null(action, nameof(action));
 
             foreach (var item in source)
                 action.Invoke(item);
@@ -23,11 +34,8 @@ namespace System.Collections.Generic
             this IEnumerable<T> source,
             Action<T, int> action)
         {
-            if (source is null)
-                throw new ArgumentNullException(nameof(source));
-
-            if (action is null)
-                throw new ArgumentNullException(nameof(action));
+            Guard.Against.Null(source, nameof(source));
+            Guard.Against.Null(action, nameof(action));
 
             var index = 0;
             using var enumerator = source.GetEnumerator();
@@ -39,11 +47,8 @@ namespace System.Collections.Generic
             this IEnumerable<T> source,
             Func<T, int, Task> func)
         {
-            if (source is null)
-                throw new ArgumentNullException(nameof(source));
-
-            if (func is null)
-                throw new ArgumentNullException(nameof(func));
+            Guard.Against.Null(source, nameof(source));
+            Guard.Against.Null(func, nameof(func));
 
             var index = 0;
             using var enumerator = source.GetEnumerator();
@@ -58,6 +63,8 @@ namespace System.Collections.Generic
             this IEnumerable<string> source,
             string separator)
         {
+            Guard.Against.Null(source, nameof(source));
+
             return string.Join(separator, source);
         }
 
@@ -65,6 +72,8 @@ namespace System.Collections.Generic
             this IEnumerable<string> source,
             char separator)
         {
+            Guard.Against.Null(source, nameof(source));
+
             return string.Join(separator, source);
         }
     }

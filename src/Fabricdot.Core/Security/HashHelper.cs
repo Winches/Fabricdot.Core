@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
 using Ardalis.GuardClauses;
@@ -12,45 +11,52 @@ namespace Fabricdot.Core.Security
         ///     MD5 Hash
         /// </summary>
         /// <param name="raw"></param>
+        /// <param name="encoding">UTF8 is default encoding</param>
         /// <returns>upper case</returns>
-        public static string ToMd5(string raw)
+        public static string ToMd5(
+            string raw,
+            Encoding encoding = null)
         {
-            Guard.Against.NullOrWhiteSpace(raw, nameof(raw));
+            Guard.Against.Null(raw, nameof(raw));
 
-            using var md5 = new MD5CryptoServiceProvider();
-            var bs = md5.ComputeHash(Encoding.UTF8.GetBytes(raw));
-            var sb = new StringBuilder(bs.Length * 2);
-            Array.ForEach(bs, v => sb.Append(v.ToString("x2")));
-            return sb.ToString().ToUpper();
+            using var md5 = MD5.Create();
+            var buffer = (encoding ?? Encoding.UTF8).GetBytes(raw);
+            var hash = md5.ComputeHash(buffer);
+            return Convert.ToHexString(hash);
         }
 
         /// <summary>
         ///     SHA1 Hash
         /// </summary>
         /// <param name="raw"></param>
+        /// <param name="encoding">UTF8 is default encoding</param>
         /// <returns>upper case</returns>
-        public static string ToSha1(string raw)
+        public static string ToSha1(
+            string raw,
+            Encoding encoding = null)
         {
-            Guard.Against.NullOrWhiteSpace(raw, nameof(raw));
+            Guard.Against.Null(raw, nameof(raw));
 
-            using var sha1 = new SHA1CryptoServiceProvider();
-            var bs = sha1.ComputeHash(Encoding.UTF8.GetBytes(raw));
-            var sb = new StringBuilder(bs.Length * 2);
-            Array.ForEach(bs, v => sb.Append(v.ToString("x2")));
-            return sb.ToString().ToUpper();
+            using var sha1 = SHA1.Create();
+            var buffer = (encoding ?? Encoding.UTF8).GetBytes(raw);
+            var hash = sha1.ComputeHash(buffer);
+            return Convert.ToHexString(hash);
         }
 
         /// <summary>
         ///     SHA256 Hash
         /// </summary>
         /// <param name="raw"></param>
+        /// <param name="encoding">UTF8 is default encoding</param>
         /// <returns></returns>
-        public static string ToSha256(string raw)
+        public static string ToSha256(
+            string raw,
+            Encoding encoding = null)
         {
-            var bytes = Encoding.UTF8.GetBytes(raw);
             using var sha256 = SHA256.Create();
-            var hash = sha256.ComputeHash(bytes);
-            return hash.Aggregate(new StringBuilder(), (sb, b) => sb.AppendFormat("{0:x2}", b)).ToString();
+            var buffer = (encoding ?? Encoding.UTF8).GetBytes(raw);
+            var hash = sha256.ComputeHash(buffer);
+            return Convert.ToHexString(hash);
         }
     }
 }

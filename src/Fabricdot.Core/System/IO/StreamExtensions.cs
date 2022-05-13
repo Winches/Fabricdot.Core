@@ -1,6 +1,6 @@
 ﻿using System.Text;
 using System.Threading.Tasks;
-using System;
+using Ardalis.GuardClauses;
 
 // ReSharper disable once CheckNamespace
 namespace System.IO
@@ -9,18 +9,21 @@ namespace System.IO
     {
         public static async Task<byte[]> GetBytesAsync(this Stream stream)
         {
-            if (stream == null)
-                throw new ArgumentNullException(nameof(stream));
+            Guard.Against.Null(stream, nameof(stream));
+
             stream.Seek(0, SeekOrigin.Begin);
             var data = new byte[stream.Length];
             await stream.ReadAsync(data);
             return data;
         }
 
-        public static async Task<string> GetStringAsync(this Stream stream, Encoding encoding)
+        public static async Task<string> GetStringAsync(
+            this Stream stream,
+            Encoding encoding = null)
         {
-            if (stream == null)
-                throw new ArgumentNullException(nameof(stream));
+            Guard.Against.Null(stream, nameof(stream));
+
+            encoding ??= Encoding.UTF8;
             using var streamReader = new StreamReader(stream, encoding, true);
             return await streamReader.ReadToEndAsync();
         }
