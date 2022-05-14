@@ -1,8 +1,8 @@
 ﻿using System;
 using Fabricdot.Domain.Auditing;
 using Fabricdot.Domain.Entities;
+using Fabricdot.Domain.SharedKernel;
 using Fabricdot.Domain.ValueObjects;
-using Fabricdot.MultiTenancy.Abstractions;
 using JetBrains.Annotations;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;

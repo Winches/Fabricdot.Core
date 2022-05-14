@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Fabricdot.Domain.Auditing;
 using Fabricdot.Domain.Entities;
 using Fabricdot.Domain.Events;
+using Fabricdot.Domain.SharedKernel;
 using Fabricdot.Infrastructure.Data.Filters;
 using Fabricdot.Infrastructure.Domain.Auditing;
 using Fabricdot.Infrastructure.EntityFrameworkCore.Extensions;

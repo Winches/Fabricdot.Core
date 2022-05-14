@@ -2,7 +2,7 @@
 using System.Diagnostics;
 using System.Reflection;
 using Fabricdot.Domain.Internal;
-using Fabricdot.MultiTenancy.Abstractions;
+using Fabricdot.Domain.SharedKernel;
 
 namespace Fabricdot.MultiTenancy
 {

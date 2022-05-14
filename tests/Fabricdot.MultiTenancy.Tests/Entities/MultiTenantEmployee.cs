@@ -1,6 +1,6 @@
 ﻿using System;
 using Fabricdot.Domain.Entities;
-using Fabricdot.MultiTenancy.Abstractions;
+using Fabricdot.Domain.SharedKernel;
 
 namespace Fabricdot.MultiTenancy.Tests.Entities
 {

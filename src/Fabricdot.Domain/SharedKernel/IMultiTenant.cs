@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Fabricdot.MultiTenancy.Abstractions
+namespace Fabricdot.Domain.SharedKernel
 {
     public interface IMultiTenant
     {

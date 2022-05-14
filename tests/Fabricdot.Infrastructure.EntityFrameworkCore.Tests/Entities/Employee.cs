@@ -1,7 +1,7 @@
 ﻿using System;
 using Ardalis.GuardClauses;
 using Fabricdot.Domain.Entities;
-using Fabricdot.MultiTenancy.Abstractions;
+using Fabricdot.Domain.SharedKernel;
 
 namespace Fabricdot.Infrastructure.EntityFrameworkCore.Tests.Entities
 {
