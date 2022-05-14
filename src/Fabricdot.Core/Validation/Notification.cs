@@ -48,6 +48,7 @@ namespace Fabricdot.Core.Validation
         public bool IsValid => _errors.Count == 0;
 
         /// <summary>
+        ///     Add or update <see cref="Errors" />
         /// </summary>
         /// <param name="key"></param>
         /// <param name="error"></param>

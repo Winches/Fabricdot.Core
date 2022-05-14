@@ -1,8 +1,9 @@
 ﻿using System.Linq;
 using Fabricdot.Core.Validation;
+using FluentAssertions;
 using Xunit;
 
-namespace Fabricdot.Core.Tests
+namespace Fabricdot.Core.Tests.Validation
 {
     public class NotificationTest
     {
@@ -14,8 +15,9 @@ namespace Fabricdot.Core.Tests
             var error = new Notification.Error("error1");
             notification.Add(key, error);
             var actual = notification.Errors.First();
-            Assert.Equal(key, actual.Key);
-            Assert.Contains(error, actual.Value);
+
+            actual.Key.Should().Be(key);
+            actual.Value.Should().Contain(error);
         }
 
         [Fact]
@@ -27,10 +29,20 @@ namespace Fabricdot.Core.Tests
             var error2 = new Notification.Error("error2");
             notification.Add(key1, error1);
             notification.Add(key1, error2);
-
             var actual = notification.Errors.First();
-            Assert.Contains(error1, actual.Value);
-            Assert.Contains(error2, actual.Value);
+
+            actual.Value.Should().Contain(error1);
+            actual.Value.Should().Contain(error2);
+        }
+
+        [Fact]
+        public void IsValid_ReturnCorrectly()
+        {
+            var notification = new Notification();
+
+            notification.IsValid.Should().BeTrue();
+            notification.Add("key1", new Notification.Error("error1"));
+            notification.IsValid.Should().BeFalse();
         }
     }
 }
