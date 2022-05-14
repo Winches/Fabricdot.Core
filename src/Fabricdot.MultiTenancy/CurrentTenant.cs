@@ -5,7 +5,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Fabricdot.MultiTenancy
 {
-    [Dependency(ServiceLifetime.Transient)]
+    [Dependency(ServiceLifetime.Transient, RegisterBehavior = RegistrationBehavior.Replace)]
     public class CurrentTenant : ICurrentTenant
     {
         private readonly ITenantAccessor _tenantAccessor;
