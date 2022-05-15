@@ -15,9 +15,9 @@ namespace Fabricdot.Identity.Tests.Domain.Stores
 
         protected UserStoreTestBase()
         {
-            UserRepository = ScopeServiceProvider.GetRequiredService<IUserRepository<User>>();
-            LookupNormalizer = ScopeServiceProvider.GetRequiredService<ILookupNormalizer>();
-            UserStore = ScopeServiceProvider.GetRequiredService<IUserStore<User>>();
+            UserRepository = ServiceProvider.GetRequiredService<IUserRepository<User>>();
+            LookupNormalizer = ServiceProvider.GetRequiredService<ILookupNormalizer>();
+            UserStore = ServiceProvider.GetRequiredService<IUserStore<User>>();
         }
     }
 }

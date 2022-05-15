@@ -1,5 +1,6 @@
 ﻿using System.Security.Claims;
 using System.Threading.Tasks;
+using Fabricdot.Domain.SharedKernel;
 using Fabricdot.Identity.Tests.Entities;
 using Fabricdot.Infrastructure.Data.Filters;
 using Fabricdot.Infrastructure.EntityFrameworkCore.Tests.Data;
@@ -18,9 +19,9 @@ namespace Fabricdot.Identity.Tests
 
         public DefaultUserClaimsPrincipalFactory_MultiTenancy_Tests()
         {
-            _factory = ScopeServiceProvider.GetRequiredService<IUserClaimsPrincipalFactory<User>>();
-            _userStore = ScopeServiceProvider.GetRequiredService<IUserStore<User>>();
-            _dataFilter = ScopeServiceProvider.GetRequiredService<IDataFilter>();
+            _factory = ServiceProvider.GetRequiredService<IUserClaimsPrincipalFactory<User>>();
+            _userStore = ServiceProvider.GetRequiredService<IUserStore<User>>();
+            _dataFilter = ServiceProvider.GetRequiredService<IDataFilter>();
         }
 
         [Fact]

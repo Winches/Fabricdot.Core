@@ -1,34 +1,29 @@
 ﻿using System;
 using System.Threading.Tasks;
-using Fabricdot.Identity.Tests.Data;
-using Fabricdot.Identity.Tests.Entities;
+using Fabricdot.Infrastructure.DependencyInjection;
+using Fabricdot.Infrastructure.EntityFrameworkCore.Tests.Data;
 using Fabricdot.Infrastructure.Uow.Abstractions;
-using Fabricdot.MultiTenancy.Abstractions;
-using Microsoft.AspNetCore.Identity;
+using Fabricdot.Test.Shared;
 using Microsoft.Extensions.DependencyInjection;
-using Moq;
 
 namespace Fabricdot.Identity.Tests
 {
-    public abstract class IdentityTestBase : EntityFrameworkCoreTestsBase
+    public abstract class IdentityTestBase : IntegrationTestBase<IdentityTestModule>
     {
+        protected IdentityTestBase()
+        {
+            var dataBuilder = ServiceProvider.GetRequiredService<FakeDataBuilder>();
+            dataBuilder.BuildAsync().GetAwaiter().GetResult();
+        }
+
         protected override void ConfigureServices(IServiceCollection serviceCollection)
         {
-            base.ConfigureServices(serviceCollection);
-
-            serviceCollection.AddIdentity<User, Role>()
-                 .AddRepositories<FakeDbContext>()
-                 .AddDefaultClaimsPrincipalFactory()
-                 .AddDefaultTokenProviders();
-
-            var mockCurrentTenant = new Mock<ICurrentTenant>();
-            mockCurrentTenant.Setup(v => v.Id).Returns((Guid?)null);
-            serviceCollection.AddSingleton(mockCurrentTenant.Object);
+            UseServiceProviderFactory<FabricdotServiceProviderFactory>();
         }
 
         protected async Task UseUowAsync(Func<Task> func)
         {
-            var unitOfWorkManager = ScopeServiceProvider.GetRequiredService<IUnitOfWorkManager>();
+            var unitOfWorkManager = ServiceScope.ServiceProvider.GetRequiredService<IUnitOfWorkManager>();
             using var uow = unitOfWorkManager.Begin();
             await func();
             await uow.CommitChangesAsync();

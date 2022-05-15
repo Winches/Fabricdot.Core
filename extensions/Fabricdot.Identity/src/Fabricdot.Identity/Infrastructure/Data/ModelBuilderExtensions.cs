@@ -22,7 +22,7 @@ namespace Fabricdot.Identity.Infrastructure.Data
             ConfigureIdentityUserClaim(modelBuilder);
             ConfigureIdentityUserLogin(modelBuilder);
             ConfigureIdentityUserToken(modelBuilder);
-            ConfigureIdentityUserRole(modelBuilder);
+            ConfigureIdentityUserRole<TRole>(modelBuilder);
 
             ConfigureIdentityRole<TRole>(modelBuilder);
             ConfigureIdentityRoleClaim(modelBuilder);
@@ -222,7 +222,7 @@ namespace Fabricdot.Identity.Infrastructure.Data
             });
         }
 
-        private static void ConfigureIdentityUserRole(ModelBuilder modelBuilder)
+        private static void ConfigureIdentityUserRole<TRole>(ModelBuilder modelBuilder) where TRole : IdentityRole
         {
             modelBuilder.Entity<IdentityUserRole>(b =>
             {
@@ -238,6 +238,10 @@ namespace Fabricdot.Identity.Infrastructure.Data
                 b.Property(v => v.RoleId)
                  .IsRequired()
                  .HasColumnName(nameof(IdentityUserRole.RoleId));
+
+                b.HasOne<TRole>()
+                 .WithMany()
+                 .HasForeignKey(v => v.RoleId);
 
                 b.HasIndex(v => new { v.UserId, v.RoleId });
                 b.HasIndex(v => v.RoleId);

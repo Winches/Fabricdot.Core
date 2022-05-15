@@ -1,6 +1,6 @@
 ﻿using System;
+using Fabricdot.Domain.SharedKernel;
 using Fabricdot.Identity.Domain.Entities.RoleAggregate;
-using Fabricdot.MultiTenancy.Abstractions;
 
 namespace Fabricdot.Identity.Tests.Entities
 {

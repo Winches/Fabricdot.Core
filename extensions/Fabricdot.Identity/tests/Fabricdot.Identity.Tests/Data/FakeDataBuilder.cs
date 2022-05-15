@@ -1,13 +1,16 @@
 ﻿using System;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using Fabricdot.Core.DependencyInjection;
 using Fabricdot.Identity.Domain.Repositories;
 using Fabricdot.Identity.Tests.Entities;
 using Fabricdot.Infrastructure.Uow;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Fabricdot.Infrastructure.EntityFrameworkCore.Tests.Data
 {
+    [Dependency(ServiceLifetime.Transient)]
     public class FakeDataBuilder
     {
         public static readonly string UserAnders = "Anders";

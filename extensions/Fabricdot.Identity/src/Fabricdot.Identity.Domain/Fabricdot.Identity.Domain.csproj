@@ -2,12 +2,15 @@
 
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
-	<PackageId>Fabricdot.Identity.Domain</PackageId>
+    <PackageId>Fabricdot.Identity.Domain</PackageId>
   </PropertyGroup>
   
-    <ItemGroup>
-      <PackageReference Include="Fabricdot.Domain" Version="0.5.2-alpha" />
+  <ItemGroup>
     <PackageReference Include="Microsoft.Extensions.Identity.Core" Version="5.0.13" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\..\src\Fabricdot.Domain\Fabricdot.Domain.csproj" />
   </ItemGroup>
 
 </Project>

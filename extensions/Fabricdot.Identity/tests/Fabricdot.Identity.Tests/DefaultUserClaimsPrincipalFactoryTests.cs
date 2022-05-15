@@ -16,8 +16,8 @@ namespace Fabricdot.Identity.Tests
 
         public DefaultUserClaimsPrincipalFactoryTests()
         {
-            _factory = ScopeServiceProvider.GetRequiredService<IUserClaimsPrincipalFactory<User>>();
-            _userStore = ScopeServiceProvider.GetRequiredService<IUserStore<User>>();
+            _factory = ServiceProvider.GetRequiredService<IUserClaimsPrincipalFactory<User>>();
+            _userStore = ServiceProvider.GetRequiredService<IUserStore<User>>();
         }
 
         [Fact]

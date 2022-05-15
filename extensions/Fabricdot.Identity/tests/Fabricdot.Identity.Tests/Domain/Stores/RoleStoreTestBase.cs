@@ -15,9 +15,9 @@ namespace Fabricdot.Identity.Tests.Domain.Stores
 
         protected RoleStoreTestBase()
         {
-            RoleRepository = ScopeServiceProvider.GetRequiredService<IRoleRepository<Role>>();
-            LookupNormalizer = ScopeServiceProvider.GetRequiredService<ILookupNormalizer>();
-            RoleStore = ScopeServiceProvider.GetRequiredService<IRoleStore<Role>>();
+            RoleRepository = ServiceProvider.GetRequiredService<IRoleRepository<Role>>();
+            LookupNormalizer = ServiceProvider.GetRequiredService<ILookupNormalizer>();
+            RoleStore = ServiceProvider.GetRequiredService<IRoleStore<Role>>();
         }
     }
 }

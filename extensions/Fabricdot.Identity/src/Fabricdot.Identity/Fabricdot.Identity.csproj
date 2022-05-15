@@ -6,11 +6,11 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Fabricdot.Infrastructure.EntityFrameworkCore" Version="0.5.2-alpha" />
     <PackageReference Include="Microsoft.AspNetCore.Identity" Version="2.2.0" />
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\..\..\src\Fabricdot.Infrastructure.EntityFrameworkCore\Fabricdot.Infrastructure.EntityFrameworkCore.csproj" />
     <ProjectReference Include="..\Fabricdot.Identity.Domain\Fabricdot.Identity.Domain.csproj" />
   </ItemGroup>
   
