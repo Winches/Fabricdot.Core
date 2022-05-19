@@ -9,5 +9,13 @@ namespace Fabricdot.WebApi.Models
 
         /// <inheritdoc />
         public long Total { get; set; }
+
+        public PagedResultDto(
+            ICollection<T> list,
+            long total)
+        {
+            List = list;
+            Total = total;
+        }
     }
 }
