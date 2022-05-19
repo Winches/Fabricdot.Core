@@ -31,5 +31,7 @@ namespace Fabricdot.Infrastructure.Queries
         protected PageQueryBase()
         {
         }
+
+        public virtual int GetOffset() => Size * (Index - 1);
     }
 }
