@@ -1,0 +1,13 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net5.0</TargetFramework>
+    <PackageId>Fabricdot.Authorization.Abstractions</PackageId>
+    <RootNamespace>Fabricdot.Authorization</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Fabricdot.Core\Fabricdot.Core.csproj" />
+  </ItemGroup>
+
+</Project>
