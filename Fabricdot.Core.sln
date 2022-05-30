@@ -1,4 +1,4 @@
-
+﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.0.32112.339
@@ -42,6 +42,8 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fabricdot.Authorization.Abstractions", "src\Fabricdot.Authorization.Abstractions\Fabricdot.Authorization.Abstractions.csproj", "{CE67C031-0C1B-4FE1-8F5C-B506236D1DD4}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fabricdot.Authorization", "src\Fabricdot.Authorization\Fabricdot.Authorization.csproj", "{13081FD8-0044-4110-93AF-4C51E54A2BF2}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fabricdot.Authorization.Tests", "tests\Fabricdot.Authorization.Tests\Fabricdot.Authorization.Tests.csproj", "{E01EBD5D-A1A5-41D2-AF77-EA7F8EFF12C2}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -121,6 +123,10 @@ Global
 		{13081FD8-0044-4110-93AF-4C51E54A2BF2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{13081FD8-0044-4110-93AF-4C51E54A2BF2}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{13081FD8-0044-4110-93AF-4C51E54A2BF2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E01EBD5D-A1A5-41D2-AF77-EA7F8EFF12C2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E01EBD5D-A1A5-41D2-AF77-EA7F8EFF12C2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E01EBD5D-A1A5-41D2-AF77-EA7F8EFF12C2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E01EBD5D-A1A5-41D2-AF77-EA7F8EFF12C2}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -144,6 +150,7 @@ Global
 		{1720C705-5B44-4948-88F0-30797AC8BF19} = {331C270C-1154-413D-A0B4-29E4E4ACA7C3}
 		{CE67C031-0C1B-4FE1-8F5C-B506236D1DD4} = {E4584D3B-649D-4069-82F1-647552F432FC}
 		{13081FD8-0044-4110-93AF-4C51E54A2BF2} = {E4584D3B-649D-4069-82F1-647552F432FC}
+		{E01EBD5D-A1A5-41D2-AF77-EA7F8EFF12C2} = {331C270C-1154-413D-A0B4-29E4E4ACA7C3}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {8A1CF1E5-6520-4250-8917-0413CEF753A8}
