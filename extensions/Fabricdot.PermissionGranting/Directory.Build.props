@@ -1,0 +1,8 @@
+<Project>
+  <Import Project="..\..\Directory.Build.props" />
+
+  <PropertyGroup>
+    <PackageTags>fabricdot;ddd;permission;permission-granting;</PackageTags>
+  </PropertyGroup>
+
+</Project>

@@ -17,6 +17,7 @@ var solutions = new []
 {
     "./Fabricdot.Core.sln",
     "./extensions/Fabricdot.Identity/Fabricdot.Identity.sln",
+    "./extensions/Fabricdot.PermissionGranting/Fabricdot.PermissionGranting.sln",
 };
 
 var packages = BuildPackages.GetPackages(
@@ -34,7 +35,9 @@ var packages = BuildPackages.GetPackages(
         "Fabricdot.WebApi",
 
         "Fabricdot.Identity.Domain",
-        "Fabricdot.Identity"
+        "Fabricdot.Identity",
+
+        "Fabricdot.PermissionGranting"
     });
 
 ///////////////////////////////////////////////////////////////////////////////
