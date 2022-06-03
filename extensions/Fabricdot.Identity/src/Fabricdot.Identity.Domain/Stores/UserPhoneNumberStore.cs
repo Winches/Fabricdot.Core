@@ -10,7 +10,7 @@ namespace Fabricdot.Identity.Domain.Stores
     /// </summary>
     public partial class UserStore<TUser, TRole> : IUserPhoneNumberStore<TUser>
     {
-        public virtual Task<string> GetPhoneNumberAsync(
+        public virtual Task<string?> GetPhoneNumberAsync(
             TUser user,
             CancellationToken cancellationToken)
         {

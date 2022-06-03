@@ -36,7 +36,7 @@ namespace Fabricdot.Infrastructure.Uow
             _databases.Add(key, database);
         }
 
-        public IDatabaseFacade GetDatabase(string key)
+        public IDatabaseFacade? GetDatabase(string key)
         {
             Guard.Against.NullOrEmpty(key, nameof(key));
             return _databases.GetValueOrDefault(key);
@@ -51,7 +51,7 @@ namespace Fabricdot.Infrastructure.Uow
             _transactions.Add(key, transaction);
         }
 
-        public ITransactionFacade GeTransaction(string key)
+        public ITransactionFacade? GeTransaction(string key)
         {
             Guard.Against.NullOrEmpty(key, nameof(key));
             return _transactions.GetValueOrDefault(key);

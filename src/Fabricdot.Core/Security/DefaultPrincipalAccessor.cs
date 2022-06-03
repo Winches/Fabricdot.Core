@@ -10,15 +10,15 @@ namespace Fabricdot.Core.Security
     [Dependency(ServiceLifetime.Singleton)]
     public class DefaultPrincipalAccessor : IPrincipalAccessor
     {
-        private readonly AsyncLocal<ClaimsPrincipal> _currentPrincipal = new AsyncLocal<ClaimsPrincipal>();
+        private readonly AsyncLocal<ClaimsPrincipal?> _currentPrincipal = new();
 
-        public ClaimsPrincipal Principal => _currentPrincipal.Value ?? GetClaimsPrincipal();
+        public ClaimsPrincipal? Principal => _currentPrincipal.Value ?? GetClaimsPrincipal();
 
-        public virtual IDisposable Change(ClaimsPrincipal principal) => SetCurrent(principal);
+        public virtual IDisposable Change(ClaimsPrincipal? principal) => SetCurrent(principal);
 
-        protected virtual ClaimsPrincipal GetClaimsPrincipal() => Thread.CurrentPrincipal as ClaimsPrincipal;
+        protected virtual ClaimsPrincipal? GetClaimsPrincipal() => Thread.CurrentPrincipal as ClaimsPrincipal;
 
-        protected IDisposable SetCurrent(ClaimsPrincipal principal)
+        protected IDisposable SetCurrent(ClaimsPrincipal? principal)
         {
             var parent = Principal;
             _currentPrincipal.Value = principal;

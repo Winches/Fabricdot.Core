@@ -21,7 +21,7 @@ namespace Fabricdot.Identity.Domain.Stores
 
         public virtual Guid ConvertIdFromString(string id) => Guid.Parse(id);
 
-        public virtual string ConvertIdToString(Guid id) => (id == default) ? null : id.ToString();
+        public virtual string? ConvertIdToString(Guid id) => (id == default) ? null : id.ToString();
 
         protected abstract Task SaveChangesAsync(CancellationToken cancellationToken);
     }

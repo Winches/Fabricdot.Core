@@ -8,10 +8,12 @@ namespace Fabricdot.MultiTenancy.Abstractions
     internal class NullCurrentTenant : ICurrentTenant
     {
         public Guid? Id { get; }
-        public string Name { get; }
+        public string? Name { get; }
         public bool IsAvailable { get; }
 
-        public IDisposable Change(Guid? tenantId, string tenantName = null)
+        public IDisposable Change(
+            Guid? tenantId,
+            string? tenantName = null)
         {
             throw new NotImplementedException();
         }

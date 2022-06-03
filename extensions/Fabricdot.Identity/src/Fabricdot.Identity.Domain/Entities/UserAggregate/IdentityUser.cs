@@ -15,28 +15,28 @@ namespace Fabricdot.Identity.Domain.Entities.UserAggregate
         private readonly List<IdentityUserToken> _tokens = new();
 
         [ProtectedPersonalData]
-        public virtual string UserName { get; protected internal set; }
+        public virtual string UserName { get; protected internal set; } = null!;
 
-        public virtual string NormalizedUserName { get; protected internal set; }
-
-        [PersonalData]
-        public virtual string GivenName { get; set; }
+        public virtual string NormalizedUserName { get; protected internal set; } = null!;
 
         [PersonalData]
-        public virtual string Surname { get; set; }
+        public virtual string? GivenName { get; set; }
 
-        public virtual string PasswordHash { get; protected internal set; }
+        [PersonalData]
+        public virtual string? Surname { get; set; }
+
+        public virtual string? PasswordHash { get; protected internal set; }
 
         [ProtectedPersonalData]
-        public virtual string Email { get; protected internal set; }
+        public virtual string? Email { get; protected internal set; }
 
-        public virtual string NormalizedEmail { get; protected internal set; }
+        public virtual string? NormalizedEmail { get; protected internal set; }
 
         [PersonalData]
         public virtual bool EmailConfirmed { get; protected internal set; }
 
         [ProtectedPersonalData]
-        public virtual string PhoneNumber { get; protected set; }
+        public virtual string? PhoneNumber { get; protected set; }
 
         [PersonalData]
         public virtual bool PhoneNumberConfirmed { get; protected set; }
@@ -52,7 +52,7 @@ namespace Fabricdot.Identity.Domain.Entities.UserAggregate
 
         public virtual int AccessFailedCount { get; protected set; }
 
-        public virtual string SecurityStamp { get; protected internal set; }
+        public virtual string SecurityStamp { get; protected internal set; } = null!;
 
         public virtual IReadOnlyCollection<IdentityUserClaim> Claims => _claims.AsReadOnly();
 
@@ -91,14 +91,14 @@ namespace Fabricdot.Identity.Domain.Entities.UserAggregate
         }
 
         public virtual void ChangePhoneNumber(
-            string phoneNumber,
+            string? phoneNumber,
             bool isConfirmed)
         {
             ChangePhoneNumber(phoneNumber);
             PhoneNumberConfirmed = isConfirmed && !string.IsNullOrEmpty(phoneNumber);
         }
 
-        public virtual void ChangePhoneNumber(string phoneNumber) => PhoneNumber = phoneNumber?.Trim();
+        public virtual void ChangePhoneNumber(string? phoneNumber) => PhoneNumber = phoneNumber?.Trim();
 
         public virtual int AccessFailed() => ++AccessFailedCount;
 
@@ -135,7 +135,7 @@ namespace Fabricdot.Identity.Domain.Entities.UserAggregate
         public virtual void AddClaim(
             Guid claimId,
             string claimType,
-            string claimValue)
+            string? claimValue)
         {
             var claim = new IdentityUserClaim(claimId, claimType, claimValue);
             _claims.Add(claim);
@@ -143,9 +143,9 @@ namespace Fabricdot.Identity.Domain.Entities.UserAggregate
 
         public virtual void ReplaceClaim(
             string claimType,
-            string claimValue,
+            string? claimValue,
             string newClaimType,
-            string newClaimValue)
+            string? newClaimValue)
         {
             _claims.Where(v => v.ClaimType == claimType && v.ClaimValue == claimValue)
                    .ForEach(v => v.SetClaim(newClaimType, newClaimValue));
@@ -153,7 +153,7 @@ namespace Fabricdot.Identity.Domain.Entities.UserAggregate
 
         public virtual void RemoveClaim(
             string claimType,
-            string claimValue)
+            string? claimValue)
         {
             _claims.RemoveAll(v => v.ClaimType == claimType && v.ClaimValue == claimValue);
         }
@@ -177,7 +177,7 @@ namespace Fabricdot.Identity.Domain.Entities.UserAggregate
             _logins.RemoveAll(v => v.LoginProvider == loginProvider && v.ProviderKey == providerKey);
         }
 
-        public virtual IdentityUserToken FindToken(
+        public virtual IdentityUserToken? FindToken(
             string loginProvider,
             string name)
         {
@@ -187,10 +187,10 @@ namespace Fabricdot.Identity.Domain.Entities.UserAggregate
         public virtual void AddOrUpdateToken(
             string loginProvider,
             string name,
-            string value)
+            string? value)
         {
             var token = FindToken(loginProvider, name);
-            if (token == null)
+            if (token is null)
             {
                 _tokens.Add(new IdentityUserToken(loginProvider, name, value));
             }

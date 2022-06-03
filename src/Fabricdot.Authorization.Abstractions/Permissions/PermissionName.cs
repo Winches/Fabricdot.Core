@@ -20,7 +20,7 @@ namespace Fabricdot.Authorization.Permissions
 
         public static implicit operator string(PermissionName value) => value.Value;
 
-        public override bool Equals(object obj) => obj is PermissionName name
+        public override bool Equals(object? obj) => obj is PermissionName name
                                                    && Value.Equals(name.Value, StringComparison.InvariantCultureIgnoreCase);
 
         public override int GetHashCode() => Value.GetHashCode();

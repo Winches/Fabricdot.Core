@@ -17,7 +17,9 @@ namespace Microsoft.Extensions.DependencyInjection
     [UsedImplicitly]
     public static class ServiceCollectionExtensions
     {
-        public static IServiceCollection AddInterceptors(this IServiceCollection serviceCollection, Action<IInterceptorOptions> optionBuilderAction = null)
+        public static IServiceCollection AddInterceptors(
+            this IServiceCollection serviceCollection,
+            Action<IInterceptorOptions>? optionBuilderAction = null)
         {
             Guard.Against.Null(serviceCollection, nameof(serviceCollection));
 
@@ -53,7 +55,7 @@ namespace Microsoft.Extensions.DependencyInjection
 
         private static InterceptorOptions BuildInterceptorOptions(
             IServiceCollection serviceCollection,
-            Action<IInterceptorOptions> optionBuilderAction)
+            Action<IInterceptorOptions>? optionBuilderAction)
         {
             var options = new InterceptorOptions();
             var interceptorTypes = GetInterceptorTypes(serviceCollection).ToList();
@@ -73,7 +75,7 @@ namespace Microsoft.Extensions.DependencyInjection
         }
 
         [CanBeNull]
-        private static Type AdaptInterceptorType(Type interceptorType)
+        private static Type? AdaptInterceptorType(Type interceptorType)
         {
             return interceptorType.IsAssignableTo(typeof(IInterceptor))
                 ? typeof(AspectCoreInterceptorAdapter<>).MakeGenericType(interceptorType)

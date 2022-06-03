@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
 using Ardalis.GuardClauses;
-using Fabricdot.Core.Reflection;
 using Fabricdot.MultiTenancy.Abstractions;
 using Microsoft.Extensions.Logging;
 
@@ -22,12 +21,12 @@ namespace Fabricdot.MultiTenancy
             _strategy = Guard.Against.Null(strategy, nameof(strategy));
         }
 
-        public async Task<string> ResolveIdentifierAsync(TenantResolveContext context)
+        public async Task<string?> ResolveIdentifierAsync(TenantResolveContext context)
         {
             if (context == null)
                 return null;
 
-            string identifier = null;
+            string? identifier = null;
             try
             {
                 identifier = await _strategy.ResolveIdentifierAsync(context);

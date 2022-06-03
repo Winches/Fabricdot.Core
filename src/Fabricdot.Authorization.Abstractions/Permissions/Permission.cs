@@ -8,7 +8,7 @@ namespace Fabricdot.Authorization.Permissions
     {
         private readonly HashSet<Permission> _permissions = new();
 
-        private string _displayName;
+        private string _displayName = null!;
 
         public PermissionName Name { get; private set; }
 
@@ -21,15 +21,15 @@ namespace Fabricdot.Authorization.Permissions
             }
         }
 
-        public string Description { get; set; }
+        public string? Description { get; set; }
 
         public IReadOnlyCollection<Permission> Children => _permissions;
 
         public Permission(
             PermissionName name,
             string displayName,
-            string description = null,
-            IEnumerable<Permission> permissions = null)
+            string? description = null,
+            IEnumerable<Permission>? permissions = null)
         {
             Name = name;
             DisplayName = displayName;
@@ -37,14 +37,14 @@ namespace Fabricdot.Authorization.Permissions
 
             if (!permissions.IsNullOrEmpty())
             {
-                _permissions.UnionWith(permissions);
+                _permissions.UnionWith(permissions!);
             }
         }
 
         public Permission Add(
             PermissionName name,
             string displayName,
-            string description = null)
+            string? description = null)
         {
             var permission = new Permission(
                 name,
@@ -61,7 +61,7 @@ namespace Fabricdot.Authorization.Permissions
             return this;
         }
 
-        public override bool Equals(object obj) => obj is Permission permission && Name == permission.Name;
+        public override bool Equals(object? obj) => obj is Permission permission && Name == permission.Name;
 
         public override int GetHashCode() => HashCode.Combine(Name);
 

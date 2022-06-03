@@ -16,11 +16,11 @@ namespace Fabricdot.Authorization
             IsGranted = isGranted;
         }
 
-        public static bool operator ==(GrantResult left, GrantResult right) => left.Equals(right);
+        public static bool operator ==(GrantResult? left, GrantResult? right) => Equals(left, right);
 
-        public static bool operator !=(GrantResult left, GrantResult right) => !(left == right);
+        public static bool operator !=(GrantResult? left, GrantResult? right) => !Equals(left, right);
 
-        public override bool Equals(object obj) => obj is GrantResult result && Object == result.Object;
+        public override bool Equals(object? obj) => obj is GrantResult result && Object == result.Object;
 
         public override int GetHashCode() => Object.GetHashCode();
     }

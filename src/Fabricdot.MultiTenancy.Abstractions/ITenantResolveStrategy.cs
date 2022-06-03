@@ -6,6 +6,6 @@ namespace Fabricdot.MultiTenancy.Abstractions
     {
         int Priority { get; }
 
-        Task<string> ResolveIdentifierAsync(TenantResolveContext context);
+        Task<string?> ResolveIdentifierAsync(TenantResolveContext context);
     }
 }

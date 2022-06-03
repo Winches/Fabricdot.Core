@@ -7,19 +7,19 @@ namespace Fabricdot.Identity.Infrastructure.Data
 {
     public class IdentityDbContext<TUser, TRole> : DbContextBase, IIdentityDbContext<TUser, TRole> where TUser : IdentityUser where TRole : IdentityRole
     {
-        public DbSet<TUser> Users { get; set; }
+        public DbSet<TUser> Users { get; set; } = null!;
 
-        public DbSet<IdentityUserClaim> UserClaims { get; set; }
+        public DbSet<IdentityUserClaim> UserClaims { get; set; } = null!;
 
-        public DbSet<IdentityUserLogin> UserLogins { get; set; }
+        public DbSet<IdentityUserLogin> UserLogins { get; set; } = null!;
 
-        public DbSet<IdentityUserToken> UserTokens { get; set; }
+        public DbSet<IdentityUserToken> UserTokens { get; set; } = null!;
 
-        public DbSet<IdentityUserRole> UserRoles { get; set; }
+        public DbSet<IdentityUserRole> UserRoles { get; set; } = null!;
 
-        public DbSet<TRole> Roles { get; set; }
+        public DbSet<TRole> Roles { get; set; } = null!;
 
-        public DbSet<IdentityRoleClaim> RoleClaims { get; set; }
+        public DbSet<IdentityRoleClaim> RoleClaims { get; set; } = null!;
 
         public IdentityDbContext(DbContextOptions options) : base(options)
         {

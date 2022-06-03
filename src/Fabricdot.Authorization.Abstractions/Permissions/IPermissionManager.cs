@@ -7,7 +7,7 @@ namespace Fabricdot.Authorization.Permissions
     {
         Task AddGroupAsync(PermissionGroup permissionGroup);
 
-        Task<Permission> GetByNameAsync(PermissionName name);
+        Task<Permission?> GetByNameAsync(PermissionName name);
 
         Task<IReadOnlyCollection<Permission>> ListAsync();
 

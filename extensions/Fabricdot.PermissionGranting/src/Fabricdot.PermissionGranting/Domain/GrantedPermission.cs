@@ -10,11 +10,11 @@ public class GrantedPermission : AggregateRoot<Guid>, IMultiTenant
 {
     public Guid? TenantId { get; private set; }
 
-    public string GrantType { get; private set; }
+    public string GrantType { get; private set; } = null!;
 
-    public string Subject { get; private set; }
+    public string Subject { get; private set; } = null!;
 
-    public string Object { get; private set; }
+    public string Object { get; private set; } = null!;
 
     internal GrantedPermission(
         Guid grantId,

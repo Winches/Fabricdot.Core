@@ -16,6 +16,6 @@ namespace Fabricdot.WebApi.Securirty
             _httpContextAccessor = httpContextAccessor;
         }
 
-        protected override ClaimsPrincipal GetClaimsPrincipal() => _httpContextAccessor.HttpContext?.User ?? base.GetClaimsPrincipal();
+        protected override ClaimsPrincipal? GetClaimsPrincipal() => _httpContextAccessor.HttpContext?.User ?? base.GetClaimsPrincipal();
     }
 }

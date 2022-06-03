@@ -6,7 +6,7 @@ namespace Fabricdot.Infrastructure.Uow
 {
     public static class AmbientUnitOfWorkExtensions
     {
-        public static IUnitOfWork Find(this IAmbientUnitOfWork ambientUnitOfWork, Predicate<IUnitOfWork> predicate)
+        public static IUnitOfWork? Find(this IAmbientUnitOfWork ambientUnitOfWork, Predicate<IUnitOfWork> predicate)
         {
             Guard.Against.Null(ambientUnitOfWork, nameof(ambientUnitOfWork));
             Guard.Against.Null(predicate, nameof(predicate));

@@ -19,7 +19,7 @@ namespace System.IO
 
         public static async Task<string> GetStringAsync(
             this Stream stream,
-            Encoding encoding = null)
+            Encoding? encoding = null)
         {
             Guard.Against.Null(stream, nameof(stream));
 

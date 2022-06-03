@@ -8,7 +8,7 @@ namespace Fabricdot.Identity.Domain.SharedKernel
         public static Claim ToClaim(this IIdentityClaim identityClaim)
         {
             Guard.Against.Null(identityClaim, nameof(identityClaim));
-            return new Claim(identityClaim.ClaimType, identityClaim.ClaimValue);
+            return new Claim(identityClaim.ClaimType, identityClaim.ClaimValue ?? string.Empty);
         }
     }
 }

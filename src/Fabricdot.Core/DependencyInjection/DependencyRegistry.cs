@@ -36,7 +36,7 @@ namespace Fabricdot.Core.DependencyInjection
                 ServiceTypes.AddIfNotContains(ImplementationType);
                 return ServiceTypes.Select(v => v == ImplementationType
                     ? ServiceDescriptor.Describe(v, ImplementationType, ServiceLifetime)
-                    : ServiceDescriptor.Describe(v, s => s.GetService(ImplementationType), ServiceLifetime))
+                    : ServiceDescriptor.Describe(v, s => s.GetRequiredService(ImplementationType), ServiceLifetime))
                                    .ToList();
             }
 

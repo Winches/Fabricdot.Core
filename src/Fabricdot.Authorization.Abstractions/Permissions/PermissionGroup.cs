@@ -9,7 +9,7 @@ namespace Fabricdot.Authorization.Permissions
     {
         private readonly List<Permission> _permissions = new();
 
-        private string _displayName;
+        private string _displayName = null!;
 
         public string Name { get; private set; }
 
@@ -35,7 +35,7 @@ namespace Fabricdot.Authorization.Permissions
         public Permission AddPermission(
             PermissionName name,
             string displayName,
-            string description = null)
+            string? description = null)
         {
             if (FindPermission(name) is not null)
                 throw new InvalidOperationException("Permission is already exists.");
@@ -54,7 +54,7 @@ namespace Fabricdot.Authorization.Permissions
             _permissions.Remove(permission);
         }
 
-        public Permission FindPermission(PermissionName name)
+        public Permission? FindPermission(PermissionName name)
         {
             return _permissions.SingleOrDefault(v => v.Name == name);
         }

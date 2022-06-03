@@ -16,6 +16,19 @@ namespace Fabricdot.Infrastructure.Tracing
             Value = guid.ToString("N");
         }
 
+        public static CorrelationId New() => new(Guid.NewGuid().ToString("N"));
+
+        public static implicit operator CorrelationId(string value)
+        {
+            return Guid.TryParse(value, out var guid) ? new CorrelationId(guid) : throw new ArgumentException("Invalid Correlation Id.", nameof(value));
+        }
+
+        public static implicit operator CorrelationId(Guid guid) => new(guid);
+
+        public static bool operator ==(CorrelationId left, CorrelationId right) => left.Equals(right);
+
+        public static bool operator !=(CorrelationId left, CorrelationId right) => !(left == right);
+
         /// <inheritdoc />
         public override string ToString() => Value;
 
@@ -25,7 +38,7 @@ namespace Fabricdot.Infrastructure.Tracing
         }
 
         /// <inheritdoc />
-        public override bool Equals(object obj)
+        public override bool Equals(object? obj)
         {
             return obj is CorrelationId other && Equals(other);
         }
@@ -35,14 +48,5 @@ namespace Fabricdot.Infrastructure.Tracing
         {
             return Value != null ? Value.GetHashCode() : 0;
         }
-
-        public static CorrelationId New() => new CorrelationId(Guid.NewGuid().ToString("N"));
-
-        public static implicit operator CorrelationId(string value)
-        {
-            return Guid.TryParse(value, out var guid) ? new CorrelationId(guid) : throw new ArgumentException("Invalid Correlation Id.", nameof(value));
-        }
-
-        public static implicit operator CorrelationId(Guid guid) => new CorrelationId(guid);
     }
 }

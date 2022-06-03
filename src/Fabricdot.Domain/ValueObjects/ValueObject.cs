@@ -12,17 +12,17 @@ namespace Fabricdot.Domain.ValueObjects
     {
         private static readonly ConcurrentDictionary<Type, IReadOnlyCollection<PropertyInfo>> _properties = new();
 
-        public static bool operator ==(ValueObject left, ValueObject right)
+        public static bool operator ==(ValueObject? left, ValueObject? right)
         {
             return Equals(left, right);
         }
 
-        public static bool operator !=(ValueObject left, ValueObject right)
+        public static bool operator !=(ValueObject? left, ValueObject? right)
         {
             return !Equals(left, right);
         }
 
-        public override bool Equals(object obj)
+        public override bool Equals(object? obj)
         {
             if (obj == null || obj.GetType() != GetType())
                 return false;
@@ -36,7 +36,7 @@ namespace Fabricdot.Domain.ValueObjects
                 if (thisValues.Current is null ^ otherValues.Current is null)
                     return false;
 
-                if (thisValues.Current != null && !thisValues.Current.Equals(otherValues.Current))
+                if (thisValues.Current?.Equals(otherValues.Current) == false)
                     return false;
             }
 
@@ -54,9 +54,9 @@ namespace Fabricdot.Domain.ValueObjects
             return $"{{{GetProperties().Select(v => $"{v.Name}: {v.GetValue(this)}").JoinAsString(',')}}}";
         }
 
-        public bool Equals(ValueObject other)
+        public virtual bool Equals(ValueObject? other)
         {
-            return Equals((object)other);
+            return Equals((object?)other);
         }
 
         protected virtual IEnumerable<PropertyInfo> GetProperties()
@@ -71,7 +71,7 @@ namespace Fabricdot.Domain.ValueObjects
                     .ToImmutableList());
         }
 
-        protected virtual IEnumerable<object> GetAtomicValues()
+        protected virtual IEnumerable<object?> GetAtomicValues()
         {
             return GetProperties().Select(x => x.GetValue(this));
         }

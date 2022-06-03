@@ -24,7 +24,7 @@ namespace Fabricdot.Authorization
         {
             var principal = context.User;
 
-            if (principal.Identity.IsAuthenticated)
+            if (principal?.Identity?.IsAuthenticated ?? false)
             {
                 var grantResults = await PermissionService.EvaluateAsync(principal, requirement.Permissions);
                 switch (requirement.RequireBehavior)

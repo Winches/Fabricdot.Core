@@ -9,7 +9,7 @@ namespace Fabricdot.MultiTenancy.AspNetCore.Strategies
     {
         public virtual int Priority { get; protected set; }
 
-        public virtual async Task<string> ResolveIdentifierAsync(TenantResolveContext context)
+        public virtual async Task<string?> ResolveIdentifierAsync(TenantResolveContext context)
         {
             var httpContextAccessor = context.ServiceProvider.GetRequiredService<IHttpContextAccessor>();
             var httpContext = httpContextAccessor.HttpContext;
@@ -19,6 +19,6 @@ namespace Fabricdot.MultiTenancy.AspNetCore.Strategies
             return await ResolveIdentifierAsync(httpContext);
         }
 
-        protected abstract Task<string> ResolveIdentifierAsync(HttpContext httpContext);
+        protected abstract Task<string?> ResolveIdentifierAsync(HttpContext httpContext);
     }
 }

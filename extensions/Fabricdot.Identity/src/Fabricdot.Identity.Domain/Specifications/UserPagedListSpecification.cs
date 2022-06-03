@@ -11,7 +11,7 @@ namespace Fabricdot.Identity.Domain.Specifications
         public UserPagedListSpecification(
             int index,
             int size,
-            string filter = null,
+            string? filter = null,
             bool? isActive = null,
             bool? isLockedOut = null,
             bool includeDetails = false) : base(includeDetails)
@@ -28,7 +28,7 @@ namespace Fabricdot.Identity.Domain.Specifications
                                  || (v.Surname != null && v.Surname.Contains(filter))
                                  || (v.Email != null && v.Email.Contains(filter))
                                  || (v.NormalizedEmail != null && v.NormalizedEmail.Contains(filter))
-                                 || v.PhoneNumber.Contains(filter));
+                                 || (v.PhoneNumber != null && v.PhoneNumber.Contains(filter)));
             }
 
             if (isLockedOut.HasValue)

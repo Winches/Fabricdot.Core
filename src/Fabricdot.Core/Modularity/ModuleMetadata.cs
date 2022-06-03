@@ -26,7 +26,7 @@ namespace Fabricdot.Core.Modularity
             params IModuleMetadata[] modules)
         {
             Name = Guard.Against.NullOrEmpty(name, nameof(name));
-            Type = Guard.Against.InvalidModuleType(type, type.FullName);
+            Type = Guard.Against.InvalidModuleType(type, nameof(type));
             Instance = Guard.Against.Null(instance, nameof(instance));
             Assembly = Type.Assembly;
 
@@ -45,7 +45,7 @@ namespace Fabricdot.Core.Modularity
         public ModuleMetadata(
             Type type,
             IModule instance) : this(
-                type.FullName,
+                type.FullName!,
                 type,
                 instance,
                 Array.Empty<IModuleMetadata>())
@@ -60,8 +60,8 @@ namespace Fabricdot.Core.Modularity
 
         public override int GetHashCode() => Name.GetHashCode();
 
-        public override bool Equals(object obj) => Equals(obj as IModuleMetadata);
+        public override bool Equals(object? obj) => Equals(obj as IModuleMetadata);
 
-        public virtual bool Equals(IModuleMetadata obj) => Name.Equals(obj?.Name);
+        public virtual bool Equals(IModuleMetadata? obj) => Name.Equals(obj?.Name);
     }
 }

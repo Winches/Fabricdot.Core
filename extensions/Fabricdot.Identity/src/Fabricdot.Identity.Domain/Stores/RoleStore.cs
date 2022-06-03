@@ -88,7 +88,7 @@ namespace Fabricdot.Identity.Domain.Stores
             return Task.FromResult(role.NormalizedName);
         }
 
-        public virtual Task<string> GetRoleIdAsync(
+        public virtual Task<string?> GetRoleIdAsync(
             TRole role,
             CancellationToken cancellationToken)
         {

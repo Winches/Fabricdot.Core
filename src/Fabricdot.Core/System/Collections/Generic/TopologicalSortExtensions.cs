@@ -19,7 +19,7 @@ namespace System.Collections.Generic
         public static ICollection<T> TopologicalSort<T>(
             this IEnumerable<T> source,
             Func<T, IEnumerable<T>> dependenciesSelector,
-            IEqualityComparer<T> comparer = null)
+            IEqualityComparer<T>? comparer = null) where T : notnull
         {
             /* See: http://www.codeproject.com/Articles/869059/Topological-sorting-in-Csharp
              *      http://en.wikipedia.org/wiki/Topological_sorting
@@ -55,7 +55,7 @@ namespace System.Collections.Generic
             T item,
             Func<T, IEnumerable<T>> dependenciesSelector,
             ICollection<T> sorted,
-            Dictionary<T, bool> visited)
+            Dictionary<T, bool> visited) where T : notnull
         {
             var alreadyVisited = visited.TryGetValue(item, out var inProcess);
 

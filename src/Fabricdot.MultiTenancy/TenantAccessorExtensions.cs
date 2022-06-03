@@ -10,11 +10,11 @@ namespace Fabricdot.MultiTenancy
         public static IDisposable Change(
             this ITenantAccessor tenantAccessor,
             Guid tenantId,
-            string tenantName = null)
+            string? tenantName = null)
         {
             Guard.Against.Null(tenantAccessor, nameof(tenantAccessor));
 
-            return tenantAccessor.Change(new TenantInfo(tenantId, tenantName));
+            return tenantAccessor.Change(new TenantInfo(tenantId, tenantName ?? string.Empty));
         }
     }
 }

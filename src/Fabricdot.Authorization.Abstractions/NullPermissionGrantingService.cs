@@ -17,7 +17,7 @@ namespace Fabricdot.Authorization
             IEnumerable<string> objects,
             CancellationToken cancellationToken = default)
         {
-            var ret = objects.Select(v => new GrantResult(v, true)).ToImmutableHashSet().As<IReadOnlySet<GrantResult>>();
+            var ret = objects.Select(v => new GrantResult(v, true)).ToImmutableHashSet().As<IReadOnlySet<GrantResult>>()!;
             return Task.FromResult(ret);
         }
     }

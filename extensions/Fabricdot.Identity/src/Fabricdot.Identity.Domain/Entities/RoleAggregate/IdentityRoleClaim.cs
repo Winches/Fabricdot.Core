@@ -9,14 +9,14 @@ namespace Fabricdot.Identity.Domain.Entities.RoleAggregate
     {
         public Guid RoleId { get; private set; }
 
-        public string ClaimType { get; private set; }
+        public string ClaimType { get; private set; } = null!;
 
-        public string ClaimValue { get; private set; }
+        public string? ClaimValue { get; private set; }
 
         public IdentityRoleClaim(
             Guid roleClaimId,
             string claimType,
-            string claimValue)
+            string? claimValue)
         {
             Id = roleClaimId;
             ClaimType = Guard.Against.NullOrEmpty(claimType, nameof(claimType));
@@ -25,6 +25,14 @@ namespace Fabricdot.Identity.Domain.Entities.RoleAggregate
 
         private IdentityRoleClaim()
         {
+        }
+
+        public void SetClaim(
+            string claimType,
+            string? claimValue)
+        {
+            ClaimType = Guard.Against.NullOrEmpty(claimType, nameof(claimType));
+            ClaimValue = claimValue;
         }
     }
 }

@@ -9,16 +9,16 @@ namespace Fabricdot.Identity.Domain.Entities.UserAggregate
     {
         public Guid UserId { get; private set; }
 
-        public string LoginProvider { get; private set; }
+        public string LoginProvider { get; private set; } = null!;
 
-        public string Name { get; private set; }
+        public string Name { get; private set; } = null!;
 
-        public string Value { get; private set; }
+        public string? Value { get; private set; }
 
         public IdentityUserToken(
             string loginProvider,
             string tokeName,
-            string tokenValue)
+            string? tokenValue)
         {
             LoginProvider = Guard.Against.NullOrEmpty(loginProvider, nameof(loginProvider));
             Name = Guard.Against.NullOrEmpty(tokeName, nameof(tokeName));
@@ -29,12 +29,12 @@ namespace Fabricdot.Identity.Domain.Entities.UserAggregate
         {
         }
 
-        public IdentityUserToken ChangeValue(string tokenValue)
+        public IdentityUserToken ChangeValue(string? tokenValue)
         {
             return new IdentityUserToken(LoginProvider, Name, tokenValue);
         }
 
-        protected override IEnumerable<object> GetAtomicValues()
+        protected override IEnumerable<object?> GetAtomicValues()
         {
             yield return UserId;
             yield return LoginProvider;

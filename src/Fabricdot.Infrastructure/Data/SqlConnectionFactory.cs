@@ -6,7 +6,7 @@ namespace Fabricdot.Infrastructure.Data
     public abstract class SqlConnectionFactory : ISqlConnectionFactory, IDisposable
     {
         private readonly string _connectionString;
-        private IDbConnection _connection;
+        private IDbConnection? _connection;
 
         public SqlConnectionFactory(string connectionString)
         {

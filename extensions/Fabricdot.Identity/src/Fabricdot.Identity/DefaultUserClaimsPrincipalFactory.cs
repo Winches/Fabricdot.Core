@@ -48,7 +48,7 @@ namespace Fabricdot.Identity
 
             if (user is IMultiTenant multiTenant && multiTenant.TenantId.HasValue)
             {
-                identity.GetOrAdd(TenantClaimTypes.TenantId, multiTenant.TenantId.ToString());
+                identity.GetOrAdd(TenantClaimTypes.TenantId, multiTenant.TenantId?.ToString() ?? string.Empty);
             }
 
             return principal;

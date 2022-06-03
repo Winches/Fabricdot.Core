@@ -54,7 +54,7 @@ namespace Fabricdot.WebApi.Uow
                 var uow = _unitOfWorkManager.Available;
                 var res = await next();
                 if (!IsSucceed(res))
-                    uow.Dispose();//Rollback changes.
+                    uow?.Dispose();//Rollback changes.
             }
             else
             {
@@ -65,7 +65,9 @@ namespace Fabricdot.WebApi.Uow
             }
         }
 
-        private UnitOfWorkOptions CreateOptions(MethodInfo method, UnitOfWorkAttribute unitOfWorkAttribute)
+        private UnitOfWorkOptions CreateOptions(
+            MethodInfo method,
+            UnitOfWorkAttribute? unitOfWorkAttribute)
         {
             //use global isolation level
             var options = _options.Clone();

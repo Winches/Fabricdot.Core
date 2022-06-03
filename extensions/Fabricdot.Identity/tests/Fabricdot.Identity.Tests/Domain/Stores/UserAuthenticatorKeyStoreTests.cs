@@ -45,7 +45,7 @@ namespace Fabricdot.Identity.Tests.Domain.Stores
         }
 
         private async Task<string> SetAuthenticatorKeyAsync(
-                    User user,
+            User user,
             string key)
         {
             await _userAuthenticatorKeyStore.SetAuthenticatorKeyAsync(user, key, default);

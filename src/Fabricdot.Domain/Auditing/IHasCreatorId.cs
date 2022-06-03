@@ -2,6 +2,6 @@
 {
     public interface IHasCreatorId
     {
-        string CreatorId { get; }
+        string? CreatorId { get; }
     }
 }

@@ -16,7 +16,6 @@ using Fabricdot.MultiTenancy.Abstractions;
 using JetBrains.Annotations;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
-using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Query;
 
@@ -24,17 +23,17 @@ namespace Fabricdot.Infrastructure.EntityFrameworkCore
 {
     public abstract class DbContextBase : DbContext
     {
-        private IUnitOfWorkManager _unitOfWorkManager;
-        private IDataFilter _dataFilter;
-        private IAuditPropertySetter _auditPropertySetter;
-        private IDomainEventPublisher _domainEventPublisher;
-        private ICurrentTenant _currentTenant;
+        private IUnitOfWorkManager _unitOfWorkManager = null!;
+        private IDataFilter _dataFilter = null!;
+        private IAuditPropertySetter _auditPropertySetter = null!;
+        private IDomainEventPublisher _domainEventPublisher = null!;
+        private ICurrentTenant _currentTenant = null!;
 
         protected IUnitOfWorkManager UnitOfWorkManager => _unitOfWorkManager ??= this.GetRequiredService<IUnitOfWorkManager>();
         protected IDataFilter DataFilter => _dataFilter ??= this.GetRequiredService<IDataFilter>();
         protected IAuditPropertySetter AuditPropertySetter => _auditPropertySetter ??= this.GetRequiredService<IAuditPropertySetter>();
         protected IDomainEventPublisher DomainEventPublisher => _domainEventPublisher ??= this.GetRequiredService<IDomainEventPublisher>();
-        protected ICurrentTenant CurrentTenant => _currentTenant ??= this.GetService<ICurrentTenant>();
+        protected ICurrentTenant CurrentTenant => _currentTenant ??= this.GetRequiredService<ICurrentTenant>();
 
         protected bool HasSoftDeleteFilter => DataFilter?.IsEnabled<ISoftDelete>() ?? false;
         protected bool HasMultiTenantFilter => DataFilter?.IsEnabled<IMultiTenant>() ?? false;
@@ -110,7 +109,7 @@ namespace Fabricdot.Infrastructure.EntityFrameworkCore
                 return;
 
             var clrType = mutableEntityType.ClrType;
-            LambdaExpression filter = null;
+            LambdaExpression? filter = null;
 
             var parameter = Expression.Parameter(mutableEntityType.ClrType);
             if (typeof(ISoftDelete).IsAssignableFrom(clrType))

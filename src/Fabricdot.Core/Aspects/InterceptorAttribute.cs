@@ -9,6 +9,7 @@ namespace Fabricdot.Core.Aspects
     public class InterceptorAttribute : Attribute
     {
         public int Order { get; set; }
-        public Type Target { get; set; }
+
+        public Type? Target { get; set; }
     }
 }

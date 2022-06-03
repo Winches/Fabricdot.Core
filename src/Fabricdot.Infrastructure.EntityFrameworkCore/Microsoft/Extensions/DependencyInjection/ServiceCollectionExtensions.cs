@@ -13,21 +13,18 @@ namespace Microsoft.Extensions.DependencyInjection
     {
         public static void AddEfDbContext<TDbContext>(
             this IServiceCollection serviceCollection,
-            Action<DbContextOptionsBuilder> optionsAction = null) where TDbContext : DbContextBase
+            Action<DbContextOptionsBuilder>? optionsAction = null) where TDbContext : DbContextBase
         {
             serviceCollection.AddEfDbContext<TDbContext>((_, builder) => optionsAction?.Invoke(builder));
         }
 
         public static void AddEfDbContext<TDbContext>(
             this IServiceCollection serviceCollection,
-            Action<IServiceProvider, DbContextOptionsBuilder> optionsAction = null) where TDbContext : DbContextBase
+            Action<IServiceProvider, DbContextOptionsBuilder>? optionsAction = null) where TDbContext : DbContextBase
         {
             Guard.Against.Null(serviceCollection, nameof(serviceCollection));
 
-            serviceCollection.AddDbContext<TDbContext>((provider, opts) =>
-            {
-                optionsAction?.Invoke(provider, opts);
-            });
+            serviceCollection.AddDbContext<TDbContext>((provider, opts) => optionsAction?.Invoke(provider, opts));
             serviceCollection.TryAddTransient(typeof(IDbContextProvider<>), typeof(UnitOfWorkDbContextProvider<>));
         }
     }

@@ -9,19 +9,19 @@ namespace Fabricdot.MultiTenancy.AspNetCore.Strategies
     {
         private readonly string _queryKey;
 
-        public QueryStringTenantResolveStrategy(string queryKey = null)
+        public QueryStringTenantResolveStrategy(string? queryKey = null)
         {
             _queryKey = string.IsNullOrEmpty(queryKey) ? TenantConstants.TenantToken : queryKey;
         }
 
-        protected override Task<string> ResolveIdentifierAsync(HttpContext httpContext)
+        protected override Task<string?> ResolveIdentifierAsync(HttpContext httpContext)
         {
             var query = httpContext.Request.Query;
             if (!query.ContainsKey(_queryKey))
-                return Task.FromResult<string>(null);
+                return Task.FromResult<string?>(null);
 
             var identifier = query[_queryKey];
-            return Task.FromResult(identifier.First());
+            return Task.FromResult(identifier.FirstOrDefault());
         }
     }
 }

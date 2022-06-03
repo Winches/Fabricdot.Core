@@ -9,7 +9,7 @@ public static class ModelBuilderExtensions
     public static void ConfigurePermissionGranting(
         this ModelBuilder modelBuilder,
         string name = PermissionGrantingSchema.GrantedPermission,
-        string schema = null)
+        string? schema = null)
     {
         modelBuilder.Entity<GrantedPermission>(b =>
         {

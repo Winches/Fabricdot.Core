@@ -4,6 +4,6 @@
     {
         string ClaimType { get; }
 
-        string ClaimValue { get; }
+        string? ClaimValue { get; }
     }
 }

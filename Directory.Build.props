@@ -2,6 +2,7 @@
   <PropertyGroup>
     <LangVersion>latest</LangVersion>
     <NoWarn>$(NoWarn);CS1591</NoWarn>
+    <Nullable>enable</Nullable>
     <Version>0.5.2-alpha</Version>
     <Authors>Cyan</Authors>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>

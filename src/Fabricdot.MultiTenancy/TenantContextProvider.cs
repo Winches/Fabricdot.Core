@@ -20,7 +20,7 @@ namespace Fabricdot.MultiTenancy
             _tenantStore = tenantStore;
         }
 
-        public async Task<TenantContext> GetAsync(CancellationToken cancellationToken = default)
+        public async Task<TenantContext?> GetAsync(CancellationToken cancellationToken = default)
         {
             var res = await _tenantResolver.ResolveAsync();
             if (string.IsNullOrEmpty(res.Identifier))

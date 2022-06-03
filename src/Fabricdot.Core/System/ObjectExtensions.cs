@@ -6,7 +6,12 @@ namespace System
 {
     public static class ObjectExtensions
     {
-        public static bool IsNull(this object obj) => obj is null;
+        /// <summary>
+        ///     Indicates whether the obj is null.
+        /// </summary>
+        /// <param name="obj"></param>
+        /// <returns></returns>
+        public static bool IsNull(this object? obj) => obj is null;
 
         /// <summary>
         ///     ( <typeparamref name="T" />) <paramref name="obj" />
@@ -14,7 +19,7 @@ namespace System
         /// <typeparam name="T"></typeparam>
         /// <param name="obj"></param>
         /// <returns></returns>
-        public static T Cast<T>(this object obj) => (T)obj;
+        public static T? Cast<T>(this object? obj) => (T?)obj;
 
         /// <summary>
         ///     <paramref name="obj" /> as <typeparamref name="T" />
@@ -22,7 +27,7 @@ namespace System
         /// <typeparam name="T"></typeparam>
         /// <param name="obj"></param>
         /// <returns></returns>
-        public static T As<T>(this object obj) => obj is T to ? to : default;
+        public static T? As<T>(this object? obj) => obj is T to ? to : default;
 
         /// <summary>
         ///     Converts object to a value or enum type using <see
@@ -39,19 +44,16 @@ namespace System
             var type = typeof(T);
             if (type == typeof(Guid))
             {
-                return TypeDescriptor.GetConverter(type)
-                                     .ConvertFromInvariantString(value.ToString())
-                                     .Cast<T>();
+                return (T)TypeDescriptor.GetConverter(type)
+                                        .ConvertFromInvariantString(value.ToString());
             }
 
             if (type.IsEnum)
             {
-                return Enum.Parse(type, value.ToString())
-                           .Cast<T>();
+                return (T)Enum.Parse(type, value.ToString()!);
             }
 
-            return Convert.ChangeType(value, type, CultureInfo.InvariantCulture)
-                          .Cast<T>();
+            return (T)Convert.ChangeType(value, type, CultureInfo.InvariantCulture);
         }
     }
 }

@@ -6,13 +6,13 @@ namespace Fabricdot.Infrastructure.Security
     {
         bool IsAuthenticated { get; }
 
-        string Id { get; }
+        string? Id { get; }
 
-        string UserName { get; }
+        string? UserName { get; }
 
         string[] Roles { get; }
 
-        Claim FindClaim(string claimType);
+        Claim? FindClaim(string claimType);
 
         Claim[] FindClaims(string claimType);
 

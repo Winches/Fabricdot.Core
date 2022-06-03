@@ -37,11 +37,11 @@ namespace Fabricdot.Infrastructure.Domain.Auditing
         private static void Setter(
             object targetObject,
             string propertyName,
-            object val)
+            object? val)
         {
             targetObject.GetType()
                 .GetProperty(propertyName)
-                ?.SetValue(targetObject, val, BindingFlags.Public | BindingFlags.Instance, null, null, null!);
+                ?.SetValue(targetObject, val, BindingFlags.Public | BindingFlags.Instance, null, null, null);
         }
 
         private void SetCreationTime(object targetObject)

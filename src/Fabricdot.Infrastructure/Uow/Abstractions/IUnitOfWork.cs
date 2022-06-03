@@ -7,9 +7,12 @@ namespace Fabricdot.Infrastructure.Uow.Abstractions
     public interface IUnitOfWork : IUnitOfWorkScope
     {
         Guid Id { get; }
+
         bool IsActive { get; }
+
         UnitOfWorkOptions Options { get; }
-        string ReservationName { get; }
+
+        string? ReservationName { get; }
 
         void Reserve(string name);
 

@@ -9,7 +9,7 @@ namespace Fabricdot.Identity.Domain.Stores
     /// </summary>
     public partial class UserStore<TUser, TRole> : IUserAuthenticatorKeyStore<TUser>
     {
-        public virtual Task<string> GetAuthenticatorKeyAsync(
+        public virtual Task<string?> GetAuthenticatorKeyAsync(
             TUser user,
             CancellationToken cancellationToken)
         {

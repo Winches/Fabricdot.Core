@@ -10,7 +10,7 @@ namespace Fabricdot.Identity.Domain.Stores
     /// </summary>
     public partial class UserStore<TUser, TRole> : IUserAuthenticationTokenStore<TUser>
     {
-        public virtual async Task<string> GetTokenAsync(
+        public virtual async Task<string?> GetTokenAsync(
             TUser user,
             string loginProvider,
             string name,
@@ -45,7 +45,7 @@ namespace Fabricdot.Identity.Domain.Stores
             TUser user,
             string loginProvider,
             string name,
-            string value,
+            string? value,
             CancellationToken cancellationToken)
         {
             cancellationToken.ThrowIfCancellationRequested();

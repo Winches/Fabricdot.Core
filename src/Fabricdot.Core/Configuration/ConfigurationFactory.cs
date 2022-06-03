@@ -7,8 +7,8 @@ namespace Fabricdot.Core.Configuration
     public static class ConfigurationFactory
     {
         public static IConfigurationRoot Build(
-            ConfigurationBuilderOptions options = null,
-            Action<IConfigurationBuilder> builderAction = null)
+            ConfigurationBuilderOptions? options = null,
+            Action<IConfigurationBuilder>? builderAction = null)
         {
             options ??= new ConfigurationBuilderOptions();
             var basePath = options.BasePath.IsNullOrEmpty()

@@ -10,7 +10,7 @@ namespace System.Collections.Generic
         /// <summary>
         ///     Checks enumerable object is null or has no item.
         /// </summary>
-        public static bool IsNullOrEmpty<T>(this IEnumerable<T> source)
+        public static bool IsNullOrEmpty<T>(this IEnumerable<T>? source)
         {
             return source switch
             {

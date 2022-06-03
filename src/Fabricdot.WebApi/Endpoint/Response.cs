@@ -6,20 +6,22 @@
 
         public bool Success { get; set; }
 
-        public string Message { get; set; }
+        public string? Message { get; set; }
 
-        public T Data { get; set; }
+        public T? Data { get; set; }
 
         public Response()
         {
         }
 
-        public Response(T data)
+        public Response(T? data)
         {
             Data = data;
         }
 
-        public Response(string message, int code)
+        public Response(
+            string? message,
+            int code)
         {
             Message = message;
             Code = code;

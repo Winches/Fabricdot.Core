@@ -5,15 +5,15 @@ using Fabricdot.Domain.Events;
 
 namespace Fabricdot.Domain.Entities
 {
-    public abstract class AggregateRoot<TKey> : Entity<TKey>, IAggregateRoot, IHasDomainEvents,
-        IHasConcurrencyStamp
+    public abstract class AggregateRoot<TKey> : Entity<TKey>, IAggregateRoot, IHasDomainEvents, IHasConcurrencyStamp
+        where TKey : notnull
     {
-        private readonly List<IDomainEvent> _domainEvents = new List<IDomainEvent>();
+        private readonly List<IDomainEvent> _domainEvents = new();
 
         /// <summary>
         ///     events
         /// </summary>
-        public IReadOnlyCollection<IDomainEvent> DomainEvents => _domainEvents?.AsReadOnly();
+        public IReadOnlyCollection<IDomainEvent> DomainEvents => _domainEvents.AsReadOnly();
 
         /// <inheritdoc />
         public string ConcurrencyStamp { get; set; }

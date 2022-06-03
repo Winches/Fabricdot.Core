@@ -96,7 +96,7 @@ namespace Fabricdot.Core.Reflection
             }
             catch (ReflectionTypeLoadException ex)
             {
-                return ex.Types;
+                return ex.Types.Where(v => v is not null).ToArray()!;
             }
         }
     }

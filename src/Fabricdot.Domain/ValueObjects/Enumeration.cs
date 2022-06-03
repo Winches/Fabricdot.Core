@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
 using System.Reflection;
-using Fabricdot.Core.Reflection;
 
 namespace Fabricdot.Domain.ValueObjects
 {
@@ -33,18 +32,17 @@ namespace Fabricdot.Domain.ValueObjects
                 typeof(T),
                 t => t.GetFields(BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly)
                       .Select(v => v.GetValue(null))
-                      .ToImmutableList());
+                      .Where(v => v is not null)
+                      .ToImmutableList()!);
             return values.Cast<T>();
         }
 
-        public static bool operator ==(Enumeration left, Enumeration right)
+        public static bool operator ==(Enumeration? left, Enumeration? right)
         {
-            if (left is null ^ right is null)
-                return false;
-            return left?.Equals(right) != false;
+            return Equals(left, right);
         }
 
-        public static bool operator !=(Enumeration left, Enumeration right)
+        public static bool operator !=(Enumeration? left, Enumeration? right)
         {
             return !(left == right);
         }
@@ -69,7 +67,7 @@ namespace Fabricdot.Domain.ValueObjects
             return Name;
         }
 
-        public override bool Equals(object obj)
+        public override bool Equals(object? obj)
         {
             if (obj is not Enumeration otherValue)
                 return false;
@@ -85,9 +83,9 @@ namespace Fabricdot.Domain.ValueObjects
             return Value.GetHashCode();
         }
 
-        public int CompareTo(object other)
+        public virtual int CompareTo(object? other)
         {
-            return Value.CompareTo(((Enumeration)other).Value);
+            return Value.CompareTo(other.As<Enumeration>()?.Value ?? 0);
         }
 
         private static T Parse<T, TK>(

@@ -37,13 +37,13 @@ namespace Fabricdot.Infrastructure.Uow
         public UnitOfWorkOptions Options { get; private set; }
 
         /// <inheritdoc />
-        public string ReservationName { get; private set; }
+        public string? ReservationName { get; private set; }
 
         /// <inheritdoc />
         public virtual bool IsActive => State == UnitOfWorkState.Initialized;
 
         /// <inheritdoc />
-        public event EventHandler Disposed;
+        public event EventHandler? Disposed;
 
         public UnitOfWork(
             IOptions<UnitOfWorkOptions> options,

@@ -10,13 +10,12 @@ namespace Fabricdot.Infrastructure.EntityFrameworkCore
     {
         public static ICollection<EntityChangeInfo> GetChangeInfos(IEnumerable<EntityEntry> entries)
         {
-            return entries
-                .Select(GetChangeInfo)
-                .Where(v => v != null)
-                .ToList();
+            return entries.Select(GetChangeInfo)
+                          .Where(v => v != null)
+                          .ToList()!;
         }
 
-        private static EntityChangeInfo GetChangeInfo(EntityEntry entry)
+        private static EntityChangeInfo? GetChangeInfo(EntityEntry entry)
         {
             EntityStatus entityStatus;
             switch (entry.State)

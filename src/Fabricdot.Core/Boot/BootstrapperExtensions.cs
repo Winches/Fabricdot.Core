@@ -22,7 +22,7 @@ namespace Fabricdot.Core.Boot
         public static IBootstrapperBuilder AddBootstrapper(
             this IServiceCollection services,
             Type moduleType,
-            Action<BootstrapperBuilderOptions> configureOptions = null)
+            Action<BootstrapperBuilderOptions>? configureOptions = null)
         {
             Guard.Against.Null(services, nameof(services));
             Guard.Against.Null(moduleType, nameof(moduleType));
@@ -43,7 +43,7 @@ namespace Fabricdot.Core.Boot
         /// <returns></returns>
         public static IBootstrapperBuilder AddBootstrapper<T>(
             this IServiceCollection services,
-            Action<BootstrapperBuilderOptions> configureOptions = null) where T : class, IModule
+            Action<BootstrapperBuilderOptions>? configureOptions = null) where T : class, IModule
         {
             return services.AddBootstrapper(typeof(T), configureOptions);
         }
@@ -55,7 +55,7 @@ namespace Fabricdot.Core.Boot
         /// <param name="configureAction"></param>
         public static async Task BootstrapAsync(
             this IServiceProvider serviceProvider,
-            Action<IApplication> configureAction = null)
+            Action<IApplication>? configureAction = null)
         {
             Guard.Against.Null(serviceProvider, nameof(serviceProvider));
 
@@ -85,7 +85,7 @@ namespace Fabricdot.Core.Boot
         /// <param name="options"></param>
         public static void TryAddConfiguration(
             this IServiceCollection services,
-            ConfigurationBuilderOptions options = null)
+            ConfigurationBuilderOptions? options = null)
         {
             Guard.Against.Null(services, nameof(services));
 

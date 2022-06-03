@@ -16,11 +16,11 @@ namespace Fabricdot.MultiTenancy.AspNetCore.Strategies
             _template = template;// TODO:implment
         }
 
-        protected override Task<string> ResolveIdentifierAsync(HttpContext httpContext)
+        protected override Task<string?> ResolveIdentifierAsync(HttpContext httpContext)
         {
             var host = httpContext.Request.Host;
             if (!host.HasValue)
-                return Task.FromResult<string>(null);
+                return Task.FromResult<string?>(null);
 
             var match = Regex.Match(
                 host.Host,

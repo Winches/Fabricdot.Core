@@ -8,13 +8,13 @@ namespace Fabricdot.Identity.Infrastructure.Data
 {
     public static class ModelBuilderExtensions
     {
-        private static string _tablePerfix;
-        private static string _schema;
+        private static string? _tablePerfix;
+        private static string? _schema;
 
         public static void ConfigureIdentity<TUser, TRole>(
             this ModelBuilder modelBuilder,
             string tablePrefix = "Identity",
-            string schema = null) where TUser : IdentityUser where TRole : IdentityRole
+            string? schema = null) where TUser : IdentityUser where TRole : IdentityRole
         {
             _tablePerfix = tablePrefix;
             _schema = schema;

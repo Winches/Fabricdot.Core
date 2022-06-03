@@ -2,6 +2,6 @@
 {
     public interface IHasModifierId
     {
-        string LastModifierId { get; }
+        string? LastModifierId { get; }
     }
 }

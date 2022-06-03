@@ -11,7 +11,7 @@ namespace System.Text.Json.Serialization
             Type typeToConvert,
             JsonSerializerOptions options)
         {
-            return new Notification.Error(reader.GetString());
+            return new Notification.Error(reader.GetString()!);
         }
 
         /// <inheritdoc />

@@ -2,7 +2,6 @@
 using System.Linq;
 using Ardalis.GuardClauses;
 using Fabricdot.Core.DependencyInjection;
-using Fabricdot.Core.Reflection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace Microsoft.Extensions.DependencyInjection
@@ -20,12 +19,12 @@ namespace Microsoft.Extensions.DependencyInjection
 
         public static bool ContainsService<T>(this IServiceCollection services) => services.ContainsService(typeof(T));
 
-        public static T GetSingletonInstance<T>(this IServiceCollection services)
+        public static T? GetSingletonInstance<T>(this IServiceCollection services)
         {
             Guard.Against.Null(services, nameof(services));
 
             var serviceDescriptor = services.SingleOrDefault(v => v.ImplementationInstance is T);
-            return (T)serviceDescriptor?.ImplementationInstance;
+            return (T?)serviceDescriptor?.ImplementationInstance;
         }
 
         public static T GetRequiredSingletonInstance<T>(this IServiceCollection services)

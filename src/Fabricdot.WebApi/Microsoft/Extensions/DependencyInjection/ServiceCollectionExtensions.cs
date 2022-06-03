@@ -12,8 +12,9 @@ namespace Microsoft.Extensions.DependencyInjection
         {
             Guard.Against.Null(serviceProvider, nameof(serviceProvider));
 
-            return (IApplicationBuilder)serviceProvider.GetBuilderProperties()
-                                                       .GetOrDefault(BootstrapperBuilderProperties.ApplicationBuilder);
+            var app = serviceProvider.GetBuilderProperties()
+                                     .GetOrDefault(BootstrapperBuilderProperties.ApplicationBuilder);
+            return (IApplicationBuilder?)app ?? throw new InvalidOperationException("ApplicationBuilder not existed.");
         }
     }
 }

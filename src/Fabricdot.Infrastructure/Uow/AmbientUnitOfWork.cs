@@ -10,10 +10,10 @@ namespace Fabricdot.Infrastructure.Uow
 {
     public class AmbientUnitOfWork : IAmbientUnitOfWork, ISingletonDependency
     {
-        private readonly AsyncLocal<LinkedList<IUnitOfWork>> _uowChain = new AsyncLocal<LinkedList<IUnitOfWork>>();
+        private readonly AsyncLocal<LinkedList<IUnitOfWork>?> _uowChain = new();
 
         /// <inheritdoc />
-        public IUnitOfWork UnitOfWork
+        public IUnitOfWork? UnitOfWork
         {
             get => UowChain?.Last?.Value;
             set
@@ -24,7 +24,7 @@ namespace Fabricdot.Infrastructure.Uow
             }
         }
 
-        protected LinkedList<IUnitOfWork> UowChain
+        protected LinkedList<IUnitOfWork>? UowChain
         {
             get => _uowChain.Value;
             set => _uowChain.Value = value;
@@ -39,7 +39,7 @@ namespace Fabricdot.Infrastructure.Uow
         }
 
         /// <inheritdoc />
-        public IUnitOfWork GetOuter(IUnitOfWork unitOfWork)
+        public IUnitOfWork? GetOuter(IUnitOfWork unitOfWork)
         {
             Guard.Against.Null(unitOfWork, nameof(unitOfWork));
             var previous = UowChain?.Find(unitOfWork)?.Previous;

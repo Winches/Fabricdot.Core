@@ -25,7 +25,7 @@ namespace Fabricdot.Identity.Domain.Stores
             //    role.NormalizedName,
             //    cancellationToken: cancellationToken);
             await LoadCollectionAsync(role, v => v.Claims, cancellationToken);
-            return role.Claims.Select(v => new Claim(v.ClaimType, v.ClaimValue)).ToList();
+            return role.Claims.Select(v => new Claim(v.ClaimType, v.ClaimValue ?? string.Empty)).ToList();
         }
 
         public virtual async Task AddClaimAsync(

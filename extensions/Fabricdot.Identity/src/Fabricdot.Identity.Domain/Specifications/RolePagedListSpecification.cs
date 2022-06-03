@@ -10,7 +10,7 @@ namespace Fabricdot.Identity.Domain.Specifications
         public RolePagedListSpecification(
             int index,
             int size,
-            string name = null,
+            string? name = null,
             bool includeDetails = false) : base(includeDetails)
         {
             Guard.Against.NegativeOrZero(index, nameof(index));

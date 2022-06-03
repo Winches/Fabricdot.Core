@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using Ardalis.GuardClauses;
-using Fabricdot.Core.Reflection;
 
 namespace Fabricdot.Core.Modularity
 {
@@ -29,8 +28,8 @@ namespace Fabricdot.Core.Modularity
 
         protected virtual IModuleMetadata CreateModuleMetadata(Type moduleType)
         {
-            var instance = (IModule)Activator.CreateInstance(moduleType);
-            return new ModuleMetadata(moduleType, instance);
+            var instance = (IModule?)Activator.CreateInstance(moduleType);
+            return new ModuleMetadata(moduleType, instance!);
         }
 
         protected virtual IReadOnlySet<Type> GetModuleTypesRecursively(Type moduleType)

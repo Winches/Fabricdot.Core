@@ -9,11 +9,11 @@ namespace Fabricdot.Identity.Domain.Entities.UserAggregate
     {
         public Guid UserId { get; private set; }
 
-        public string LoginProvider { get; private set; }
+        public string LoginProvider { get; private set; } = null!;
 
-        public string ProviderKey { get; private set; }
+        public string ProviderKey { get; private set; } = null!;
 
-        public string ProviderDisplayName { get; private set; }
+        public string ProviderDisplayName { get; private set; } = null!;
 
         public IdentityUserLogin(
             string loginProvider,

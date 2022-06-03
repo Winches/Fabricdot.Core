@@ -12,7 +12,7 @@ namespace Fabricdot.MultiTenancy
 
         public Guid? Id => _tenantAccessor.Tenant?.Id;
 
-        public string Name => _tenantAccessor.Tenant?.Name;
+        public string? Name => _tenantAccessor.Tenant?.Name;
 
         public bool IsAvailable => Id.HasValue;
 
@@ -23,10 +23,10 @@ namespace Fabricdot.MultiTenancy
 
         public IDisposable Change(
             Guid? tenantId,
-            string tenantName = null)
+            string? tenantName = null)
         {
             var tenant = tenantId.HasValue
-                ? new TenantInfo(tenantId.Value, tenantName)
+                ? new TenantInfo(tenantId.Value, tenantName ?? string.Empty)
                 : null;
             return _tenantAccessor.Change(tenant);
         }

@@ -15,12 +15,12 @@ namespace Fabricdot.Infrastructure.Data
         }
 
         /// <inheritdoc />
-        public Task<string> ResolveAsync(string name = null)
+        public Task<string?> ResolveAsync(string? name = null)
         {
             return Task.FromResult(Resolve(name));
         }
 
-        private string Resolve(string name)
+        private string? Resolve(string? name)
         {
             var connectionStrings = _options.ConnectionStrings;
             if (name == null)

@@ -10,15 +10,15 @@ namespace Fabricdot.MultiTenancy.AspNetCore.Strategies
     {
         private readonly string _routeKey;
 
-        public RouteTenantResolveStrategy(string routeKey = null)
+        public RouteTenantResolveStrategy(string? routeKey = null)
         {
             _routeKey = string.IsNullOrEmpty(routeKey) ? TenantConstants.TenantToken : routeKey;
         }
 
-        protected override Task<string> ResolveIdentifierAsync(HttpContext httpContext)
+        protected override Task<string?> ResolveIdentifierAsync(HttpContext httpContext)
         {
             var routeValuesFeature = httpContext.Features.Get<IRouteValuesFeature>();
-            var identifier = (string)routeValuesFeature?.RouteValues?.GetValueOrDefault(_routeKey);
+            var identifier = (string?)routeValuesFeature?.RouteValues?.GetValueOrDefault(_routeKey);
             return Task.FromResult(identifier);
         }
     }

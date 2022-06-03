@@ -15,7 +15,7 @@ namespace Fabricdot.Core.Security
         /// <returns>upper case</returns>
         public static string ToMd5(
             string raw,
-            Encoding encoding = null)
+            Encoding? encoding = null)
         {
             Guard.Against.Null(raw, nameof(raw));
 
@@ -33,7 +33,7 @@ namespace Fabricdot.Core.Security
         /// <returns>upper case</returns>
         public static string ToSha1(
             string raw,
-            Encoding encoding = null)
+            Encoding? encoding = null)
         {
             Guard.Against.Null(raw, nameof(raw));
 
@@ -51,7 +51,7 @@ namespace Fabricdot.Core.Security
         /// <returns></returns>
         public static string ToSha256(
             string raw,
-            Encoding encoding = null)
+            Encoding? encoding = null)
         {
             using var sha256 = SHA256.Create();
             var buffer = (encoding ?? Encoding.UTF8).GetBytes(raw);

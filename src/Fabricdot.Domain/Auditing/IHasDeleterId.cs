@@ -2,6 +2,6 @@
 {
     public interface IHasDeleterId : ISoftDelete
     {
-        string DeleterId { get; }
+        string? DeleterId { get; }
     }
 }

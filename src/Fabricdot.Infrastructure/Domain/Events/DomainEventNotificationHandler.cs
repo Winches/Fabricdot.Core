@@ -28,7 +28,7 @@ namespace Fabricdot.Infrastructure.Domain.Events
                 var method = eventHandler?.GetType()
                     .GetMethod(nameof(IDomainEventHandler<DomainEventBase>.HandleAsync),
                         new[] { @event.GetType(), typeof(CancellationToken) });
-                var task = (Task)method?.Invoke(eventHandler, new[] { @event, cancellationToken }) ?? Task.CompletedTask;
+                var task = (Task?)method?.Invoke(eventHandler, new[] { @event, cancellationToken }) ?? Task.CompletedTask;
                 await task.ConfigureAwait(false);
             }
         }

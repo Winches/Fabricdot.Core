@@ -10,7 +10,7 @@ namespace Fabricdot.Identity.Domain.Stores
     /// </summary>
     public partial class UserStore<TUser, TRole> : IUserPasswordStore<TUser>
     {
-        public virtual Task<string> GetPasswordHashAsync(
+        public virtual Task<string?> GetPasswordHashAsync(
             TUser user,
             CancellationToken cancellationToken)
         {

@@ -25,7 +25,7 @@ namespace Fabricdot.Authorization.Permissions
             return Task.CompletedTask;
         }
 
-        public Task<Permission> GetByNameAsync(PermissionName name)
+        public Task<Permission?> GetByNameAsync(PermissionName name)
         {
             var ret = Permissions.GetOrDefault(name);
             return Task.FromResult(ret);

@@ -23,7 +23,7 @@ namespace Fabricdot.Infrastructure.Uow
         public UnitOfWorkOptions Options => _parent.Options;
 
         /// <inheritdoc />
-        public string ReservationName => _parent.ReservationName;
+        public string? ReservationName => _parent.ReservationName;
 
         /// <inheritdoc />
         public IDictionary<object, object> Items => _parent.Items;
@@ -53,7 +53,7 @@ namespace Fabricdot.Infrastructure.Uow
         public Task CommitChangesAsync(CancellationToken cancellationToken = default) => Task.CompletedTask;
 
         /// <inheritdoc />
-        public override string ToString() => _parent.ToString();
+        public override string ToString() => _parent.ToString()!;
 
         /// <inheritdoc />
         public void Dispose()

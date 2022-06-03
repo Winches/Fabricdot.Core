@@ -24,7 +24,7 @@ namespace Fabricdot.Infrastructure.Data
         public static string GetConnStringName(Type type)
         {
             var nameAttribute = type.GetTypeInfo().GetCustomAttribute<ConnectionStringNameAttribute>();
-            return nameAttribute == null ? type.FullName : nameAttribute.Name;
+            return nameAttribute == null ? (type.FullName ?? type.Name) : nameAttribute.Name;
         }
     }
 }

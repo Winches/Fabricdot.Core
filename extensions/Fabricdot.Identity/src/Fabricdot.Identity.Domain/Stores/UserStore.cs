@@ -98,7 +98,7 @@ namespace Fabricdot.Identity.Domain.Stores
             return Task.FromResult(user.NormalizedUserName);
         }
 
-        public virtual Task<string> GetUserIdAsync(
+        public virtual Task<string?> GetUserIdAsync(
             TUser user,
             CancellationToken cancellationToken)
         {

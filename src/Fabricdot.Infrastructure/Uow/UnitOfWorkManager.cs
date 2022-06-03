@@ -12,7 +12,7 @@ namespace Fabricdot.Infrastructure.Uow
         private readonly IServiceScopeFactory _serviceScopeFactory;
         private readonly IAmbientUnitOfWork _ambientUnitOfWork;
 
-        public IUnitOfWork Available => _ambientUnitOfWork.Find(v => v.IsActive);
+        public IUnitOfWork? Available => _ambientUnitOfWork.Find(v => v.IsActive);
 
         public UnitOfWorkManager(IServiceProvider serviceProvider)
         {
@@ -21,7 +21,9 @@ namespace Fabricdot.Infrastructure.Uow
         }
 
         /// <inheritdoc />
-        public IUnitOfWork Begin(UnitOfWorkOptions options = null, bool requireNew = false)
+        public IUnitOfWork Begin(
+            UnitOfWorkOptions? options = null,
+            bool requireNew = false)
         {
             var availableUow = Available;
             if (availableUow != null && !requireNew)
@@ -34,13 +36,17 @@ namespace Fabricdot.Infrastructure.Uow
             return unitOfWork;
         }
 
-        public void BeginReserved(string name, UnitOfWorkOptions options = null)
+        public void BeginReserved(
+            string name,
+            UnitOfWorkOptions? options = null)
         {
             if (!TryBeginReserved(name, options))
                 throw new InvalidOperationException($"There is no reserved unit of work for '{name}'");
         }
 
-        public bool TryBeginReserved(string name, UnitOfWorkOptions options = null)
+        public bool TryBeginReserved(
+            string name,
+            UnitOfWorkOptions? options = null)
         {
             Guard.Against.NullOrEmpty(name, nameof(name));
 
@@ -49,7 +55,9 @@ namespace Fabricdot.Infrastructure.Uow
             return uow != null;
         }
 
-        public IUnitOfWork Reserve(string name, bool requireNew = false)
+        public IUnitOfWork Reserve(
+            string name,
+            bool requireNew = false)
         {
             Guard.Against.NullOrEmpty(name, nameof(name));
 

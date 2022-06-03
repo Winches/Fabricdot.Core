@@ -6,14 +6,14 @@ namespace System
 {
     public static class StringExtensions
     {
-        public static bool IsNullOrEmpty(this string str) => string.IsNullOrEmpty(str);
+        public static bool IsNullOrEmpty(this string? str) => string.IsNullOrEmpty(str);
 
-        public static bool IsNullOrWhiteSpace(this string str) => string.IsNullOrWhiteSpace(str);
+        public static bool IsNullOrWhiteSpace(this string? str) => string.IsNullOrWhiteSpace(str);
 
         public static string Repeat(
             this string s,
             int times,
-            string separator = default)
+            string? separator = default)
         {
             Guard.Against.Negative(times, nameof(times));
 
@@ -23,7 +23,7 @@ namespace System
         public static string Repeat(
             this char s,
             int times,
-            string separator = default)
+            string? separator = default)
         {
             Guard.Against.Negative(times, nameof(times));
 

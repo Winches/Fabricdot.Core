@@ -30,7 +30,7 @@ namespace Fabricdot.MultiTenancy
             foreach (var strategy in _options.ResolveStrategies.OrderBy(v => v.Priority))
             {
                 var identifier = await DecorateStrategy(strategy).ResolveIdentifierAsync(context);
-                ret.Strategies.Add(strategy.GetType().FullName);
+                ret.Strategies.Add(strategy.GetType().FullName!);
 
                 if (!string.IsNullOrEmpty(identifier))
                 {

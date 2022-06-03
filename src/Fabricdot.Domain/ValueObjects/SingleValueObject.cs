@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using Ardalis.GuardClauses;
-using Fabricdot.Core.Reflection;
 
 namespace Fabricdot.Domain.ValueObjects
 {
@@ -22,7 +21,7 @@ namespace Fabricdot.Domain.ValueObjects
 
         public object GetValue() => Value;
 
-        public int CompareTo(object obj)
+        public int CompareTo(object? obj)
         {
             Guard.Against.Null(obj, nameof(obj));
 

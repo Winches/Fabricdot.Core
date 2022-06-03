@@ -41,7 +41,7 @@ namespace Fabricdot.Infrastructure.EntityFrameworkCore.Uow
                 unitOfWork.Facade.AddDatabase(databaseKey, database);
             }
 
-            return ((EfDatabaseFacade)database).DbContext as TDbContext;
+            return (TDbContext)((EfDatabaseFacade)database).DbContext;
         }
 
         protected virtual string GetFacadeKey(bool isTransaction)

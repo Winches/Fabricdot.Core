@@ -9,12 +9,12 @@ namespace Fabricdot.MultiTenancy.Strategies
     {
         public virtual int Priority => -1000;
 
-        public Task<string> ResolveIdentifierAsync(TenantResolveContext context)
+        public Task<string?> ResolveIdentifierAsync(TenantResolveContext context)
         {
             var principalAccessor = context.ServiceProvider.GetRequiredService<IPrincipalAccessor>();
             var principal = principalAccessor.Principal;
             if (principal?.Identity is not { IsAuthenticated: true })
-                return Task.FromResult<string>(null);
+                return Task.FromResult<string?>(null);
 
             var tenantIdClaim = principal.FindFirst(v => v.Type == TenantClaimTypes.TenantId);
 

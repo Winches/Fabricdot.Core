@@ -6,12 +6,12 @@ namespace Fabricdot.MultiTenancy.Abstractions
     {
         Guid? Id { get; }
 
-        string Name { get; }
+        string? Name { get; }
 
         bool IsAvailable { get; }
 
         IDisposable Change(
             Guid? tenantId,
-            string tenantName = null);
+            string? tenantName = null);
     }
 }

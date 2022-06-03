@@ -23,7 +23,7 @@ namespace Fabricdot.Authorization
             _logger = logger;
         }
 
-        public override async Task<AuthorizationPolicy> GetPolicyAsync(string policyName)
+        public override async Task<AuthorizationPolicy?> GetPolicyAsync(string policyName)
         {
             var policy = await base.GetPolicyAsync(policyName);
             if (policy != null)

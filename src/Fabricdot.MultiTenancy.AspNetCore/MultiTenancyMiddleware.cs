@@ -29,7 +29,7 @@ namespace Fabricdot.MultiTenancy.AspNetCore
             HttpContext context,
             RequestDelegate next)
         {
-            TenantContext tenantContext;
+            TenantContext? tenantContext;
             try
             {
                 var uowMgr = context.RequestServices.GetService<IUnitOfWorkManager>();
@@ -41,7 +41,7 @@ namespace Fabricdot.MultiTenancy.AspNetCore
                 return;
             }
 
-            if (_tenantAccessor?.Tenant?.Id != tenantContext?.Id)
+            if (_tenantAccessor.Tenant?.Id != tenantContext?.Id)
             {
                 using var scope = _tenantAccessor.Change(tenantContext);
                 await next(context);

@@ -14,10 +14,10 @@ namespace Fabricdot.WebApi.Endpoint
     {
         protected readonly object ServiceProviderLock = new object();
 
-        private IMapper _mapper;
-        private ICurrentUser _currentUser;
-        private ISender _sender;
-        private ILogger<object> _logger;
+        private IMapper _mapper = null!;
+        private ICurrentUser _currentUser = null!;
+        private ISender _sender = null!;
+        private ILogger<object> _logger = null!;
 
         public IServiceProvider ServiceProvider => HttpContext.RequestServices;
 

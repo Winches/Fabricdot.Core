@@ -12,11 +12,11 @@ namespace Fabricdot.Infrastructure.Uow.Abstractions
 
         void AddDatabase(string key, IDatabaseFacade database);
 
-        IDatabaseFacade GetDatabase(string key);
+        IDatabaseFacade? GetDatabase(string key);
 
         void AddTransaction(string key, ITransactionFacade transaction);
 
-        ITransactionFacade GeTransaction(string key);
+        ITransactionFacade? GeTransaction(string key);
 
         Task CommitAsync(CancellationToken cancellationToken = default);
 

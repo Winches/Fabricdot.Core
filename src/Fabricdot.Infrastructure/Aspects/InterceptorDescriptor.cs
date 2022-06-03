@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Linq;
-using System.Reflection;
 using Fabricdot.Core.Aspects;
 using JetBrains.Annotations;
 
@@ -10,17 +9,17 @@ namespace Fabricdot.Infrastructure.Aspects
     {
         public Type InterceptorType { get; }
 
-        public Type TargetType { get; }
+        public Type? TargetType { get; }
 
-        public Type BindingType { get; }
+        public Type? BindingType { get; }
 
         public int Order { get; }
 
         public InterceptorDescriptor(
             [NotNull] Type interceptorType,
             int order,
-            [CanBeNull] Type targetType,
-            [CanBeNull] Type bindingType)
+            [CanBeNull] Type? targetType,
+            [CanBeNull] Type? bindingType)
         {
             if (interceptorType == null)
                 throw new ArgumentNullException(nameof(interceptorType));
@@ -30,24 +29,13 @@ namespace Fabricdot.Infrastructure.Aspects
                     "Interceptor must derived from IInterceptorMetadata", nameof(interceptorType));
             }
 
-            if(targetType is null && bindingType is null)
+            if (targetType is null && bindingType is null)
                 throw new ArgumentException("Target type and binding type both is null.");
 
             InterceptorType = interceptorType;
             Order = order;
             TargetType = targetType;
             BindingType = bindingType;
-        }
-
-        /// <inheritdoc />
-        public override int GetHashCode() => InterceptorType.GetHashCode();
-
-        /// <inheritdoc />
-        public override bool Equals(object obj)
-        {
-            if (obj is not InterceptorDescriptor descriptor)
-                return false;
-            return InterceptorType == descriptor.InterceptorType;
         }
 
         public static InterceptorDescriptor Create([NotNull] Type interceptorType)
@@ -60,6 +48,15 @@ namespace Fabricdot.Infrastructure.Aspects
             var order = interceptorAttribute?.Order ?? 0;
             return new InterceptorDescriptor(
                 interceptorType, order, interceptorAttribute?.Target, bindingAttribute?.GetType());
+        }
+
+        /// <inheritdoc />
+        public override int GetHashCode() => InterceptorType.GetHashCode();
+
+        /// <inheritdoc />
+        public override bool Equals(object? obj)
+        {
+            return obj is InterceptorDescriptor descriptor && InterceptorType == descriptor.InterceptorType;
         }
     }
 }

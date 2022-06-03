@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore;
 namespace Fabricdot.Infrastructure.EntityFrameworkCore
 {
     public class EfRepository<TDbContext, T, TKey> : RepositoryBase<T, TKey>, IUnitOfWorkManagerAccessor where TDbContext : DbContext
-    where T : class, IAggregateRoot, Fabricdot.Domain.Entities.IEntity<TKey>
+    where T : class, IAggregateRoot, Fabricdot.Domain.Entities.IEntity<TKey> where TKey : notnull
     {
         protected readonly ISpecificationEvaluator SpecificationEvaluator = new SpecificationEvaluator();
         protected readonly IDbContextProvider<TDbContext> DbContextProvider;
@@ -110,7 +110,7 @@ namespace Fabricdot.Infrastructure.EntityFrameworkCore
         }
 
         protected virtual async Task<IQueryable<T>> GetQueryableAsync(
-            ISpecification<T> specification = null,
+            ISpecification<T>? specification = null,
             bool evaluateCriteriaOnly = false,
             CancellationToken cancellationToken = default)
         {

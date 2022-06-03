@@ -5,8 +5,8 @@ namespace Fabricdot.Core.Security
 {
     public interface IPrincipalAccessor
     {
-        ClaimsPrincipal Principal { get; }
+        ClaimsPrincipal? Principal { get; }
 
-        IDisposable Change(ClaimsPrincipal principal);
+        IDisposable Change(ClaimsPrincipal? principal);
     }
 }

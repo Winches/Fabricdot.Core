@@ -8,7 +8,7 @@ namespace Fabricdot.Core.Boot
     {
         private bool _disposedValue;
 
-        public IServiceProvider Services { get; protected set; }
+        public IServiceProvider Services { get; protected set; } = null!;
 
         public void Dispose()
         {
@@ -36,7 +36,6 @@ namespace Fabricdot.Core.Boot
                     (Services as IDisposable)?.Dispose();
                 }
 
-                Services = null;
                 _disposedValue = true;
             }
         }

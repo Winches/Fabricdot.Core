@@ -38,8 +38,7 @@ namespace Fabricdot.Infrastructure.Data.Filters
 
         private IDataFilter<TFilter> GetFilter<TFilter>() where TFilter : class
         {
-            return _filters.GetOrAdd(typeof(TFilter), _ => _serviceProvider.GetRequiredService<IDataFilter<TFilter>>())
-                as IDataFilter<TFilter>;
+            return (IDataFilter<TFilter>)_filters.GetOrAdd(typeof(TFilter), _ => _serviceProvider.GetRequiredService<IDataFilter<TFilter>>());
         }
     }
 
@@ -54,7 +53,7 @@ namespace Fabricdot.Infrastructure.Data.Filters
             get
             {
                 EnsureInitialized();
-                return _filter.Value.IsEnabled;
+                return _filter.Value!.IsEnabled;
             }
         }
 
@@ -69,7 +68,7 @@ namespace Fabricdot.Infrastructure.Data.Filters
             if (IsEnabled)
                 return NullDisposable.Instance;
 
-            _filter.Value.IsEnabled = true;
+            _filter.Value!.IsEnabled = true;
 
             return new DisposeAction(() => Disable());
         }
@@ -79,7 +78,7 @@ namespace Fabricdot.Infrastructure.Data.Filters
             if (!IsEnabled)
                 return NullDisposable.Instance;
 
-            _filter.Value.IsEnabled = false;
+            _filter.Value!.IsEnabled = false;
 
             return new DisposeAction(() => Enable());
         }

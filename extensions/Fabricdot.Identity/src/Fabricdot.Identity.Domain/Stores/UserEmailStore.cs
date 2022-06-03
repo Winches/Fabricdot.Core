@@ -23,7 +23,7 @@ namespace Fabricdot.Identity.Domain.Stores
                 cancellationToken);
         }
 
-        public virtual Task<string> GetEmailAsync(
+        public virtual Task<string?> GetEmailAsync(
             TUser user,
             CancellationToken cancellationToken)
         {
@@ -43,7 +43,7 @@ namespace Fabricdot.Identity.Domain.Stores
             return Task.FromResult(user.EmailConfirmed);
         }
 
-        public virtual Task<string> GetNormalizedEmailAsync(
+        public virtual Task<string?> GetNormalizedEmailAsync(
             TUser user,
             CancellationToken cancellationToken)
         {

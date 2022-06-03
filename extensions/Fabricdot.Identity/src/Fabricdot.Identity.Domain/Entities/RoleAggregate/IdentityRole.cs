@@ -8,11 +8,11 @@ namespace Fabricdot.Identity.Domain.Entities.RoleAggregate
     public class IdentityRole : AggregateRoot<Guid>
     {
         private readonly List<IdentityRoleClaim> _claims = new();
-        public virtual string Name { get; protected internal set; }
+        public virtual string Name { get; protected internal set; } = null!;
 
-        public virtual string NormalizedName { get; protected internal set; }
+        public virtual string NormalizedName { get; protected internal set; } = null!;
 
-        public virtual string Description { get; set; }
+        public virtual string? Description { get; set; }
 
         public virtual IReadOnlyCollection<IdentityRoleClaim> Claims => _claims.AsReadOnly();
 
