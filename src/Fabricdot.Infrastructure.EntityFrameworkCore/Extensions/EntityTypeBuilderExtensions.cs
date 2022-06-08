@@ -81,7 +81,7 @@ public static class EntityTypeBuilderExtensions
             builder.Property(nameof(IHasCreatorId.CreatorId))
                 .IsRequired(false)
                 .HasColumnName(nameof(IHasCreatorId.CreatorId))
-                .HasMaxLength(AuditConstant.USER_ID_LEN);
+                .HasMaxLength(AuditConstant.UserIdLength);
         return builder;
     }
 
@@ -93,7 +93,7 @@ public static class EntityTypeBuilderExtensions
     {
         if (typeof(IHasModificationTime).IsAssignableFrom(builder.GetClrType()))
             builder.Property(nameof(IHasModificationTime.LastModificationTime))
-                .IsRequired()
+                .IsRequired(false)
                 .HasColumnName(nameof(IHasModificationTime.LastModificationTime));
         return builder;
     }
@@ -108,7 +108,7 @@ public static class EntityTypeBuilderExtensions
             builder.Property(nameof(IHasModifierId.LastModifierId))
                 .IsRequired(false)
                 .HasColumnName(nameof(IHasModifierId.LastModifierId))
-                .HasMaxLength(AuditConstant.USER_ID_LEN);
+                .HasMaxLength(AuditConstant.UserIdLength);
         return builder;
     }
 
@@ -137,7 +137,7 @@ public static class EntityTypeBuilderExtensions
             builder.Property(nameof(IHasDeleterId.DeleterId))
                 .IsRequired(false)
                 .HasColumnName(nameof(IHasDeleterId.DeleterId))
-                .HasMaxLength(AuditConstant.USER_ID_LEN);
+                .HasMaxLength(AuditConstant.UserIdLength);
             //todo:consider use strong type user id,maybe GUID.
 
             ConfigureSoftDelete(builder);

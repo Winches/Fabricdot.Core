@@ -2,5 +2,5 @@
 
 public static class AuditConstant
 {
-    public const int USER_ID_LEN = 40;
+    public const int UserIdLength = 40;
 }

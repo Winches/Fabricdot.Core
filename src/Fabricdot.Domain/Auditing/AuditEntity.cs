@@ -6,5 +6,5 @@ public abstract class AuditEntity<TKey> : CreationAuditEntity<TKey>, IAuditEntit
 {
     public string? LastModifierId { get; protected set; }
 
-    public DateTime LastModificationTime { get; protected set; }
+    public DateTime? LastModificationTime { get; protected set; }
 }

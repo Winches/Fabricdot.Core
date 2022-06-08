@@ -1,5 +1,6 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using Fabricdot.Domain.SharedKernel;
+using FluentAssertions;
 using Xunit;
 
 namespace Fabricdot.Infrastructure.Tests.Domain.Auditing;
@@ -15,8 +16,10 @@ public class AuditPropertySetter_SetModificationProperties_Tests : AuditProperty
         var low = SystemClock.Now;
         AuditPropertySetter.SetModificationProperties(targetObject);
         var high = SystemClock.Now;
-        var actual = targetObject.LastModificationTime;
-        Assert.InRange(actual, low, high);
+
+        targetObject.LastModificationTime.Should()
+                                         .BeOnOrAfter(low).And
+                                         .BeOnOrBefore(high);
     }
 
     [Theory]

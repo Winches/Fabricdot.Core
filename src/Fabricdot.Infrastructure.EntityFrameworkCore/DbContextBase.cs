@@ -180,7 +180,7 @@ public abstract class DbContextBase : DbContext
             case EntityState.Added:
                 SetConcurrencyStamp(entryEntity);
                 AuditPropertySetter.SetCreationProperties(entryEntity);
-                AuditPropertySetter.SetModificationProperties(entryEntity);
+                //AuditPropertySetter.SetModificationProperties(entryEntity);
                 //SetTenantId(entryEntity);
                 break;
 

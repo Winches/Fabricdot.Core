@@ -6,6 +6,7 @@ using Fabricdot.Domain.SharedKernel;
 using Fabricdot.Infrastructure.EntityFrameworkCore.Tests.Entities;
 using Fabricdot.Infrastructure.EntityFrameworkCore.Tests.Repositories;
 using Fabricdot.Infrastructure.Security;
+using FluentAssertions;
 using Microsoft.Extensions.DependencyInjection;
 using Moq;
 using Xunit;
@@ -56,15 +57,15 @@ public class AuditPropertiesTests : EntityFrameworkCoreTestsBase
         Assert.Equal(CurrentUserId, author.CreatorId);
     }
 
-    [Fact]
-    public async Task SaveChangesAsync_CreateEntity_SetModificationProperties()
-    {
-        var author = new Author(100, "Martin", "Fowler");
-        await _authorRepository.AddAsync(author);
+    //[Fact]
+    //public async Task SaveChangesAsync_CreateEntity_SetModificationProperties()
+    //{
+    //    var author = new Author(100, "Martin", "Fowler");
+    //    await _authorRepository.AddAsync(author);
 
-        Assert.NotEqual(default, author.LastModificationTime);
-        Assert.Equal(CurrentUserId, author.LastModifierId);
-    }
+    //    Assert.NotEqual(default, author.LastModificationTime);
+    //    Assert.Equal(CurrentUserId, author.LastModifierId);
+    //}
 
     [Fact]
     public async Task SaveChangesAsync_UpdateEntity_SetModificationProperties()
@@ -74,8 +75,9 @@ public class AuditPropertiesTests : EntityFrameworkCoreTestsBase
         await _authorRepository.UpdateAsync(author);
         var high = SystemClock.Now;
 
-        Assert.InRange(author.LastModificationTime, low, high);
-        Assert.Equal(CurrentUserId, author.LastModifierId);
+        author.LastModificationTime.Should().NotBeNull();
+        author.LastModificationTime.Should().BeOnOrAfter(low).And.BeOnOrBefore(high);
+        author.LastModifierId.Should().Be(CurrentUserId);
     }
 
     [Fact]
