@@ -2,42 +2,41 @@
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Fabricdot.Core.Boot
+namespace Fabricdot.Core.Boot;
+
+public abstract class Application : IApplication
 {
-    public abstract class Application : IApplication
+    private bool _disposedValue;
+
+    public IServiceProvider Services { get; protected set; } = null!;
+
+    public void Dispose()
     {
-        private bool _disposedValue;
+        // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
+        Dispose(disposing: true);
+        GC.SuppressFinalize(this);
+    }
 
-        public IServiceProvider Services { get; protected set; } = null!;
+    public virtual Task StartAsync(CancellationToken cancellationToken = default)
+    {
+        return Task.CompletedTask;
+    }
 
-        public void Dispose()
+    public virtual Task StopAsync(CancellationToken cancellationToken = default)
+    {
+        return Task.CompletedTask;
+    }
+
+    protected virtual void Dispose(bool disposing)
+    {
+        if (!_disposedValue)
         {
-            // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
-            Dispose(disposing: true);
-            GC.SuppressFinalize(this);
-        }
-
-        public virtual Task StartAsync(CancellationToken cancellationToken = default)
-        {
-            return Task.CompletedTask;
-        }
-
-        public virtual Task StopAsync(CancellationToken cancellationToken = default)
-        {
-            return Task.CompletedTask;
-        }
-
-        protected virtual void Dispose(bool disposing)
-        {
-            if (!_disposedValue)
+            if (disposing)
             {
-                if (disposing)
-                {
-                    (Services as IDisposable)?.Dispose();
-                }
-
-                _disposedValue = true;
+                (Services as IDisposable)?.Dispose();
             }
+
+            _disposedValue = true;
         }
     }
 }

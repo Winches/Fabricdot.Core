@@ -1,10 +1,9 @@
 ﻿using System.Collections.Generic;
 using Fabricdot.Domain.Auditing;
 
-namespace Fabricdot.Infrastructure.Data
+namespace Fabricdot.Infrastructure.Data;
+
+public interface IEntityChangeTracker
 {
-    public interface IEntityChangeTracker
-    {
-        ICollection<EntityChangeInfo> Entries();
-    }
+    ICollection<EntityChangeInfo> Entries();
 }

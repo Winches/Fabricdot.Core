@@ -2,16 +2,15 @@
 using System.Collections.Generic;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Fabricdot.Core.Boot
+namespace Fabricdot.Core.Boot;
+
+public interface IBootstrapperBuilder
 {
-    public interface IBootstrapperBuilder
-    {
-        IServiceCollection Services { get; }
+    IServiceCollection Services { get; }
 
-        IDictionary<string, object> Properties { get; }
+    IDictionary<string, object> Properties { get; }
 
-        IBootstrapperBuilder AddModules(Type moduleType);
+    IBootstrapperBuilder AddModules(Type moduleType);
 
-        IApplication Build(IServiceProvider serviceProvider);
-    }
+    IApplication Build(IServiceProvider serviceProvider);
 }

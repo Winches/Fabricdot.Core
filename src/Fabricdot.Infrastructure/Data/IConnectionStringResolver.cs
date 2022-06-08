@@ -1,9 +1,8 @@
 ﻿using System.Threading.Tasks;
 
-namespace Fabricdot.Infrastructure.Data
+namespace Fabricdot.Infrastructure.Data;
+
+public interface IConnectionStringResolver
 {
-    public interface IConnectionStringResolver
-    {
-        Task<string?> ResolveAsync(string? name = null);
-    }
+    Task<string?> ResolveAsync(string? name = null);
 }

@@ -8,38 +8,37 @@ using Fabricdot.WebApi.Uow;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Fabricdot.WebApi.Tests
+namespace Fabricdot.WebApi.Tests;
+
+[Requires(typeof(FabricdotInfrastructureModule))]
+[Requires(typeof(FabricdotWebApiModule))]
+[Exports]
+public class StartupModule : ModuleBase
 {
-    [Requires(typeof(FabricdotInfrastructureModule))]
-    [Requires(typeof(FabricdotWebApiModule))]
-    [Exports]
-    public class StartupModule : ModuleBase
+    public override void ConfigureServices(ConfigureServiceContext context)
     {
-        public override void ConfigureServices(ConfigureServiceContext context)
-        {
-            var services = context.Services;
+        var services = context.Services;
 
-            services.AddControllers(opts => opts.AddActionFilters())
-                .ConfigureApiBehaviorOptions(opts =>
-                {
-                    opts.SuppressModelStateInvalidFilter = true;
-                });
-        }
-
-        public override Task OnStartingAsync(ApplicationStartingContext context)
-        {
-            var app = context.ServiceProvider.GetApplicationBuilder();
-
-            app.UseCorrelationId();
-            app.UseRouting();
-            app.UseUnitOfWork();
-            app.UseMiddleware<ActionMiddleware>();
-            app.UseEndpoints(endpoints =>
+        services.AddControllers(opts => opts.AddActionFilters())
+            .ConfigureApiBehaviorOptions(opts =>
             {
-                endpoints.MapControllers();
+                opts.SuppressModelStateInvalidFilter = true;
             });
+    }
 
-            return Task.CompletedTask;
-        }
+    public override Task OnStartingAsync(ApplicationStartingContext context)
+    {
+        var app = context.ServiceProvider.GetApplicationBuilder();
+
+        app.UseCorrelationId();
+        app.UseRouting();
+        app.UseUnitOfWork();
+        app.UseMiddleware<ActionMiddleware>();
+        app.UseEndpoints(endpoints =>
+        {
+            endpoints.MapControllers();
+        });
+
+        return Task.CompletedTask;
     }
 }

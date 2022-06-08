@@ -1,11 +1,10 @@
-﻿namespace Fabricdot.WebApi.Models
-{
-    public interface IEntityDto
-    {
-    }
+﻿namespace Fabricdot.WebApi.Models;
 
-    public interface IEntityDto<TKey> : IEntityDto
-    {
-        TKey Id { get; set; }
-    }
+public interface IEntityDto
+{
+}
+
+public interface IEntityDto<TKey> : IEntityDto
+{
+    TKey Id { get; set; }
 }

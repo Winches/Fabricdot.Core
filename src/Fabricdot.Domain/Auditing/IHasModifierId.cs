@@ -1,7 +1,6 @@
-﻿namespace Fabricdot.Domain.Auditing
+﻿namespace Fabricdot.Domain.Auditing;
+
+public interface IHasModifierId
 {
-    public interface IHasModifierId
-    {
-        string? LastModifierId { get; }
-    }
+    string? LastModifierId { get; }
 }

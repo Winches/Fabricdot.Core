@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Fabricdot.Infrastructure.Aspects
+namespace Fabricdot.Infrastructure.Aspects;
+
+public interface IInterceptorOptions
 {
-    public interface IInterceptorOptions
-    {
-        InterceptorCollection Interceptors { get; }
-        List<Type> ExcludeTargets { get; }
-    }
+    InterceptorCollection Interceptors { get; }
+
+    List<Type> ExcludeTargets { get; }
 }

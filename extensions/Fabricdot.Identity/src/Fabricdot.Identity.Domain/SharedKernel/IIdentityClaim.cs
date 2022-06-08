@@ -1,9 +1,8 @@
-﻿namespace Fabricdot.Identity.Domain.SharedKernel
-{
-    public interface IIdentityClaim
-    {
-        string ClaimType { get; }
+﻿namespace Fabricdot.Identity.Domain.SharedKernel;
 
-        string? ClaimValue { get; }
-    }
+public interface IIdentityClaim
+{
+    string ClaimType { get; }
+
+    string? ClaimValue { get; }
 }

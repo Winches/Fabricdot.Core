@@ -1,7 +1,6 @@
-﻿namespace Fabricdot.Core.Validation
+﻿namespace Fabricdot.Core.Validation;
+
+public interface IHasNotification
 {
-    public interface IHasNotification
-    {
-        Notification Notification { get; }
-    }
+    Notification Notification { get; }
 }

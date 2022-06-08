@@ -1,11 +1,10 @@
-namespace Fabricdot.Infrastructure.Uow.Abstractions
+namespace Fabricdot.Infrastructure.Uow.Abstractions;
+
+public interface IAmbientUnitOfWork
 {
-    public interface IAmbientUnitOfWork
-    {
-        IUnitOfWork? UnitOfWork { get; set; }
+    IUnitOfWork? UnitOfWork { get; set; }
 
-        void DropCurrent();
+    void DropCurrent();
 
-        IUnitOfWork? GetOuter(IUnitOfWork unitOfWork);
-    }
+    IUnitOfWork? GetOuter(IUnitOfWork unitOfWork);
 }

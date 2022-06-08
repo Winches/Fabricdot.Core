@@ -3,13 +3,12 @@ using System.Security.Claims;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Fabricdot.Authorization.Permissions
+namespace Fabricdot.Authorization.Permissions;
+
+public interface IPermissionHandlerContextFactory
 {
-    public interface IPermissionHandlerContextFactory
-    {
-        Task<PermissionHandlerContext> CreateAsync(
-            ClaimsPrincipal claimsPrincipal,
-            IEnumerable<PermissionName> permissions,
-            CancellationToken cancellationToken = default);
-    }
+    Task<PermissionHandlerContext> CreateAsync(
+        ClaimsPrincipal claimsPrincipal,
+        IEnumerable<PermissionName> permissions,
+        CancellationToken cancellationToken = default);
 }

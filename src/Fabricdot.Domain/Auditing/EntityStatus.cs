@@ -1,9 +1,8 @@
-﻿namespace Fabricdot.Domain.Auditing
+﻿namespace Fabricdot.Domain.Auditing;
+
+public enum EntityStatus : byte
 {
-    public enum EntityStatus : byte
-    {
-        Created,
-        Updated,
-        Deleted
-    }
+    Created,
+    Updated,
+    Deleted
 }

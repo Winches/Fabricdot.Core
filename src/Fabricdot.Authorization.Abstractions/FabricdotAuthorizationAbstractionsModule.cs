@@ -1,9 +1,8 @@
 ﻿using Fabricdot.Core.Modularity;
 
-namespace Fabricdot.Authorization
+namespace Fabricdot.Authorization;
+
+[Exports]
+public class FabricdotAuthorizationAbstractionsModule : ModuleBase
 {
-    [Exports]
-    public class FabricdotAuthorizationAbstractionsModule : ModuleBase
-    {
-    }
 }

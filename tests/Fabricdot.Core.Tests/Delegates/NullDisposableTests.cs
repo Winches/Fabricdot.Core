@@ -1,14 +1,13 @@
 ﻿using Fabricdot.Core.Delegates;
 using Xunit;
 
-namespace Fabricdot.Core.Tests.Delegates
+namespace Fabricdot.Core.Tests.Delegates;
+
+public class NullDisposableTests
 {
-    public class NullDisposableTests
+    [Fact]
+    public void Dispose_DoNothing()
     {
-        [Fact]
-        public void Dispose_DoNothing()
-        {
-            NullDisposable.Instance.Dispose();
-        }
+        NullDisposable.Instance.Dispose();
     }
 }

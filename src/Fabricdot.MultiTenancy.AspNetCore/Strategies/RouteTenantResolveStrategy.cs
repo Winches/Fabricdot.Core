@@ -4,22 +4,21 @@ using Fabricdot.MultiTenancy.Abstractions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Features;
 
-namespace Fabricdot.MultiTenancy.AspNetCore.Strategies
+namespace Fabricdot.MultiTenancy.AspNetCore.Strategies;
+
+public class RouteTenantResolveStrategy : HttpTenantResolveStrategy
 {
-    public class RouteTenantResolveStrategy : HttpTenantResolveStrategy
+    private readonly string _routeKey;
+
+    public RouteTenantResolveStrategy(string? routeKey = null)
     {
-        private readonly string _routeKey;
+        _routeKey = string.IsNullOrEmpty(routeKey) ? TenantConstants.TenantToken : routeKey;
+    }
 
-        public RouteTenantResolveStrategy(string? routeKey = null)
-        {
-            _routeKey = string.IsNullOrEmpty(routeKey) ? TenantConstants.TenantToken : routeKey;
-        }
-
-        protected override Task<string?> ResolveIdentifierAsync(HttpContext httpContext)
-        {
-            var routeValuesFeature = httpContext.Features.Get<IRouteValuesFeature>();
-            var identifier = (string?)routeValuesFeature?.RouteValues?.GetValueOrDefault(_routeKey);
-            return Task.FromResult(identifier);
-        }
+    protected override Task<string?> ResolveIdentifierAsync(HttpContext httpContext)
+    {
+        var routeValuesFeature = httpContext.Features.Get<IRouteValuesFeature>();
+        var identifier = (string?)routeValuesFeature?.RouteValues?.GetValueOrDefault(_routeKey);
+        return Task.FromResult(identifier);
     }
 }

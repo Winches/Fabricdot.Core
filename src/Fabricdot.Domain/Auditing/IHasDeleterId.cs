@@ -1,7 +1,6 @@
-﻿namespace Fabricdot.Domain.Auditing
+﻿namespace Fabricdot.Domain.Auditing;
+
+public interface IHasDeleterId : ISoftDelete
 {
-    public interface IHasDeleterId : ISoftDelete
-    {
-        string? DeleterId { get; }
-    }
+    string? DeleterId { get; }
 }

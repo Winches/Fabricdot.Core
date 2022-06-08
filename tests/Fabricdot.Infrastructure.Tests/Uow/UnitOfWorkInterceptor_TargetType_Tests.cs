@@ -3,31 +3,30 @@ using Fabricdot.Test.Shared;
 using Microsoft.Extensions.DependencyInjection;
 using Xunit;
 
-namespace Fabricdot.Infrastructure.Tests.Uow
+namespace Fabricdot.Infrastructure.Tests.Uow;
+
+public class UnitOfWorkInterceptor_TargetType_Tests : IntegrationTestBase<InfrastructureTestModule>
 {
-    public class UnitOfWorkInterceptor_TargetType_Tests : IntegrationTestBase<InfrastructureTestModule>
+    private readonly IFakeServiceWithUowScope _testService;
+
+    public UnitOfWorkInterceptor_TargetType_Tests()
     {
-        private readonly IFakeServiceWithUowScope _testService;
+        var provider = ServiceScope.ServiceProvider;
+        _testService = provider.GetRequiredService<IFakeServiceWithUowScope>();
+    }
 
-        public UnitOfWorkInterceptor_TargetType_Tests()
+    [Fact]
+    public void UnitOfWorkInterceptor_BeginUowAutomatically()
+    {
+        _testService.UseTransactionalUow(uow =>
         {
-            var provider = ServiceScope.ServiceProvider;
-            _testService = provider.GetRequiredService<IFakeServiceWithUowScope>();
-        }
+            Assert.NotNull(uow);
+            Assert.True(uow.IsActive);
+        });
+    }
 
-        [Fact]
-        public void UnitOfWorkInterceptor_BeginUowAutomatically()
-        {
-            _testService.UseTransactionalUow(uow =>
-            {
-                Assert.NotNull(uow);
-                Assert.True(uow.IsActive);
-            });
-        }
-
-        protected override void ConfigureServices(IServiceCollection serviceCollection)
-        {
-            UseServiceProviderFactory<FabricdotServiceProviderFactory>();
-        }
+    protected override void ConfigureServices(IServiceCollection serviceCollection)
+    {
+        UseServiceProviderFactory<FabricdotServiceProviderFactory>();
     }
 }

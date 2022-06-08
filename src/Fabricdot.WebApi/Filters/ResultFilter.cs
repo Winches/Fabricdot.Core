@@ -5,38 +5,37 @@ using Microsoft.AspNetCore.Mvc.Controllers;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Fabricdot.WebApi.Filters
+namespace Fabricdot.WebApi.Filters;
+
+[ServiceContract(typeof(ResultFilter))]
+[Dependency(ServiceLifetime.Scoped)]
+public class ResultFilter : IAsyncResultFilter
 {
-    [ServiceContract(typeof(ResultFilter))]
-    [Dependency(ServiceLifetime.Scoped)]
-    public class ResultFilter : IAsyncResultFilter
+    private readonly ISender _sender;
+
+    public ResultFilter(ISender sender)
     {
-        private readonly ISender _sender;
+        _sender = sender;
+    }
 
-        public ResultFilter(ISender sender)
+    /// <inheritdoc />
+    public async Task OnResultExecutionAsync(ResultExecutingContext context, ResultExecutionDelegate next)
+    {
+        if (!ShouldHandleResult(context))
         {
-            _sender = sender;
-        }
-
-        /// <inheritdoc />
-        public async Task OnResultExecutionAsync(ResultExecutingContext context, ResultExecutionDelegate next)
-        {
-            if (!ShouldHandleResult(context))
-            {
-                await next();
-                return;
-            }
-
-            context.Result = await _sender.Send(new GetActionResultRequest(context));
             await next();
+            return;
         }
 
-        protected virtual bool ShouldHandleResult(ResultExecutingContext context)
-        {
-            if (context.ActionDescriptor is ControllerActionDescriptor)
-                return true;
+        context.Result = await _sender.Send(new GetActionResultRequest(context));
+        await next();
+    }
 
-            return false;
-        }
+    protected virtual bool ShouldHandleResult(ResultExecutingContext context)
+    {
+        if (context.ActionDescriptor is ControllerActionDescriptor)
+            return true;
+
+        return false;
     }
 }

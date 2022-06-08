@@ -1,11 +1,10 @@
 ﻿using System.Threading.Tasks;
 
-namespace Fabricdot.MultiTenancy.Abstractions
-{
-    public interface ITenantResolveStrategy
-    {
-        int Priority { get; }
+namespace Fabricdot.MultiTenancy.Abstractions;
 
-        Task<string?> ResolveIdentifierAsync(TenantResolveContext context);
-    }
+public interface ITenantResolveStrategy
+{
+    int Priority { get; }
+
+    Task<string?> ResolveIdentifierAsync(TenantResolveContext context);
 }

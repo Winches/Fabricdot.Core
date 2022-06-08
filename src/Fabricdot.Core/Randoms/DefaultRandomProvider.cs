@@ -2,34 +2,33 @@
 using Fabricdot.Core.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Fabricdot.Core.Randoms
+namespace Fabricdot.Core.Randoms;
+
+[Dependency(ServiceLifetime.Singleton)]
+public class DefaultRandomProvider : IRandomProvider
 {
-    [Dependency(ServiceLifetime.Singleton)]
-    public class DefaultRandomProvider : IRandomProvider
+    private readonly Random _random;
+
+    public DefaultRandomProvider()
     {
-        private readonly Random _random;
+        _random = new Random();
+    }
 
-        public DefaultRandomProvider()
+    /// <inheritdoc />
+    public int Next()
+    {
+        lock (_random)
         {
-            _random = new Random();
+            return _random.Next();
         }
+    }
 
-        /// <inheritdoc />
-        public int Next()
+    /// <inheritdoc />
+    public int Next(int min, int max)
+    {
+        lock (_random)
         {
-            lock (_random)
-            {
-                return _random.Next();
-            }
-        }
-
-        /// <inheritdoc />
-        public int Next(int min, int max)
-        {
-            lock (_random)
-            {
-                return _random.Next(min, max);
-            }
+            return _random.Next(min, max);
         }
     }
 }

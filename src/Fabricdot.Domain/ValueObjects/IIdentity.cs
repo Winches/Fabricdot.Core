@@ -1,7 +1,6 @@
-﻿namespace Fabricdot.Domain.ValueObjects
+﻿namespace Fabricdot.Domain.ValueObjects;
+
+public interface IIdentity<out T>
 {
-    public interface IIdentity<out T>
-    {
-        T Value { get; }
-    }
+    T Value { get; }
 }

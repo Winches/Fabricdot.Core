@@ -1,8 +1,7 @@
 ﻿using System.Collections.ObjectModel;
 
-namespace Fabricdot.Core.DependencyInjection
+namespace Fabricdot.Core.DependencyInjection;
+
+public class DependencyRegistrarCollection : Collection<IDependencyRegistrar>, IDependencyRegistrarCollection
 {
-    public class DependencyRegistrarCollection : Collection<IDependencyRegistrar>, IDependencyRegistrarCollection
-    {
-    }
 }

@@ -1,9 +1,8 @@
 using System.Collections.Generic;
 
-namespace Fabricdot.WebApi.Uow
+namespace Fabricdot.WebApi.Uow;
+
+public class HttpUnitOfWorkOptions
 {
-    public class HttpUnitOfWorkOptions
-    {
-        public List<string> IgnoredUrls { get; } = new();
-    }
+    public List<string> IgnoredUrls { get; } = new();
 }

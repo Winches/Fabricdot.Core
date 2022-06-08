@@ -7,25 +7,24 @@ using Microsoft.Extensions.DependencyInjection.Extensions;
 
 // ReSharper disable CheckNamespace
 
-namespace Microsoft.Extensions.DependencyInjection
+namespace Microsoft.Extensions.DependencyInjection;
+
+public static class ServiceCollectionExtensions
 {
-    public static class ServiceCollectionExtensions
+    public static void AddEfDbContext<TDbContext>(
+        this IServiceCollection serviceCollection,
+        Action<DbContextOptionsBuilder>? optionsAction = null) where TDbContext : DbContextBase
     {
-        public static void AddEfDbContext<TDbContext>(
-            this IServiceCollection serviceCollection,
-            Action<DbContextOptionsBuilder>? optionsAction = null) where TDbContext : DbContextBase
-        {
-            serviceCollection.AddEfDbContext<TDbContext>((_, builder) => optionsAction?.Invoke(builder));
-        }
+        serviceCollection.AddEfDbContext<TDbContext>((_, builder) => optionsAction?.Invoke(builder));
+    }
 
-        public static void AddEfDbContext<TDbContext>(
-            this IServiceCollection serviceCollection,
-            Action<IServiceProvider, DbContextOptionsBuilder>? optionsAction = null) where TDbContext : DbContextBase
-        {
-            Guard.Against.Null(serviceCollection, nameof(serviceCollection));
+    public static void AddEfDbContext<TDbContext>(
+        this IServiceCollection serviceCollection,
+        Action<IServiceProvider, DbContextOptionsBuilder>? optionsAction = null) where TDbContext : DbContextBase
+    {
+        Guard.Against.Null(serviceCollection, nameof(serviceCollection));
 
-            serviceCollection.AddDbContext<TDbContext>((provider, opts) => optionsAction?.Invoke(provider, opts));
-            serviceCollection.TryAddTransient(typeof(IDbContextProvider<>), typeof(UnitOfWorkDbContextProvider<>));
-        }
+        serviceCollection.AddDbContext<TDbContext>((provider, opts) => optionsAction?.Invoke(provider, opts));
+        serviceCollection.TryAddTransient(typeof(IDbContextProvider<>), typeof(UnitOfWorkDbContextProvider<>));
     }
 }

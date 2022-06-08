@@ -4,28 +4,27 @@ using System.Reflection;
 using Fabricdot.Domain.Internal;
 using Fabricdot.Domain.SharedKernel;
 
-namespace Fabricdot.MultiTenancy
-{
-    public class MultiTenantInitializer : IEntityInitializer
-    {
-        public void Initialize(object entity)
-        {
-            var tenantId = DefaultTenantAccessor.Instance.Tenant?.Id;
-            if (entity is not IMultiTenant multiTenant)
-                return;
-            if (multiTenant.TenantId.HasValue)
-                return;
-            if (multiTenant.TenantId == tenantId)
-                return;
+namespace Fabricdot.MultiTenancy;
 
-            var propertyInfo = multiTenant.GetType().GetProperty(
-                nameof(IMultiTenant.TenantId),
-                BindingFlags.Instance | BindingFlags.Public);
-            if (propertyInfo?.CanWrite == true)
-            {
-                propertyInfo.SetValue(entity, tenantId);
-            }
-            Debug.Print($"Initialize '{entity.GetType().PrettyPrint()}' with tenant:{tenantId}");
+public class MultiTenantInitializer : IEntityInitializer
+{
+    public void Initialize(object entity)
+    {
+        var tenantId = DefaultTenantAccessor.Instance.Tenant?.Id;
+        if (entity is not IMultiTenant multiTenant)
+            return;
+        if (multiTenant.TenantId.HasValue)
+            return;
+        if (multiTenant.TenantId == tenantId)
+            return;
+
+        var propertyInfo = multiTenant.GetType().GetProperty(
+            nameof(IMultiTenant.TenantId),
+            BindingFlags.Instance | BindingFlags.Public);
+        if (propertyInfo?.CanWrite == true)
+        {
+            propertyInfo.SetValue(entity, tenantId);
         }
+        Debug.Print($"Initialize '{entity.GetType().PrettyPrint()}' with tenant:{tenantId}");
     }
 }

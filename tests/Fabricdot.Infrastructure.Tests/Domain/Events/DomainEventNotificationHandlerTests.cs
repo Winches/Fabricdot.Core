@@ -7,61 +7,60 @@ using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 using Xunit;
 
-namespace Fabricdot.Infrastructure.Tests.Domain.Events
+namespace Fabricdot.Infrastructure.Tests.Domain.Events;
+
+public class DomainEventNotificationHandlerTests : IntegrationTestBase<InfrastructureTestModule>
 {
-    public class DomainEventNotificationHandlerTests : IntegrationTestBase<InfrastructureTestModule>
+    internal class EmployeeCreatedEventHandler1 : IDomainEventHandler<EntityCreatedEvent<Employee>>
     {
-        internal class EmployeeCreatedEventHandler1 : IDomainEventHandler<EntityCreatedEvent<Employee>>
-        {
-            public static string FirstName { get; private set; }
-
-            /// <inheritdoc />
-            public Task HandleAsync(EntityCreatedEvent<Employee> domainEvent, CancellationToken cancellationToken)
-            {
-                var employee = domainEvent.Entity;
-                FirstName = employee.FirstName;
-                return Task.CompletedTask;
-            }
-        }
-
-        internal class EmployeeCreatedEventHandler2 : IDomainEventHandler<EntityCreatedEvent<Employee>>
-        {
-            public static string LastName { get; private set; }
-
-            /// <inheritdoc />
-            public Task HandleAsync(EntityCreatedEvent<Employee> domainEvent, CancellationToken cancellationToken)
-            {
-                var employee = domainEvent.Entity;
-                LastName = employee.LastName;
-                return Task.CompletedTask;
-            }
-        }
-
-        private readonly INotificationHandler<DomainEventNotification> _notificationHandler;
+        public static string FirstName { get; private set; }
 
         /// <inheritdoc />
-        public DomainEventNotificationHandlerTests()
+        public Task HandleAsync(EntityCreatedEvent<Employee> domainEvent, CancellationToken cancellationToken)
         {
-            _notificationHandler = ServiceProvider.GetRequiredService<INotificationHandler<DomainEventNotification>>();
+            var employee = domainEvent.Entity;
+            FirstName = employee.FirstName;
+            return Task.CompletedTask;
         }
+    }
 
-        [Fact]
-        public async Task Handle_SubscribeMultipleEventHandlers_TriggerAllHandlers()
+    internal class EmployeeCreatedEventHandler2 : IDomainEventHandler<EntityCreatedEvent<Employee>>
+    {
+        public static string LastName { get; private set; }
+
+        /// <inheritdoc />
+        public Task HandleAsync(EntityCreatedEvent<Employee> domainEvent, CancellationToken cancellationToken)
         {
-            var employee = new Employee("Allen", "Yeager", "1");
-            var @event = new EntityCreatedEvent<Employee>(employee);
-            await _notificationHandler.Handle(new DomainEventNotification(@event), default);
-
-            Assert.Equal(employee.FirstName, EmployeeCreatedEventHandler1.FirstName);
-            Assert.Equal(employee.LastName, EmployeeCreatedEventHandler2.LastName);
+            var employee = domainEvent.Entity;
+            LastName = employee.LastName;
+            return Task.CompletedTask;
         }
+    }
 
-        [Fact]
-        public async Task Handle_NonSubscription_DoNothing()
-        {
-            var employee = new Employee("Allen", "Yeager", "1");
-            var @event = new EntityRemovedEvent<Employee>(employee);
-            await _notificationHandler.Handle(new DomainEventNotification(@event), default);
-        }
+    private readonly INotificationHandler<DomainEventNotification> _notificationHandler;
+
+    /// <inheritdoc />
+    public DomainEventNotificationHandlerTests()
+    {
+        _notificationHandler = ServiceProvider.GetRequiredService<INotificationHandler<DomainEventNotification>>();
+    }
+
+    [Fact]
+    public async Task Handle_SubscribeMultipleEventHandlers_TriggerAllHandlers()
+    {
+        var employee = new Employee("Allen", "Yeager", "1");
+        var @event = new EntityCreatedEvent<Employee>(employee);
+        await _notificationHandler.Handle(new DomainEventNotification(@event), default);
+
+        Assert.Equal(employee.FirstName, EmployeeCreatedEventHandler1.FirstName);
+        Assert.Equal(employee.LastName, EmployeeCreatedEventHandler2.LastName);
+    }
+
+    [Fact]
+    public async Task Handle_NonSubscription_DoNothing()
+    {
+        var employee = new Employee("Allen", "Yeager", "1");
+        var @event = new EntityRemovedEvent<Employee>(employee);
+        await _notificationHandler.Handle(new DomainEventNotification(@event), default);
     }
 }

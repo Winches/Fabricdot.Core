@@ -4,73 +4,72 @@ using Fabricdot.Infrastructure.Uow.Abstractions;
 using Microsoft.AspNetCore.Mvc;
 using Xunit;
 
-namespace Fabricdot.WebApi.Tests.Uow
+namespace Fabricdot.WebApi.Tests.Uow;
+
+[Route("api/fake-uow")]
+[ApiController]
+public class FakeUnitOfWorkController : ControllerBase
 {
-    [Route("api/fake-uow")]
-    [ApiController]
-    public class FakeUnitOfWorkController : ControllerBase
+    private readonly IUnitOfWorkManager _unitOfWorkManager;
+
+    public FakeUnitOfWorkController(IUnitOfWorkManager unitOfWorkManager)
     {
-        private readonly IUnitOfWorkManager _unitOfWorkManager;
+        _unitOfWorkManager = unitOfWorkManager;
+    }
 
-        public FakeUnitOfWorkController(IUnitOfWorkManager unitOfWorkManager)
-        {
-            _unitOfWorkManager = unitOfWorkManager;
-        }
+    [HttpGet("[action]")]
+    public string GetWithUow()
+    {
+        var unitOfWork = _unitOfWorkManager.Available;
+        AssertBegunUow(unitOfWork);
+        var isTransactional = unitOfWork.Options.IsTransactional;
+        Assert.False(isTransactional);
 
-        [HttpGet("[action]")]
-        public string GetWithUow()
-        {
-            var unitOfWork = _unitOfWorkManager.Available;
-            AssertBegunUow(unitOfWork);
-            var isTransactional = unitOfWork.Options.IsTransactional;
-            Assert.False(isTransactional);
+        return "Success";
+    }
 
-            return "Success";
-        }
+    [HttpGet("[action]")]
+    [UnitOfWork(true)]
+    public string GetWithTransactionalUow()
+    {
+        var unitOfWork = _unitOfWorkManager.Available;
+        AssertBegunUow(unitOfWork);
+        var isTransactional = unitOfWork.Options.IsTransactional;
+        Assert.True(isTransactional);
 
-        [HttpGet("[action]")]
-        [UnitOfWork(true)]
-        public string GetWithTransactionalUow()
-        {
-            var unitOfWork = _unitOfWorkManager.Available;
-            AssertBegunUow(unitOfWork);
-            var isTransactional = unitOfWork.Options.IsTransactional;
-            Assert.True(isTransactional);
+        return "Success";
+    }
 
-            return "Success";
-        }
+    [HttpGet("[action]")]
+    [UnitOfWork(IsDisabled = true)]
+    public string GetWithoutUow()
+    {
+        var unitOfWork = _unitOfWorkManager.Available;
+        Assert.Null(unitOfWork);
 
-        [HttpGet("[action]")]
-        [UnitOfWork(IsDisabled = true)]
-        public string GetWithoutUow()
-        {
-            var unitOfWork = _unitOfWorkManager.Available;
-            Assert.Null(unitOfWork);
+        return "Success";
+    }
 
-            return "Success";
-        }
+    [HttpPost("[action]")]
+    public void CreateWithUow()
+    {
+        var unitOfWork = _unitOfWorkManager.Available;
+        AssertBegunUow(unitOfWork);
+        var isTransactional = unitOfWork.Options.IsTransactional;
+        Assert.True(isTransactional);
+    }
 
-        [HttpPost("[action]")]
-        public void CreateWithUow()
-        {
-            var unitOfWork = _unitOfWorkManager.Available;
-            AssertBegunUow(unitOfWork);
-            var isTransactional = unitOfWork.Options.IsTransactional;
-            Assert.True(isTransactional);
-        }
+    [HttpPost("[action]")]
+    public void ThrowException()
+    {
+        var unitOfWork = _unitOfWorkManager.Available;
+        AssertBegunUow(unitOfWork);
+        throw new InvalidOperationException("Something happened.");
+    }
 
-        [HttpPost("[action]")]
-        public void ThrowException()
-        {
-            var unitOfWork = _unitOfWorkManager.Available;
-            AssertBegunUow(unitOfWork);
-            throw new InvalidOperationException("Something happened.");
-        }
-
-        private static void AssertBegunUow(IUnitOfWork unitOfWork)
-        {
-            Assert.NotNull(unitOfWork);
-            Assert.True(unitOfWork.IsActive);
-        }
+    private static void AssertBegunUow(IUnitOfWork unitOfWork)
+    {
+        Assert.NotNull(unitOfWork);
+        Assert.True(unitOfWork.IsActive);
     }
 }

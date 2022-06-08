@@ -6,52 +6,51 @@ using Fabricdot.Infrastructure.EntityFrameworkCore.Tests.Data;
 using Microsoft.AspNetCore.Identity;
 using Xunit;
 
-namespace Fabricdot.Identity.Tests.Domain.Stores
+namespace Fabricdot.Identity.Tests.Domain.Stores;
+
+public class UserAuthenticatorKeyStoreTests : UserStoreTestBase
 {
-    public class UserAuthenticatorKeyStoreTests : UserStoreTestBase
+    private readonly IUserAuthenticatorKeyStore<User> _userAuthenticatorKeyStore;
+
+    public UserAuthenticatorKeyStoreTests()
     {
-        private readonly IUserAuthenticatorKeyStore<User> _userAuthenticatorKeyStore;
+        _userAuthenticatorKeyStore = (IUserAuthenticatorKeyStore<User>)UserStore;
+    }
 
-        public UserAuthenticatorKeyStoreTests()
+    [InlineData("key1")]
+    [InlineData(null)]
+    [Theory]
+    public async Task SetAuthenticatorKeyAsync_GivenKey_Correctly(string key)
+    {
+        await UseUowAsync(async () =>
         {
-            _userAuthenticatorKeyStore = (IUserAuthenticatorKeyStore<User>)UserStore;
-        }
+            var user = await UserRepository.GetDetailsByIdAsync(FakeDataBuilder.UserAndersId);
+            var actualKey = await SetAuthenticatorKeyAsync(user, key);
 
-        [InlineData("key1")]
-        [InlineData(null)]
-        [Theory]
-        public async Task SetAuthenticatorKeyAsync_GivenKey_Correctly(string key)
+            Assert.Equal(key, actualKey);
+        });
+    }
+
+    [Fact]
+    public async Task GetAuthenticatorKeyAsync_ReturnCorretly()
+    {
+        await UseUowAsync(async () =>
         {
-            await UseUowAsync(async () =>
-            {
-                var user = await UserRepository.GetDetailsByIdAsync(FakeDataBuilder.UserAndersId);
-                var actualKey = await SetAuthenticatorKeyAsync(user, key);
+            var user = await UserRepository.GetDetailsByIdAsync(FakeDataBuilder.UserAndersId);
+            var key = await SetAuthenticatorKeyAsync(user, "key1");
+            var actualKey = await _userAuthenticatorKeyStore.GetAuthenticatorKeyAsync(user, default);
 
-                Assert.Equal(key, actualKey);
-            });
-        }
+            Assert.Equal(actualKey, key);
+        });
+    }
 
-        [Fact]
-        public async Task GetAuthenticatorKeyAsync_ReturnCorretly()
-        {
-            await UseUowAsync(async () =>
-            {
-                var user = await UserRepository.GetDetailsByIdAsync(FakeDataBuilder.UserAndersId);
-                var key = await SetAuthenticatorKeyAsync(user, "key1");
-                var actualKey = await _userAuthenticatorKeyStore.GetAuthenticatorKeyAsync(user, default);
-
-                Assert.Equal(actualKey, key);
-            });
-        }
-
-        private async Task<string> SetAuthenticatorKeyAsync(
-            User user,
-            string key)
-        {
-            await _userAuthenticatorKeyStore.SetAuthenticatorKeyAsync(user, key, default);
-            var token = user.Tokens.SingleOrDefault(v => v.LoginProvider == UserStoreConstants.InternalLoginProvider
-                                                         && v.Name == UserStoreConstants.AuthenticatorKeyTokenName);
-            return token?.Value;
-        }
+    private async Task<string> SetAuthenticatorKeyAsync(
+        User user,
+        string key)
+    {
+        await _userAuthenticatorKeyStore.SetAuthenticatorKeyAsync(user, key, default);
+        var token = user.Tokens.SingleOrDefault(v => v.LoginProvider == UserStoreConstants.InternalLoginProvider
+                                                     && v.Name == UserStoreConstants.AuthenticatorKeyTokenName);
+        return token?.Value;
     }
 }

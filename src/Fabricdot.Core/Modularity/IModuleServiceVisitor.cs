@@ -1,11 +1,10 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 
-namespace Fabricdot.Core.Modularity
+namespace Fabricdot.Core.Modularity;
+
+public interface IModuleServiceVisitor
 {
-    public interface IModuleServiceVisitor
-    {
-        void Visit(
-            IModuleCollection modules,
-            IServiceCollection services);
-    }
+    void Visit(
+        IModuleCollection modules,
+        IServiceCollection services);
 }

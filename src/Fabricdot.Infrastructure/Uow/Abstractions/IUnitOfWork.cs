@@ -2,22 +2,21 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Fabricdot.Infrastructure.Uow.Abstractions
+namespace Fabricdot.Infrastructure.Uow.Abstractions;
+
+public interface IUnitOfWork : IUnitOfWorkScope
 {
-    public interface IUnitOfWork : IUnitOfWorkScope
-    {
-        Guid Id { get; }
+    Guid Id { get; }
 
-        bool IsActive { get; }
+    bool IsActive { get; }
 
-        UnitOfWorkOptions Options { get; }
+    UnitOfWorkOptions Options { get; }
 
-        string? ReservationName { get; }
+    string? ReservationName { get; }
 
-        void Reserve(string name);
+    void Reserve(string name);
 
-        void Initialize(UnitOfWorkOptions options);
+    void Initialize(UnitOfWorkOptions options);
 
-        Task CommitChangesAsync(CancellationToken cancellationToken = default);
-    }
+    Task CommitChangesAsync(CancellationToken cancellationToken = default);
 }

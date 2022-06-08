@@ -5,92 +5,91 @@ using Fabricdot.Test.Shared;
 using Microsoft.Extensions.DependencyInjection;
 using Xunit;
 
-namespace Fabricdot.Infrastructure.Tests.Uow
+namespace Fabricdot.Infrastructure.Tests.Uow;
+
+[SuppressMessage("ReSharper", "InconsistentNaming")]
+public class UnitOfWorkManager_Available_Tests : IntegrationTestBase<InfrastructureTestModule>
 {
-    [SuppressMessage("ReSharper", "InconsistentNaming")]
-    public class UnitOfWorkManager_Available_Tests : IntegrationTestBase<InfrastructureTestModule>
+    private readonly IUnitOfWorkManager _unitOfWorkManager;
+
+    public UnitOfWorkManager_Available_Tests()
     {
-        private readonly IUnitOfWorkManager _unitOfWorkManager;
+        var provider = ServiceScope.ServiceProvider;
+        _unitOfWorkManager = provider.GetRequiredService<IUnitOfWorkManager>();
+    }
 
-        public UnitOfWorkManager_Available_Tests()
-        {
-            var provider = ServiceScope.ServiceProvider;
-            _unitOfWorkManager = provider.GetRequiredService<IUnitOfWorkManager>();
-        }
+    [Fact]
+    public void Available_NoExistedUow_ReturnNull()
+    {
+        var availableUow = _unitOfWorkManager.Available;
+        Assert.Null(availableUow);
+    }
 
-        [Fact]
-        public void Available_NoExistedUow_ReturnNull()
+    [Theory]
+    [InlineData(true)]
+    [InlineData(false)]
+    public async Task Available_BeginNestedUow_ReturnCorrectUow(bool requireNew)
+    {
+        IUnitOfWork availableUow;
+        using (var rootUow = _unitOfWorkManager.Begin())
         {
-            var availableUow = _unitOfWorkManager.Available;
-            Assert.Null(availableUow);
-        }
+            availableUow = _unitOfWorkManager.Available;
+            Assert.Same(rootUow, availableUow);
 
-        [Theory]
-        [InlineData(true)]
-        [InlineData(false)]
-        public async Task Available_BeginNestedUow_ReturnCorrectUow(bool requireNew)
-        {
-            IUnitOfWork availableUow;
-            using (var rootUow = _unitOfWorkManager.Begin())
+            using (var nestedUow = _unitOfWorkManager.Begin(requireNew: requireNew))
             {
+                //ignore child unit of work
                 availableUow = _unitOfWorkManager.Available;
-                Assert.Same(rootUow, availableUow);
-
-                using (var nestedUow = _unitOfWorkManager.Begin(requireNew: requireNew))
-                {
-                    //ignore child unit of work
-                    availableUow = _unitOfWorkManager.Available;
-                    if (requireNew)
-                        Assert.Same(nestedUow, availableUow);
-                    else
-                        Assert.Same(rootUow, availableUow);
-                    await nestedUow.CommitChangesAsync();
-                }
-
-                availableUow = _unitOfWorkManager.Available;
-                Assert.Same(rootUow, availableUow);
-                await rootUow.CommitChangesAsync();
-            }
-        }
-
-        [Theory]
-        [InlineData(true)]
-        [InlineData(false)]
-        public async Task Available_CommitChanges_ReturnOuterUow(bool requireNew)
-        {
-            IUnitOfWork availableUow;
-            using (var rootUow = _unitOfWorkManager.Begin())
-            {
-                using (var nestedUow = _unitOfWorkManager.Begin(requireNew: requireNew))
-                {
-                    await nestedUow.CommitChangesAsync();
-                    availableUow = _unitOfWorkManager.Available;
+                if (requireNew)
+                    Assert.Same(nestedUow, availableUow);
+                else
                     Assert.Same(rootUow, availableUow);
-                }
-
-                await rootUow.CommitChangesAsync();
-                availableUow = _unitOfWorkManager.Available;
-                Assert.Null(availableUow);
+                await nestedUow.CommitChangesAsync();
             }
-        }
 
-        [Theory]
-        [InlineData(true)]
-        [InlineData(false)]
-        public async Task Available_DisposeUow_ReturnOuterUow(bool requireNew)
+            availableUow = _unitOfWorkManager.Available;
+            Assert.Same(rootUow, availableUow);
+            await rootUow.CommitChangesAsync();
+        }
+    }
+
+    [Theory]
+    [InlineData(true)]
+    [InlineData(false)]
+    public async Task Available_CommitChanges_ReturnOuterUow(bool requireNew)
+    {
+        IUnitOfWork availableUow;
+        using (var rootUow = _unitOfWorkManager.Begin())
         {
-            IUnitOfWork availableUow;
-            using (var rootUow = _unitOfWorkManager.Begin())
+            using (var nestedUow = _unitOfWorkManager.Begin(requireNew: requireNew))
             {
-                using (var nestedUow = _unitOfWorkManager.Begin(requireNew: requireNew))
-                    await nestedUow.CommitChangesAsync();
+                await nestedUow.CommitChangesAsync();
                 availableUow = _unitOfWorkManager.Available;
                 Assert.Same(rootUow, availableUow);
-
-                await rootUow.CommitChangesAsync();
             }
+
+            await rootUow.CommitChangesAsync();
             availableUow = _unitOfWorkManager.Available;
             Assert.Null(availableUow);
         }
+    }
+
+    [Theory]
+    [InlineData(true)]
+    [InlineData(false)]
+    public async Task Available_DisposeUow_ReturnOuterUow(bool requireNew)
+    {
+        IUnitOfWork availableUow;
+        using (var rootUow = _unitOfWorkManager.Begin())
+        {
+            using (var nestedUow = _unitOfWorkManager.Begin(requireNew: requireNew))
+                await nestedUow.CommitChangesAsync();
+            availableUow = _unitOfWorkManager.Available;
+            Assert.Same(rootUow, availableUow);
+
+            await rootUow.CommitChangesAsync();
+        }
+        availableUow = _unitOfWorkManager.Available;
+        Assert.Null(availableUow);
     }
 }

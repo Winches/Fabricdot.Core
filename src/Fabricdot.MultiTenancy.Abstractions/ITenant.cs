@@ -1,10 +1,10 @@
 ﻿using System;
 
-namespace Fabricdot.MultiTenancy.Abstractions
+namespace Fabricdot.MultiTenancy.Abstractions;
+
+public interface ITenant
 {
-    public interface ITenant
-    {
-        Guid Id { get; }
-        string Name { get; }
-    }
+    Guid Id { get; }
+
+    string Name { get; }
 }

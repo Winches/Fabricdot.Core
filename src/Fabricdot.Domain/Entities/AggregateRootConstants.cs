@@ -1,7 +1,6 @@
-﻿namespace Fabricdot.Domain.Entities
+﻿namespace Fabricdot.Domain.Entities;
+
+public static class AggregateRootConstants
 {
-    public static class AggregateRootConstants
-    {
-        public const int ConcurrencyStampLength = 40;
-    }
+    public const int ConcurrencyStampLength = 40;
 }

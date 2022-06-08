@@ -2,14 +2,13 @@
 using Fabricdot.Core.Modularity;
 using Fabricdot.Domain.DependencyInjection;
 
-namespace Fabricdot.Domain
+namespace Fabricdot.Domain;
+
+[Exports]
+public class FabricdotDomainModule : ModuleBase, IPreConfigureService
 {
-    [Exports]
-    public class FabricdotDomainModule : ModuleBase, IPreConfigureService
+    public void PreConfigureServices(ConfigureServiceContext context)
     {
-        public void PreConfigureServices(ConfigureServiceContext context)
-        {
-            context.Services.AddDependencyRegistrar<DomainDependencyRegistrar>();
-        }
+        context.Services.AddDependencyRegistrar<DomainDependencyRegistrar>();
     }
 }

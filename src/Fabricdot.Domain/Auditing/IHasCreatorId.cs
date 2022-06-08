@@ -1,7 +1,6 @@
-﻿namespace Fabricdot.Domain.Auditing
+﻿namespace Fabricdot.Domain.Auditing;
+
+public interface IHasCreatorId
 {
-    public interface IHasCreatorId
-    {
-        string? CreatorId { get; }
-    }
+    string? CreatorId { get; }
 }

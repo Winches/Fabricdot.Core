@@ -1,17 +1,16 @@
-﻿namespace Fabricdot.Domain.Auditing
+﻿namespace Fabricdot.Domain.Auditing;
+
+public class EntityChangeInfo
 {
-    public class EntityChangeInfo
+    public object Entity { get; }
+
+    public EntityStatus Status { get; }
+
+    public EntityChangeInfo(
+        object entity,
+        EntityStatus status)
     {
-        public object Entity { get; }
-
-        public EntityStatus Status { get; }
-
-        public EntityChangeInfo(
-            object entity,
-            EntityStatus status)
-        {
-            Entity = entity;
-            Status = status;
-        }
+        Entity = entity;
+        Status = status;
     }
 }

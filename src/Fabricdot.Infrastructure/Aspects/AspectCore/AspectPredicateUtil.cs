@@ -3,68 +3,67 @@ using Ardalis.GuardClauses;
 using AspectCore.Configuration;
 using Fabricdot.Infrastructure.Aspects.AspectCore.Configuration;
 
-namespace Fabricdot.Infrastructure.Aspects.AspectCore
+namespace Fabricdot.Infrastructure.Aspects.AspectCore;
+
+public static class AspectPredicateUtil
 {
-    public static class AspectPredicateUtil
+    private static readonly AspectPredicate _nonPredicate = _ => false;
+
+    public static AspectPredicate IsDefined<TAttribute>(bool inherit) where TAttribute : Attribute =>
+        IsDefined(typeof(TAttribute), inherit);
+
+    public static AspectPredicate IsDefined(Type attributeType, bool inherit)
     {
-        private static readonly AspectPredicate _nonPredicate = _ => false;
+        Guard.Against.Null(attributeType, nameof(attributeType));
+        if (!attributeType.IsAssignableTo(typeof(Attribute)))
+            throw new ArgumentException("The target type must be an attribute.");
 
-        public static AspectPredicate IsDefined<TAttribute>(bool inherit) where TAttribute : Attribute =>
-            IsDefined(typeof(TAttribute), inherit);
-
-        public static AspectPredicate IsDefined(Type attributeType, bool inherit)
+        return method =>
         {
-            Guard.Against.Null(attributeType, nameof(attributeType));
-            if (!attributeType.IsAssignableTo(typeof(Attribute)))
-                throw new ArgumentException("The target type must be an attribute.");
+            var declaringType = method.DeclaringType;
+            if (declaringType is not null && declaringType.IsDefined(attributeType, inherit))
+                return true;
 
-            return method =>
-            {
-                var declaringType = method.DeclaringType;
-                if (declaringType is not null && declaringType.IsDefined(attributeType, inherit))
-                    return true;
+            return method.IsDefined(attributeType, inherit);
+        };
+    }
 
-                return method.IsDefined(attributeType, inherit);
-            };
-        }
+    public static AspectPredicate IsAssignableTo(Type targetType)
+    {
+        Guard.Against.Null(targetType, nameof(targetType));
+        if (!targetType.IsClass && !targetType.IsInterface)
+            throw new ArgumentException("The target type must be class or interface.");
+        if (targetType.IsSealed)
+            throw new ArgumentException("The target type is not allowed to be sealed.");
 
-        public static AspectPredicate IsAssignableTo(Type targetType)
+        return method =>
         {
-            Guard.Against.Null(targetType, nameof(targetType));
-            if (!targetType.IsClass && !targetType.IsInterface)
-                throw new ArgumentException("The target type must be class or interface.");
-            if (targetType.IsSealed)
-                throw new ArgumentException("The target type is not allowed to be sealed.");
+            var declaringType = method.DeclaringType;
+            return declaringType is not null
+                   && (declaringType.IsAssignableTo(targetType)
+                       || declaringType.IsAssignableToGenericType(targetType));
+        };
+    }
 
-            return method =>
-            {
-                var declaringType = method.DeclaringType;
-                return declaringType is not null
-                       && (declaringType.IsAssignableTo(targetType)
-                           || declaringType.IsAssignableToGenericType(targetType));
-            };
-        }
+    public static AspectPredicate CreatePredicate(InterceptorDescriptor interceptorDescriptor)
+    {
+        //var predicate = IsDefined<DisableAspectAttribute>(true)
+        //    .Not();
 
-        public static AspectPredicate CreatePredicate(InterceptorDescriptor interceptorDescriptor)
-        {
-            //var predicate = IsDefined<DisableAspectAttribute>(true)
-            //    .Not();
+        //if (interceptorDescriptor.TargetType == null && interceptorDescriptor.BindingType == null)
+        //    return predicate;
 
-            //if (interceptorDescriptor.TargetType == null && interceptorDescriptor.BindingType == null)
-            //    return predicate;
+        var targetPredicate = interceptorDescriptor.TargetType != null
+            ? IsAssignableTo(interceptorDescriptor.TargetType)
+            : _nonPredicate;
+        var attributePredicate = interceptorDescriptor.BindingType != null
+            ? IsDefined(
+                interceptorDescriptor.BindingType,
+                true)
+            : _nonPredicate;
 
-            var targetPredicate = interceptorDescriptor.TargetType != null
-                ? IsAssignableTo(interceptorDescriptor.TargetType)
-                : _nonPredicate;
-            var attributePredicate = interceptorDescriptor.BindingType != null
-                ? IsDefined(
-                    interceptorDescriptor.BindingType,
-                    true)
-                : _nonPredicate;
+        //return predicate.And(targetPredicate.Or(attributePredicate));
 
-            //return predicate.And(targetPredicate.Or(attributePredicate));
-
-            return targetPredicate.Or(attributePredicate);
-        }
+        return targetPredicate.Or(attributePredicate);
     }
 }

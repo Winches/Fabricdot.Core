@@ -1,48 +1,47 @@
 ﻿using System;
 using System.Data;
 
-namespace Fabricdot.Infrastructure.Data
+namespace Fabricdot.Infrastructure.Data;
+
+public abstract class SqlConnectionFactory : ISqlConnectionFactory, IDisposable
 {
-    public abstract class SqlConnectionFactory : ISqlConnectionFactory, IDisposable
+    private readonly string _connectionString;
+    private IDbConnection? _connection;
+
+    public SqlConnectionFactory(string connectionString)
     {
-        private readonly string _connectionString;
-        private IDbConnection? _connection;
+        _connectionString = connectionString;
+    }
 
-        public SqlConnectionFactory(string connectionString)
+    /// <inheritdoc />
+    ~SqlConnectionFactory()
+    {
+        Dispose(false);
+    }
+
+    public IDbConnection GetOpenConnection()
+    {
+        if (_connection == null || _connection.State != ConnectionState.Open)
         {
-            _connectionString = connectionString;
+            _connection = CreateConnection(_connectionString);
+            _connection.Open();
         }
 
-        /// <inheritdoc />
-        ~SqlConnectionFactory()
-        {
-            Dispose(false);
-        }
+        return _connection;
+    }
 
-        public IDbConnection GetOpenConnection()
-        {
-            if (_connection == null || _connection.State != ConnectionState.Open)
-            {
-                _connection = CreateConnection(_connectionString);
-                _connection.Open();
-            }
+    /// <inheritdoc />
+    public void Dispose()
+    {
+        Dispose(true);
+        GC.SuppressFinalize(this);
+    }
 
-            return _connection;
-        }
+    protected abstract IDbConnection CreateConnection(string connectionString);
 
-        /// <inheritdoc />
-        public void Dispose()
-        {
-            Dispose(true);
-            GC.SuppressFinalize(this);
-        }
-
-        protected abstract IDbConnection CreateConnection(string connectionString);
-
-        protected virtual void Dispose(bool disposing)
-        {
-            if (disposing && _connection?.State == ConnectionState.Open)
-                _connection.Dispose();
-        }
+    protected virtual void Dispose(bool disposing)
+    {
+        if (disposing && _connection?.State == ConnectionState.Open)
+            _connection.Dispose();
     }
 }

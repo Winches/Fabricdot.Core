@@ -1,9 +1,8 @@
 ﻿using System;
 
-namespace Fabricdot.Core.Modularity
+namespace Fabricdot.Core.Modularity;
+
+public interface IModuleLoader
 {
-    public interface IModuleLoader
-    {
-        IModuleCollection LoadModules(Type startupModuleType);
-    }
+    IModuleCollection LoadModules(Type startupModuleType);
 }

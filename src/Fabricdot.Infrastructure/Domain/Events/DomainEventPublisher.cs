@@ -7,29 +7,28 @@ using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
-namespace Fabricdot.Infrastructure.Domain.Events
+namespace Fabricdot.Infrastructure.Domain.Events;
+
+[Dependency(ServiceLifetime.Scoped)]
+internal class DomainEventPublisher : IDomainEventPublisher
 {
-    [Dependency(ServiceLifetime.Scoped)]
-    internal class DomainEventPublisher : IDomainEventPublisher
+    private readonly ILogger<DomainEventPublisher> _logger;
+    private readonly IPublisher _publisher;
+
+    public DomainEventPublisher(
+        ILogger<DomainEventPublisher> logger,
+        IPublisher publisher)
     {
-        private readonly ILogger<DomainEventPublisher> _logger;
-        private readonly IPublisher _publisher;
+        _logger = logger;
+        _publisher = publisher;
+    }
 
-        public DomainEventPublisher(
-            ILogger<DomainEventPublisher> logger,
-            IPublisher publisher)
-        {
-            _logger = logger;
-            _publisher = publisher;
-        }
-
-        public async Task PublishAsync(
-            IDomainEvent @event,
-            CancellationToken cancellationToken = default)
-        {
-            _logger.LogDebug("Publish domain event:{EventName}", @event.GetType().PrettyPrint());
-            var notification = new DomainEventNotification(@event);
-            await _publisher.Publish(notification, cancellationToken);
-        }
+    public async Task PublishAsync(
+        IDomainEvent @event,
+        CancellationToken cancellationToken = default)
+    {
+        _logger.LogDebug("Publish domain event:{EventName}", @event.GetType().PrettyPrint());
+        var notification = new DomainEventNotification(@event);
+        await _publisher.Publish(notification, cancellationToken);
     }
 }

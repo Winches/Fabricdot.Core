@@ -6,90 +6,89 @@ using Fabricdot.Infrastructure.EntityFrameworkCore.Tests.Data;
 using Microsoft.AspNetCore.Identity;
 using Xunit;
 
-namespace Fabricdot.Identity.Tests.Domain.Stores
+namespace Fabricdot.Identity.Tests.Domain.Stores;
+
+public class UserAuthenticationTokenStoreTests : UserStoreTestBase
 {
-    public class UserAuthenticationTokenStoreTests : UserStoreTestBase
+    private readonly IUserAuthenticationTokenStore<User> _userAuthenticationTokenStore;
+
+    public UserAuthenticationTokenStoreTests()
     {
-        private readonly IUserAuthenticationTokenStore<User> _userAuthenticationTokenStore;
+        _userAuthenticationTokenStore = (IUserAuthenticationTokenStore<User>)UserStore;
+    }
 
-        public UserAuthenticationTokenStoreTests()
+    [Fact]
+    public async Task SetTokenAsync_GivenNewToken_AddToken()
+    {
+        await UseUowAsync(async () =>
         {
-            _userAuthenticationTokenStore = (IUserAuthenticationTokenStore<User>)UserStore;
-        }
+            var user = await UserRepository.GetDetailsByIdAsync(FakeDataBuilder.UserAndersId);
+            const string loginProvider = "NewProvider";
+            const string tokenName = "name1";
+            await _userAuthenticationTokenStore.SetTokenAsync(
+                user,
+                loginProvider,
+                tokenName,
+                "1",
+                default);
 
-        [Fact]
-        public async Task SetTokenAsync_GivenNewToken_AddToken()
+            Assert.NotNull(user.FindToken(loginProvider, tokenName));
+        });
+    }
+
+    [Fact]
+    public async Task SetTokenAsync_GivenExistedToken_UpdateToken()
+    {
+        await UseUowAsync(async () =>
         {
-            await UseUowAsync(async () =>
-            {
-                var user = await UserRepository.GetDetailsByIdAsync(FakeDataBuilder.UserAndersId);
-                const string loginProvider = "NewProvider";
-                const string tokenName = "name1";
-                await _userAuthenticationTokenStore.SetTokenAsync(
-                    user,
-                    loginProvider,
-                    tokenName,
-                    "1",
-                    default);
+            var user = await UserRepository.GetDetailsByIdAsync(FakeDataBuilder.UserAndersId);
+            var token = user.Tokens.First();
+            var tokenValue = Guid.NewGuid().ToString("N");
+            await _userAuthenticationTokenStore.SetTokenAsync(
+                user,
+                token.LoginProvider,
+                token.Name,
+                tokenValue,
+                default);
+            token = user.FindToken(token.LoginProvider, token.Name);
 
-                Assert.NotNull(user.FindToken(loginProvider, tokenName));
-            });
-        }
+            Assert.NotNull(token);
+            Assert.Equal(tokenValue, token.Value);
+        });
+    }
 
-        [Fact]
-        public async Task SetTokenAsync_GivenExistedToken_UpdateToken()
+    [Fact]
+    public async Task RemoveTokenAsync_GivenToken_Correctly()
+    {
+        await UseUowAsync(async () =>
         {
-            await UseUowAsync(async () =>
-            {
-                var user = await UserRepository.GetDetailsByIdAsync(FakeDataBuilder.UserAndersId);
-                var token = user.Tokens.First();
-                var tokenValue = Guid.NewGuid().ToString("N");
-                await _userAuthenticationTokenStore.SetTokenAsync(
-                    user,
-                    token.LoginProvider,
-                    token.Name,
-                    tokenValue,
-                    default);
-                token = user.FindToken(token.LoginProvider, token.Name);
+            var user = await UserRepository.GetDetailsByIdAsync(FakeDataBuilder.UserAndersId);
+            var token = user.Tokens.First();
+            await _userAuthenticationTokenStore.RemoveTokenAsync(
+                user,
+                token.LoginProvider,
+                token.Name,
+                default);
+            var removedToken = user.FindToken(token.LoginProvider, token.Name);
 
-                Assert.NotNull(token);
-                Assert.Equal(tokenValue, token.Value);
-            });
-        }
+            Assert.Null(removedToken);
+        });
+    }
 
-        [Fact]
-        public async Task RemoveTokenAsync_GivenToken_Correctly()
+    [Fact]
+    public async Task GetTokenAsync_ReturnCorrectly()
+    {
+        await UseUowAsync(async () =>
         {
-            await UseUowAsync(async () =>
-            {
-                var user = await UserRepository.GetDetailsByIdAsync(FakeDataBuilder.UserAndersId);
-                var token = user.Tokens.First();
-                await _userAuthenticationTokenStore.RemoveTokenAsync(
-                    user,
-                    token.LoginProvider,
-                    token.Name,
-                    default);
-                var removedToken = user.FindToken(token.LoginProvider, token.Name);
+            var user = await UserRepository.GetDetailsByIdAsync(FakeDataBuilder.UserAndersId);
+            var token = user.Tokens.First();
+            var tokenValue = await _userAuthenticationTokenStore.GetTokenAsync(
+                user,
+                token.LoginProvider,
+                token.Name,
+                default);
 
-                Assert.Null(removedToken);
-            });
-        }
-
-        [Fact]
-        public async Task GetTokenAsync_ReturnCorrectly()
-        {
-            await UseUowAsync(async () =>
-            {
-                var user = await UserRepository.GetDetailsByIdAsync(FakeDataBuilder.UserAndersId);
-                var token = user.Tokens.First();
-                var tokenValue = await _userAuthenticationTokenStore.GetTokenAsync(
-                    user,
-                    token.LoginProvider,
-                    token.Name,
-                    default);
-
-                Assert.Equal(token.Value, tokenValue);
-            });
-        }
+            Assert.Equal(token.Value, tokenValue);
+        });
     }
 }

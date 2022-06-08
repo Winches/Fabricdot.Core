@@ -1,9 +1,8 @@
 ﻿using System.Threading.Tasks;
 
-namespace Fabricdot.Core.Boot
+namespace Fabricdot.Core.Boot;
+
+public interface IApplicationStarting
 {
-    public interface IApplicationStarting
-    {
-        Task OnStartingAsync(ApplicationStartingContext context);
-    }
+    Task OnStartingAsync(ApplicationStartingContext context);
 }

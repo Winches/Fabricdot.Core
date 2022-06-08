@@ -6,32 +6,31 @@ using Fabricdot.WebApi.Endpoint;
 using MediatR;
 using Microsoft.Extensions.Options;
 
-namespace Fabricdot.WebApi.ExceptionHanding
+namespace Fabricdot.WebApi.ExceptionHanding;
+
+public class GetErrorResponseRequestHandler : IRequestHandler<GetErrorResponseRequest, ErrorResponse>
 {
-    public class GetErrorResponseRequestHandler : IRequestHandler<GetErrorResponseRequest, ErrorResponse>
+    private readonly ResponseOptions _options;
+
+    public GetErrorResponseRequestHandler(IOptions<ResponseOptions> options)
     {
-        private readonly ResponseOptions _options;
+        _options = options.Value;
+    }
 
-        public GetErrorResponseRequestHandler(IOptions<ResponseOptions> options)
+    public Task<ErrorResponse> Handle(GetErrorResponseRequest request, CancellationToken cancellationToken)
+    {
+        var exception = request.Exception;
+        var ret = new ErrorResponse(exception.Message, _options.DefaultErrorCode);
+
+        if (exception is IHasErrorCode hasErrorCode)
+            ret.Code = hasErrorCode.Code;
+
+        if (exception is IHasNotification hasNotification)
         {
-            _options = options.Value;
+            ret.Data = hasNotification.Notification.Errors;
+            ret.Code = _options.ValidationErrorCode;
         }
 
-        public Task<ErrorResponse> Handle(GetErrorResponseRequest request, CancellationToken cancellationToken)
-        {
-            var exception = request.Exception;
-            var ret = new ErrorResponse(exception.Message, _options.DefaultErrorCode);
-
-            if (exception is IHasErrorCode hasErrorCode)
-                ret.Code = hasErrorCode.Code;
-
-            if (exception is IHasNotification hasNotification)
-            {
-                ret.Data = hasNotification.Notification.Errors;
-                ret.Code = _options.ValidationErrorCode;
-            }
-
-            return Task.FromResult(ret);
-        }
+        return Task.FromResult(ret);
     }
 }

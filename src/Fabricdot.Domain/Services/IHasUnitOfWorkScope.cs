@@ -1,6 +1,5 @@
-﻿namespace Fabricdot.Domain.Services
+﻿namespace Fabricdot.Domain.Services;
+
+public interface IHasUnitOfWorkScope
 {
-    public interface IHasUnitOfWorkScope
-    {
-    }
 }

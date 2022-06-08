@@ -1,9 +1,8 @@
 using System.Collections.Generic;
 
-namespace Fabricdot.Core.Modularity
+namespace Fabricdot.Core.Modularity;
+
+public interface IModuleCollection : IList<IModuleMetadata>
 {
-    public interface IModuleCollection : IList<IModuleMetadata>
-    {
-        void Build();
-    }
+    void Build();
 }

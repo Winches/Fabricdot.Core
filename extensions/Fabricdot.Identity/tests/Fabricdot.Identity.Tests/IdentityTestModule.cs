@@ -14,48 +14,47 @@ using Microsoft.EntityFrameworkCore.Storage;
 using Microsoft.Extensions.DependencyInjection;
 using Moq;
 
-namespace Fabricdot.Identity.Tests
+namespace Fabricdot.Identity.Tests;
+
+[Requires(typeof(FabricdotIdentityModule))]
+[Exports]
+public class IdentityTestModule : ModuleBase
 {
-    [Requires(typeof(FabricdotIdentityModule))]
-    [Exports]
-    public class IdentityTestModule : ModuleBase
+    public override void ConfigureServices(ConfigureServiceContext context)
     {
-        public override void ConfigureServices(ConfigureServiceContext context)
+        var services = context.Services;
+        const string connectionString = "Filename=:memory:";
+        services.Configure<DbConnectionOptions>(options =>
         {
-            var services = context.Services;
-            const string connectionString = "Filename=:memory:";
-            services.Configure<DbConnectionOptions>(options =>
-            {
-                options.ConnectionStrings.Default = connectionString;
-            });
-            var dbconnection = CreateInMemoryDatabase(connectionString);
-            services.AddEfDbContext<FakeDbContext>((_, opts) =>
-            {
-                opts.UseSqlite(dbconnection);
-                opts.LogTo(v => Debug.Print(v))
-                    .EnableSensitiveDataLogging();
-            });
+            options.ConnectionStrings.Default = connectionString;
+        });
+        var dbconnection = CreateInMemoryDatabase(connectionString);
+        services.AddEfDbContext<FakeDbContext>((_, opts) =>
+        {
+            opts.UseSqlite(dbconnection);
+            opts.LogTo(v => Debug.Print(v))
+                .EnableSensitiveDataLogging();
+        });
 
-            services.AddIdentity<User, Role>()
-                    .AddRepositories<FakeDbContext>()
-                    .AddDefaultClaimsPrincipalFactory()
-                    .AddDefaultTokenProviders();
+        services.AddIdentity<User, Role>()
+                .AddRepositories<FakeDbContext>()
+                .AddDefaultClaimsPrincipalFactory()
+                .AddDefaultTokenProviders();
 
-            var mockCurrentTenant = new Mock<ICurrentTenant>();
-            mockCurrentTenant.Setup(v => v.Id).Returns((Guid?)null);
-            services.AddSingleton(mockCurrentTenant.Object);
+        var mockCurrentTenant = new Mock<ICurrentTenant>();
+        mockCurrentTenant.Setup(v => v.Id).Returns((Guid?)null);
+        services.AddSingleton(mockCurrentTenant.Object);
+    }
+
+    private static DbConnection CreateInMemoryDatabase(string connectionString)
+    {
+        var connection = new SqliteConnection(connectionString);
+        connection.Open();
+        using (var db = new FakeDbContext(new DbContextOptionsBuilder<FakeDbContext>().UseSqlite(connection).Options))
+        {
+            db.Database.GetService<IRelationalDatabaseCreator>().CreateTables();
         }
 
-        private static DbConnection CreateInMemoryDatabase(string connectionString)
-        {
-            var connection = new SqliteConnection(connectionString);
-            connection.Open();
-            using (var db = new FakeDbContext(new DbContextOptionsBuilder<FakeDbContext>().UseSqlite(connection).Options))
-            {
-                db.Database.GetService<IRelationalDatabaseCreator>().CreateTables();
-            }
-
-            return connection;
-        }
+        return connection;
     }
 }

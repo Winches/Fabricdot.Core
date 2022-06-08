@@ -1,23 +1,22 @@
 ﻿using System.Security.Claims;
 
-namespace Fabricdot.Infrastructure.Security
+namespace Fabricdot.Infrastructure.Security;
+
+public interface ICurrentUser
 {
-    public interface ICurrentUser
-    {
-        bool IsAuthenticated { get; }
+    bool IsAuthenticated { get; }
 
-        string? Id { get; }
+    string? Id { get; }
 
-        string? UserName { get; }
+    string? UserName { get; }
 
-        string[] Roles { get; }
+    string[] Roles { get; }
 
-        Claim? FindClaim(string claimType);
+    Claim? FindClaim(string claimType);
 
-        Claim[] FindClaims(string claimType);
+    Claim[] FindClaims(string claimType);
 
-        Claim[] GetAllClaims();
+    Claim[] GetAllClaims();
 
-        bool IsInRole(string roleName);
-    }
+    bool IsInRole(string roleName);
 }

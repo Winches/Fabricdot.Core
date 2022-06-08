@@ -1,7 +1,6 @@
-﻿namespace Fabricdot.Domain.Entities
+﻿namespace Fabricdot.Domain.Entities;
+
+public interface IEntity<out TKey>
 {
-    public interface IEntity<out TKey>
-    {
-        TKey Id { get; }
-    }
+    TKey Id { get; }
 }

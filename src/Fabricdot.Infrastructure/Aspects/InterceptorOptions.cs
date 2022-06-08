@@ -1,20 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Fabricdot.Infrastructure.Aspects
+namespace Fabricdot.Infrastructure.Aspects;
+
+public class InterceptorOptions : IInterceptorOptions
 {
-    public class InterceptorOptions : IInterceptorOptions
+    /// <inheritdoc />
+    public InterceptorCollection Interceptors { get; }
+
+    /// <inheritdoc />
+    public List<Type> ExcludeTargets { get; }
+
+    public InterceptorOptions()
     {
-        /// <inheritdoc />
-        public InterceptorCollection Interceptors { get; }
-
-        /// <inheritdoc />
-        public List<Type> ExcludeTargets { get; }
-
-        public InterceptorOptions()
-        {
-            Interceptors = new InterceptorCollection();
-            ExcludeTargets = new List<Type>();
-        }
+        Interceptors = new InterceptorCollection();
+        ExcludeTargets = new List<Type>();
     }
 }

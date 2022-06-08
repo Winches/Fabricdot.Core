@@ -1,9 +1,8 @@
 ﻿using System.Threading.Tasks;
 
-namespace Fabricdot.Infrastructure.Security
+namespace Fabricdot.Infrastructure.Security;
+
+public interface ITokenClaimsService
 {
-    public interface ITokenClaimsService
-    {
-        Task<string> GetTokenAsync(string userName);
-    }
+    Task<string> GetTokenAsync(string userName);
 }

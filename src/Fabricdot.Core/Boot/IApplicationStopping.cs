@@ -1,9 +1,8 @@
 ﻿using System.Threading.Tasks;
 
-namespace Fabricdot.Core.Boot
+namespace Fabricdot.Core.Boot;
+
+public interface IApplicationStopping
 {
-    public interface IApplicationStopping
-    {
-        Task OnStoppingAsync(ApplicationStoppingContext context);
-    }
+    Task OnStoppingAsync(ApplicationStoppingContext context);
 }

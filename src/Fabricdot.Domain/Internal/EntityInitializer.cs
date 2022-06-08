@@ -1,21 +1,20 @@
 ﻿using System.Collections.Generic;
 
-namespace Fabricdot.Domain.Internal
+namespace Fabricdot.Domain.Internal;
+
+public class EntityInitializer
 {
-    public class EntityInitializer
+    public static readonly EntityInitializer Instance = new();
+
+    public HashSet<IEntityInitializer> Initializers { get; } = new HashSet<IEntityInitializer>();
+
+    public void Initialize(object entity)
     {
-        public static readonly EntityInitializer Instance = new();
+        Initializers.ForEach(v => v.Initialize(entity));
+    }
 
-        public HashSet<IEntityInitializer> Initializers { get; } = new HashSet<IEntityInitializer>();
-
-        public void Initialize(object entity)
-        {
-            Initializers.ForEach(v => v.Initialize(entity));
-        }
-
-        public void Add<T>() where T : IEntityInitializer, new()
-        {
-            Initializers.Add(new T());
-        }
+    public void Add<T>() where T : IEntityInitializer, new()
+    {
+        Initializers.Add(new T());
     }
 }

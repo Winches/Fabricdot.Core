@@ -1,6 +1,5 @@
-﻿namespace Fabricdot.Core.Modularity
+﻿namespace Fabricdot.Core.Modularity;
+
+public interface IModule
 {
-    public interface IModule
-    {
-    }
 }

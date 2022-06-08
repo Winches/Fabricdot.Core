@@ -5,30 +5,29 @@ using Fabricdot.WebApi.Validation;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Fabricdot.WebApi.Filters
+namespace Fabricdot.WebApi.Filters;
+
+[ServiceContract(typeof(ValidationActionFilter))]
+[Dependency(ServiceLifetime.Scoped)]
+public class ValidationActionFilter : IAsyncActionFilter
 {
-    [ServiceContract(typeof(ValidationActionFilter))]
-    [Dependency(ServiceLifetime.Scoped)]
-    public class ValidationActionFilter : IAsyncActionFilter
+    private readonly IModelStateValidator _validator;
+
+    public ValidationActionFilter(IModelStateValidator validator)
     {
-        private readonly IModelStateValidator _validator;
+        _validator = validator;
+    }
 
-        public ValidationActionFilter(IModelStateValidator validator)
+    public async Task OnActionExecutionAsync(ActionExecutingContext context, ActionExecutionDelegate next)
+    {
+        if (!context.ActionDescriptor.IsControllerAction() ||
+            !context.ActionDescriptor.HasObjectResult())
         {
-            _validator = validator;
-        }
-
-        public async Task OnActionExecutionAsync(ActionExecutingContext context, ActionExecutionDelegate next)
-        {
-            if (!context.ActionDescriptor.IsControllerAction() ||
-                !context.ActionDescriptor.HasObjectResult())
-            {
-                await next();
-                return;
-            }
-
-            _validator.Validate(context.ModelState);
             await next();
+            return;
         }
+
+        _validator.Validate(context.ModelState);
+        await next();
     }
 }

@@ -9,36 +9,35 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;
 using Xunit;
 
-namespace Fabricdot.Identity.Tests
+namespace Fabricdot.Identity.Tests;
+
+public class DefaultUserClaimsPrincipalFactory_MultiTenancy_Tests : IdentityTestBase
 {
-    public class DefaultUserClaimsPrincipalFactory_MultiTenancy_Tests : IdentityTestBase
+    private readonly IUserClaimsPrincipalFactory<User> _factory;
+    private readonly IUserStore<User> _userStore;
+    private readonly IDataFilter _dataFilter;
+
+    public DefaultUserClaimsPrincipalFactory_MultiTenancy_Tests()
     {
-        private readonly IUserClaimsPrincipalFactory<User> _factory;
-        private readonly IUserStore<User> _userStore;
-        private readonly IDataFilter _dataFilter;
+        _factory = ServiceProvider.GetRequiredService<IUserClaimsPrincipalFactory<User>>();
+        _userStore = ServiceProvider.GetRequiredService<IUserStore<User>>();
+        _dataFilter = ServiceProvider.GetRequiredService<IDataFilter>();
+    }
 
-        public DefaultUserClaimsPrincipalFactory_MultiTenancy_Tests()
+    [Fact]
+    public async Task CreateAsync_WithMultiTenancy_SetTenantId()
+    {
+        using var scope = _dataFilter.Disable<IMultiTenant>();
+        await UseUowAsync(async () =>
         {
-            _factory = ServiceProvider.GetRequiredService<IUserClaimsPrincipalFactory<User>>();
-            _userStore = ServiceProvider.GetRequiredService<IUserStore<User>>();
-            _dataFilter = ServiceProvider.GetRequiredService<IDataFilter>();
-        }
+            var userId = FakeDataBuilder.TenantUserId.ToString();
+            var user = await _userStore.FindByIdAsync(userId, default);
+            var claimsPrincipal = await _factory.CreateAsync(user);
 
-        [Fact]
-        public async Task CreateAsync_WithMultiTenancy_SetTenantId()
-        {
-            using var scope = _dataFilter.Disable<IMultiTenant>();
-            await UseUowAsync(async () =>
-            {
-                var userId = FakeDataBuilder.TenantUserId.ToString();
-                var user = await _userStore.FindByIdAsync(userId, default);
-                var claimsPrincipal = await _factory.CreateAsync(user);
+            var tenantId = claimsPrincipal.FindFirstValue(TenantClaimTypes.TenantId);
 
-                var tenantId = claimsPrincipal.FindFirstValue(TenantClaimTypes.TenantId);
-
-                Assert.NotNull(claimsPrincipal);
-                Assert.Equal(user.TenantId.ToString(), tenantId);
-            });
-        }
+            Assert.NotNull(claimsPrincipal);
+            Assert.Equal(user.TenantId.ToString(), tenantId);
+        });
     }
 }

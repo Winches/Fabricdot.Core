@@ -1,12 +1,11 @@
 ﻿using System;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Fabricdot.Core.DependencyInjection
+namespace Fabricdot.Core.DependencyInjection;
+
+public interface IDependencyRegistrar
 {
-    public interface IDependencyRegistrar
-    {
-        void Register(
-            IServiceCollection services,
-            Type implementationType);
-    }
+    void Register(
+        IServiceCollection services,
+        Type implementationType);
 }

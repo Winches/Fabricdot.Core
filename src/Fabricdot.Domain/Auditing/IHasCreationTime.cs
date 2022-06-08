@@ -1,9 +1,8 @@
 ﻿using System;
 
-namespace Fabricdot.Domain.Auditing
+namespace Fabricdot.Domain.Auditing;
+
+public interface IHasCreationTime
 {
-    public interface IHasCreationTime
-    {
-        DateTime CreationTime { get; }
-    }
+    DateTime CreationTime { get; }
 }

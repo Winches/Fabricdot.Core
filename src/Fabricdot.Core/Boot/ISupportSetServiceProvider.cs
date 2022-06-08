@@ -1,11 +1,10 @@
 ﻿using System;
 
-namespace Fabricdot.Core.Boot
-{
-    public interface ISupportSetServiceProvider
-    {
-        IServiceProvider Services { get; }
+namespace Fabricdot.Core.Boot;
 
-        void SetServiceProvider(IServiceProvider serviceProvider);
-    }
+public interface ISupportSetServiceProvider
+{
+    IServiceProvider Services { get; }
+
+    void SetServiceProvider(IServiceProvider serviceProvider);
 }

@@ -9,56 +9,55 @@ using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
-namespace Fabricdot.WebApi.ExceptionHanding
+namespace Fabricdot.WebApi.ExceptionHanding;
+
+[ServiceContract(typeof(ExceptionHandlingFilter))]
+[Dependency(ServiceLifetime.Scoped)]
+public class ExceptionHandlingFilter : IAsyncExceptionFilter
 {
-    [ServiceContract(typeof(ExceptionHandlingFilter))]
-    [Dependency(ServiceLifetime.Scoped)]
-    public class ExceptionHandlingFilter : IAsyncExceptionFilter
+    private readonly ILogger<ExceptionHandlingFilter> _logger;
+    private readonly IMediator _mediator;
+
+    public ExceptionHandlingFilter(
+        ILogger<ExceptionHandlingFilter> logger,
+        IMediator mediator)
     {
-        private readonly ILogger<ExceptionHandlingFilter> _logger;
-        private readonly IMediator _mediator;
+        _logger = logger;
+        _mediator = mediator;
+    }
 
-        public ExceptionHandlingFilter(
-            ILogger<ExceptionHandlingFilter> logger,
-            IMediator mediator)
+    public async Task OnExceptionAsync(ExceptionContext context)
+    {
+        if (!ShouldHandleException(context))
+            return;
+
+        await HandleException(context);
+    }
+
+    protected virtual bool ShouldHandleException(ExceptionContext context)
+    {
+        return context.ActionDescriptor switch
         {
-            _logger = logger;
-            _mediator = mediator;
+            ControllerActionDescriptor _ => true,
+            _ => false
+        };
+    }
+
+    protected virtual async Task HandleException(ExceptionContext context)
+    {
+        var exception = context.Exception;
+        try
+        {
+            var res = await _mediator.Send(new GetErrorResponseRequest(exception));
+            context.Result = new ObjectResult(res);
+            await _mediator.NotifyExceptionAsync(exception);
+            context.ExceptionHandled = true;
         }
-
-        public async Task OnExceptionAsync(ExceptionContext context)
+        catch (Exception ex)
         {
-            if (!ShouldHandleException(context))
-                return;
-
-            await HandleException(context);
-        }
-
-        protected virtual bool ShouldHandleException(ExceptionContext context)
-        {
-            return context.ActionDescriptor switch
-            {
-                ControllerActionDescriptor _ => true,
-                _ => false
-            };
-        }
-
-        protected virtual async Task HandleException(ExceptionContext context)
-        {
-            var exception = context.Exception;
-            try
-            {
-                var res = await _mediator.Send(new GetErrorResponseRequest(exception));
-                context.Result = new ObjectResult(res);
-                await _mediator.NotifyExceptionAsync(exception);
-                context.ExceptionHandled = true;
-            }
-            catch (Exception ex)
-            {
-                const string message = "Not captured Exception :{Message}, Reason: {Reason}";
-                _logger.LogError(ex, message, exception.Message, ex.Message);
-                throw;
-            }
+            const string message = "Not captured Exception :{Message}, Reason: {Reason}";
+            _logger.LogError(ex, message, exception.Message, ex.Message);
+            throw;
         }
     }
 }

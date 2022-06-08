@@ -6,108 +6,107 @@ using Ardalis.GuardClauses;
 using Fabricdot.Core.Aspects;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Fabricdot.Core.DependencyInjection
+namespace Fabricdot.Core.DependencyInjection;
+
+public class DefaultDependencyRegistrar : IDependencyRegistrar
 {
-    public class DefaultDependencyRegistrar : IDependencyRegistrar
+    public static readonly ISet<Type> IgnoredServiceTypes = new HashSet<Type>() { typeof(IInterceptor) };
+
+    public virtual void Register(
+        IServiceCollection services,
+        Type implementationType)
     {
-        public static readonly ISet<Type> IgnoredServiceTypes = new HashSet<Type>() { typeof(IInterceptor) };
+        Guard.Against.Null(services, nameof(services));
+        Guard.Against.Null(implementationType, nameof(implementationType));
 
-        public virtual void Register(
-            IServiceCollection services,
-            Type implementationType)
+        if (!CanRegister(implementationType))
+            return;
+
+        var lifetime = GetLifetime(implementationType);
+        if (lifetime is null)
+            return;
+
+        var dependencyRegistry = GetDependencyRegistry(implementationType, lifetime.Value);
+        dependencyRegistry.ToServiceDescriptors()
+                          .ForEach(serviceDescriptor => services.Add(serviceDescriptor, dependencyRegistry.RegisterBehavior));
+    }
+
+    protected static ICollection<Type> GetDefaultServiceTypes(Type ImplementationType)
+    {
+        Guard.Against.Null(ImplementationType, nameof(ImplementationType));
+
+        var ret = new List<Type>()
         {
-            Guard.Against.Null(services, nameof(services));
-            Guard.Against.Null(implementationType, nameof(implementationType));
-
-            if (!CanRegister(implementationType))
-                return;
-
-            var lifetime = GetLifetime(implementationType);
-            if (lifetime is null)
-                return;
-
-            var dependencyRegistry = GetDependencyRegistry(implementationType, lifetime.Value);
-            dependencyRegistry.ToServiceDescriptors()
-                              .ForEach(serviceDescriptor => services.Add(serviceDescriptor, dependencyRegistry.RegisterBehavior));
+            ImplementationType
+        };
+        // Add default contracts by name.
+        foreach (var @interface in ImplementationType.GetTypeInfo().ImplementedInterfaces)
+        {
+            var interfaceName = @interface.IsGenericType ? @interface.Name.Split('`').First() : @interface.Name;
+            if (ImplementationType.Name.EndsWith(interfaceName.TrimStart('I')))
+                ret.Add(@interface);
         }
 
-        protected static ICollection<Type> GetDefaultServiceTypes(Type ImplementationType)
-        {
-            Guard.Against.Null(ImplementationType, nameof(ImplementationType));
+        return ret;
+    }
 
-            var ret = new List<Type>()
-            {
-                ImplementationType
-            };
-            // Add default contracts by name.
-            foreach (var @interface in ImplementationType.GetTypeInfo().ImplementedInterfaces)
-            {
-                var interfaceName = @interface.IsGenericType ? @interface.Name.Split('`').First() : @interface.Name;
-                if (ImplementationType.Name.EndsWith(interfaceName.TrimStart('I')))
-                    ret.Add(@interface);
-            }
+    protected virtual bool CanRegister(Type typeToRegister)
+    {
+        return typeToRegister?.IsNonAbstractClass(false) == true
+               && !typeToRegister.IsDefined(typeof(IgnoreDependencyAttribute), true);
+    }
 
-            return ret;
-        }
+    protected virtual ICollection<Type> GetServiceTypes(Type implementationType)
+    {
+        var serviceTypes = implementationType.GetCustomAttributes(true)
+                                             .OfType<ServiceContractAttribute>()
+                                             .SelectMany(v => v.ContractTypes)
+                                             .Distinct()
+                                             .ToList();
 
-        protected virtual bool CanRegister(Type typeToRegister)
-        {
-            return typeToRegister?.IsNonAbstractClass(false) == true
-                   && !typeToRegister.IsDefined(typeof(IgnoreDependencyAttribute), true);
-        }
+        if (serviceTypes.IsNullOrEmpty())
+            serviceTypes.AddRange(GetDefaultServiceTypes(implementationType));
 
-        protected virtual ICollection<Type> GetServiceTypes(Type implementationType)
-        {
-            var serviceTypes = implementationType.GetCustomAttributes(true)
-                                                 .OfType<ServiceContractAttribute>()
-                                                 .SelectMany(v => v.ContractTypes)
-                                                 .Distinct()
-                                                 .ToList();
+        return serviceTypes;
+    }
 
-            if (serviceTypes.IsNullOrEmpty())
-                serviceTypes.AddRange(GetDefaultServiceTypes(implementationType));
+    protected virtual bool IgnoreServiceType(Type serviceType)
+    {
+        return IgnoredServiceTypes.Contains(serviceType) || serviceType.IsDefined(typeof(IgnoreDependencyAttribute));
+    }
 
-            return serviceTypes;
-        }
+    protected virtual IDependencyRegistry GetDependencyRegistry(
+        Type implementationType,
+        ServiceLifetime serviceLifetime)
+    {
+        var depdencyAttr = implementationType.GetCustomAttribute<DependencyAttribute>(true);
+        return new DependencyRegistry(
+            implementationType,
+            GetServiceTypes(implementationType).Where(v => !IgnoreServiceType(v)),
+            serviceLifetime,
+            depdencyAttr?.RegisterBehavior ?? default);
+    }
 
-        protected virtual bool IgnoreServiceType(Type serviceType)
-        {
-            return IgnoredServiceTypes.Contains(serviceType) || serviceType.IsDefined(typeof(IgnoreDependencyAttribute));
-        }
+    protected virtual ServiceLifetime? GetLifetime(Type type)
+    {
+        var depdencyAttr = type.GetCustomAttribute<DependencyAttribute>(true);
+        if (depdencyAttr?.Lifetime is not null)
+            return depdencyAttr.Lifetime;
 
-        protected virtual IDependencyRegistry GetDependencyRegistry(
-            Type implementationType,
-            ServiceLifetime serviceLifetime)
-        {
-            var depdencyAttr = implementationType.GetCustomAttribute<DependencyAttribute>(true);
-            return new DependencyRegistry(
-                implementationType,
-                GetServiceTypes(implementationType).Where(v => !IgnoreServiceType(v)),
-                serviceLifetime,
-                depdencyAttr?.RegisterBehavior ?? default);
-        }
+        if (typeof(ITransientDependency).IsAssignableFrom(type))
+            return ServiceLifetime.Transient;
 
-        protected virtual ServiceLifetime? GetLifetime(Type type)
-        {
-            var depdencyAttr = type.GetCustomAttribute<DependencyAttribute>(true);
-            if (depdencyAttr?.Lifetime is not null)
-                return depdencyAttr.Lifetime;
+        if (typeof(ISingletonDependency).IsAssignableFrom(type))
+            return ServiceLifetime.Singleton;
 
-            if (typeof(ITransientDependency).IsAssignableFrom(type))
-                return ServiceLifetime.Transient;
+        if (typeof(IScopedDependency).IsAssignableFrom(type))
+            return ServiceLifetime.Scoped;
 
-            if (typeof(ISingletonDependency).IsAssignableFrom(type))
-                return ServiceLifetime.Singleton;
+        return GetDefaultLifetime(type);
+    }
 
-            if (typeof(IScopedDependency).IsAssignableFrom(type))
-                return ServiceLifetime.Scoped;
-
-            return GetDefaultLifetime(type);
-        }
-
-        protected virtual ServiceLifetime? GetDefaultLifetime(Type type)
-        {
-            return null;
-        }
+    protected virtual ServiceLifetime? GetDefaultLifetime(Type type)
+    {
+        return null;
     }
 }

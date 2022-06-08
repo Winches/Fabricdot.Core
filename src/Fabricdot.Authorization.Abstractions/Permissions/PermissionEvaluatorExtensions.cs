@@ -4,24 +4,23 @@ using System.Threading;
 using System.Threading.Tasks;
 using Ardalis.GuardClauses;
 
-namespace Fabricdot.Authorization.Permissions
+namespace Fabricdot.Authorization.Permissions;
+
+public static class PermissionEvaluatorExtensions
 {
-    public static class PermissionEvaluatorExtensions
+    public static async Task<bool> EvaluateAsync(
+        this IPermissionEvaluator permissionEvaluator,
+        ClaimsPrincipal principal,
+        PermissionName permission,
+        CancellationToken cancellationToken = default)
     {
-        public static async Task<bool> EvaluateAsync(
-            this IPermissionEvaluator permissionEvaluator,
-            ClaimsPrincipal principal,
-            PermissionName permission,
-            CancellationToken cancellationToken = default)
-        {
-            Guard.Against.Null(permissionEvaluator, nameof(permissionEvaluator));
+        Guard.Against.Null(permissionEvaluator, nameof(permissionEvaluator));
 
-            var grantResults = await permissionEvaluator.EvaluateAsync(
-                principal,
-                new[] { permission },
-                cancellationToken);
+        var grantResults = await permissionEvaluator.EvaluateAsync(
+            principal,
+            new[] { permission },
+            cancellationToken);
 
-            return grantResults.Single().IsGranted;
-        }
+        return grantResults.Single().IsGranted;
     }
 }

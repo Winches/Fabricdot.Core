@@ -2,18 +2,17 @@
 using Fabricdot.Infrastructure.Domain.Events;
 using Xunit;
 
-namespace Fabricdot.Infrastructure.Tests.Domain.Events
+namespace Fabricdot.Infrastructure.Tests.Domain.Events;
+
+public class DomainEventNotificationTests
 {
-    public class DomainEventNotificationTests
+    [Fact]
+    public void New_GivenNull_ThrowException()
     {
-        [Fact]
-        public void New_GivenNull_ThrowException()
+        static void Action()
         {
-            static void Action()
-            {
-                var _ = new DomainEventNotification(null);
-            }
-            Assert.Throws<ArgumentNullException>(Action);
+            var _ = new DomainEventNotification(null);
         }
+        Assert.Throws<ArgumentNullException>(Action);
     }
 }

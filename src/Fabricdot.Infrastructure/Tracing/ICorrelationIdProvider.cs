@@ -1,7 +1,6 @@
-﻿namespace Fabricdot.Infrastructure.Tracing
+﻿namespace Fabricdot.Infrastructure.Tracing;
+
+public interface ICorrelationIdProvider
 {
-    public interface ICorrelationIdProvider
-    {
-        CorrelationId Get();
-    }
+    CorrelationId Get();
 }

@@ -1,9 +1,8 @@
 ﻿using System;
 
-namespace Fabricdot.Domain.Auditing
+namespace Fabricdot.Domain.Auditing;
+
+public interface IHasModificationTime
 {
-    public interface IHasModificationTime
-    {
-        DateTime LastModificationTime { get; }
-    }
+    DateTime LastModificationTime { get; }
 }

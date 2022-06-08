@@ -7,66 +7,65 @@ using Fabricdot.Infrastructure.EntityFrameworkCore.Tests.Data;
 using Microsoft.AspNetCore.Identity;
 using Xunit;
 
-namespace Fabricdot.Identity.Tests.Domain.Stores
+namespace Fabricdot.Identity.Tests.Domain.Stores;
+
+public class RoleClaimStoreTests : RoleStoreTestBase
 {
-    public class RoleClaimStoreTests : RoleStoreTestBase
+    private readonly IRoleClaimStore<Role> _roleClaimStore;
+
+    public RoleClaimStoreTests()
     {
-        private readonly IRoleClaimStore<Role> _roleClaimStore;
+        _roleClaimStore = (IRoleClaimStore<Role>)RoleStore;
+    }
 
-        public RoleClaimStoreTests()
+    [Fact]
+    public async Task AddClaimAsync_GivenNull_ThrowException()
+    {
+        await UseUowAsync(async () =>
         {
-            _roleClaimStore = (IRoleClaimStore<Role>)RoleStore;
-        }
+            var role = await RoleRepository.GetDetailsByIdAsync(FakeDataBuilder.RoleAuthorId);
+            Task TestCode() => _roleClaimStore.AddClaimAsync(role, null, default);
 
-        [Fact]
-        public async Task AddClaimAsync_GivenNull_ThrowException()
+            await Assert.ThrowsAsync<ArgumentNullException>(TestCode);
+        });
+    }
+
+    [Fact]
+    public async Task AddClaimAsync_GivenClaim_Correctly()
+    {
+        await UseUowAsync(async () =>
         {
-            await UseUowAsync(async () =>
-            {
-                var role = await RoleRepository.GetDetailsByIdAsync(FakeDataBuilder.RoleAuthorId);
-                Task TestCode() => _roleClaimStore.AddClaimAsync(role, null, default);
+            var role = await RoleRepository.GetDetailsByIdAsync(FakeDataBuilder.RoleAuthorId);
+            var claim = new Claim("claimType2", "value2");
+            await _roleClaimStore.AddClaimAsync(role, claim, default);
 
-                await Assert.ThrowsAsync<ArgumentNullException>(TestCode);
-            });
-        }
+            Assert.Contains(role.Claims, v => v.ClaimType == claim.Type && v.ClaimValue == claim.Value);
+        });
+    }
 
-        [Fact]
-        public async Task AddClaimAsync_GivenClaim_Correctly()
+    [Fact]
+    public async Task RemoveClaimsAsync_GivenNull_ThrownException()
+    {
+        await UseUowAsync(async () =>
         {
-            await UseUowAsync(async () =>
-            {
-                var role = await RoleRepository.GetDetailsByIdAsync(FakeDataBuilder.RoleAuthorId);
-                var claim = new Claim("claimType2", "value2");
-                await _roleClaimStore.AddClaimAsync(role, claim, default);
+            var role = await RoleRepository.GetDetailsByIdAsync(FakeDataBuilder.RoleAuthorId);
+            Task TestCode() => _roleClaimStore.RemoveClaimAsync(role, null, default);
 
-                Assert.Contains(role.Claims, v => v.ClaimType == claim.Type && v.ClaimValue == claim.Value);
-            });
-        }
+            await Assert.ThrowsAsync<ArgumentNullException>(TestCode);
+        });
+    }
 
-        [Fact]
-        public async Task RemoveClaimsAsync_GivenNull_ThrownException()
+    [Fact]
+    public async Task RemoveClaimsAsync_GivenClaim_Correctly()
+    {
+        await UseUowAsync(async () =>
         {
-            await UseUowAsync(async () =>
-            {
-                var role = await RoleRepository.GetDetailsByIdAsync(FakeDataBuilder.RoleAuthorId);
-                Task TestCode() => _roleClaimStore.RemoveClaimAsync(role, null, default);
+            var role = await RoleRepository.GetDetailsByIdAsync(FakeDataBuilder.RoleAuthorId);
+            var roleClaim = role.Claims.First();
+            var claim = new Claim(roleClaim.ClaimType, roleClaim.ClaimValue);
+            await _roleClaimStore.RemoveClaimAsync(role, claim, default);
 
-                await Assert.ThrowsAsync<ArgumentNullException>(TestCode);
-            });
-        }
-
-        [Fact]
-        public async Task RemoveClaimsAsync_GivenClaim_Correctly()
-        {
-            await UseUowAsync(async () =>
-            {
-                var role = await RoleRepository.GetDetailsByIdAsync(FakeDataBuilder.RoleAuthorId);
-                var roleClaim = role.Claims.First();
-                var claim = new Claim(roleClaim.ClaimType, roleClaim.ClaimValue);
-                await _roleClaimStore.RemoveClaimAsync(role, claim, default);
-
-                Assert.DoesNotContain(role.Claims, v => v.ClaimType == claim.Type && v.ClaimValue == claim.Value);
-            });
-        }
+            Assert.DoesNotContain(role.Claims, v => v.ClaimType == claim.Type && v.ClaimValue == claim.Value);
+        });
     }
 }

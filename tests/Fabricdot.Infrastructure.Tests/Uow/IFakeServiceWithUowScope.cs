@@ -3,11 +3,10 @@ using Fabricdot.Domain.Services;
 using Fabricdot.Infrastructure.Uow;
 using Fabricdot.Infrastructure.Uow.Abstractions;
 
-namespace Fabricdot.Infrastructure.Tests.Uow
+namespace Fabricdot.Infrastructure.Tests.Uow;
+
+public interface IFakeServiceWithUowScope : IHasUnitOfWorkScope
 {
-    public interface IFakeServiceWithUowScope : IHasUnitOfWorkScope
-    {
-        [UnitOfWork(true)]
-        void UseTransactionalUow(Action<IUnitOfWork> action);
-    }
+    [UnitOfWork(true)]
+    void UseTransactionalUow(Action<IUnitOfWork> action);
 }

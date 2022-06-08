@@ -1,9 +1,8 @@
 ﻿using Fabricdot.Core.Modularity;
 
-namespace Fabricdot.Core.Tests.Modules
+namespace Fabricdot.Core.Tests.Modules;
+
+[Requires(typeof(FakeCoreModule))]
+internal class FakeInfrastructureModule : ModuleBase
 {
-    [Requires(typeof(FakeCoreModule))]
-    internal class FakeInfrastructureModule : ModuleBase
-    {
-    }
 }

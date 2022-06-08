@@ -1,16 +1,15 @@
 ﻿using Ardalis.Specification;
 using Fabricdot.Identity.Domain.Entities.RoleAggregate;
 
-namespace Fabricdot.Identity.Domain.Specifications
+namespace Fabricdot.Identity.Domain.Specifications;
+
+public class RoleWithDetailsSpecification<TRole> : Specification<TRole> where TRole : IdentityRole
 {
-    public class RoleWithDetailsSpecification<TRole> : Specification<TRole> where TRole : IdentityRole
+    public RoleWithDetailsSpecification(bool includeDetails)
     {
-        public RoleWithDetailsSpecification(bool includeDetails)
+        if (includeDetails)
         {
-            if (includeDetails)
-            {
-                Query.Include(v => v.Claims);
-            }
+            Query.Include(v => v.Claims);
         }
     }
 }

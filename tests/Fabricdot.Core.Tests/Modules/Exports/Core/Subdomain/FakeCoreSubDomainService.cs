@@ -1,8 +1,7 @@
 ﻿using Fabricdot.Core.DependencyInjection;
 
-namespace Fabricdot.Core.Tests.Modules.Exports.Core.Subdomain
+namespace Fabricdot.Core.Tests.Modules.Exports.Core.Subdomain;
+
+internal class FakeCoreSubDomainService : ITransientDependency
 {
-    internal class FakeCoreSubDomainService : ITransientDependency
-    {
-    }
 }

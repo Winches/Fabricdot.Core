@@ -1,17 +1,16 @@
 ﻿using System;
 using Ardalis.GuardClauses;
 
-namespace Fabricdot.Core.DependencyInjection
-{
-    [AttributeUsage(AttributeTargets.Class, AllowMultiple = false)]
-    public class ServiceContractAttribute : Attribute
-    {
-        public Type[] ContractTypes { get; }
+namespace Fabricdot.Core.DependencyInjection;
 
-        public ServiceContractAttribute(params Type[] contractTypes)
-        {
-            Guard.Against.NullOrEmpty(contractTypes, nameof(contractTypes));
-            ContractTypes = contractTypes;
-        }
+[AttributeUsage(AttributeTargets.Class, AllowMultiple = false)]
+public class ServiceContractAttribute : Attribute
+{
+    public Type[] ContractTypes { get; }
+
+    public ServiceContractAttribute(params Type[] contractTypes)
+    {
+        Guard.Against.NullOrEmpty(contractTypes, nameof(contractTypes));
+        ContractTypes = contractTypes;
     }
 }

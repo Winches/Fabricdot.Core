@@ -1,9 +1,8 @@
 ﻿using Fabricdot.Core.Modularity;
 
-namespace Fabricdot.MultiTenancy.Abstractions
+namespace Fabricdot.MultiTenancy.Abstractions;
+
+[Exports]
+public class FabricdotMultiTenancyAbstractionModule : ModuleBase
 {
-    [Exports]
-    public class FabricdotMultiTenancyAbstractionModule : ModuleBase
-    {
-    }
 }

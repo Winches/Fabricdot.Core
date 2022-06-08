@@ -1,9 +1,8 @@
 ﻿using Microsoft.Extensions.Logging;
 
-namespace Fabricdot.Core.Logging
+namespace Fabricdot.Core.Logging;
+
+public interface IHasLogLevel
 {
-    public interface IHasLogLevel
-    {
-        LogLevel LogLevel { get; }
-    }
+    LogLevel LogLevel { get; }
 }

@@ -1,7 +1,6 @@
-﻿namespace Fabricdot.Domain.Internal
+﻿namespace Fabricdot.Domain.Internal;
+
+public interface IEntityInitializer
 {
-    public interface IEntityInitializer
-    {
-        void Initialize(object entity);
-    }
+    void Initialize(object entity);
 }

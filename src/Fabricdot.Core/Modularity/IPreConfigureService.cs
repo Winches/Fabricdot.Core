@@ -1,7 +1,6 @@
-﻿namespace Fabricdot.Core.Modularity
+﻿namespace Fabricdot.Core.Modularity;
+
+public interface IPreConfigureService
 {
-    public interface IPreConfigureService
-    {
-        void PreConfigureServices(ConfigureServiceContext context);
-    }
+    void PreConfigureServices(ConfigureServiceContext context);
 }

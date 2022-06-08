@@ -1,21 +1,20 @@
 ﻿using System;
 
-namespace Fabricdot.WebApi.Exceptions
+namespace Fabricdot.WebApi.Exceptions;
+
+public class EndPointException : Exception
 {
-    public class EndPointException : Exception
+    public EndPointException()
     {
-        public EndPointException()
-        {
-        }
+    }
 
-        public EndPointException(string message) : base(message)
-        {
-        }
+    public EndPointException(string message) : base(message)
+    {
+    }
 
-        public EndPointException(
-            string message,
-            Exception exception) : base(message, exception)
-        {
-        }
+    public EndPointException(
+        string message,
+        Exception exception) : base(message, exception)
+    {
     }
 }

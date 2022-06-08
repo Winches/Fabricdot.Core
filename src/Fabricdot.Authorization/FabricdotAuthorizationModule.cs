@@ -1,11 +1,10 @@
 ﻿using Fabricdot.Core.Modularity;
 
-namespace Fabricdot.Authorization
+namespace Fabricdot.Authorization;
+
+[Requires(typeof(FabricdotAuthorizationAbstractionsModule))]
+//[Requires(typeof(FabricdotInfrastructureModule))]
+[Exports]
+public class FabricdotAuthorizationModule : ModuleBase
 {
-    [Requires(typeof(FabricdotAuthorizationAbstractionsModule))]
-    //[Requires(typeof(FabricdotInfrastructureModule))]
-    [Exports]
-    public class FabricdotAuthorizationModule : ModuleBase
-    {
-    }
 }

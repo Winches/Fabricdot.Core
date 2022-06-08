@@ -3,23 +3,22 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Fabricdot.Infrastructure.Uow.Abstractions
+namespace Fabricdot.Infrastructure.Uow.Abstractions;
+
+public interface IUnitOfWorkFacade : IDisposable
 {
-    public interface IUnitOfWorkFacade : IDisposable
-    {
-        IReadOnlyCollection<IDatabaseFacade> Databases { get; }
-        IReadOnlyCollection<ITransactionFacade> Transactions { get; }
+    IReadOnlyCollection<IDatabaseFacade> Databases { get; }
+    IReadOnlyCollection<ITransactionFacade> Transactions { get; }
 
-        void AddDatabase(string key, IDatabaseFacade database);
+    void AddDatabase(string key, IDatabaseFacade database);
 
-        IDatabaseFacade? GetDatabase(string key);
+    IDatabaseFacade? GetDatabase(string key);
 
-        void AddTransaction(string key, ITransactionFacade transaction);
+    void AddTransaction(string key, ITransactionFacade transaction);
 
-        ITransactionFacade? GeTransaction(string key);
+    ITransactionFacade? GeTransaction(string key);
 
-        Task CommitAsync(CancellationToken cancellationToken = default);
+    Task CommitAsync(CancellationToken cancellationToken = default);
 
-        Task RollbackAsync(CancellationToken cancellationToken = default);
-    }
+    Task RollbackAsync(CancellationToken cancellationToken = default);
 }

@@ -1,16 +1,15 @@
 ﻿using System;
 using Fabricdot.Core.UniqueIdentifier.CombGuid;
 
-namespace Fabricdot.Core.UniqueIdentifier
+namespace Fabricdot.Core.UniqueIdentifier;
+
+public sealed class DefaultCombGuidTimestampProvider : ITimestampProvider
 {
-    public sealed class DefaultCombGuidTimestampProvider : ITimestampProvider
+    public static readonly DefaultCombGuidTimestampProvider Instance = new();
+
+    private DefaultCombGuidTimestampProvider()
     {
-        public static readonly DefaultCombGuidTimestampProvider Instance = new();
-
-        private DefaultCombGuidTimestampProvider()
-        {
-        }
-
-        public long GetTimestamp() => DateTime.UtcNow.Ticks / 10000L;
     }
+
+    public long GetTimestamp() => DateTime.UtcNow.Ticks / 10000L;
 }

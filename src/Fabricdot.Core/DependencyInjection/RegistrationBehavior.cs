@@ -1,9 +1,8 @@
-﻿namespace Fabricdot.Core.DependencyInjection
+﻿namespace Fabricdot.Core.DependencyInjection;
+
+public enum RegistrationBehavior
 {
-    public enum RegistrationBehavior
-    {
-        Default = 0,
-        Replace = 1,
-        TryAdd = 2
-    }
+    Default = 0,
+    Replace = 1,
+    TryAdd = 2
 }

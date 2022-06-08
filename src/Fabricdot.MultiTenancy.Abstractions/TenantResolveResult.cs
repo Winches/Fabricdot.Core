@@ -1,10 +1,10 @@
 ﻿using System.Collections.Generic;
 
-namespace Fabricdot.MultiTenancy.Abstractions
+namespace Fabricdot.MultiTenancy.Abstractions;
+
+public class TenantResolveResult
 {
-    public class TenantResolveResult
-    {
-        public string? Identifier { get; set; }
-        public ICollection<string> Strategies { get; } = new List<string>();
-    }
+    public string? Identifier { get; set; }
+
+    public ICollection<string> Strategies { get; } = new List<string>();
 }

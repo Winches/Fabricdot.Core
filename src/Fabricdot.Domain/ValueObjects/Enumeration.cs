@@ -5,96 +5,95 @@ using System.Collections.Immutable;
 using System.Linq;
 using System.Reflection;
 
-namespace Fabricdot.Domain.ValueObjects
+namespace Fabricdot.Domain.ValueObjects;
+
+/// <summary>
+///     Enum object
+/// </summary>
+public abstract class Enumeration : IComparable
 {
-    /// <summary>
-    ///     Enum object
-    /// </summary>
-    public abstract class Enumeration : IComparable
+    private static readonly ConcurrentDictionary<Type, IReadOnlyCollection<object>> _fields = new();
+
+    public string Name { get; }
+
+    public int Value { get; }
+
+    protected Enumeration(
+        int value,
+        string name)
     {
-        private static readonly ConcurrentDictionary<Type, IReadOnlyCollection<object>> _fields = new();
+        Value = value;
+        Name = name;
+    }
 
-        public string Name { get; }
+    public static IEnumerable<T> GetAll<T>() where T : Enumeration
+    {
+        var values = _fields.GetOrAdd(
+            typeof(T),
+            t => t.GetFields(BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly)
+                  .Select(v => v.GetValue(null))
+                  .Where(v => v is not null)
+                  .ToImmutableList()!);
+        return values.Cast<T>();
+    }
 
-        public int Value { get; }
+    public static bool operator ==(Enumeration? left, Enumeration? right)
+    {
+        return Equals(left, right);
+    }
 
-        protected Enumeration(
-            int value,
-            string name)
-        {
-            Value = value;
-            Name = name;
-        }
+    public static bool operator !=(Enumeration? left, Enumeration? right)
+    {
+        return !(left == right);
+    }
 
-        public static IEnumerable<T> GetAll<T>() where T : Enumeration
-        {
-            var values = _fields.GetOrAdd(
-                typeof(T),
-                t => t.GetFields(BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly)
-                      .Select(v => v.GetValue(null))
-                      .Where(v => v is not null)
-                      .ToImmutableList()!);
-            return values.Cast<T>();
-        }
+    public static int AbsoluteDifference(Enumeration firstValue, Enumeration secondValue)
+    {
+        return Math.Abs(firstValue.Value - secondValue.Value);
+    }
 
-        public static bool operator ==(Enumeration? left, Enumeration? right)
-        {
-            return Equals(left, right);
-        }
+    public static T FromValue<T>(int value) where T : Enumeration
+    {
+        return Parse<T, int>(value, "value", item => item.Value == value);
+    }
 
-        public static bool operator !=(Enumeration? left, Enumeration? right)
-        {
-            return !(left == right);
-        }
+    public static T FromName<T>(string displayName) where T : Enumeration
+    {
+        return Parse<T, string>(displayName, "display name", item => item.Name == displayName);
+    }
 
-        public static int AbsoluteDifference(Enumeration firstValue, Enumeration secondValue)
-        {
-            return Math.Abs(firstValue.Value - secondValue.Value);
-        }
+    public override string ToString()
+    {
+        return Name;
+    }
 
-        public static T FromValue<T>(int value) where T : Enumeration
-        {
-            return Parse<T, int>(value, "value", item => item.Value == value);
-        }
+    public override bool Equals(object? obj)
+    {
+        if (obj is not Enumeration otherValue)
+            return false;
 
-        public static T FromName<T>(string displayName) where T : Enumeration
-        {
-            return Parse<T, string>(displayName, "display name", item => item.Name == displayName);
-        }
+        var typeMatches = GetType() == obj.GetType();
+        var valueMatches = Value.Equals(otherValue.Value);
 
-        public override string ToString()
-        {
-            return Name;
-        }
+        return typeMatches && valueMatches;
+    }
 
-        public override bool Equals(object? obj)
-        {
-            if (obj is not Enumeration otherValue)
-                return false;
+    public override int GetHashCode()
+    {
+        return Value.GetHashCode();
+    }
 
-            var typeMatches = GetType() == obj.GetType();
-            var valueMatches = Value.Equals(otherValue.Value);
+    public virtual int CompareTo(object? other)
+    {
+        return Value.CompareTo(other.As<Enumeration>()?.Value ?? 0);
+    }
 
-            return typeMatches && valueMatches;
-        }
-
-        public override int GetHashCode()
-        {
-            return Value.GetHashCode();
-        }
-
-        public virtual int CompareTo(object? other)
-        {
-            return Value.CompareTo(other.As<Enumeration>()?.Value ?? 0);
-        }
-
-        private static T Parse<T, TK>(
-            TK value,
-            string description,
-            Func<T, bool> predicate) where T : Enumeration
-        {
-            return GetAll<T>().FirstOrDefault(predicate)
-                ?? throw new InvalidOperationException($"'{value}' is not a valid {description} in {typeof(T).PrettyPrint()}");
-        }
+    private static T Parse<T, TK>(
+        TK value,
+        string description,
+        Func<T, bool> predicate) where T : Enumeration
+    {
+        return GetAll<T>().FirstOrDefault(predicate)
+            ?? throw new InvalidOperationException($"'{value}' is not a valid {description} in {typeof(T).PrettyPrint()}");
     }
 }

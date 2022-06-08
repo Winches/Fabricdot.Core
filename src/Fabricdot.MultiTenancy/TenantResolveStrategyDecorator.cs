@@ -4,42 +4,41 @@ using Ardalis.GuardClauses;
 using Fabricdot.MultiTenancy.Abstractions;
 using Microsoft.Extensions.Logging;
 
-namespace Fabricdot.MultiTenancy
+namespace Fabricdot.MultiTenancy;
+
+public class TenantResolveStrategyDecorator : ITenantResolveStrategy
 {
-    public class TenantResolveStrategyDecorator : ITenantResolveStrategy
+    private readonly ILogger _logger;
+    private readonly ITenantResolveStrategy _strategy;
+
+    public int Priority { get; }
+
+    public TenantResolveStrategyDecorator(
+                ILogger logger,
+        ITenantResolveStrategy strategy)
     {
-        private readonly ILogger _logger;
-        private readonly ITenantResolveStrategy _strategy;
+        _logger = Guard.Against.Null(logger, nameof(logger));
+        _strategy = Guard.Against.Null(strategy, nameof(strategy));
+    }
 
-        public int Priority { get; }
+    public async Task<string?> ResolveIdentifierAsync(TenantResolveContext context)
+    {
+        if (context == null)
+            return null;
 
-        public TenantResolveStrategyDecorator(
-                    ILogger logger,
-            ITenantResolveStrategy strategy)
+        string? identifier = null;
+        try
         {
-            _logger = Guard.Against.Null(logger, nameof(logger));
-            _strategy = Guard.Against.Null(strategy, nameof(strategy));
+            identifier = await _strategy.ResolveIdentifierAsync(context);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, $"Execute strategy failed: {_strategy.GetType().PrettyPrint()}.");
         }
 
-        public async Task<string?> ResolveIdentifierAsync(TenantResolveContext context)
-        {
-            if (context == null)
-                return null;
+        var message = identifier == null ? "Tenant identifier not found." : "Found tenant identifier: {Identifier}";
+        _logger.LogDebug(message, identifier);
 
-            string? identifier = null;
-            try
-            {
-                identifier = await _strategy.ResolveIdentifierAsync(context);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, $"Execute strategy failed: {_strategy.GetType().PrettyPrint()}.");
-            }
-
-            var message = identifier == null ? "Tenant identifier not found." : "Found tenant identifier: {Identifier}";
-            _logger.LogDebug(message, identifier);
-
-            return identifier;
-        }
+        return identifier;
     }
 }

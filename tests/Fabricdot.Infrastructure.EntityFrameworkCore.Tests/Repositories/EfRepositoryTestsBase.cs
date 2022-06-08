@@ -1,6 +1,5 @@
-﻿namespace Fabricdot.Infrastructure.EntityFrameworkCore.Tests.Repositories
+﻿namespace Fabricdot.Infrastructure.EntityFrameworkCore.Tests.Repositories;
+
+public abstract class EfRepositoryTestsBase : EntityFrameworkCoreTestsBase
 {
-    public abstract class EfRepositoryTestsBase : EntityFrameworkCoreTestsBase
-    {
-    }
 }

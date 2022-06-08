@@ -1,34 +1,33 @@
 ﻿using System;
 
-namespace Fabricdot.Infrastructure.Commands
+namespace Fabricdot.Infrastructure.Commands;
+
+public class CommandBase : ICommand
 {
-    public class CommandBase : ICommand
+    public Guid Id { get; }
+
+    public CommandBase()
     {
-        public Guid Id { get; }
-
-        public CommandBase()
-        {
-            Id = Guid.NewGuid();
-        }
-
-        protected CommandBase(Guid id)
-        {
-            Id = id;
-        }
+        Id = Guid.NewGuid();
     }
 
-    public abstract class CommandBase<TResult> : ICommand<TResult>
+    protected CommandBase(Guid id)
     {
-        public Guid Id { get; }
+        Id = id;
+    }
+}
 
-        protected CommandBase()
-        {
-            Id = Guid.NewGuid();
-        }
+public abstract class CommandBase<TResult> : ICommand<TResult>
+{
+    public Guid Id { get; }
 
-        protected CommandBase(Guid id)
-        {
-            Id = id;
-        }
+    protected CommandBase()
+    {
+        Id = Guid.NewGuid();
+    }
+
+    protected CommandBase(Guid id)
+    {
+        Id = id;
     }
 }

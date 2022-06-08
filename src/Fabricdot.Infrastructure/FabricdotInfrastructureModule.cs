@@ -5,24 +5,23 @@ using Fabricdot.Infrastructure.Data.Filters;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Fabricdot.Infrastructure
+namespace Fabricdot.Infrastructure;
+
+[Requires(typeof(FabricdotDomainModule))]
+[Exports]
+public class FabricdotInfrastructureModule : ModuleBase
 {
-    [Requires(typeof(FabricdotDomainModule))]
-    [Exports]
-    public class FabricdotInfrastructureModule : ModuleBase
+    public override void ConfigureServices(ConfigureServiceContext context)
     {
-        public override void ConfigureServices(ConfigureServiceContext context)
-        {
-            var services = context.Services;
+        var services = context.Services;
 
-            //repository filter
-            services.AddSingleton(typeof(IDataFilter<>), typeof(DataFilter<>));
+        //repository filter
+        services.AddSingleton(typeof(IDataFilter<>), typeof(DataFilter<>));
 
-            //var assemblies = new TypeFinder().GetAssemblies().ToArray();
-            // TODO: Refactor it
-            var assemblies = services.GetRequiredSingletonInstance<IModuleCollection>().Select(v => v.Assembly).ToArray();
-            services.AddMediatR(assemblies) //mediator
-                .AddAutoMapper(assemblies); //mapper
-        }
+        //var assemblies = new TypeFinder().GetAssemblies().ToArray();
+        // TODO: Refactor it
+        var assemblies = services.GetRequiredSingletonInstance<IModuleCollection>().Select(v => v.Assembly).ToArray();
+        services.AddMediatR(assemblies) //mediator
+            .AddAutoMapper(assemblies); //mapper
     }
 }

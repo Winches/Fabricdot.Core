@@ -1,10 +1,9 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
 
-namespace Fabricdot.MultiTenancy.Abstractions
+namespace Fabricdot.MultiTenancy.Abstractions;
+
+public interface ITenantContextProvider
 {
-    public interface ITenantContextProvider
-    {
-        Task<TenantContext?> GetAsync(CancellationToken cancellationToken = default);
-    }
+    Task<TenantContext?> GetAsync(CancellationToken cancellationToken = default);
 }

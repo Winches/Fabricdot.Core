@@ -1,8 +1,7 @@
-﻿namespace Fabricdot.Authorization
+﻿namespace Fabricdot.Authorization;
+
+public enum PermissionRequireBehavior
 {
-    public enum PermissionRequireBehavior
-    {
-        Any = 0,
-        All = 1,
-    }
+    Any = 0,
+    All = 1,
 }

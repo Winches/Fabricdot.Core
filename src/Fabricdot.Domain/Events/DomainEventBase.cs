@@ -1,15 +1,14 @@
 ﻿using System;
 using Fabricdot.Domain.SharedKernel;
 
-namespace Fabricdot.Domain.Events
-{
-    public abstract class DomainEventBase : IDomainEvent
-    {
-        public DateTime OccurredOn { get; }
+namespace Fabricdot.Domain.Events;
 
-        protected DomainEventBase()
-        {
-            OccurredOn = SystemClock.Now;
-        }
+public abstract class DomainEventBase : IDomainEvent
+{
+    public DateTime OccurredOn { get; }
+
+    protected DomainEventBase()
+    {
+        OccurredOn = SystemClock.Now;
     }
 }

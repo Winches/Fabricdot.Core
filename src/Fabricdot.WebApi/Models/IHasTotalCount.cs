@@ -1,7 +1,6 @@
-﻿namespace Fabricdot.WebApi.Models
+﻿namespace Fabricdot.WebApi.Models;
+
+public interface IHasTotalCount
 {
-    public interface IHasTotalCount
-    {
-        long Total { get; set; }
-    }
+    long Total { get; set; }
 }

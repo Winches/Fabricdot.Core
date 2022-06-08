@@ -9,65 +9,64 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Xunit;
 
-namespace Fabricdot.WebApi.Tests.Uow
+namespace Fabricdot.WebApi.Tests.Uow;
+
+public class UnitOfWorkMiddlewareTests : AspNetCoreTestsBase<Startup>
 {
-    public class UnitOfWorkMiddlewareTests : AspNetCoreTestsBase<Startup>
+    public static IEnumerable<object[]> GetHttpMethods()
     {
-        public static IEnumerable<object[]> GetHttpMethods()
-        {
-            yield return new[] { HttpMethod.Get };
-            yield return new[] { HttpMethod.Post };
-            yield return new[] { HttpMethod.Put };
-            yield return new[] { HttpMethod.Delete };
-        }
+        yield return new[] { HttpMethod.Get };
+        yield return new[] { HttpMethod.Post };
+        yield return new[] { HttpMethod.Put };
+        yield return new[] { HttpMethod.Delete };
+    }
 
-        [Theory]
-        [MemberData(nameof(GetHttpMethods))]
-        public async Task UnitOfWorkMiddleware_SendHttpRequest_ReserveUnitOfWork(HttpMethod httpMethod)
-        {
-            IUnitOfWork uow = null;
-            ServiceProvider.GetRequiredService<ActionMiddlewareProvider>()
-                .ExecutingAction = context =>
-                {
-                    var serviceProvider = context.RequestServices;
-                    var ambientUnitOfWork = serviceProvider.GetRequiredService<IAmbientUnitOfWork>();
-                    uow = ambientUnitOfWork.UnitOfWork;
-                    var isReserved = uow.IsReservedFor(UnitOfWorkManager.RESERVATION_NAME);
-                    var isTransactional = uow.Options.IsTransactional;
+    [Theory]
+    [MemberData(nameof(GetHttpMethods))]
+    public async Task UnitOfWorkMiddleware_SendHttpRequest_ReserveUnitOfWork(HttpMethod httpMethod)
+    {
+        IUnitOfWork uow = null;
+        ServiceProvider.GetRequiredService<ActionMiddlewareProvider>()
+            .ExecutingAction = context =>
+            {
+                var serviceProvider = context.RequestServices;
+                var ambientUnitOfWork = serviceProvider.GetRequiredService<IAmbientUnitOfWork>();
+                uow = ambientUnitOfWork.UnitOfWork;
+                var isReserved = uow.IsReservedFor(UnitOfWorkManager.RESERVATION_NAME);
+                var isTransactional = uow.Options.IsTransactional;
 
-                    Assert.True(isReserved);
-                    return Task.CompletedTask;
-                };
+                Assert.True(isReserved);
+                return Task.CompletedTask;
+            };
 
-            using var request = new HttpRequestMessage(httpMethod, "/");
-            var response = await HttpClient.SendAsync(request);
-            async Task testCode() => await uow.CommitChangesAsync();
-            await Assert.ThrowsAsync<InvalidOperationException>(testCode);
-        }
+        using var request = new HttpRequestMessage(httpMethod, "/");
+        var response = await HttpClient.SendAsync(request);
+        async Task testCode() => await uow.CommitChangesAsync();
+        await Assert.ThrowsAsync<InvalidOperationException>(testCode);
+    }
 
-        [Theory]
-        [InlineData("book/1")]
-        [InlineData("book/1/tag")]
-        public async Task UnitOfWorkMiddleware_SendHttpRequestWithIgnoredUrl_DoNothing(string url)
-        {
-            ServiceProvider.GetRequiredService<ActionMiddlewareProvider>()
-                .ExecutingAction = context =>
-                {
-                    var serviceProvider = context.RequestServices;
-                    var ambientUnitOfWork = serviceProvider.GetRequiredService<IAmbientUnitOfWork>();
-                    var uow = ambientUnitOfWork.UnitOfWork;
+    [Theory]
+    [InlineData("book/1")]
+    [InlineData("book/1/tag")]
+    public async Task UnitOfWorkMiddleware_SendHttpRequestWithIgnoredUrl_DoNothing(string url)
+    {
+        ServiceProvider.GetRequiredService<ActionMiddlewareProvider>()
+            .ExecutingAction = context =>
+            {
+                var serviceProvider = context.RequestServices;
+                var ambientUnitOfWork = serviceProvider.GetRequiredService<IAmbientUnitOfWork>();
+                var uow = ambientUnitOfWork.UnitOfWork;
 
-                    Assert.Null(uow);
-                    return Task.CompletedTask;
-                };
+                Assert.Null(uow);
+                return Task.CompletedTask;
+            };
 
-            var response = await HttpClient.GetAsync(url);
-        }
+        var response = await HttpClient.GetAsync(url);
+    }
 
-        protected override void ConfigureServices(HostBuilderContext context, IServiceCollection services)
-        {
-            base.ConfigureServices(context, services);
-            services.Configure<HttpUnitOfWorkOptions>(v => v.IgnoredUrls.Add("/book"));
-        }
+    protected override void ConfigureServices(HostBuilderContext context, IServiceCollection services)
+    {
+        base.ConfigureServices(context, services);
+        services.Configure<HttpUnitOfWorkOptions>(v => v.IgnoredUrls.Add("/book"));
     }
 }

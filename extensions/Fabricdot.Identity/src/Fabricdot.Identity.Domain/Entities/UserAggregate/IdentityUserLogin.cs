@@ -3,38 +3,37 @@ using System.Collections.Generic;
 using Ardalis.GuardClauses;
 using Fabricdot.Domain.ValueObjects;
 
-namespace Fabricdot.Identity.Domain.Entities.UserAggregate
+namespace Fabricdot.Identity.Domain.Entities.UserAggregate;
+
+public class IdentityUserLogin : ValueObject
 {
-    public class IdentityUserLogin : ValueObject
+    public Guid UserId { get; private set; }
+
+    public string LoginProvider { get; private set; } = null!;
+
+    public string ProviderKey { get; private set; } = null!;
+
+    public string ProviderDisplayName { get; private set; } = null!;
+
+    public IdentityUserLogin(
+        string loginProvider,
+        string providerKey,
+        string providerDisplayName)
     {
-        public Guid UserId { get; private set; }
+        LoginProvider = Guard.Against.NullOrEmpty(loginProvider, nameof(loginProvider));
+        ProviderKey = Guard.Against.NullOrEmpty(providerKey, nameof(providerKey));
+        ProviderDisplayName = providerDisplayName;
+    }
 
-        public string LoginProvider { get; private set; } = null!;
+    private IdentityUserLogin()
+    {
+    }
 
-        public string ProviderKey { get; private set; } = null!;
-
-        public string ProviderDisplayName { get; private set; } = null!;
-
-        public IdentityUserLogin(
-            string loginProvider,
-            string providerKey,
-            string providerDisplayName)
-        {
-            LoginProvider = Guard.Against.NullOrEmpty(loginProvider, nameof(loginProvider));
-            ProviderKey = Guard.Against.NullOrEmpty(providerKey, nameof(providerKey));
-            ProviderDisplayName = providerDisplayName;
-        }
-
-        private IdentityUserLogin()
-        {
-        }
-
-        protected override IEnumerable<object> GetAtomicValues()
-        {
-            yield return UserId;
-            yield return LoginProvider;
-            yield return ProviderKey;
-            yield return ProviderDisplayName;
-        }
+    protected override IEnumerable<object> GetAtomicValues()
+    {
+        yield return UserId;
+        yield return LoginProvider;
+        yield return ProviderKey;
+        yield return ProviderDisplayName;
     }
 }

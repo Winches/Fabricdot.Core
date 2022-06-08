@@ -1,10 +1,9 @@
 ﻿using System.Threading.Tasks;
 
-namespace Fabricdot.Core.Aspects
+namespace Fabricdot.Core.Aspects;
+
+[DisableAspect]
+public interface IInterceptor
 {
-    [DisableAspect]
-    public interface IInterceptor
-    {
-        Task InvokeAsync(IInvocationContext invocationContext);
-    }
+    Task InvokeAsync(IInvocationContext invocationContext);
 }

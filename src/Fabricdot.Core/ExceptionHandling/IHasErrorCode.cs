@@ -1,7 +1,6 @@
-﻿namespace Fabricdot.Core.ExceptionHandling
+﻿namespace Fabricdot.Core.ExceptionHandling;
+
+public interface IHasErrorCode
 {
-    public interface IHasErrorCode
-    {
-        int Code { get; }
-    }
+    int Code { get; }
 }

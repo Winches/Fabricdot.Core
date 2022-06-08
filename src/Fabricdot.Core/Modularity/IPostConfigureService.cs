@@ -1,7 +1,6 @@
-﻿namespace Fabricdot.Core.Modularity
+﻿namespace Fabricdot.Core.Modularity;
+
+public interface IPostConfigureService
 {
-    public interface IPostConfigureService
-    {
-        void PostConfigureServices(ConfigureServiceContext context);
-    }
+    void PostConfigureServices(ConfigureServiceContext context);
 }

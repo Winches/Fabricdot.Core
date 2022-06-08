@@ -4,32 +4,31 @@ using Fabricdot.Core.DependencyInjection;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Fabricdot.Authorization
+namespace Fabricdot.Authorization;
+
+[Dependency(ServiceLifetime.Scoped)]
+[ServiceContract(typeof(IAuthorizationHandler))]
+public class PermissionAuthorizationHandler : AuthorizationHandler<PermissionRequirement>
 {
-    [Dependency(ServiceLifetime.Scoped)]
-    [ServiceContract(typeof(IAuthorizationHandler))]
-    public class PermissionAuthorizationHandler : AuthorizationHandler<PermissionRequirement>
+    protected IPermissionEvaluator PermissionEvaluator { get; }
+
+    public PermissionAuthorizationHandler(IPermissionEvaluator permissionService)
     {
-        protected IPermissionEvaluator PermissionEvaluator { get; }
+        PermissionEvaluator = permissionService;
+    }
 
-        public PermissionAuthorizationHandler(IPermissionEvaluator permissionService)
+    protected override async Task HandleRequirementAsync(
+        AuthorizationHandlerContext context,
+        PermissionRequirement requirement)
+    {
+        var principal = context.User;
+        if ((principal?.Identity?.IsAuthenticated ?? false)
+            && await PermissionEvaluator.EvaluateAsync(principal, requirement.Permission))
         {
-            PermissionEvaluator = permissionService;
+            context.Succeed(requirement);
+            return;
         }
 
-        protected override async Task HandleRequirementAsync(
-            AuthorizationHandlerContext context,
-            PermissionRequirement requirement)
-        {
-            var principal = context.User;
-            if ((principal?.Identity?.IsAuthenticated ?? false)
-                && await PermissionEvaluator.EvaluateAsync(principal, requirement.Permission))
-            {
-                context.Succeed(requirement);
-                return;
-            }
-
-            context.Fail();
-        }
+        context.Fail();
     }
 }

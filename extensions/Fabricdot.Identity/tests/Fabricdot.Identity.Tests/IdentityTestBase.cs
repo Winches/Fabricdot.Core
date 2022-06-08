@@ -6,27 +6,26 @@ using Fabricdot.Infrastructure.Uow.Abstractions;
 using Fabricdot.Test.Shared;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Fabricdot.Identity.Tests
+namespace Fabricdot.Identity.Tests;
+
+public abstract class IdentityTestBase : IntegrationTestBase<IdentityTestModule>
 {
-    public abstract class IdentityTestBase : IntegrationTestBase<IdentityTestModule>
+    protected IdentityTestBase()
     {
-        protected IdentityTestBase()
-        {
-            var dataBuilder = ServiceProvider.GetRequiredService<FakeDataBuilder>();
-            dataBuilder.BuildAsync().GetAwaiter().GetResult();
-        }
+        var dataBuilder = ServiceProvider.GetRequiredService<FakeDataBuilder>();
+        dataBuilder.BuildAsync().GetAwaiter().GetResult();
+    }
 
-        protected override void ConfigureServices(IServiceCollection serviceCollection)
-        {
-            UseServiceProviderFactory<FabricdotServiceProviderFactory>();
-        }
+    protected override void ConfigureServices(IServiceCollection serviceCollection)
+    {
+        UseServiceProviderFactory<FabricdotServiceProviderFactory>();
+    }
 
-        protected async Task UseUowAsync(Func<Task> func)
-        {
-            var unitOfWorkManager = ServiceScope.ServiceProvider.GetRequiredService<IUnitOfWorkManager>();
-            using var uow = unitOfWorkManager.Begin();
-            await func();
-            await uow.CommitChangesAsync();
-        }
+    protected async Task UseUowAsync(Func<Task> func)
+    {
+        var unitOfWorkManager = ServiceScope.ServiceProvider.GetRequiredService<IUnitOfWorkManager>();
+        using var uow = unitOfWorkManager.Begin();
+        await func();
+        await uow.CommitChangesAsync();
     }
 }

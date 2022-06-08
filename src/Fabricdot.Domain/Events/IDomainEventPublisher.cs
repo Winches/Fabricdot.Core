@@ -1,12 +1,11 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
 
-namespace Fabricdot.Domain.Events
+namespace Fabricdot.Domain.Events;
+
+public interface IDomainEventPublisher
 {
-    public interface IDomainEventPublisher
-    {
-        Task PublishAsync(
-            IDomainEvent @event,
-            CancellationToken cancellationToken = default);
-    }
+    Task PublishAsync(
+        IDomainEvent @event,
+        CancellationToken cancellationToken = default);
 }

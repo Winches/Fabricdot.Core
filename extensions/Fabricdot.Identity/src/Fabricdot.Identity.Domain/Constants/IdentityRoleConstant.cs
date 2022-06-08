@@ -1,11 +1,10 @@
-﻿namespace Fabricdot.Identity.Domain.Constants
+﻿namespace Fabricdot.Identity.Domain.Constants;
+
+public static class IdentityRoleConstant
 {
-    public static class IdentityRoleConstant
-    {
-        public const int NameLength = 256;
+    public const int NameLength = 256;
 
-        public const int NormalizedNameLength = NameLength;
+    public const int NormalizedNameLength = NameLength;
 
-        public const int DescriptionLength = 500;
-    }
+    public const int DescriptionLength = 500;
 }

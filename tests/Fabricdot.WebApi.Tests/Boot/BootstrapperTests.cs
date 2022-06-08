@@ -1,14 +1,13 @@
 ﻿using System.Threading.Tasks;
 using Xunit;
 
-namespace Fabricdot.WebApi.Tests.Boot
+namespace Fabricdot.WebApi.Tests.Boot;
+
+public class BootstrapperTests : AspNetCoreTestsBase<ModularityStartup<StartupModule>>
 {
-    public class BootstrapperTests : AspNetCoreTestsBase<ModularityStartup<StartupModule>>
+    [Fact]
+    public async Task Bootstrap_CorrectlyAsync()
     {
-        [Fact]
-        public async Task Bootstrap_CorrectlyAsync()
-        {
-            var response = await HttpClient.GetAsync("/");
-        }
+        var response = await HttpClient.GetAsync("/");
     }
 }

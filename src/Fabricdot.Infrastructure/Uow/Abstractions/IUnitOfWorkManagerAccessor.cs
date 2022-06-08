@@ -1,7 +1,6 @@
-﻿namespace Fabricdot.Infrastructure.Uow.Abstractions
+﻿namespace Fabricdot.Infrastructure.Uow.Abstractions;
+
+public interface IUnitOfWorkManagerAccessor
 {
-    public interface IUnitOfWorkManagerAccessor
-    {
-        IUnitOfWorkManager UnitOfWorkManager { get; }
-    }
+    IUnitOfWorkManager UnitOfWorkManager { get; }
 }

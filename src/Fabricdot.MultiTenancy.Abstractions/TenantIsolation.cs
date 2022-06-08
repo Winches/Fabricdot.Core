@@ -1,13 +1,12 @@
 ﻿using System;
 
-namespace Fabricdot.MultiTenancy.Abstractions
+namespace Fabricdot.MultiTenancy.Abstractions;
+
+// TODO：Implement the infrastructure
+[Flags]
+public enum TenantIsolation
 {
-    // TODO：Implement the infrastructure
-    [Flags]
-    public enum TenantIsolation
-    {
-        Shared = 1,
-        PerTenant = 2,
-        Hybrid = Shared | PerTenant
-    }
+    Shared = 1,
+    PerTenant = 2,
+    Hybrid = Shared | PerTenant
 }

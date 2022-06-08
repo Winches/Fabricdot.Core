@@ -2,24 +2,23 @@
 using Ardalis.GuardClauses;
 using Fabricdot.Infrastructure.Uow.Abstractions;
 
-namespace Fabricdot.Infrastructure.Uow
-{
-    public static class UnitOfWorkManagerExtensions
-    {
-        public static IUnitOfWork Begin(
-            this IUnitOfWorkManager unitOfWorkManager,
-            bool requireNew = false,
-            bool? isTransactional = null,
-            IsolationLevel? isolationLevel = null)
-        {
-            Guard.Against.Null(unitOfWorkManager, nameof(unitOfWorkManager));
-            var options = new UnitOfWorkOptions();
-            if (isTransactional.HasValue)
-                options.IsTransactional = isTransactional.Value;
-            if (isolationLevel.HasValue)
-                options.IsolationLevel = isolationLevel.Value;
+namespace Fabricdot.Infrastructure.Uow;
 
-            return unitOfWorkManager.Begin(options, requireNew);
-        }
+public static class UnitOfWorkManagerExtensions
+{
+    public static IUnitOfWork Begin(
+        this IUnitOfWorkManager unitOfWorkManager,
+        bool requireNew = false,
+        bool? isTransactional = null,
+        IsolationLevel? isolationLevel = null)
+    {
+        Guard.Against.Null(unitOfWorkManager, nameof(unitOfWorkManager));
+        var options = new UnitOfWorkOptions();
+        if (isTransactional.HasValue)
+            options.IsTransactional = isTransactional.Value;
+        if (isolationLevel.HasValue)
+            options.IsolationLevel = isolationLevel.Value;
+
+        return unitOfWorkManager.Begin(options, requireNew);
     }
 }

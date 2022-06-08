@@ -1,9 +1,8 @@
 ﻿using System;
 
-namespace Fabricdot.Domain.Events
+namespace Fabricdot.Domain.Events;
+
+public interface IDomainEvent
 {
-    public interface IDomainEvent
-    {
-        DateTime OccurredOn { get; }
-    }
+    DateTime OccurredOn { get; }
 }

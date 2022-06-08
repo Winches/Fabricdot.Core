@@ -5,51 +5,50 @@ using Fabricdot.Core.DependencyInjection;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Fabricdot.Authorization
+namespace Fabricdot.Authorization;
+
+[Dependency(ServiceLifetime.Scoped)]
+[ServiceContract(typeof(IAuthorizationHandler))]
+public class PermissionsAuthorizationHandler : AuthorizationHandler<PermissionsRequirement>
 {
-    [Dependency(ServiceLifetime.Scoped)]
-    [ServiceContract(typeof(IAuthorizationHandler))]
-    public class PermissionsAuthorizationHandler : AuthorizationHandler<PermissionsRequirement>
+    protected IPermissionEvaluator PermissionService { get; }
+
+    public PermissionsAuthorizationHandler(IPermissionEvaluator permissionService)
     {
-        protected IPermissionEvaluator PermissionService { get; }
+        PermissionService = permissionService;
+    }
 
-        public PermissionsAuthorizationHandler(IPermissionEvaluator permissionService)
+    protected override async Task HandleRequirementAsync(
+        AuthorizationHandlerContext context,
+        PermissionsRequirement requirement)
+    {
+        var principal = context.User;
+
+        if (principal?.Identity?.IsAuthenticated ?? false)
         {
-            PermissionService = permissionService;
-        }
-
-        protected override async Task HandleRequirementAsync(
-            AuthorizationHandlerContext context,
-            PermissionsRequirement requirement)
-        {
-            var principal = context.User;
-
-            if (principal?.Identity?.IsAuthenticated ?? false)
+            var grantResults = await PermissionService.EvaluateAsync(principal, requirement.Permissions);
+            switch (requirement.RequireBehavior)
             {
-                var grantResults = await PermissionService.EvaluateAsync(principal, requirement.Permissions);
-                switch (requirement.RequireBehavior)
-                {
-                    case PermissionRequireBehavior.Any:
-                        if (grantResults.Any(v => v.IsGranted))
-                        {
-                            context.Succeed(requirement);
-                            return;
-                        }
+                case PermissionRequireBehavior.Any:
+                    if (grantResults.Any(v => v.IsGranted))
+                    {
+                        context.Succeed(requirement);
+                        return;
+                    }
 
-                        break;
+                    break;
 
-                    case PermissionRequireBehavior.All:
-                        if (grantResults.All(v => v.IsGranted))
-                        {
-                            context.Succeed(requirement);
-                            return;
-                        }
+                case PermissionRequireBehavior.All:
+                    if (grantResults.All(v => v.IsGranted))
+                    {
+                        context.Succeed(requirement);
+                        return;
+                    }
 
-                        break;
-                }
+                    break;
             }
-
-            context.Fail();
         }
+
+        context.Fail();
     }
 }

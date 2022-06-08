@@ -3,59 +3,58 @@ using System.Linq;
 using Fabricdot.Infrastructure.Tests.Aspects.Interceptors;
 using Xunit;
 
-namespace Fabricdot.Infrastructure.Tests.Aspects
+namespace Fabricdot.Infrastructure.Tests.Aspects;
+
+[SuppressMessage("ReSharper", "InconsistentNaming")]
+[Collection("InterceptorTests")]
+public class Interceptor_SpecificTargetType_Tests : InterceptorTestsBase
 {
-    [SuppressMessage("ReSharper", "InconsistentNaming")]
-    [Collection("InterceptorTests")]
-    public class Interceptor_SpecificTargetType_Tests : InterceptorTestsBase
+    [Fact]
+    public void InvokeDeclaringMethod_InheritTargetTypeDirectly_InterceptMethod()
     {
-        [Fact]
-        public void InvokeDeclaringMethod_InheritTargetTypeDirectly_InterceptMethod()
+        ResetInterceptorsState();
+        var expected = new[]
         {
-            ResetInterceptorsState();
-            var expected = new[]
-            {
-                1, 2
-            };
-            Calculator.Plus(expected.First(), expected.Last());
-            var actual = IntegerParameterInterceptor.Parameters;
-            Assert.Equal(expected, actual);
-        }
+            1, 2
+        };
+        Calculator.Plus(expected.First(), expected.Last());
+        var actual = IntegerParameterInterceptor.Parameters;
+        Assert.Equal(expected, actual);
+    }
 
-        [Fact]
-        public void InvokeInheritedMethod_InheritTargetTypeIndirectly_InterceptMethod()
+    [Fact]
+    public void InvokeInheritedMethod_InheritTargetTypeIndirectly_InterceptMethod()
+    {
+        ResetInterceptorsState();
+        var expected = new[]
         {
-            ResetInterceptorsState();
-            var expected = new[]
-            {
-                1, 2
-            };
-            // Interceptor with specific marker type should not be invoke.
-            DerivedCalculator.Plus(expected.First(), expected.Last());
-            var actual = IntegerParameterInterceptor.Parameters;
-            Assert.Equal(expected, actual);
-        }
+            1, 2
+        };
+        // Interceptor with specific marker type should not be invoke.
+        DerivedCalculator.Plus(expected.First(), expected.Last());
+        var actual = IntegerParameterInterceptor.Parameters;
+        Assert.Equal(expected, actual);
+    }
 
-        [Fact]
-        public void InvokeOverridingMethod_InheritTargetTypeIndirectly_InterceptMethod()
+    [Fact]
+    public void InvokeOverridingMethod_InheritTargetTypeIndirectly_InterceptMethod()
+    {
+        ResetInterceptorsState();
+        var expected = new[]
         {
-            ResetInterceptorsState();
-            var expected = new[]
-            {
-                1, 2
-            };
-            // Interceptor with specific marker type should not be invoke.
-            DerivedCalculator.Minus(expected.First(), expected.Last());
-            var actual = IntegerParameterInterceptor.Parameters;
-            Assert.Equal(expected, actual);
-        }
+            1, 2
+        };
+        // Interceptor with specific marker type should not be invoke.
+        DerivedCalculator.Minus(expected.First(), expected.Last());
+        var actual = IntegerParameterInterceptor.Parameters;
+        Assert.Equal(expected, actual);
+    }
 
-        [Fact]
-        public void InvokeDeclaringMethod_AnnotateDisableAspect_DoNothing()
-        {
-            ResetInterceptorsState();
-            Calculator.Divide(2, 1);
-            Assert.Equal(default, IntegerParameterInterceptor.Parameters);
-        }
+    [Fact]
+    public void InvokeDeclaringMethod_AnnotateDisableAspect_DoNothing()
+    {
+        ResetInterceptorsState();
+        Calculator.Divide(2, 1);
+        Assert.Equal(default, IntegerParameterInterceptor.Parameters);
     }
 }

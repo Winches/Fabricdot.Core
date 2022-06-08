@@ -1,7 +1,6 @@
-﻿namespace Fabricdot.Infrastructure.Data
+﻿namespace Fabricdot.Infrastructure.Data;
+
+public class DbConnectionOptions
 {
-    public class DbConnectionOptions
-    {
-        public ConnectionStrings ConnectionStrings { get; set; } = new ConnectionStrings();
-    }
+    public ConnectionStrings ConnectionStrings { get; set; } = new ConnectionStrings();
 }

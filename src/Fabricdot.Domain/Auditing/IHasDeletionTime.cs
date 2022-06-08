@@ -1,9 +1,8 @@
 ﻿using System;
 
-namespace Fabricdot.Domain.Auditing
+namespace Fabricdot.Domain.Auditing;
+
+public interface IHasDeletionTime : ISoftDelete
 {
-    public interface IHasDeletionTime : ISoftDelete
-    {
-        DateTime? DeletionTime { get; }
-    }
+    DateTime? DeletionTime { get; }
 }

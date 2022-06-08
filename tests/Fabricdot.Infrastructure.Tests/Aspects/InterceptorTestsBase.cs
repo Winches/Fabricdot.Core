@@ -3,30 +3,29 @@ using Fabricdot.Infrastructure.Tests.Aspects.Interceptors;
 using Fabricdot.Test.Shared;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Fabricdot.Infrastructure.Tests.Aspects
+namespace Fabricdot.Infrastructure.Tests.Aspects;
+
+public abstract class InterceptorTestsBase : IntegrationTestBase<InfrastructureTestModule>
 {
-    public abstract class InterceptorTestsBase : IntegrationTestBase<InfrastructureTestModule>
+    protected readonly ICalculator Calculator;
+    protected readonly ICalculator DerivedCalculator;
+
+    /// <inheritdoc />
+    protected InterceptorTestsBase()
     {
-        protected readonly ICalculator Calculator;
-        protected readonly ICalculator DerivedCalculator;
+        Calculator = ServiceProvider.GetRequiredService<ICalculator>();
+        DerivedCalculator = ServiceProvider.GetRequiredService<DerivedCalculator>();
+    }
 
-        /// <inheritdoc />
-        protected InterceptorTestsBase()
-        {
-            Calculator = ServiceProvider.GetRequiredService<ICalculator>();
-            DerivedCalculator = ServiceProvider.GetRequiredService<DerivedCalculator>();
-        }
+    protected static void ResetInterceptorsState()
+    {
+        IntegerParameterInterceptor.Parameters = default;
+        IntegerResultInterceptor.Result = default;
+        LoggingInterceptor.IsLogged = default;
+    }
 
-        protected static void ResetInterceptorsState()
-        {
-            IntegerParameterInterceptor.Parameters = default;
-            IntegerResultInterceptor.Result = default;
-            LoggingInterceptor.IsLogged = default;
-        }
-
-        protected override void ConfigureServices(IServiceCollection serviceCollection)
-        {
-            UseServiceProviderFactory<FabricdotServiceProviderFactory>();
-        }
+    protected override void ConfigureServices(IServiceCollection serviceCollection)
+    {
+        UseServiceProviderFactory<FabricdotServiceProviderFactory>();
     }
 }

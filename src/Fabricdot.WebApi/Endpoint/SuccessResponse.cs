@@ -1,13 +1,12 @@
-﻿namespace Fabricdot.WebApi.Endpoint
+﻿namespace Fabricdot.WebApi.Endpoint;
+
+public class SuccessResponse : Response<object>
 {
-    public class SuccessResponse : Response<object>
+    public SuccessResponse(
+        object? data,
+        int code) : base(data)
     {
-        public SuccessResponse(
-            object? data,
-            int code) : base(data)
-        {
-            Success = true;
-            Code = code;
-        }
+        Success = true;
+        Code = code;
     }
 }

@@ -1,10 +1,9 @@
-﻿namespace Fabricdot.WebApi.Endpoint
+﻿namespace Fabricdot.WebApi.Endpoint;
+
+public class ErrorResponse : Response<object>
 {
-    public class ErrorResponse : Response<object>
+    public ErrorResponse(string message, int code) : base(message, code)
     {
-        public ErrorResponse(string message, int code) : base(message, code)
-        {
-            Success = false;
-        }
+        Success = false;
     }
 }

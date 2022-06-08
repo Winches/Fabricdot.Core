@@ -1,17 +1,16 @@
 ﻿using System;
 
-namespace Fabricdot.MultiTenancy.Abstractions
+namespace Fabricdot.MultiTenancy.Abstractions;
+
+public interface ICurrentTenant
 {
-    public interface ICurrentTenant
-    {
-        Guid? Id { get; }
+    Guid? Id { get; }
 
-        string? Name { get; }
+    string? Name { get; }
 
-        bool IsAvailable { get; }
+    bool IsAvailable { get; }
 
-        IDisposable Change(
-            Guid? tenantId,
-            string? tenantName = null);
-    }
+    IDisposable Change(
+        Guid? tenantId,
+        string? tenantName = null);
 }

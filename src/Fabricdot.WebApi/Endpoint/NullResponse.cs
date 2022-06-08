@@ -1,11 +1,10 @@
-﻿namespace Fabricdot.WebApi.Endpoint
-{
-    public class NullResponse : Response<object>
-    {
-        private NullResponse()
-        {
-        }
+﻿namespace Fabricdot.WebApi.Endpoint;
 
-        public static NullResponse Null => new NullResponse();
+public sealed class NullResponse : Response<object>
+{
+    public static NullResponse Null => new();
+
+    private NullResponse()
+    {
     }
 }

@@ -5,35 +5,34 @@ using System.Linq;
 using System.Reflection;
 using Ardalis.GuardClauses;
 
-namespace Fabricdot.Core.Modularity
+namespace Fabricdot.Core.Modularity;
+
+internal static class ModuleMetadataExtensions
 {
-    internal static class ModuleMetadataExtensions
+    private static readonly ConcurrentDictionary<Type, IReadOnlySet<Type>> _dependentTypeCache = new();
+
+    internal static IReadOnlySet<Type> GetDependentModuleTypes(this IModuleMetadata module)
     {
-        private static readonly ConcurrentDictionary<Type, IReadOnlySet<Type>> _dependentTypeCache = new();
+        Guard.Against.Null(module, nameof(module));
 
-        internal static IReadOnlySet<Type> GetDependentModuleTypes(this IModuleMetadata module)
+        return module.Type.GetDependentModuleTypes();
+    }
+
+    internal static IReadOnlySet<Type> GetDependentModuleTypes(this Type moduleType)
+    {
+        Guard.Against.Null(moduleType, nameof(moduleType));
+
+        if (_dependentTypeCache.ContainsKey(moduleType))
         {
-            Guard.Against.Null(module, nameof(module));
-
-            return module.Type.GetDependentModuleTypes();
+            return _dependentTypeCache[moduleType];
         }
-
-        internal static IReadOnlySet<Type> GetDependentModuleTypes(this Type moduleType)
+        else
         {
-            Guard.Against.Null(moduleType, nameof(moduleType));
-
-            if (_dependentTypeCache.ContainsKey(moduleType))
-            {
-                return _dependentTypeCache[moduleType];
-            }
-            else
-            {
-                var types = moduleType.GetCustomAttributes<RequiresAttribute>()
-                                      .SelectMany(v => v.Requires)
-                                      .ToHashSet();
-                _dependentTypeCache.TryAdd(moduleType, types);
-                return types;
-            }
+            var types = moduleType.GetCustomAttributes<RequiresAttribute>()
+                                  .SelectMany(v => v.Requires)
+                                  .ToHashSet();
+            _dependentTypeCache.TryAdd(moduleType, types);
+            return types;
         }
     }
 }

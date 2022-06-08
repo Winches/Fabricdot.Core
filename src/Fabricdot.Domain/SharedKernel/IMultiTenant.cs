@@ -1,9 +1,8 @@
 ﻿using System;
 
-namespace Fabricdot.Domain.SharedKernel
+namespace Fabricdot.Domain.SharedKernel;
+
+public interface IMultiTenant
 {
-    public interface IMultiTenant
-    {
-        Guid? TenantId { get; }
-    }
+    Guid? TenantId { get; }
 }

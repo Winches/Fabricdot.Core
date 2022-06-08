@@ -4,18 +4,17 @@ using Fabricdot.Core.Security;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Fabricdot.WebApi.Securirty
+namespace Fabricdot.WebApi.Securirty;
+
+[Dependency(ServiceLifetime.Singleton, RegisterBehavior = RegistrationBehavior.Replace)]
+public class HttpContextPrincipalAccessor : DefaultPrincipalAccessor
 {
-    [Dependency(ServiceLifetime.Singleton, RegisterBehavior = RegistrationBehavior.Replace)]
-    public class HttpContextPrincipalAccessor : DefaultPrincipalAccessor
+    private readonly IHttpContextAccessor _httpContextAccessor;
+
+    public HttpContextPrincipalAccessor(IHttpContextAccessor httpContextAccessor)
     {
-        private readonly IHttpContextAccessor _httpContextAccessor;
-
-        public HttpContextPrincipalAccessor(IHttpContextAccessor httpContextAccessor)
-        {
-            _httpContextAccessor = httpContextAccessor;
-        }
-
-        protected override ClaimsPrincipal? GetClaimsPrincipal() => _httpContextAccessor.HttpContext?.User ?? base.GetClaimsPrincipal();
+        _httpContextAccessor = httpContextAccessor;
     }
+
+    protected override ClaimsPrincipal? GetClaimsPrincipal() => _httpContextAccessor.HttpContext?.User ?? base.GetClaimsPrincipal();
 }

@@ -2,18 +2,17 @@
 using System.Linq;
 using Ardalis.GuardClauses;
 
-namespace Microsoft.AspNetCore.Identity
+namespace Microsoft.AspNetCore.Identity;
+
+public static class IdentityResultExtensions
 {
-    public static class IdentityResultExtensions
+    public static void EnsureSuccess(this IdentityResult result)
     {
-        public static void EnsureSuccess(this IdentityResult result)
-        {
-            Guard.Against.Null(result, nameof(result));
+        Guard.Against.Null(result, nameof(result));
 
-            if (result.Succeeded)
-                return;
+        if (result.Succeeded)
+            return;
 
-            throw new InvalidOperationException(result.Errors.First().Description);
-        }
+        throw new InvalidOperationException(result.Errors.First().Description);
     }
 }

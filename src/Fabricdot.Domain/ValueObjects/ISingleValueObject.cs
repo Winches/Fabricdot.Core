@@ -1,7 +1,6 @@
-﻿namespace Fabricdot.Domain.ValueObjects
+﻿namespace Fabricdot.Domain.ValueObjects;
+
+public interface ISingleValueObject
 {
-    public interface ISingleValueObject
-    {
-        object GetValue();
-    }
+    object GetValue();
 }

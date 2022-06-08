@@ -4,44 +4,43 @@ using Fabricdot.Test.Shared;
 using Microsoft.Extensions.DependencyInjection;
 using Xunit;
 
-namespace Fabricdot.Infrastructure.Tests.Uow
+namespace Fabricdot.Infrastructure.Tests.Uow;
+
+[SuppressMessage("ReSharper", "InconsistentNaming")]
+public class UnitOfWork_Events_Tests : IntegrationTestBase<InfrastructureTestModule>
 {
-    [SuppressMessage("ReSharper", "InconsistentNaming")]
-    public class UnitOfWork_Events_Tests : IntegrationTestBase<InfrastructureTestModule>
+    private readonly IUnitOfWorkManager _unitOfWorkManager;
+
+    public UnitOfWork_Events_Tests()
     {
-        private readonly IUnitOfWorkManager _unitOfWorkManager;
+        var provider = ServiceScope.ServiceProvider;
+        _unitOfWorkManager = provider.GetRequiredService<IUnitOfWorkManager>();
+    }
 
-        public UnitOfWork_Events_Tests()
+    [Fact]
+    public void Dispose_SubscribeDisposed_TriggerEventHandler()
+    {
+        var disposed = false;
+        using (var uow = _unitOfWorkManager.Begin())
         {
-            var provider = ServiceScope.ServiceProvider;
-            _unitOfWorkManager = provider.GetRequiredService<IUnitOfWorkManager>();
+            uow.Disposed += (sender, e) => disposed = true;
+            Assert.False(disposed);
         }
+        Assert.True(disposed);
+    }
 
-        [Fact]
-        public void Dispose_SubscribeDisposed_TriggerEventHandler()
+    [Fact]
+    public void Dispose_SubscribeChildUowDisposed_TriggerEventHandler()
+    {
+        var disposed = false;
+        using (var uow1 = _unitOfWorkManager.Begin())
         {
-            var disposed = false;
-            using (var uow = _unitOfWorkManager.Begin())
+            using (var uow2 = _unitOfWorkManager.Begin())
             {
-                uow.Disposed += (sender, e) => disposed = true;
-                Assert.False(disposed);
+                uow1.Disposed += (sender, e) => disposed = true;
             }
-            Assert.True(disposed);
+            Assert.False(disposed);
         }
-
-        [Fact]
-        public void Dispose_SubscribeChildUowDisposed_TriggerEventHandler()
-        {
-            var disposed = false;
-            using (var uow1 = _unitOfWorkManager.Begin())
-            {
-                using (var uow2 = _unitOfWorkManager.Begin())
-                {
-                    uow1.Disposed += (sender, e) => disposed = true;
-                }
-                Assert.False(disposed);
-            }
-            Assert.True(disposed);
-        }
+        Assert.True(disposed);
     }
 }

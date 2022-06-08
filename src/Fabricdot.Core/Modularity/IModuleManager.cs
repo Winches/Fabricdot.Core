@@ -2,14 +2,13 @@
 using System.Threading.Tasks;
 using Fabricdot.Core.Boot;
 
-namespace Fabricdot.Core.Modularity
+namespace Fabricdot.Core.Modularity;
+
+public interface IModuleManager
 {
-    public interface IModuleManager
-    {
-        IReadOnlyCollection<IModuleMetadata> Modules { get; }
+    IReadOnlyCollection<IModuleMetadata> Modules { get; }
 
-        Task StartAsync(ApplicationStartingContext context);
+    Task StartAsync(ApplicationStartingContext context);
 
-        Task StopAsync(ApplicationStoppingContext context);
-    }
+    Task StopAsync(ApplicationStoppingContext context);
 }

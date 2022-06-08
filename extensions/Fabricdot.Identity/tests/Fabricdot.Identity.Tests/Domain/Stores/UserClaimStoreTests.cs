@@ -7,133 +7,132 @@ using Fabricdot.Infrastructure.EntityFrameworkCore.Tests.Data;
 using Microsoft.AspNetCore.Identity;
 using Xunit;
 
-namespace Fabricdot.Identity.Tests.Domain.Stores
+namespace Fabricdot.Identity.Tests.Domain.Stores;
+
+public class UserClaimStoreTests : UserStoreTestBase
 {
-    public class UserClaimStoreTests : UserStoreTestBase
+    private readonly IUserClaimStore<User> _userClaimStore;
+
+    public UserClaimStoreTests()
     {
-        private readonly IUserClaimStore<User> _userClaimStore;
+        _userClaimStore = (IUserClaimStore<User>)UserStore;
+    }
 
-        public UserClaimStoreTests()
+    [Fact]
+    public async Task AddClaimsAsync_GivenNullOrEmpty_ThrowException()
+    {
+        await UseUowAsync(async () =>
         {
-            _userClaimStore = (IUserClaimStore<User>)UserStore;
-        }
+            var user = await UserRepository.GetDetailsByIdAsync(FakeDataBuilder.UserAndersId);
+            Task TestCode1() => _userClaimStore.AddClaimsAsync(user, null, default);
+            Task TestCode2() => _userClaimStore.AddClaimsAsync(user, Array.Empty<Claim>(), default);
 
-        [Fact]
-        public async Task AddClaimsAsync_GivenNullOrEmpty_ThrowException()
+            await Assert.ThrowsAsync<ArgumentNullException>(TestCode1);
+            await Assert.ThrowsAsync<ArgumentException>(TestCode2);
+        });
+    }
+
+    [Fact]
+    public async Task AddClaimsAsync_GivenClaim_Correctly()
+    {
+        await UseUowAsync(async () =>
         {
-            await UseUowAsync(async () =>
-            {
-                var user = await UserRepository.GetDetailsByIdAsync(FakeDataBuilder.UserAndersId);
-                Task TestCode1() => _userClaimStore.AddClaimsAsync(user, null, default);
-                Task TestCode2() => _userClaimStore.AddClaimsAsync(user, Array.Empty<Claim>(), default);
+            var user = await UserRepository.GetDetailsByIdAsync(FakeDataBuilder.UserAndersId);
+            var claim = new Claim("claimType1", "value1");
+            await _userClaimStore.AddClaimsAsync(
+                user,
+                new[] { claim },
+                default);
 
-                await Assert.ThrowsAsync<ArgumentNullException>(TestCode1);
-                await Assert.ThrowsAsync<ArgumentException>(TestCode2);
-            });
-        }
+            Assert.Contains(user.Claims, v => v.ClaimType == claim.Type && v.ClaimValue == claim.Value);
+        });
+    }
 
-        [Fact]
-        public async Task AddClaimsAsync_GivenClaim_Correctly()
+    [Fact]
+    public async Task RemoveClaimsAsync_GivenNullOrEmpty_ThrowException()
+    {
+        await UseUowAsync(async () =>
         {
-            await UseUowAsync(async () =>
-            {
-                var user = await UserRepository.GetDetailsByIdAsync(FakeDataBuilder.UserAndersId);
-                var claim = new Claim("claimType1", "value1");
-                await _userClaimStore.AddClaimsAsync(
-                    user,
-                    new[] { claim },
-                    default);
+            var user = await UserRepository.GetDetailsByIdAsync(FakeDataBuilder.UserAndersId);
+            Task TestCode1() => _userClaimStore.RemoveClaimsAsync(user, null, default);
+            Task TestCode2() => _userClaimStore.RemoveClaimsAsync(user, Array.Empty<Claim>(), default);
 
-                Assert.Contains(user.Claims, v => v.ClaimType == claim.Type && v.ClaimValue == claim.Value);
-            });
-        }
+            await Assert.ThrowsAsync<ArgumentNullException>(TestCode1);
+            await Assert.ThrowsAsync<ArgumentException>(TestCode2);
+        });
+    }
 
-        [Fact]
-        public async Task RemoveClaimsAsync_GivenNullOrEmpty_ThrowException()
+    [Fact]
+    public async Task RemoveClaimsAsync_GivenClaim_Correctly()
+    {
+        await UseUowAsync(async () =>
         {
-            await UseUowAsync(async () =>
-            {
-                var user = await UserRepository.GetDetailsByIdAsync(FakeDataBuilder.UserAndersId);
-                Task TestCode1() => _userClaimStore.RemoveClaimsAsync(user, null, default);
-                Task TestCode2() => _userClaimStore.RemoveClaimsAsync(user, Array.Empty<Claim>(), default);
+            var user = await UserRepository.GetDetailsByIdAsync(FakeDataBuilder.UserAndersId);
+            var userClaim = user.Claims.First();
+            var claim = new Claim(userClaim.ClaimType, userClaim.ClaimValue);
+            await _userClaimStore.RemoveClaimsAsync(
+                user,
+                new[] { claim },
+                default);
 
-                await Assert.ThrowsAsync<ArgumentNullException>(TestCode1);
-                await Assert.ThrowsAsync<ArgumentException>(TestCode2);
-            });
-        }
+            Assert.DoesNotContain(user.Claims, v => v.ClaimType == claim.Type && v.ClaimValue == claim.Value);
+        });
+    }
 
-        [Fact]
-        public async Task RemoveClaimsAsync_GivenClaim_Correctly()
+    [Fact]
+    public async Task ReplaceClaimAsync_GivenNull_ThrowException()
+    {
+        await UseUowAsync(async () =>
         {
-            await UseUowAsync(async () =>
-            {
-                var user = await UserRepository.GetDetailsByIdAsync(FakeDataBuilder.UserAndersId);
-                var userClaim = user.Claims.First();
-                var claim = new Claim(userClaim.ClaimType, userClaim.ClaimValue);
-                await _userClaimStore.RemoveClaimsAsync(
-                    user,
-                    new[] { claim },
-                    default);
+            var user = await UserRepository.GetDetailsByIdAsync(FakeDataBuilder.UserAndersId);
+            var userClaim = user.Claims.First();
+            var originClaim = new Claim(userClaim.ClaimType, userClaim.ClaimValue);
+            var newClaim = new Claim(userClaim.ClaimType, "newValue");
+            Task TestCode1() => _userClaimStore.ReplaceClaimAsync(user, originClaim, null, default);
+            Task TestCode2() => _userClaimStore.ReplaceClaimAsync(user, null, newClaim, default);
 
-                Assert.DoesNotContain(user.Claims, v => v.ClaimType == claim.Type && v.ClaimValue == claim.Value);
-            });
-        }
+            await Assert.ThrowsAsync<ArgumentNullException>(TestCode1);
+            await Assert.ThrowsAsync<ArgumentNullException>(TestCode2);
+        });
+    }
 
-        [Fact]
-        public async Task ReplaceClaimAsync_GivenNull_ThrowException()
+    [Fact]
+    public async Task ReplaceClaimAsync_GivenClaims_Correctly()
+    {
+        await UseUowAsync(async () =>
         {
-            await UseUowAsync(async () =>
-            {
-                var user = await UserRepository.GetDetailsByIdAsync(FakeDataBuilder.UserAndersId);
-                var userClaim = user.Claims.First();
-                var originClaim = new Claim(userClaim.ClaimType, userClaim.ClaimValue);
-                var newClaim = new Claim(userClaim.ClaimType, "newValue");
-                Task TestCode1() => _userClaimStore.ReplaceClaimAsync(user, originClaim, null, default);
-                Task TestCode2() => _userClaimStore.ReplaceClaimAsync(user, null, newClaim, default);
+            var user = await UserRepository.GetDetailsByIdAsync(FakeDataBuilder.UserAndersId);
+            var userClaim = user.Claims.First();
+            var originClaim = new Claim(userClaim.ClaimType, userClaim.ClaimValue);
+            var newClaim = new Claim(userClaim.ClaimType, "newValue");
+            await _userClaimStore.ReplaceClaimAsync(
+                user,
+                originClaim,
+                newClaim,
+                default);
 
-                await Assert.ThrowsAsync<ArgumentNullException>(TestCode1);
-                await Assert.ThrowsAsync<ArgumentNullException>(TestCode2);
-            });
-        }
+            Assert.DoesNotContain(user.Claims, v => v.ClaimType == originClaim.Type && v.ClaimValue == originClaim.Value);
+            Assert.Contains(user.Claims, v => v.ClaimType == newClaim.Type && v.ClaimValue == newClaim.Value);
+        });
+    }
 
-        [Fact]
-        public async Task ReplaceClaimAsync_GivenClaims_Correctly()
+    [Fact]
+    public async Task GetClaimsAsync_ReturnCorrectly()
+    {
+        await UseUowAsync(async () =>
         {
-            await UseUowAsync(async () =>
-            {
-                var user = await UserRepository.GetDetailsByIdAsync(FakeDataBuilder.UserAndersId);
-                var userClaim = user.Claims.First();
-                var originClaim = new Claim(userClaim.ClaimType, userClaim.ClaimValue);
-                var newClaim = new Claim(userClaim.ClaimType, "newValue");
-                await _userClaimStore.ReplaceClaimAsync(
-                    user,
-                    originClaim,
-                    newClaim,
-                    default);
+            var user = await UserRepository.GetDetailsByIdAsync(FakeDataBuilder.UserAndersId);
+            var claims = await _userClaimStore.GetClaimsAsync(user, default);
 
-                Assert.DoesNotContain(user.Claims, v => v.ClaimType == originClaim.Type && v.ClaimValue == originClaim.Value);
-                Assert.Contains(user.Claims, v => v.ClaimType == newClaim.Type && v.ClaimValue == newClaim.Value);
-            });
-        }
+            Assert.Contains(claims, v => user.Claims.Any(o => o.ClaimType == v.Type && o.ClaimValue == v.Value));
+        });
+    }
 
-        [Fact]
-        public async Task GetClaimsAsync_ReturnCorrectly()
-        {
-            await UseUowAsync(async () =>
-            {
-                var user = await UserRepository.GetDetailsByIdAsync(FakeDataBuilder.UserAndersId);
-                var claims = await _userClaimStore.GetClaimsAsync(user, default);
+    [Fact]
+    public async Task GetUsersForClaimAsync_ReturnCorrectly()
+    {
+        var users = await _userClaimStore.GetUsersForClaimAsync(FakeDataBuilder.ClaimOfAnders, default);
 
-                Assert.Contains(claims, v => user.Claims.Any(o => o.ClaimType == v.Type && o.ClaimValue == v.Value));
-            });
-        }
-
-        [Fact]
-        public async Task GetUsersForClaimAsync_ReturnCorrectly()
-        {
-            var users = await _userClaimStore.GetUsersForClaimAsync(FakeDataBuilder.ClaimOfAnders, default);
-
-            Assert.Contains(users, v => v.Id == FakeDataBuilder.UserAndersId);
-        }
+        Assert.Contains(users, v => v.Id == FakeDataBuilder.UserAndersId);
     }
 }

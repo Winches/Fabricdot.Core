@@ -1,7 +1,6 @@
-﻿namespace Fabricdot.Core.UniqueIdentifier.CombGuid
+﻿namespace Fabricdot.Core.UniqueIdentifier.CombGuid;
+
+public interface ITimestampProvider
 {
-    public interface ITimestampProvider
-    {
-        long GetTimestamp();
-    }
+    long GetTimestamp();
 }

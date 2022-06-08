@@ -8,76 +8,75 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Xunit;
 
-namespace Fabricdot.Core.Tests.Boot
+namespace Fabricdot.Core.Tests.Boot;
+
+public class Bootstrapper_ExtensionsTests
 {
-    public class Bootstrapper_ExtensionsTests
+    [Fact]
+    public void AddBootstrapper_GivenModuleType_RegisterServices()
     {
-        [Fact]
-        public void AddBootstrapper_GivenModuleType_RegisterServices()
+        var services = new ServiceCollection();
+        services.AddBootstrapper<FakeStartupModule>();
+
+        services.Should().ContainSingle(v => v.ServiceType == typeof(FakeService));
+    }
+
+    [Fact]
+    public void AddBootstrapper_ConfigureOptions_Correctly()
+    {
+        var services = new ServiceCollection();
+        services.AddBootstrapper<FakeStartupModule>(opts =>
+       {
+           opts.Services.Should().BeSameAs(services);
+           opts.ConfigurationOptions.Should().NotBeNull();
+       });
+    }
+
+    [Fact]
+    public async Task BootstrapAsync_WhenAddApplication_StartCorrectly()
+    {
+        var services = new ServiceCollection();
+        services.AddBootstrapper<FakeStartupModule>();
+        var serviceProvider = services.BuildServiceProvider();
+
+        await serviceProvider.BootstrapAsync();
+    }
+
+    [Fact]
+    public async Task BootstrapAsync_ConfigureApp_StartCorrectly()
+    {
+        var services = new ServiceCollection();
+        services.AddBootstrapper<FakeStartupModule>();
+        var serviceProvider = services.BuildServiceProvider();
+
+        await serviceProvider.BootstrapAsync(app =>
         {
-            var services = new ServiceCollection();
-            services.AddBootstrapper<FakeStartupModule>();
+            app.Should().NotBeNull();
+            app.Services.GetService<IConfiguration>().Should().NotBeNull();
+        });
+    }
 
-            services.Should().ContainSingle(v => v.ServiceType == typeof(FakeService));
-        }
+    [Fact]
+    public async Task BootstrapAsync_WithoutAddBootsrapper_ThrowException()
+    {
+        var services = new ServiceCollection();
+        var serviceProvider = services.BuildServiceProvider();
 
-        [Fact]
-        public void AddBootstrapper_ConfigureOptions_Correctly()
-        {
-            var services = new ServiceCollection();
-            services.AddBootstrapper<FakeStartupModule>(opts =>
-           {
-               opts.Services.Should().BeSameAs(services);
-               opts.ConfigurationOptions.Should().NotBeNull();
-           });
-        }
-
-        [Fact]
-        public async Task BootstrapAsync_WhenAddApplication_StartCorrectly()
-        {
-            var services = new ServiceCollection();
-            services.AddBootstrapper<FakeStartupModule>();
-            var serviceProvider = services.BuildServiceProvider();
-
-            await serviceProvider.BootstrapAsync();
-        }
-
-        [Fact]
-        public async Task BootstrapAsync_ConfigureApp_StartCorrectly()
-        {
-            var services = new ServiceCollection();
-            services.AddBootstrapper<FakeStartupModule>();
-            var serviceProvider = services.BuildServiceProvider();
-
-            await serviceProvider.BootstrapAsync(app =>
-            {
-                app.Should().NotBeNull();
-                app.Services.GetService<IConfiguration>().Should().NotBeNull();
-            });
-        }
-
-        [Fact]
-        public async Task BootstrapAsync_WithoutAddBootsrapper_ThrowException()
-        {
-            var services = new ServiceCollection();
-            var serviceProvider = services.BuildServiceProvider();
-
-            await FluentActions.Awaiting(() => serviceProvider.BootstrapAsync())
-                               .Should()
-                               .ThrowAsync<InvalidOperationException>();
-        }
-
-        [Fact]
-        public async Task GetBuilderProperties_WhenAddApplication_ReturnCorrectly()
-        {
-            var services = new ServiceCollection();
-            var builder = services.AddBootstrapper<FakeStartupModule>();
-            var serviceProvider = services.BuildServiceProvider();
-            await serviceProvider.BootstrapAsync();
-
-            serviceProvider.GetBuilderProperties()
+        await FluentActions.Awaiting(() => serviceProvider.BootstrapAsync())
                            .Should()
-                           .BeSameAs(builder.Properties);
-        }
+                           .ThrowAsync<InvalidOperationException>();
+    }
+
+    [Fact]
+    public async Task GetBuilderProperties_WhenAddApplication_ReturnCorrectly()
+    {
+        var services = new ServiceCollection();
+        var builder = services.AddBootstrapper<FakeStartupModule>();
+        var serviceProvider = services.BuildServiceProvider();
+        await serviceProvider.BootstrapAsync();
+
+        serviceProvider.GetBuilderProperties()
+                       .Should()
+                       .BeSameAs(builder.Properties);
     }
 }

@@ -1,6 +1,5 @@
-namespace Fabricdot.Infrastructure.Uow.Abstractions
+namespace Fabricdot.Infrastructure.Uow.Abstractions;
+
+public interface IDatabaseFacade
 {
-    public interface IDatabaseFacade
-    {
-    }
 }

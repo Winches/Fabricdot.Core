@@ -1,7 +1,6 @@
-﻿namespace Fabricdot.Core.Modularity
+﻿namespace Fabricdot.Core.Modularity;
+
+public interface IConfigureServiceContextFactory
 {
-    public interface IConfigureServiceContextFactory
-    {
-        ConfigureServiceContext Create();
-    }
+    ConfigureServiceContext Create();
 }

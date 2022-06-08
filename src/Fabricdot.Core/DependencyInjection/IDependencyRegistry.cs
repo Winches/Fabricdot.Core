@@ -2,18 +2,17 @@
 using System.Collections.Generic;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Fabricdot.Core.DependencyInjection
+namespace Fabricdot.Core.DependencyInjection;
+
+public interface IDependencyRegistry
 {
-    public interface IDependencyRegistry
-    {
-        Type ImplementationType { get; }
+    Type ImplementationType { get; }
 
-        ICollection<Type> ServiceTypes { get; }
+    ICollection<Type> ServiceTypes { get; }
 
-        ServiceLifetime ServiceLifetime { get; }
+    ServiceLifetime ServiceLifetime { get; }
 
-        RegistrationBehavior RegisterBehavior { get; }
+    RegistrationBehavior RegisterBehavior { get; }
 
-        ICollection<ServiceDescriptor> ToServiceDescriptors();
-    }
+    ICollection<ServiceDescriptor> ToServiceDescriptors();
 }

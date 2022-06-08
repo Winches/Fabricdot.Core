@@ -1,9 +1,8 @@
 ﻿using System.Threading.Tasks;
 
-namespace Fabricdot.MultiTenancy.Abstractions
+namespace Fabricdot.MultiTenancy.Abstractions;
+
+public interface ITenantResolver
 {
-    public interface ITenantResolver
-    {
-        Task<TenantResolveResult> ResolveAsync();
-    }
+    Task<TenantResolveResult> ResolveAsync();
 }

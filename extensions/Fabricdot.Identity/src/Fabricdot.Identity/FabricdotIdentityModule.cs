@@ -2,12 +2,11 @@
 using Fabricdot.Identity.Domain;
 using Fabricdot.Infrastructure.EntityFrameworkCore;
 
-namespace Fabricdot.Identity
+namespace Fabricdot.Identity;
+
+[Requires(typeof(FabricdotEntityFrameworkCoreModule))]
+[Requires(typeof(FabricdotIdentityDomainModule))]
+[Exports]
+public class FabricdotIdentityModule : ModuleBase
 {
-    [Requires(typeof(FabricdotEntityFrameworkCoreModule))]
-    [Requires(typeof(FabricdotIdentityDomainModule))]
-    [Exports]
-    public class FabricdotIdentityModule : ModuleBase
-    {
-    }
 }

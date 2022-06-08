@@ -1,7 +1,6 @@
-﻿namespace Fabricdot.Domain.Auditing
+﻿namespace Fabricdot.Domain.Auditing;
+
+public static class AuditConstant
 {
-    public static class AuditConstant
-    {
-        public const int USER_ID_LEN = 40;
-    }
+    public const int USER_ID_LEN = 40;
 }

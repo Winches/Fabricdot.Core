@@ -1,9 +1,8 @@
 ﻿using System.Threading.Tasks;
 
-namespace Fabricdot.Core.ExceptionHandling
+namespace Fabricdot.Core.ExceptionHandling;
+
+public interface IExceptionThrownEventHandler<in T> where T : IExceptionThrownEvent
 {
-    public interface IExceptionThrownEventHandler<in T> where T : IExceptionThrownEvent
-    {
-        Task HandleAsync(T @event);
-    }
+    Task HandleAsync(T @event);
 }

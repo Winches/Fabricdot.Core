@@ -4,37 +4,36 @@ using System.Threading.Tasks;
 using Ardalis.GuardClauses;
 using Fabricdot.Authorization.Permissions;
 
-namespace Fabricdot.Authorization
+namespace Fabricdot.Authorization;
+
+public static class PermissionGrantingServiceExtensions
 {
-    public static class PermissionGrantingServiceExtensions
+    public static async Task<bool> IsGrantedAsync(
+        this IPermissionGrantingService permissionGrantingService,
+        GrantSubject subject,
+        string @object,
+        CancellationToken cancellationToken = default)
     {
-        public static async Task<bool> IsGrantedAsync(
-            this IPermissionGrantingService permissionGrantingService,
-            GrantSubject subject,
-            string @object,
-            CancellationToken cancellationToken = default)
-        {
-            Guard.Against.Null(permissionGrantingService, nameof(permissionGrantingService));
+        Guard.Against.Null(permissionGrantingService, nameof(permissionGrantingService));
 
-            var grantResults = await permissionGrantingService.IsGrantedAsync(
-                subject,
-                new[] { @object },
-                cancellationToken);
+        var grantResults = await permissionGrantingService.IsGrantedAsync(
+            subject,
+            new[] { @object },
+            cancellationToken);
 
-            return grantResults.First().IsGranted;
-        }
+        return grantResults.First().IsGranted;
+    }
 
-        public static async Task<bool> IsSuperuserAsync(
-            this IPermissionGrantingService permissionGrantingService,
-            GrantSubject subject,
-            CancellationToken cancellationToken = default)
-        {
-            Guard.Against.Null(permissionGrantingService, nameof(permissionGrantingService));
+    public static async Task<bool> IsSuperuserAsync(
+        this IPermissionGrantingService permissionGrantingService,
+        GrantSubject subject,
+        CancellationToken cancellationToken = default)
+    {
+        Guard.Against.Null(permissionGrantingService, nameof(permissionGrantingService));
 
-            return await permissionGrantingService.IsGrantedAsync(
-                subject,
-                StandardPermissions.Superuser,
-                cancellationToken);
-        }
+        return await permissionGrantingService.IsGrantedAsync(
+            subject,
+            StandardPermissions.Superuser,
+            cancellationToken);
     }
 }

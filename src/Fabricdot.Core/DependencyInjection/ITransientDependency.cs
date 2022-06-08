@@ -1,6 +1,5 @@
-﻿namespace Fabricdot.Core.DependencyInjection
+﻿namespace Fabricdot.Core.DependencyInjection;
+
+public interface ITransientDependency
 {
-    public interface ITransientDependency
-    {
-    }
 }

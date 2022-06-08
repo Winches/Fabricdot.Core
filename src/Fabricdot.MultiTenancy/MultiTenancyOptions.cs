@@ -2,15 +2,14 @@
 using Fabricdot.MultiTenancy.Abstractions;
 using Fabricdot.MultiTenancy.Strategies;
 
-namespace Fabricdot.MultiTenancy
-{
-    public class MultiTenancyOptions
-    {
-        public ICollection<ITenantResolveStrategy> ResolveStrategies { get; } = new List<ITenantResolveStrategy>();
+namespace Fabricdot.MultiTenancy;
 
-        public MultiTenancyOptions()
-        {
-            ResolveStrategies.Add(new PrincipalTenantResolveStrategy());
-        }
+public class MultiTenancyOptions
+{
+    public ICollection<ITenantResolveStrategy> ResolveStrategies { get; } = new List<ITenantResolveStrategy>();
+
+    public MultiTenancyOptions()
+    {
+        ResolveStrategies.Add(new PrincipalTenantResolveStrategy());
     }
 }

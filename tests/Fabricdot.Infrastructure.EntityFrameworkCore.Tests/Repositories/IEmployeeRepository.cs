@@ -2,9 +2,8 @@
 using Fabricdot.Domain.Services;
 using Fabricdot.Infrastructure.EntityFrameworkCore.Tests.Entities;
 
-namespace Fabricdot.Infrastructure.EntityFrameworkCore.Tests.Repositories
+namespace Fabricdot.Infrastructure.EntityFrameworkCore.Tests.Repositories;
+
+public interface IEmployeeRepository : IRepository<Employee, Guid>
 {
-    public interface IEmployeeRepository : IRepository<Employee, Guid>
-    {
-    }
 }

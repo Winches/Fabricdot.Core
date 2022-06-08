@@ -1,16 +1,15 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace Fabricdot.Authorization.Permissions
+namespace Fabricdot.Authorization.Permissions;
+
+public interface IPermissionManager
 {
-    public interface IPermissionManager
-    {
-        Task AddGroupAsync(PermissionGroup permissionGroup);
+    Task AddGroupAsync(PermissionGroup permissionGroup);
 
-        Task<Permission?> GetByNameAsync(PermissionName name);
+    Task<Permission?> GetByNameAsync(PermissionName name);
 
-        Task<IReadOnlyCollection<Permission>> ListAsync();
+    Task<IReadOnlyCollection<Permission>> ListAsync();
 
-        Task<IReadOnlyCollection<PermissionGroup>> ListGroupsAsync();
-    }
+    Task<IReadOnlyCollection<PermissionGroup>> ListGroupsAsync();
 }

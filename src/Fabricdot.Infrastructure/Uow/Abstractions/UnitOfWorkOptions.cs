@@ -1,19 +1,18 @@
 using System.Data;
 
-namespace Fabricdot.Infrastructure.Uow.Abstractions
+namespace Fabricdot.Infrastructure.Uow.Abstractions;
+
+public class UnitOfWorkOptions
 {
-    public class UnitOfWorkOptions
-    {
-        /// <summary>
-        ///     Default value is false.
-        /// </summary>
-        public bool IsTransactional { get; set; }
+    /// <summary>
+    ///     Default value is false.
+    /// </summary>
+    public bool IsTransactional { get; set; }
 
-        /// <summary>
-        ///     Default value is ReadCommitted.
-        /// </summary>
-        public IsolationLevel IsolationLevel { get; set; } = IsolationLevel.ReadCommitted;
+    /// <summary>
+    ///     Default value is ReadCommitted.
+    /// </summary>
+    public IsolationLevel IsolationLevel { get; set; } = IsolationLevel.ReadCommitted;
 
-        public UnitOfWorkOptions Clone() => (UnitOfWorkOptions)MemberwiseClone();
-    }
+    public UnitOfWorkOptions Clone() => (UnitOfWorkOptions)MemberwiseClone();
 }

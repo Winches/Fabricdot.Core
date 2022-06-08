@@ -1,6 +1,5 @@
-﻿namespace Fabricdot.Domain.Entities
+﻿namespace Fabricdot.Domain.Entities;
+
+public interface IAggregateRoot
 {
-    public interface IAggregateRoot
-    {
-    }
 }

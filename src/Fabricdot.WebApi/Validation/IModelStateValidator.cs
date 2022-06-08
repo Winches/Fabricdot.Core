@@ -1,9 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc.ModelBinding;
 
-namespace Fabricdot.WebApi.Validation
+namespace Fabricdot.WebApi.Validation;
+
+public interface IModelStateValidator
 {
-    public interface IModelStateValidator
-    {
-        void Validate(ModelStateDictionary modelState);
-    }
+    void Validate(ModelStateDictionary modelState);
 }

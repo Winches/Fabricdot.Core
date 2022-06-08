@@ -1,11 +1,11 @@
 ﻿using System;
 using Microsoft.Extensions.Logging;
 
-namespace Fabricdot.Core.ExceptionHandling
+namespace Fabricdot.Core.ExceptionHandling;
+
+public interface IExceptionThrownEvent
 {
-    public interface IExceptionThrownEvent
-    {
-        Exception Exception { get; }
-        LogLevel? LogLevel { get; }
-    }
+    Exception Exception { get; }
+
+    LogLevel? LogLevel { get; }
 }

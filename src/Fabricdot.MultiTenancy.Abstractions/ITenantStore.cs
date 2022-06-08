@@ -1,16 +1,15 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
 
-namespace Fabricdot.MultiTenancy.Abstractions
-{
-    public interface ITenantStore<TTenant> where TTenant : ITenant
-    {
-        Task<TTenant> GetAsync(
-            string identifier,
-            CancellationToken cancellationToken = default);
-    }
+namespace Fabricdot.MultiTenancy.Abstractions;
 
-    public interface ITenantStore : ITenantStore<TenantContext>
-    {
-    }
+public interface ITenantStore<TTenant> where TTenant : ITenant
+{
+    Task<TTenant> GetAsync(
+        string identifier,
+        CancellationToken cancellationToken = default);
+}
+
+public interface ITenantStore : ITenantStore<TenantContext>
+{
 }
