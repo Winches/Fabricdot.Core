@@ -19,7 +19,7 @@ where T : class, IAggregateRoot, Fabricdot.Domain.Entities.IEntity<TKey> where T
 
     public IUnitOfWorkManager UnitOfWorkManager => DbContextProvider.UnitOfWorkManager;
 
-    protected EfRepository(IDbContextProvider<TDbContext> dbContextProvider)
+    public EfRepository(IDbContextProvider<TDbContext> dbContextProvider)
     {
         DbContextProvider = dbContextProvider;
     }
