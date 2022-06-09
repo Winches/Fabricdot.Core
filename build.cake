@@ -33,6 +33,8 @@ var packages = BuildPackages.GetPackages(
         "Fabricdot.MultiTenancy",
         "Fabricdot.MultiTenancy.AspNetCore",
         "Fabricdot.WebApi",
+        "Fabricdot.Authorization.Abstractions",
+        "Fabricdot.Authorization",
 
         "Fabricdot.Identity.Domain",
         "Fabricdot.Identity",
