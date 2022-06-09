@@ -1,22 +1,21 @@
 ﻿using System.Data;
 using Dapper;
-using Fabricdot.Domain.Core.ValueObjects;
+using Fabricdot.Domain.ValueObjects;
 
-namespace Mall.Infrastructure.Data.TypeHandlers
+namespace Mall.Infrastructure.Data.TypeHandlers;
+
+internal class EnumerationTypeHandler<T> : SqlMapper.TypeHandler<T> where T : Enumeration
 {
-    internal class EnumerationTypeHandler<T> : SqlMapper.TypeHandler<T> where T : Enumeration
+    /// <inheritdoc />
+    public override void SetValue(IDbDataParameter parameter, T value)
     {
-        /// <inheritdoc />
-        public override void SetValue(IDbDataParameter parameter, T value)
-        {
-            parameter.Value = value.Value;
-            parameter.DbType = DbType.Int32;
-        }
+        parameter.Value = value.Value;
+        parameter.DbType = DbType.Int32;
+    }
 
-        /// <inheritdoc />
-        public override T Parse(object value)
-        {
-            return Enumeration.FromValue<T>((int)value);
-        }
+    /// <inheritdoc />
+    public override T Parse(object value)
+    {
+        return Enumeration.FromValue<T>((int)value);
     }
 }

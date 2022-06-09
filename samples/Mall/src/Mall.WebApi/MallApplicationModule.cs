@@ -1,72 +1,75 @@
 using System;
-using Fabricdot.Domain.Core.SharedKernel;
-using Fabricdot.Infrastructure.Core.Data;
-using Fabricdot.Infrastructure.Core.DependencyInjection;
-using Fabricdot.WebApi.Core.Configuration;
-using Mall.Infrastructure.Data;
-using Mall.Infrastructure.Data.TypeHandlers;
+using System.Threading.Tasks;
+using Fabricdot.Core.Boot;
+using Fabricdot.Core.Modularity;
+using Fabricdot.Domain.SharedKernel;
+using Fabricdot.WebApi;
+using Fabricdot.WebApi.Configuration;
+using Mall.Domain;
+using Mall.Infrastructure;
 using Mall.WebApi.Configuration;
-using Mall.WebApi.Queries.Orders;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.StaticFiles;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Hosting;
 
-namespace Mall.WebApi
+namespace Mall.WebApi;
+
+[Requires(typeof(MallDomainModule))]
+[Requires(typeof(MallInfrastructureModule))]
+[Requires(typeof(FabricdotWebApiModule))]
+[Exports]
+public class MallApplicationModule : ModuleBase
 {
-    public class MallApplicationModule : IModule
+    public override void ConfigureServices(ConfigureServiceContext context)
     {
-        private static readonly ILoggerFactory _dbLoggerFactory = LoggerFactory.Create(builder => builder.AddConsole());
-        private readonly IConfiguration _configuration;
+        var services = context.Services;
 
-        public MallApplicationModule(IConfiguration configuration)
-        {
-            _configuration = configuration;
-        }
+        #region endpoint
 
-        /// <inheritdoc />
-        public void Configure(IServiceCollection services)
-        {
-            #region endpoint
-
-            services.AddControllers(opts => opts.AddActionFilters())
-                .ConfigureApiBehaviorOptions(opts =>
-                {
-                    opts.SuppressModelStateInvalidFilter = true;
-                });
-
-            #endregion endpoint
-
-            #region database
-
-            var connectionString = _configuration.GetConnectionString("Default");
-            services.AddEfDbContext<AppDbContext>(opts =>
+        services.AddControllers(opts => opts.AddActionFilters())
+            .ConfigureApiBehaviorOptions(opts =>
             {
-                opts.UseSqlServer(connectionString);
-#if DEBUG
-                opts.UseLoggerFactory(_dbLoggerFactory)
-                    .EnableSensitiveDataLogging();
-#endif
+                opts.SuppressModelStateInvalidFilter = true;
             });
 
-            SqlMapperTypeHandlerConfiguration.AddTypeHandlers();
-            services.AddScoped<ISqlConnectionFactory, SqlConnectionFactory>(_ =>
-                new SqlConnectionFactory(connectionString));
+        #endregion endpoint
 
-            #endregion database
+        #region api-doc
 
-            #region api-doc
+        //swagger
+        services.AddSwagger();
 
-            //swagger
-            services.AddSwagger();
+        #endregion api-doc
 
-            #endregion api-doc
+        SystemClock.Configure(DateTimeKind.Utc);
+        services.AddSingleton<IContentTypeProvider, FileExtensionContentTypeProvider>();
+    }
 
-            SystemClock.Configure(DateTimeKind.Utc);
-            services.AddSingleton<IContentTypeProvider, FileExtensionContentTypeProvider>();
-            //add project services here.
-            services.AddTransient<IOrderQueries, OrderQueries>();
+    public override Task OnStartingAsync(ApplicationStartingContext context)
+    {
+        var app = context.ServiceProvider.GetApplicationBuilder();
+        var env = app.ApplicationServices.GetRequiredService<IWebHostEnvironment>();
+
+        if (env.IsDevelopment())
+        {
+            app.UseDeveloperExceptionPage();
         }
+
+        app.UseStaticFiles();
+
+        app.UseRouting();
+
+        app.UseAuthorization();
+
+        app.UserSwagger();
+
+        app.UseEndpoints(endpoints =>
+        {
+            endpoints.MapControllers();
+        });
+
+        return Task.CompletedTask;
     }
 }

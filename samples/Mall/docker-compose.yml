@@ -4,9 +4,11 @@ services:
   webapi:
     image: ${DOCKER_REGISTRY}/mall-webapi:${TAG:-latest}
     volumes: 
-      - data:/app/wwwroot:rw
+      - wwwroot:/app/wwwroot:rw
       - data:/app/logs:rw
 
 volumes: 
   data:
+    external: false
+  wwwroot:
     external: false

@@ -1,13 +1,13 @@
 ﻿using System.Threading.Tasks;
+using Fabricdot.Core.DependencyInjection;
 
-namespace Mall.Infrastructure.Data
+namespace Mall.Infrastructure.Data;
+
+internal class DataBuilder : ITransientDependency
 {
-    internal class DataBuilder
+    public Task SeedAsync()
     {
-        public Task SeedAsync()
-        {
-            //seed data
-            return Task.CompletedTask;
-        }
+        //seed data
+        return Task.CompletedTask;
     }
 }

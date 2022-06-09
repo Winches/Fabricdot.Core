@@ -1,23 +1,44 @@
-﻿using Fabricdot.Infrastructure.Core.DependencyInjection;
+﻿using Fabricdot.Core.Modularity;
+using Fabricdot.Infrastructure;
+using Fabricdot.Infrastructure.Data;
+using Fabricdot.Infrastructure.EntityFrameworkCore;
+using Mall.Domain;
 using Mall.Infrastructure.Data;
+using Mall.Infrastructure.Data.TypeHandlers;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 
-namespace Mall.Infrastructure
+namespace Mall.Infrastructure;
+
+[Requires(typeof(MallDomainModule))]
+[Requires(typeof(FabricdotEntityFrameworkCoreModule))]
+[Requires(typeof(FabricdotInfrastructureModule))]
+[Exports]
+public class MallInfrastructureModule : ModuleBase
 {
-    public class MallInfrastructureModule : IModule
+    private static readonly ILoggerFactory _dbLoggerFactory = LoggerFactory.Create(builder => builder.AddConsole());
+
+    public override void ConfigureServices(ConfigureServiceContext context)
     {
-        private readonly IConfiguration _configuration;
+        var services = context.Services;
 
-        public MallInfrastructureModule(IConfiguration configuration)
-        {
-            _configuration = configuration;
-        }
+        #region database
 
-        public void Configure(IServiceCollection services)
+        var connectionString = context.Configuration.GetConnectionString("Default");
+        services.AddEfDbContext<AppDbContext>(opts =>
         {
-            services.AddTransient<DbMigrator>();
-            services.AddTransient<DataBuilder>();
-        }
+            opts.UseSqlServer(connectionString);
+#if DEBUG
+            opts.UseLoggerFactory(_dbLoggerFactory)
+                .EnableSensitiveDataLogging();
+#endif
+        });
+
+        SqlMapperTypeHandlerConfiguration.AddTypeHandlers();
+        services.AddScoped<ISqlConnectionFactory, DefaultSqlConnectionFactory>(_ => new DefaultSqlConnectionFactory(connectionString));
+
+        #endregion database
     }
 }

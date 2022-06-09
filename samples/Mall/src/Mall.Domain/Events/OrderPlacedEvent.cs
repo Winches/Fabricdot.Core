@@ -1,12 +1,11 @@
-﻿using Fabricdot.Domain.Core.Events;
-using Mall.Domain.Entities.OrderAggregate;
+﻿using Fabricdot.Domain.Events;
+using Mall.Domain.Aggregates.OrderAggregate;
 
-namespace Mall.Domain.Events
+namespace Mall.Domain.Events;
+
+public class OrderPlacedEvent : EntityCreatedEvent<Order>
 {
-    public class OrderPlacedEvent : EntityCreatedEvent<Order>
+    public OrderPlacedEvent(Order entity) : base(entity)
     {
-        public OrderPlacedEvent(Order entity) : base(entity)
-        {
-        }
     }
 }

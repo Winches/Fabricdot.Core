@@ -1,8 +1,8 @@
 ﻿using Fabricdot.Infrastructure.EntityFrameworkCore.Configurations;
-using Mall.Domain.Entities.OrderAggregate;
 using Mall.Domain.Shared.Constants;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using Mall.Domain.Aggregates.OrderAggregate;
 
 namespace Mall.Infrastructure.Data.Configuration
 {

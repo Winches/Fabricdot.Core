@@ -16,10 +16,10 @@ namespace Mall.Infrastructure.Data.Migrations
 #pragma warning disable 612, 618
             modelBuilder
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
-                .HasAnnotation("ProductVersion", "5.0.10")
+                .HasAnnotation("ProductVersion", "5.0.17")
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-            modelBuilder.Entity("Mall.Domain.Entities.OrderAggregate.Order", b =>
+            modelBuilder.Entity("Mall.Domain.Aggregates.OrderAggregate.Order", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -59,7 +59,7 @@ namespace Mall.Infrastructure.Data.Migrations
                         .HasDefaultValue(false)
                         .HasColumnName("IsDeleted");
 
-                    b.Property<DateTime>("LastModificationTime")
+                    b.Property<DateTime?>("LastModificationTime")
                         .HasColumnType("datetime2")
                         .HasColumnName("LastModificationTime");
 
@@ -83,7 +83,7 @@ namespace Mall.Infrastructure.Data.Migrations
                     b.ToTable("Orders");
                 });
 
-            modelBuilder.Entity("Mall.Domain.Entities.OrderAggregate.OrderLine", b =>
+            modelBuilder.Entity("Mall.Domain.Aggregates.OrderAggregate.OrderLine", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -98,7 +98,7 @@ namespace Mall.Infrastructure.Data.Migrations
                         .HasColumnType("nvarchar(40)")
                         .HasColumnName("CreatorId");
 
-                    b.Property<DateTime>("LastModificationTime")
+                    b.Property<DateTime?>("LastModificationTime")
                         .HasColumnType("datetime2")
                         .HasColumnName("LastModificationTime");
 
@@ -127,9 +127,9 @@ namespace Mall.Infrastructure.Data.Migrations
                     b.ToTable("OrderLines");
                 });
 
-            modelBuilder.Entity("Mall.Domain.Entities.OrderAggregate.Order", b =>
+            modelBuilder.Entity("Mall.Domain.Aggregates.OrderAggregate.Order", b =>
                 {
-                    b.OwnsOne("Mall.Domain.Entities.OrderAggregate.Address", "ShippingAddress", b1 =>
+                    b.OwnsOne("Mall.Domain.Aggregates.OrderAggregate.Address", "ShippingAddress", b1 =>
                         {
                             b1.Property<Guid>("OrderId")
                                 .HasColumnType("uniqueidentifier");
@@ -166,15 +166,15 @@ namespace Mall.Infrastructure.Data.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("Mall.Domain.Entities.OrderAggregate.OrderLine", b =>
+            modelBuilder.Entity("Mall.Domain.Aggregates.OrderAggregate.OrderLine", b =>
                 {
-                    b.HasOne("Mall.Domain.Entities.OrderAggregate.Order", null)
+                    b.HasOne("Mall.Domain.Aggregates.OrderAggregate.Order", null)
                         .WithMany("OrderLines")
                         .HasForeignKey("OrderId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 
-            modelBuilder.Entity("Mall.Domain.Entities.OrderAggregate.Order", b =>
+            modelBuilder.Entity("Mall.Domain.Aggregates.OrderAggregate.Order", b =>
                 {
                     b.Navigation("OrderLines");
                 });

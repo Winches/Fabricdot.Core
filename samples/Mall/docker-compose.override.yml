@@ -11,6 +11,7 @@ services:
       - ASPNETCORE_URLS=http://+:80
       - ConnectionStrings__Default=${CONNECTIONSTRINGS_DEFAULT}
       - ConnectionStrings__Log=${CONNECTIONSTRINGS_LOG}
+      - TZ=${TZ}
     ports:
       - "${WEBAPI_PORT}:80"
     volumes:

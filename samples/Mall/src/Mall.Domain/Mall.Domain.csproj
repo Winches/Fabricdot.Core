@@ -9,7 +9,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Fabricdot.Domain.Core" Version="0.4.1-alpha" />
+    <PackageReference Include="Fabricdot.Domain" Version="0.6.0" />
   </ItemGroup>
 
 </Project>

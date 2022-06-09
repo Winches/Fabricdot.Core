@@ -1,10 +1,9 @@
 ﻿using System;
-using Fabricdot.Domain.Core.Services;
-using Mall.Domain.Entities.OrderAggregate;
+using Fabricdot.Domain.Services;
+using Mall.Domain.Aggregates.OrderAggregate;
 
-namespace Mall.Domain.Repositories
+namespace Mall.Domain.Repositories;
+
+public interface IOrderRepository : IRepository<Order, Guid>
 {
-    public interface IOrderRepository : IRepository<Order, Guid>
-    {
-    }
 }

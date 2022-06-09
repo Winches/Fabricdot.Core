@@ -1,15 +1,14 @@
 ﻿using System;
 using Ardalis.Specification;
-using Mall.Domain.Entities.OrderAggregate;
+using Mall.Domain.Aggregates.OrderAggregate;
 
-namespace Mall.Domain.Specifications
+namespace Mall.Domain.Specifications;
+
+public sealed class OrderWithLinesSpec : Specification<Order>
 {
-    public sealed class OrderWithLinesSpec : Specification<Order>
+    public OrderWithLinesSpec(Guid orderId)
     {
-        public OrderWithLinesSpec(Guid orderId)
-        {
-            Query.Include(v => v.OrderLines);
-            Query.Where(v => v.Id == orderId);
-        }
+        Query.Include(v => v.OrderLines);
+        Query.Where(v => v.Id == orderId);
     }
 }
