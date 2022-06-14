@@ -1,6 +1,8 @@
 // Load other scripts.
 #load "./build/packages.cake"
 
+using System.Linq;
+
 ///////////////////////////////////////////////////////////////////////////////
 // ARGUMENTS
 ///////////////////////////////////////////////////////////////////////////////
@@ -102,15 +104,17 @@ Task("Test")
     {
         foreach(var framework in new [] { "net5.0" })
         {
-            var testResultsPath = System.IO.Path.Combine(reportDir,$"{project.GetFilenameWithoutExtension()}_{framework}_TestResults.xml");
+            // var testResultsPath = System.IO.Path.Combine(reportDir,$"{project.GetFilenameWithoutExtension()}_TestResults.xml");
+            var testResultName = $"{project.GetFilenameWithoutExtension()}_{framework}_TestResults.xml";
             var settings = new DotNetTestSettings
             {
                 Framework = framework,
                 Configuration = configuration,
                 NoBuild = true,
                 NoRestore = true,
-                // Collectors = new []{ "XPlat Code Coverage" },
-                ArgumentCustomization = args=>args.Append($"--logger trx;LogFileName=\"{testResultsPath}\"")
+                Collectors = new [] { "XPlat Code Coverage" },
+                Loggers = new [] { $"trx;LogFileName={testResultName}" },
+                ResultsDirectory = reportDir
             };
             DotNetTest(project.FullPath, settings);
         }
@@ -129,8 +133,7 @@ Task("Package")
         DotNetPack(sln, settings);
     });
 
-Task("Publish")
-    .IsDependentOn("Package")
+Task("PublishNuget")
     .Does(()=>
     {
         // Resolve the API key.
@@ -149,23 +152,41 @@ Task("Publish")
 
             DotNetNuGetPush(package.PackagePath.FullPath, settings);
         }
+    });
+
+
+Task("Publish")
+    .IsDependentOn("Package")
+    .Does(()=>
+    {
+        RunTarget("PushNuget");
     })
     .OnError((exception, parameters) =>
     {
         Information("Publish Task failed, but continuing with next Task...");
     });
 
-Task("AppVeyor")
-    .IsDependentOn("Package")
-    .WithCriteria(() => AppVeyor.IsRunningOnAppVeyor)
-    .Does(() =>
-    {
-        foreach(var package in GetFiles(packageDir + "/*"))
-        {
-            AppVeyor.UploadArtifact(package);
-            Information(package);
-        }
-    });
+// Task("AppVeyor")
+//     .IsDependentOn("Package")
+//     .WithCriteria(() => AppVeyor.IsRunningOnAppVeyor)
+//     .Does(() =>
+//     {
+//         foreach(var package in GetFiles(packageDir + "/*"))
+//         {
+//             AppVeyor.UploadArtifact(package);
+//             Information(package);
+//         }
+//     });
+
+// Task("Travis")
+//     .IsDependentOn("Package")
+//     .WithCriteria(() => TravisCI.IsRunningOnTravisCI)
+//     .Does(() =>
+//     {
+//         // Upload a coverage report.
+//         var files = GetFiles("build/**/coverage.cobertura.xml").Select(v=> v.FullPath).ToList();
+//         Codecov(files);
+//     });
 
 //////////////////////////////////////////////////////////////////////
 // TASK TARGETS

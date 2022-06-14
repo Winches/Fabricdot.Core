@@ -1,6 +1,8 @@
 # Fabericdot Core
-
-[![NuGet](https://img.shields.io/nuget/v/Fabricdot.Core.svg)](https://www.nuget.org/packages/Fabricdot.Core)
+[![nuget](https://img.shields.io/nuget/v/Fabricdot.Core.svg?style=flat-square&color=blue)](https://www.nuget.org/packages/Fabricdot.Core)
+![build](https://img.shields.io/travis/Winches/Fabricdot.Core.svg?style=flat-square)
+![codecov](https://img.shields.io/codecov/c/gh/Winches/Fabricdot.Core?branch=dev&style=flat-square&token=615Z4TKL1D)
+![license](https://img.shields.io/github/license/winches/Fabricdot.Core?style=flat-square)
 
 `Fabricdot` is designed to simplify and shorten development of application with `DDD` concept.It aim to make development easier while using `DDD`.
 

@@ -1,0 +1,44 @@
+language: csharp
+os:
+ - linux
+mono: none
+dotnet: 5.0
+dist: focal
+sudo: required
+
+before_install:
+  - sudo apt-get install -y dotnet-sdk-6.0
+  - curl -Os https://uploader.codecov.io/latest/linux/codecov
+  - chmod +x codecov
+
+git:
+  depth: 3
+  quiet: true
+  autocrlf: true
+branches:
+  only:
+   - master
+   - dev
+   - /release/.*/
+   - /hotfix/.*/
+   - /feature/.*/
+
+stages:
+  - build
+  - upload
+  - name: deploy
+    if: (tag =~ ^v) AND branch IN (master, dev) AND type = push AND fork = false
+
+jobs:
+  include:
+    - stage: build
+      script: ./build.sh
+    - stage: upload
+      script: ./codecov
+    - stage: deploy
+      script: ./build.sh --target=publishnuget
+
+cache:
+  directories:
+   - tools
+   - build
