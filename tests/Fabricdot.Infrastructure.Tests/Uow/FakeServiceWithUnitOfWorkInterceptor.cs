@@ -5,7 +5,7 @@ using Fabricdot.Infrastructure.Uow.Abstractions;
 
 namespace Fabricdot.Infrastructure.Tests.Uow;
 
-[UnitOfWorkInterceptor]
+[UnitOfWork]
 public class FakeServiceWithUnitOfWorkInterceptor : ITransientDependency
 {
     private readonly IUnitOfWorkManager _unitOfWorkManager;

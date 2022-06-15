@@ -43,7 +43,7 @@ public class FakeDataBuilder
         await AddUsersAsync();
     }
 
-    [UnitOfWorkInterceptor]
+    [UnitOfWork]
     protected virtual async Task AddUsersAsync()
     {
         var users = new[]
@@ -73,7 +73,7 @@ public class FakeDataBuilder
             await _userRepository.AddAsync(user);
     }
 
-    [UnitOfWorkInterceptor]
+    [UnitOfWork]
     protected virtual async Task AddRolesAsync()
     {
         var roles = new[]

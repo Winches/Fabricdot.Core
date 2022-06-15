@@ -32,7 +32,7 @@ public class FakeDataBuilder
         await AddGrantedPermissionsAsync();
     }
 
-    [UnitOfWorkInterceptor]
+    [UnitOfWork]
     protected virtual async Task AddGrantedPermissionsAsync()
     {
         var dbContext = await _dbContextProvider.GetDbContextAsync();

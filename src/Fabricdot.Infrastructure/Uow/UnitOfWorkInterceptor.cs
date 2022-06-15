@@ -10,7 +10,7 @@ using Microsoft.Extensions.Options;
 namespace Fabricdot.Infrastructure.Uow;
 
 [Interceptor(Order = ORDER, Target = typeof(IHasUnitOfWorkScope))]
-[UnitOfWorkInterceptor]
+[UnitOfWork]
 public class UnitOfWorkInterceptor : IInterceptor, ITransientDependency
 {
     public const int ORDER = 99;

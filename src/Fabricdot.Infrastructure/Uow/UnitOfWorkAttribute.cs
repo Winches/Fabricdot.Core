@@ -1,9 +1,11 @@
 using System;
 using System.Data;
+using Fabricdot.Core.Aspects;
 using Fabricdot.Infrastructure.Uow.Abstractions;
 
 namespace Fabricdot.Infrastructure.Uow;
 
+[InterceptorBinding]
 [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method)]
 public class UnitOfWorkAttribute : Attribute
 {
