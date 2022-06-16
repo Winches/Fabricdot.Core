@@ -1,11 +1,10 @@
-﻿using System;
-using Fabricdot.Core.Boot;
+﻿using Fabricdot.Core.Boot;
 using Fabricdot.Core.Modularity;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Fabricdot.Test.Shared;
+namespace Fabricdot.Testing;
 
-public abstract class IntegrationTestBase : IDisposable
+public abstract class IntegrationTestBase : TestBase, IDisposable
 {
     protected IServiceProviderFactory<IServiceCollection> ServiceProviderFactory { get; set; } = new DefaultServiceProviderFactory();
 
@@ -56,6 +55,7 @@ public abstract class IntegrationTestBase<TModule> : IntegrationTestBase where T
     {
         var services = new ServiceCollection();
         var app = services.AddBootstrapper<TModule>();
+        services.AddSingleton(Fixture);
         ConfigureServices(services);
 
         RootServiceProvider = ServiceProviderFactory.CreateServiceProvider(services);
@@ -64,6 +64,7 @@ public abstract class IntegrationTestBase<TModule> : IntegrationTestBase where T
         app.Build(ServiceScope.ServiceProvider);
 
         RootServiceProvider.BootstrapAsync().GetAwaiter().GetResult();
+        Inject(RootServiceProvider);
     }
 
     protected override void ConfigureServices(IServiceCollection serviceCollection)

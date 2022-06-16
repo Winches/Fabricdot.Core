@@ -1,6 +1,6 @@
 ﻿using Fabricdot.Infrastructure.DependencyInjection;
 using Fabricdot.PermissionGranting.Tests.Data;
-using Fabricdot.Test.Shared;
+using Fabricdot.Testing;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Fabricdot.PermissionGranting.Tests;

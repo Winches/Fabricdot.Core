@@ -5,12 +5,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="5.0.10" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\..\src\Fabricdot.Identity\Fabricdot.Identity.csproj" />
-    <ProjectReference Include="..\..\..\..\tests\Fabricdot.Test.Shared\Fabricdot.Test.Shared.csproj" />
+    <ProjectReference Include="..\..\..\..\tests\Fabricdot.Testing\Fabricdot.Testing.csproj" />
   </ItemGroup>
 
 </Project>

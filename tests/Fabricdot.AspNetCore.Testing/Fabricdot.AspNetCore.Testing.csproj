@@ -5,7 +5,11 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\Fabricdot.Authorization\Fabricdot.Authorization.csproj" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="5.0.17" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\Fabricdot.WebApi\Fabricdot.WebApi.csproj" />
     <ProjectReference Include="..\Fabricdot.Testing\Fabricdot.Testing.csproj" />
   </ItemGroup>
 

@@ -1,6 +1,6 @@
 ﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
-using Castle.Core.Internal;
 using Fabricdot.Infrastructure.EntityFrameworkCore.Tests.Entities;
 
 namespace Fabricdot.Infrastructure.EntityFrameworkCore.Tests.Data;
@@ -42,7 +42,7 @@ public class FakeDataBuilder
                 Contents = new BookContents("Introduce something.")
             }
         };
-        books.Find(v => v.Id == BookWithTagsId).AddTag(DeletedBookTag, true);
+        books.Single(v => v.Id == BookWithTagsId).AddTag(DeletedBookTag, true);
         foreach (var book in books)
             await _dbContext.AddAsync(book);
         _dbContext.SaveChanges();
@@ -57,7 +57,7 @@ public class FakeDataBuilder
             new Author(3, "Bjarne", "Stroustrup"),
             new Author(4, "Graydon", "Hoare")
         };
-        authors.Find(v => v.Id == DeletedAuthorId).MarkDeleted();
+        authors.Single(v => v.Id == DeletedAuthorId).MarkDeleted();
 
         foreach (var author in authors)
             await _dbContext.AddAsync(author);

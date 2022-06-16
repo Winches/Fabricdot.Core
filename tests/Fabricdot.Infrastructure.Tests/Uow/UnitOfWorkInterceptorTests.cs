@@ -1,7 +1,7 @@
 using Fabricdot.Infrastructure.DependencyInjection;
 using Fabricdot.Infrastructure.Uow;
 using Fabricdot.Infrastructure.Uow.Abstractions;
-using Fabricdot.Test.Shared;
+using Fabricdot.Testing;
 using Microsoft.Extensions.DependencyInjection;
 using Xunit;
 

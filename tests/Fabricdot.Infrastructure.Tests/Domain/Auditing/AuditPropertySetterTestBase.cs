@@ -1,10 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using Fabricdot.Domain.Entities;
+﻿using Fabricdot.Domain.Entities;
 using Fabricdot.Domain.SharedKernel;
 using Fabricdot.Infrastructure.Domain.Auditing;
 using Fabricdot.Infrastructure.Security;
-using Fabricdot.Test.Shared;
+using Fabricdot.Testing;
 using Microsoft.Extensions.DependencyInjection;
 using Moq;
 

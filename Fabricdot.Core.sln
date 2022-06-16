@@ -1,4 +1,4 @@
-﻿
+
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.0.32112.339
@@ -23,7 +23,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fabricdot.Domain.Tests", "t
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fabricdot.Infrastructure.Tests", "tests\Fabricdot.Infrastructure.Tests\Fabricdot.Infrastructure.Tests.csproj", "{C0E4CC0C-8A76-420A-BA79-E7FE08C80B28}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fabricdot.Test.Shared", "tests\Fabricdot.Test.Shared\Fabricdot.Test.Shared.csproj", "{657D3D10-E519-4429-80BB-7105A5BCFF75}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fabricdot.Testing", "tests\Fabricdot.Testing\Fabricdot.Testing.csproj", "{657D3D10-E519-4429-80BB-7105A5BCFF75}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fabricdot.Infrastructure.EntityFrameworkCore.Tests", "tests\Fabricdot.Infrastructure.EntityFrameworkCore.Tests\Fabricdot.Infrastructure.EntityFrameworkCore.Tests.csproj", "{C2693C9C-A149-477A-9A52-AC4A804BB5BA}"
 EndProject
@@ -43,7 +43,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fabricdot.Authorization.Abs
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fabricdot.Authorization", "src\Fabricdot.Authorization\Fabricdot.Authorization.csproj", "{13081FD8-0044-4110-93AF-4C51E54A2BF2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fabricdot.Authorization.Tests", "tests\Fabricdot.Authorization.Tests\Fabricdot.Authorization.Tests.csproj", "{E01EBD5D-A1A5-41D2-AF77-EA7F8EFF12C2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fabricdot.Authorization.Tests", "tests\Fabricdot.Authorization.Tests\Fabricdot.Authorization.Tests.csproj", "{E01EBD5D-A1A5-41D2-AF77-EA7F8EFF12C2}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fabricdot.AspNetCore.Testing", "tests\Fabricdot.AspNetCore.Testing\Fabricdot.AspNetCore.Testing.csproj", "{4E37E011-45ED-4545-8C3C-A43DDAE3A68D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -127,6 +129,10 @@ Global
 		{E01EBD5D-A1A5-41D2-AF77-EA7F8EFF12C2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E01EBD5D-A1A5-41D2-AF77-EA7F8EFF12C2}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E01EBD5D-A1A5-41D2-AF77-EA7F8EFF12C2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4E37E011-45ED-4545-8C3C-A43DDAE3A68D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4E37E011-45ED-4545-8C3C-A43DDAE3A68D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4E37E011-45ED-4545-8C3C-A43DDAE3A68D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4E37E011-45ED-4545-8C3C-A43DDAE3A68D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -151,6 +157,7 @@ Global
 		{CE67C031-0C1B-4FE1-8F5C-B506236D1DD4} = {E4584D3B-649D-4069-82F1-647552F432FC}
 		{13081FD8-0044-4110-93AF-4C51E54A2BF2} = {E4584D3B-649D-4069-82F1-647552F432FC}
 		{E01EBD5D-A1A5-41D2-AF77-EA7F8EFF12C2} = {331C270C-1154-413D-A0B4-29E4E4ACA7C3}
+		{4E37E011-45ED-4545-8C3C-A43DDAE3A68D} = {331C270C-1154-413D-A0B4-29E4E4ACA7C3}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {8A1CF1E5-6520-4250-8917-0413CEF753A8}

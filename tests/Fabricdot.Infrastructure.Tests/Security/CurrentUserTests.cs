@@ -1,10 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Claims;
+﻿using System.Security.Claims;
 using Fabricdot.Core.Security;
 using Fabricdot.Infrastructure.Security;
-using Fabricdot.Test.Shared;
+using Fabricdot.Testing;
 using Microsoft.Extensions.DependencyInjection;
 using Moq;
 using Xunit;

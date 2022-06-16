@@ -1,8 +1,6 @@
-﻿using System.Threading;
-using System.Threading.Tasks;
-using Fabricdot.Domain.Events;
+﻿using Fabricdot.Domain.Events;
 using Fabricdot.Infrastructure.Domain.Events;
-using Fabricdot.Test.Shared;
+using Fabricdot.Testing;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 using Xunit;

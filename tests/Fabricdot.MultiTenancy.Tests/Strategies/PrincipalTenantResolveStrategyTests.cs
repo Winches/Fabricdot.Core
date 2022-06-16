@@ -1,9 +1,8 @@
 ﻿using System.Security.Claims;
-using System.Threading.Tasks;
 using Fabricdot.Core.Security;
 using Fabricdot.MultiTenancy.Abstractions;
 using Fabricdot.MultiTenancy.Strategies;
-using Fabricdot.Test.Shared;
+using Fabricdot.Testing;
 using Microsoft.Extensions.DependencyInjection;
 using Moq;
 using Xunit;

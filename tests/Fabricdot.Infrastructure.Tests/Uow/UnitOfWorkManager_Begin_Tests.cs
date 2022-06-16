@@ -1,7 +1,6 @@
 using System.Diagnostics.CodeAnalysis;
-using System.Threading.Tasks;
 using Fabricdot.Infrastructure.Uow.Abstractions;
-using Fabricdot.Test.Shared;
+using Fabricdot.Testing;
 using Microsoft.Extensions.DependencyInjection;
 using Xunit;
 

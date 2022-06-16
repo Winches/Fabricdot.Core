@@ -6,7 +6,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\Fabricdot.Infrastructure\Fabricdot.Infrastructure.csproj" />
-    <ProjectReference Include="..\Fabricdot.Test.Shared\Fabricdot.Test.Shared.csproj" />
+    <ProjectReference Include="..\Fabricdot.Testing\Fabricdot.Testing.csproj" />
   </ItemGroup>
 
 </Project>

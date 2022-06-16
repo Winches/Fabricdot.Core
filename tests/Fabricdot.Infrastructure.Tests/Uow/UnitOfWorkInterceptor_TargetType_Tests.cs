@@ -1,5 +1,5 @@
 ﻿using Fabricdot.Infrastructure.DependencyInjection;
-using Fabricdot.Test.Shared;
+using Fabricdot.Testing;
 using Microsoft.Extensions.DependencyInjection;
 using Xunit;
 
