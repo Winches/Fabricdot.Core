@@ -6,6 +6,8 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\Fabricdot.Domain\Fabricdot.Domain.csproj" />
+    <ProjectReference Include="..\Fabricdot.Test.Helpers\Fabricdot.Test.Helpers.csproj" />
+    <ProjectReference Include="..\Fabricdot.Testing\Fabricdot.Testing.csproj" />
   </ItemGroup>
 
 </Project>

@@ -1,6 +1,5 @@
 ﻿using System.Security.Claims;
 using Fabricdot.Authorization.Permissions;
-using Fabricdot.Testing;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Moq;
@@ -9,36 +8,44 @@ namespace Fabricdot.Authorization.Tests;
 
 public class AuthorizationTestBase : IntegrationTestBase<AuthorizationTestModule>
 {
-    protected static Claim Superuser { get; } = new(ClaimTypes.NameIdentifier, "0");
+    protected Mock<IPermissionGrantingService> PermissionGrantingServiceMock { get; }
 
-    protected static Claim Superrole { get; } = new(ClaimTypes.Role, "role");
+    protected Claim Superuser { get; }
 
-    protected static PermissionName[] GrantedPermissions { get; } = new[] { new PermissionName("name1"), new PermissionName("name2") };
+    protected Claim Superrole { get; }
 
-    protected static PermissionName[] UngrantedPermissions { get; } = new[] { new PermissionName("name3"), new PermissionName("name4") };
+    protected PermissionName[] GrantedPermissions { get; }
+
+    protected PermissionName[] UngrantedPermissions { get; }
+
+    protected PermissionName[] Permissions { get; }
 
     public AuthorizationTestBase()
     {
+        Superuser = new(ClaimTypes.NameIdentifier, Create<string>());
+        Superrole = new(ClaimTypes.Role, Create<string>());
+        GrantedPermissions = Create<PermissionName[]>();
+        UngrantedPermissions = Create<PermissionName[]>();
+        Permissions = GrantedPermissions.Union(UngrantedPermissions).ToArray();
+
         var permissionManager = ServiceProvider.GetRequiredService<IPermissionManager>();
-        var group = new PermissionGroup("group1", "group 1");
+        var group = new PermissionGroup(Create<string>(), Create<string>());
         GrantedPermissions.ForEach(v => group.AddPermission(v, v));
         UngrantedPermissions.ForEach(v => group.AddPermission(v, v));
         permissionManager.AddGroupAsync(group).GetAwaiter().GetResult();
+
+        PermissionGrantingServiceMock = Mock<IPermissionGrantingService>();
+        Func<GrantSubject, IEnumerable<string>, CancellationToken, IReadOnlySet<GrantResult>> valueFunction = (subject, objects, _) =>
+                                        objects.Select(v => new GrantResult(v, GrantedPermissions.Contains(v)
+                                        || subject.Value == Superrole.Value
+                                        || subject.Value == Superuser.Value))
+                                               .ToHashSet();
+        PermissionGrantingServiceMock.Setup(v => v.IsGrantedAsync(It.IsAny<GrantSubject>(), It.IsAny<IEnumerable<string>>(), default))
+                           .ReturnsAsync(valueFunction);
     }
 
     protected override void ConfigureServices(IServiceCollection serviceCollection)
     {
-        var mockGrantingService = new Mock<IPermissionGrantingService>();
-        IReadOnlySet<GrantResult> isGranted(GrantSubject subject, IEnumerable<string> objects, CancellationToken __)
-        {
-            return objects.Select(v => new GrantResult(v, subject.Value == Superuser.Value
-                                                          || (subject.Value == Superrole.Value && v != StandardPermissions.Superuser)
-                                                          || GrantedPermissions.Contains(v)))
-                          .ToHashSet();
-        }
-        mockGrantingService.Setup(v => v.IsGrantedAsync(It.IsAny<GrantSubject>(), It.IsAny<IEnumerable<string>>(), default))
-                           .ReturnsAsync((Func<GrantSubject, IEnumerable<string>, CancellationToken, IReadOnlySet<GrantResult>>)isGranted);
-
-        serviceCollection.Replace(ServiceDescriptor.Scoped(_ => mockGrantingService.Object));
+        serviceCollection.Replace(ServiceDescriptor.Scoped(_ => PermissionGrantingServiceMock.Object));
     }
 }

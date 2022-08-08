@@ -1,75 +1,50 @@
-﻿using System;
-using System.Linq;
-using System.Net.Http;
-using System.Net.Http.Headers;
-using System.Threading.Tasks;
+﻿using Fabricdot.AspNetCore.Testing;
 using Fabricdot.WebApi.Tracing;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
-using Xunit;
 
 namespace Fabricdot.WebApi.Tests.Tracing;
 
-public class CorrelationMiddlewareTests : AspNetCoreTestsBase<Startup>
+public class CorrelationMiddlewareTests : WebApplicationTestBase<WebApiTestModule>
 {
+    public CorrelationMiddlewareTests(TestWebApplicationFactory<WebApiTestModule> webAppFactory) : base(webAppFactory)
+    {
+    }
+
     [Fact]
     public async Task CorrelationMiddleware_ExcludeResponse_SetRequestHeaderOnly()
     {
         var options = ConfigureOptions(v => v.IncludeResponse = false);
-        IHeaderDictionary requestHeader = null;
-        ServiceProvider.GetRequiredService<ActionMiddlewareProvider>()
-            .ExecutingAction = context => CaptureRequestHeadersAsync(context, ref requestHeader);
+        var httpContext = await Server.SendAsync(c =>
+        {
+            c.Request.Method = HttpMethods.Get;
+            c.Request.Path = "/";
+        });
 
-        var response = await HttpClient.GetAsync("/");
-        var requestCorrelationId = GetCorrelationId(requestHeader, options.HeaderKey);
-        var responseCorrelationId = GetCorrelationId(response.Headers, options.HeaderKey);
-
-        Assert.NotNull(requestCorrelationId);
-        Assert.Null(responseCorrelationId);
+        httpContext.Request.Headers.Should().Contain(v => v.Key == options.HeaderKey && !v.Value.IsNullOrEmpty());
+        httpContext.Response.Headers.Should().NotContain(v => v.Key == options.HeaderKey);
     }
 
     [Fact]
     public async Task CorrelationMiddleware_IncludeResponse_SetResponseHeader()
     {
         var options = ConfigureOptions(v => v.IncludeResponse = true);
-        IHeaderDictionary requestHeader = null;
-        ServiceProvider.GetRequiredService<ActionMiddlewareProvider>()
-            .ExecutingAction = context => CaptureRequestHeadersAsync(context, ref requestHeader);
+        var httpContext = await Server.SendAsync(c =>
+        {
+            c.Request.Method = HttpMethods.Get;
+            c.Request.Path = "/";
+        });
+        var expected = httpContext.Request.Headers.GetOrDefault(options.HeaderKey);
+        var actual = httpContext.Response.Headers.GetOrDefault(options.HeaderKey);
 
-        var response = await HttpClient.GetAsync("/");
-        var requestCorrelationId = GetCorrelationId(requestHeader, options.HeaderKey);
-        var responseCorrelationId = GetCorrelationId(response.Headers, options.HeaderKey);
-
-        Assert.NotNull(requestCorrelationId);
-        Assert.Equal(requestCorrelationId, responseCorrelationId);
+        actual.Should().BeEquivalentTo(expected);
     }
 
-    private static Task CaptureRequestHeadersAsync(HttpContext context, ref IHeaderDictionary requestHeader)
-    {
-        requestHeader = context.Request.Headers;
-        return Task.CompletedTask;
-    }
-
-    private static string GetCorrelationId(IHeaderDictionary headers, string name)
-    {
-        if (headers.TryGetValue(name, out var values))
-            return values[0];
-
-        return null;
-    }
-
-    private static string GetCorrelationId(HttpHeaders headers, string name)
-    {
-        if (headers.TryGetValues(name, out var values))
-            return values.First();
-        return null;
-    }
-
-    private CorrelationIdOptions ConfigureOptions(Action<CorrelationIdOptions> action = null)
+    private CorrelationIdOptions ConfigureOptions(Action<CorrelationIdOptions> action)
     {
         var options = ServiceProvider.GetRequiredService<IOptions<CorrelationIdOptions>>().Value;
-        action?.Invoke(options);
+        action.Invoke(options);
         return options;
     }
 }

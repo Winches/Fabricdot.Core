@@ -1,9 +1,7 @@
 using Fabricdot.Infrastructure.DependencyInjection;
 using Fabricdot.Infrastructure.Uow;
 using Fabricdot.Infrastructure.Uow.Abstractions;
-using Fabricdot.Testing;
 using Microsoft.Extensions.DependencyInjection;
-using Xunit;
 
 namespace Fabricdot.Infrastructure.Tests.Uow;
 
@@ -15,10 +13,9 @@ public class UnitOfWorkInterceptorTests : IntegrationTestBase<InfrastructureTest
 
     public UnitOfWorkInterceptorTests()
     {
-        var provider = ServiceScope.ServiceProvider;
-        _testService = provider.GetRequiredService<FakeServiceWithUnitOfWorkInterceptor>();
-        _unitOfWorkManager = provider.GetRequiredService<IUnitOfWorkManager>();
-        _transactionBehaviourProvider = provider.GetRequiredService<IUnitOfWorkTransactionBehaviourProvider>();
+        _testService = ServiceProvider.GetRequiredService<FakeServiceWithUnitOfWorkInterceptor>();
+        _unitOfWorkManager = ServiceProvider.GetRequiredService<IUnitOfWorkManager>();
+        _transactionBehaviourProvider = ServiceProvider.GetRequiredService<IUnitOfWorkTransactionBehaviourProvider>();
     }
 
     [Fact]
@@ -27,14 +24,12 @@ public class UnitOfWorkInterceptorTests : IntegrationTestBase<InfrastructureTest
         _testService.UseAutomaticTransactionalUow(uow =>
         {
             const string actionName = nameof(FakeServiceWithUnitOfWorkInterceptor.UseAutomaticTransactionalUow);
-            var behaciour = _transactionBehaviourProvider.GetBehaviour(actionName);
-            var isTransactional = uow.Options.IsTransactional;
+            var behaviour = _transactionBehaviourProvider.GetBehaviour(actionName);
 
-            Assert.Equal(behaciour, isTransactional);
-            Assert.True(uow.IsActive);
+            uow.Options.IsTransactional.Should().Be(behaviour);
+            uow.IsActive.Should().BeTrue();
         });
-        var unitOfWork = _unitOfWorkManager.Available;
-        Assert.Null(unitOfWork);
+        _unitOfWorkManager.Available.Should().BeNull();
     }
 
     [Fact]
@@ -42,12 +37,10 @@ public class UnitOfWorkInterceptorTests : IntegrationTestBase<InfrastructureTest
     {
         _testService.UseTransactionalUow(uow =>
         {
-            var isTransactional = uow.Options.IsTransactional;
-            Assert.True(isTransactional);
-            Assert.True(uow.IsActive);
+            uow.Options.IsTransactional.Should().BeTrue();
+            uow.IsActive.Should().BeTrue();
         });
-        var unitOfWork = _unitOfWorkManager.Available;
-        Assert.Null(unitOfWork);
+        _unitOfWorkManager.Available.Should().BeNull();
     }
 
     [Fact]
@@ -55,25 +48,20 @@ public class UnitOfWorkInterceptorTests : IntegrationTestBase<InfrastructureTest
     {
         _testService.UseNotTransactionalUow(uow =>
         {
-            var isTransactional = uow.Options.IsTransactional;
-            Assert.False(isTransactional);
-            Assert.True(uow.IsActive);
+            uow.Options.IsTransactional.Should().BeFalse();
+            uow.IsActive.Should().BeTrue();
         });
-        var unitOfWork = _unitOfWorkManager.Available;
-        Assert.Null(unitOfWork);
+        _unitOfWorkManager.Available.Should().BeNull();
     }
 
     [Fact]
     public void UnitOfWorkInterceptor_WithReservedUow_BeginReservedUow()
     {
         using var uow = _unitOfWorkManager.Reserve(UnitOfWorkManager.RESERVATION_NAME);
-        _testService.UseAutomaticTransactionalUow(uow =>
-        {
-            Assert.True(uow.IsActive);
-        });
-        var unitOfWork = _unitOfWorkManager.Available;
-        Assert.Equal(uow, unitOfWork);
-        Assert.True(uow.IsActive);
+
+        _testService.UseAutomaticTransactionalUow(uow => uow.IsActive.Should().BeTrue());
+        _unitOfWorkManager.Available.Should().Be(uow);
+        uow.IsActive.Should().BeTrue();
     }
 
     protected override void ConfigureServices(IServiceCollection serviceCollection)

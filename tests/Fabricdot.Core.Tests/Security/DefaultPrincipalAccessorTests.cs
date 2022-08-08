@@ -1,41 +1,37 @@
 ﻿using System.Security.Claims;
-using System.Threading;
 using Fabricdot.Core.Security;
-using FluentAssertions;
-using Xunit;
 
 namespace Fabricdot.Core.Tests.Security;
 
-public class DefaultPrincipalAccessorTests
+public class DefaultPrincipalAccessorTests : TestFor<DefaultPrincipalAccessor>
 {
-    [Fact]
-    public void Change_GivenInput_SetPrincpalWithScope()
+    [AutoData]
+    [Theory]
+    public void Change_GivenInput_SetPrincpalWithScope(
+        ClaimsPrincipal outerPrincipal,
+        ClaimsPrincipal innerPrincipal)
     {
-        var principalAccessor = new DefaultPrincipalAccessor();
-        var principal = new ClaimsPrincipal();
-        using (var scope1 = principalAccessor.Change(principal))
+        using (var scope1 = Sut.Change(outerPrincipal))
         {
             scope1.Should().NotBeNull();
-            principalAccessor.Principal.Should().BeSameAs(principal);
+            Sut.Principal.Should().BeSameAs(outerPrincipal);
 
-            var innerPrincipal = new ClaimsPrincipal();
-            using (var scope2 = principalAccessor.Change(innerPrincipal))
+            using (var scope2 = Sut.Change(innerPrincipal))
             {
-                principalAccessor.Principal.Should().BeSameAs(innerPrincipal);
+                Sut.Principal.Should().BeSameAs(innerPrincipal);
             }
-            principalAccessor.Principal.Should().BeSameAs(principal);
+            Sut.Principal.Should().BeSameAs(outerPrincipal);
         }
-        principalAccessor.Principal.Should().BeNull();
+        Sut.Principal.Should().BeNull();
     }
 
     [Fact]
     public void Principal_WhenPrincipalIsNull_ReturnThreadPrincipal()
     {
-        var principalAccessor = new DefaultPrincipalAccessor();
-        var principal = new ClaimsPrincipal();
+        var principal = Create<ClaimsPrincipal>();
 
-        principalAccessor.Principal.Should().BeNull();
+        Sut.Principal.Should().BeNull();
         Thread.CurrentPrincipal = principal;
-        principalAccessor.Principal.Should().BeSameAs(principal);
+        Sut.Principal.Should().BeSameAs(principal);
     }
 }

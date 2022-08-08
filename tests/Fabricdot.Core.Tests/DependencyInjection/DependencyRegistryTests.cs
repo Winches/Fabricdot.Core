@@ -1,13 +1,10 @@
-﻿using System.Collections.Generic;
-using Fabricdot.Core.DependencyInjection;
-using FluentAssertions;
+﻿using Fabricdot.Core.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
-using Xunit;
 
 namespace Fabricdot.Core.Tests.Modularity;
 
-public class DependencyRegistryTests
+public class DependencyRegistryTests : TestBase
 {
     internal class CorgiDog : IDog, IAnimal, ICorgiDog<string>, ITransientDependency
     {
@@ -28,16 +25,14 @@ public class DependencyRegistryTests
     [Fact]
     public void Constructor_GivenServiceTyps_KeepServiceTypes()
     {
-        var implementationType = typeof(CorgiDog);
         var registry = new DependencyRegistry(
-            implementationType,
+            typeof(CorgiDog),
             new[] { typeof(IDog) },
             ServiceLifetime.Transient,
             RegistrationBehavior.Default);
         var serviceTypes = registry.ServiceTypes;
 
-        serviceTypes.Should().HaveCount(1);
-        serviceTypes.Should().Contain(typeof(IDog));
+        serviceTypes.Should().ContainSingle(typeof(IDog));
     }
 
     [InlineData(ServiceLifetime.Scoped)]

@@ -1,58 +1,60 @@
-﻿using System.Diagnostics.CodeAnalysis;
+﻿using Fabricdot.Domain.Entities;
 using Fabricdot.Domain.SharedKernel;
-using Xunit;
 
 namespace Fabricdot.Infrastructure.Tests.Domain.Auditing;
 
-[SuppressMessage("ReSharper", "InconsistentNaming")]
 public class AuditPropertySetter_SetCreationProperties_Tests : AuditPropertySetterTestBase
 {
     [Fact]
     public void SetCreationProperties_GivenIHasCreationTime_SetCreationTime()
     {
-        var targetObject = new FakeAuditObject();
+        var targetObject = Create<FullAuditEntity<int>>();
         var startTime = SystemClock.Now;
-        AuditPropertySetter.SetCreationProperties(targetObject);
+        Sut.SetCreationProperties(targetObject);
         var endTime = SystemClock.Now;
-        var actual = targetObject.CreationTime;
-        Assert.NotEqual(default, actual);
-        Assert.InRange(actual, startTime, endTime);
+
+        targetObject.CreationTime.Should().BeOnOrAfter(startTime).And.BeOnOrBefore(endTime);
     }
 
     [Fact]
     public void SetCreationProperties_GivenIHasCreationTimeWithValue_DoNothing()
     {
-        var targetObject = GetAuditedObject();
-        var expected = targetObject.CreationTime;
-        AuditPropertySetter.SetCreationProperties(targetObject);
-        var actual = targetObject.CreationTime;
-        Assert.Equal(expected, actual);
+        var expected = Create<DateTime>();
+        var mock = Mock<FullAuditEntity<int>>();
+        var targetObject = mock.Object;
+        mock.SetupProperty(v => v.CreationTime, expected);
+        Sut.SetCreationProperties(targetObject);
+
+        targetObject.CreationTime.Should().Be(expected);
     }
 
     [Fact]
     public void SetCreationProperties_GivenIHasCreatorId_SetCreatorId()
     {
-        var targetObject = new FakeAuditObject();
+        var targetObject = Create<FullAuditEntity<int>>();
         var expected = CurrentUser.Id;
-        AuditPropertySetter.SetCreationProperties(targetObject);
-        var actual = targetObject.CreatorId;
-        Assert.Equal(expected, actual);
+        Sut.SetCreationProperties(targetObject);
+
+        targetObject.CreatorId.Should().Be(expected);
     }
 
     [Fact]
     public void SetCreationProperties_GivenIHasCreatorIdWithValue_DoNothing()
     {
-        var targetObject = GetAuditedObject();
-        var expected = targetObject.CreatorId;
-        AuditPropertySetter.SetCreationProperties(targetObject);
-        var actual = targetObject.CreatorId;
-        Assert.Equal(expected, actual);
+        var expected = Create<string>();
+        var mock = Mock<FullAuditEntity<int>>();
+        var targetObject = mock.Object;
+        mock.SetupProperty(v => v.CreatorId, expected);
+        Sut.SetCreationProperties(targetObject);
+
+        targetObject.CreatorId.Should().Be(expected);
     }
 
     [Theory]
-    [MemberData(nameof(GetNonAuditObjects))]
+    [InlineAutoData(null)]
+    [InlineAutoData]
     public void SetCreationProperties_GivenNonAuditedObject_DoNothing(object targetObject)
     {
-        AuditPropertySetter.SetCreationProperties(targetObject);
+        Sut.SetCreationProperties(targetObject);
     }
 }

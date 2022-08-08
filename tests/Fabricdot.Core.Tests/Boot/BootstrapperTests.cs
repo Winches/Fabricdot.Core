@@ -1,21 +1,16 @@
-﻿using System;
-using System.Threading.Tasks;
-using Fabricdot.Core.Boot;
+﻿using Fabricdot.Core.Boot;
 using Fabricdot.Core.Modularity;
 using Fabricdot.Core.Tests.Modules;
-using FluentAssertions;
 using Microsoft.Extensions.DependencyInjection;
-using Moq;
-using Xunit;
 
 namespace Fabricdot.Core.Tests.Boot;
 
-public class BootstrapperTests
+public class BootstrapperTests : TestBase
 {
     [Fact]
     public void CreateBootstrapper_ConfigureServiceFailed_ThrowException()
     {
-        FluentActions.Invoking(() => CreateBootstrapper<FakeRuntimeErrorModule>())
+        Invoking(() => CreateApp<FakeRuntimeErrorModule>())
                      .Should()
                      .Throw<ModularityException>()
                      .WithInnerException<Exception>()
@@ -25,7 +20,7 @@ public class BootstrapperTests
     [Fact]
     public async Task StartAsync_InvokeMethod_TriggerModuleOnStartingAsync()
     {
-        using var app = CreateBootstrapper<FakeStartupModule>();
+        using var app = CreateApp<FakeStartupModule>();
 
         await app.StartAsync();
     }
@@ -33,10 +28,10 @@ public class BootstrapperTests
     [Fact]
     public async Task StartAsync_InvokeTwice_ThrowException()
     {
-        using var app = CreateBootstrapper<FakeStartupModule>();
+        using var app = CreateApp<FakeStartupModule>();
         await app.StartAsync();
 
-        await FluentActions.Awaiting(() => app.StartAsync())
+        await Awaiting(() => app.StartAsync())
                            .Should()
                            .ThrowAsync<InvalidOperationException>();
     }
@@ -44,11 +39,11 @@ public class BootstrapperTests
     [Fact]
     public async Task StopAsync_InvokeTwice_ThrowException()
     {
-        using var app = CreateBootstrapper<FakeStartupModule>();
+        using var app = CreateApp<FakeStartupModule>();
         await app.StartAsync();
         await app.StopAsync();
 
-        await FluentActions.Awaiting(() => app.StopAsync())
+        await Awaiting(() => app.StopAsync())
                            .Should()
                            .ThrowAsync<InvalidOperationException>();
     }
@@ -56,9 +51,9 @@ public class BootstrapperTests
     [Fact]
     public async Task StopAsync_WithoutInvokeStartAsync_ThrowException()
     {
-        using var app = CreateBootstrapper<FakeStartupModule>();
+        using var app = CreateApp<FakeStartupModule>();
 
-        await FluentActions.Awaiting(() => app.StopAsync())
+        await Awaiting(() => app.StopAsync())
                            .Should()
                            .ThrowAsync<InvalidOperationException>();
     }
@@ -66,7 +61,7 @@ public class BootstrapperTests
     [Fact]
     public async Task StopAsync_InvokeMethod_TriggerModuleOnStoppingAsync()
     {
-        using var app = CreateBootstrapper<FakeStartupModule>();
+        using var app = CreateApp<FakeStartupModule>();
 
         await app.StartAsync();
         await app.StopAsync();
@@ -76,15 +71,15 @@ public class BootstrapperTests
     public void SetServiceProvider_WhenValueExists_ThrowException()
     {
         var app = new Bootstrapper();
-        var providerMock = new Mock<IServiceProvider>();
-        app.SetServiceProvider(providerMock.Object);
+        var provider = Create<IServiceProvider>();
+        app.SetServiceProvider(Create<IServiceProvider>());
 
-        FluentActions.Invoking(() => app.SetServiceProvider(providerMock.Object))
+        Invoking(() => app.SetServiceProvider(provider))
                      .Should()
                      .Throw<InvalidOperationException>();
     }
 
-    private static IApplication CreateBootstrapper<T>() where T : IModule
+    private static IApplication CreateApp<T>() where T : IModule
     {
         var options = new BootstrapperBuilderOptions();
         return Bootstrapper.CreateBuilder(options)

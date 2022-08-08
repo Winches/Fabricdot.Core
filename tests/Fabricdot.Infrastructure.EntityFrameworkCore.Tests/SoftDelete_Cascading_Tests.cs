@@ -1,106 +1,112 @@
-using System;
-using System.Diagnostics.CodeAnalysis;
-using System.Linq;
-using System.Threading.Tasks;
 using Fabricdot.Domain.Auditing;
 using Fabricdot.Infrastructure.Data.Filters;
 using Fabricdot.Infrastructure.EntityFrameworkCore.Tests.Data;
-using Fabricdot.Infrastructure.EntityFrameworkCore.Tests.Entities;
-using Fabricdot.Infrastructure.EntityFrameworkCore.Tests.Repositories;
 using Fabricdot.Infrastructure.Uow.Abstractions;
+using Fabricdot.Test.Helpers.Domain.Aggregates.OrderAggregate;
+using Fabricdot.Test.Helpers.Domain.Specifications;
 using Microsoft.Extensions.DependencyInjection;
-using Xunit;
 
 namespace Fabricdot.Infrastructure.EntityFrameworkCore.Tests;
 
-[SuppressMessage("ReSharper", "InconsistentNaming")]
 public class SoftDelete_Cascading_Tests : EntityFrameworkCoreTestsBase
 {
     private readonly IDataFilter _dataFilter;
-    private readonly IBookRepository _bookRepository;
+    private readonly IOrderRepository _orderRepository;
 
     public SoftDelete_Cascading_Tests()
     {
-        var provider = ServiceScope.ServiceProvider;
-        _dataFilter = provider.GetRequiredService<IDataFilter>();
-        _bookRepository = provider.GetRequiredService<IBookRepository>();
+        _dataFilter = ServiceProvider.GetRequiredService<IDataFilter>();
+        _orderRepository = ServiceProvider.GetRequiredService<IOrderRepository>();
     }
 
     [Fact]
     public async Task DbContextBase_RemoveEntityOfCascadingCollection_SoftDelete()
     {
-        var specification = new BookFilterSpecification(FakeDataBuilder.BookWithTagsId, true);
-        string tagName = null;
+        var specification = new OrderWithDetailsSpecification(FakeDataBuilder.OrderId);
+        var productId = Guid.Empty;
         await UseUowAsync(async () =>
         {
-            var book = await _bookRepository.GetBySpecAsync(specification);
-            tagName = book.Tags.First().Name;
-            book.RemoveTag(tagName);
-            await _bookRepository.UpdateAsync(book);
+            var order = await _orderRepository.GetBySpecAsync(specification);
+            var orderLine = order.OrderLines.First();
+            productId = orderLine.ProductId;
+            order.RemoveOrderLine(productId);
+            await _orderRepository.UpdateAsync(order);
         });
 
         using var scope = _dataFilter.Disable<ISoftDelete>();
-        var retrievalBook = await _bookRepository.GetBySpecAsync(specification);
-        var tag = retrievalBook.Tags.SingleOrDefault(v => v.Name == tagName);
-        Assert.NotNull(tag);
-        Assert.True(tag.IsDeleted);
+        var order = await _orderRepository.GetBySpecAsync(specification);
+
+        order.OrderLines.Should().Contain(v => v.ProductId == productId && v.IsDeleted);
     }
 
     [Fact]
     public async Task DbContextBase_RemoveCascadingObject_SoftDelete()
     {
-        var specification = new BookFilterSpecification(FakeDataBuilder.BookWithTagsId, true);
+        var specification = new OrderWithDetailsSpecification(FakeDataBuilder.OrderId);
         await UseUowAsync(async () =>
         {
-            var book = await _bookRepository.GetBySpecAsync(specification);
-            book.Contents = null;
-            await _bookRepository.UpdateAsync(book);
+            var order = await _orderRepository.GetBySpecAsync(specification);
+            order.Details = null;
+            // PK property should be nullable.
+            await _orderRepository.UpdateAsync(order);
         });
 
         using var scope = _dataFilter.Disable<ISoftDelete>();
-        var retrievalBook = await _bookRepository.GetBySpecAsync(specification);
-        var contents = retrievalBook.Contents;
-        Assert.NotNull(contents);
-        Assert.True(contents.IsDeleted);
+        var order = await _orderRepository.GetBySpecAsync(specification);
+        var details = order.Details;
+
+        details.Should().NotBeNull();
+        details.Should().BeEquivalentTo(new { IsDeleted = true }, opts => opts.ExcludingFields());
+
     }
 
     [Fact]
     public async Task DbContextBase_RemovePrincpalEntity_KeepCascadingEntitiesState()
     {
-        var specification = new BookFilterSpecification(FakeDataBuilder.BookWithTagsId, true);
-        string tagName = null;
+        var specification = new OrderWithDetailsSpecification(FakeDataBuilder.OrderId);
+        var productId = Guid.Empty;
         await UseUowAsync(async () =>
         {
-            var book = await _bookRepository.GetBySpecAsync(specification);
-            tagName = book.Tags.First().Name;
-            book.RemoveTag(tagName);
-            await _bookRepository.DeleteAsync(book);
+            var order = await _orderRepository.GetBySpecAsync(specification);
+            var orderLine = order.OrderLines.First();
+            productId = orderLine.ProductId;
+            order.RemoveOrderLine(productId);
+            await _orderRepository.DeleteAsync(order);
         });
 
         using var scope = _dataFilter.Disable<ISoftDelete>();
-        var retrievalBook = await _bookRepository.GetBySpecAsync(specification);
-        var tag = retrievalBook.Tags.SingleOrDefault(v => v.Name == tagName);
-        var contents = retrievalBook.Contents;
+        var order = await _orderRepository.GetBySpecAsync(specification);
 
-        Assert.NotNull(retrievalBook);
-        Assert.True(retrievalBook.IsDeleted);
-        Assert.True(tag.IsDeleted);
-        Assert.NotNull(contents);
-        Assert.False(contents.IsDeleted);
+        order.Should().NotBeNull();
+        order.IsDeleted.Should().BeTrue();
+        order.OrderLines.Should().Contain(v => v.ProductId == productId && v.IsDeleted);
+        order.Details.Should().NotBeNull();
+        order.Details.IsDeleted.Should().BeFalse();
     }
 
     [Fact]
     public async Task DbContextBase_QueryWithCascadingCollection_IgnoreDeletedEntity()
     {
-        var specification = new BookFilterSpecification(FakeDataBuilder.BookWithTagsId, true);
-        using var scope = _dataFilter.Enable<ISoftDelete>();
-        var book = await _bookRepository.GetBySpecAsync(specification);
-        Assert.DoesNotContain(book.Tags, v => v.Name == FakeDataBuilder.DeletedBookTag);
+        var specification = new OrderWithDetailsSpecification(FakeDataBuilder.OrderId);
+        var productId = Guid.Empty;
+        await UseUowAsync(async () =>
+        {
+            var order = await _orderRepository.GetBySpecAsync(specification);
+            var orderLine = order.OrderLines.First();
+            productId = orderLine.ProductId;
+            order.RemoveOrderLine(productId);
+            await _orderRepository.UpdateAsync(order);
+        });
+        var order = await _orderRepository.GetBySpecAsync(specification);
+
+        order.OrderLines.Should()
+                        .OnlyContain(v => !v.IsDeleted).And
+                        .NotContain(v => v.ProductId == productId);
     }
 
     private async Task UseUowAsync(Func<Task> func)
     {
-        var uowMgr = ServiceScope.ServiceProvider.GetRequiredService<IUnitOfWorkManager>();
+        var uowMgr = ServiceProvider.GetRequiredService<IUnitOfWorkManager>();
         using var uow = uowMgr.Begin(requireNew: true);
         await func();
         await uow.CommitChangesAsync();

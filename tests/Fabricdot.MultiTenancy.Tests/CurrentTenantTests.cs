@@ -1,56 +1,45 @@
-﻿using System;
-using System.Collections.Generic;
-using Fabricdot.MultiTenancy.Abstractions;
-using Moq;
-using Xunit;
+﻿using Fabricdot.MultiTenancy.Abstractions;
 
 namespace Fabricdot.MultiTenancy.Tests;
 
-public class CurrentTenantTests
+public class CurrentTenantTests : TestFor<CurrentTenant>
 {
-    private readonly ICurrentTenant _currentTenant;
     protected static ITenant CurrentTenant { get; set; }
 
     public CurrentTenantTests()
     {
-        var tenantAccessor = new Mock<ITenantAccessor>();
-        tenantAccessor.SetupGet(v => v.Tenant).Returns(() => CurrentTenant);
-        _currentTenant = new CurrentTenant(tenantAccessor.Object);
+        var tenantAccessorMock = InjectMock<ITenantAccessor>();
+        tenantAccessorMock.SetupGet(v => v.Tenant).Returns(() => CurrentTenant);
     }
 
-    public static IEnumerable<object[]> GetTenants()
-    {
-        yield return new object[]
-        {
-            null
-        };
-        yield return new object[]
-        {
-            new TenantInfo(Guid.NewGuid(), "tenant1")
-        };
-    }
-
+    [InlineAutoData(null)]
+    [InlineAutoData]
     [Theory]
-    [MemberData(nameof(GetTenants))]
-    public void Id_GivenTenant_ReturnCorrectly(ITenant tenant)
+    internal void Id_GivenTenant_ReturnCorrectly(TenantInfo tenant)
     {
         CurrentTenant = tenant;
-        Assert.Equal(_currentTenant.Id, CurrentTenant?.Id);
+
+        Sut.Id.Should().Be(CurrentTenant?.Id);
     }
 
+    [InlineAutoData(null)]
+    [InlineAutoData]
     [Theory]
-    [MemberData(nameof(GetTenants))]
-    public void Name_GivenTenant_ReturnCorrectly(ITenant tenant)
+    internal void Name_GivenTenant_ReturnCorrectly(TenantInfo tenant)
     {
         CurrentTenant = tenant;
-        Assert.Equal(_currentTenant.Name, CurrentTenant?.Name);
+
+        Sut.Name.Should().Be(CurrentTenant?.Name);
     }
 
+    [InlineAutoData(null)]
+    [InlineAutoData]
     [Theory]
-    [MemberData(nameof(GetTenants))]
-    public void IsAvailable_GivenTenant_ReturnCorrectly(ITenant tenant)
+    internal void IsAvailable_GivenTenant_ReturnCorrectly(TenantInfo tenant)
     {
         CurrentTenant = tenant;
-        Assert.Equal(_currentTenant.IsAvailable, CurrentTenant?.Id != null);
+        var expected = CurrentTenant?.Id != null;
+
+        Sut.IsAvailable.Should().Be(expected);
     }
 }

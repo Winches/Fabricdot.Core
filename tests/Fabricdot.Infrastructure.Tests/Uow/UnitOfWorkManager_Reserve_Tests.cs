@@ -1,35 +1,30 @@
-using System.Diagnostics.CodeAnalysis;
 using Fabricdot.Infrastructure.Uow.Abstractions;
-using Fabricdot.Testing;
 using Microsoft.Extensions.DependencyInjection;
-using Xunit;
 
 namespace Fabricdot.Infrastructure.Tests.Uow;
 
-[SuppressMessage("ReSharper", "InconsistentNaming")]
 public class UnitOfWorkManager_Reserve_Tests : IntegrationTestBase<InfrastructureTestModule>
 {
     private readonly IUnitOfWorkManager _unitOfWorkManager;
 
     public UnitOfWorkManager_Reserve_Tests()
     {
-        var provider = ServiceScope.ServiceProvider;
-        _unitOfWorkManager = provider.GetRequiredService<IUnitOfWorkManager>();
+        _unitOfWorkManager = ServiceProvider.GetRequiredService<IUnitOfWorkManager>();
     }
 
     [Fact]
     public async Task Reserve_NoExistedUow_Correctly()
     {
-        const string reservationName = "1";
+        var reservationName = Create<string>();
         using (var reservedUow = _unitOfWorkManager.Reserve(reservationName))
         {
             AssertReservedUow(reservationName, reservedUow);
 
             using (var nestedUow = _unitOfWorkManager.Begin())
             {
-                var available = _unitOfWorkManager.Available;
-                Assert.Same(nestedUow, available);
-                Assert.NotEqual(reservedUow.Id, nestedUow.Id);
+                _unitOfWorkManager.Available.Should().Be(nestedUow);
+                nestedUow.Id.Should().NotBe(reservedUow.Id);
+
                 await nestedUow.CommitChangesAsync();
             }
 
@@ -40,40 +35,37 @@ public class UnitOfWorkManager_Reserve_Tests : IntegrationTestBase<Infrastructur
     [Fact]
     public async Task BeginReserve_WithReservedUow_Correctly()
     {
-        const string reservationName = "1";
-        IUnitOfWork available;
+        var reservationName = Create<string>();
         using (var reservedUow = _unitOfWorkManager.Reserve(reservationName))
         {
             AssertReservedUow(reservationName, reservedUow);
 
             using (var uow = _unitOfWorkManager.Begin())
             {
-                available = _unitOfWorkManager.Available;
-                Assert.Same(uow, available);
+                _unitOfWorkManager.Available.Should().Be(uow);
+
                 await uow.CommitChangesAsync();
             }
 
             _unitOfWorkManager.BeginReserved(reservationName);
-            available = _unitOfWorkManager.Available;
-            Assert.Same(reservedUow, available);
-            Assert.True(available.IsActive);
+            _unitOfWorkManager.Available.Should().Be(reservedUow);
 
-            await available.CommitChangesAsync();
+            await reservedUow.CommitChangesAsync();
         }
     }
 
     [Fact]
     public void BeginReserve_NoReservedUow_ThrowException()
     {
-        void testCode() => _unitOfWorkManager.BeginReserved("1");
-        Assert.Throws<InvalidOperationException>(testCode);
+        Invoking(() => _unitOfWorkManager.BeginReserved(Create<string>()))
+                     .Should()
+                     .Throw<InvalidOperationException>();
     }
 
     private void AssertReservedUow(string name, IUnitOfWork unitOfWork)
     {
-        Assert.Equal(name, unitOfWork.ReservationName);
-        Assert.False(unitOfWork.IsActive);
-        var available = _unitOfWorkManager.Available;
-        Assert.Null(available);
+        unitOfWork.ReservationName.Should().Be(name);
+        unitOfWork.IsActive.Should().BeFalse();
+        _unitOfWorkManager.Available.Should().BeNull();
     }
 }

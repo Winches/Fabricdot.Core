@@ -1,28 +1,18 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Claims;
-using System.Threading;
-using System.Threading.Tasks;
+﻿using System.Security.Claims;
 using Fabricdot.Authorization.Permissions;
-using FluentAssertions;
 using Moq;
-using Xunit;
 
 namespace Fabricdot.Authorization.Tests.Permissions;
 
-public class PermissionHandlerContextFactoryTests
+public class PermissionHandlerContextFactoryTests : TestFor<PermissionHandlerContextFactory>
 {
-    protected IPermissionHandlerContextFactory PermissionHandlerContextFactory { get; }
-
     public PermissionHandlerContextFactoryTests()
     {
-        var mockSubjectResolver = new Mock<IGrantSubjectResolver>();
+        var mockSubjectResolver = InjectMock<IGrantSubjectResolver>();
         mockSubjectResolver.Setup(v => v.ResolveAsync(It.IsAny<ClaimsPrincipal>(), default))
                            .ReturnsAsync((
                                ClaimsPrincipal principal,
                                CancellationToken _) => principal.Claims.Select(v => (GrantSubject)v).ToList());
-        PermissionHandlerContextFactory = new PermissionHandlerContextFactory(mockSubjectResolver.Object);
     }
 
     public static IEnumerable<object[]> GetInvalidInput()
@@ -32,49 +22,31 @@ public class PermissionHandlerContextFactoryTests
         yield return new object[] { new ClaimsPrincipal(), Array.Empty<PermissionName>() };
     }
 
-    [Fact]
-    public async Task CreateAsync_GivenNullPrincipal_Throw()
-    {
-        async Task testCode() => await PermissionHandlerContextFactory.CreateAsync(
-            null,
-            new[] { new PermissionName("name1") });
-
-        await FluentActions.Awaiting(testCode)
-                           .Should()
-                           .ThrowAsync<ArgumentNullException>();
-    }
-
     [MemberData(nameof(GetInvalidInput))]
     [Theory]
     public async Task CreateAsync_GivenInvalidInput_Throw(
         ClaimsPrincipal principal,
         IEnumerable<PermissionName> permissions)
     {
-        async Task testCode() => await PermissionHandlerContextFactory.CreateAsync(
-            principal,
-            permissions);
-
-        await FluentActions.Awaiting(testCode)
+        await Awaiting(() => Sut.CreateAsync(principal, permissions))
                            .Should()
                            .ThrowAsync<ArgumentException>();
+        // TODO:Simplify
     }
 
-    [Fact]
-    public async Task CreateAsync_GivenInput_ReturnCorrectly()
+    [AutoData]
+    [Theory]
+    public async Task CreateAsync_GivenInput_ReturnCorrectly(List<PermissionName> permissions)
     {
         var claims = new[]
         {
-            new Claim(ClaimTypes.Role,"role1"),
-            new Claim(ClaimTypes.NameIdentifier,"1"),
-            new Claim(ClaimTypes.Name,"Jacky"),
+            new Claim(ClaimTypes.Role,Create<string>()),
+            new Claim(ClaimTypes.NameIdentifier,Create<string>()),
+            new Claim(ClaimTypes.Name,Create<string>()),
         };
         var expectedClaims = claims.Select(v => (GrantSubject)v).ToList();
         var pricinpal = new ClaimsPrincipal(new ClaimsIdentity(claims));
-        var permissions = new List<PermissionName>
-        {
-            new PermissionName("name1")
-        };
-        var context = await PermissionHandlerContextFactory.CreateAsync(pricinpal, permissions);
+        var context = await Sut.CreateAsync(pricinpal, permissions);
 
         context.Should().NotBeNull();
         context.Subjects.Should().BeEquivalentTo(expectedClaims);

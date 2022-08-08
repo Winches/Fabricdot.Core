@@ -1,51 +1,48 @@
-﻿using System.Threading.Tasks;
-using Fabricdot.Infrastructure.Domain.Services;
-using Fabricdot.Infrastructure.EntityFrameworkCore.Tests.Repositories;
+﻿using Fabricdot.Infrastructure.Domain.Services;
+using Fabricdot.Infrastructure.EntityFrameworkCore.Tests.Data;
+using Fabricdot.Test.Helpers.Domain.Aggregates.OrderAggregate;
+using Fabricdot.Test.Helpers.Domain.Specifications;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
-using Xunit;
 
 namespace Fabricdot.Infrastructure.EntityFrameworkCore.Tests;
 
 public class ConcurrencyStampTest : EntityFrameworkCoreTestsBase
 {
-    private readonly IBookRepository _bookRepository;
+    private readonly IOrderRepository _orderRepository;
 
     public ConcurrencyStampTest()
     {
-        var provider = ServiceScope.ServiceProvider;
-        _bookRepository = provider.GetRequiredService<IBookRepository>();
+        _orderRepository = ServiceProvider.GetRequiredService<IOrderRepository>();
     }
 
     [Fact]
     public async Task UpdateAsync_WhenEntityChanged_ThrowException()
     {
-        const string bookName = "CSharp";
-        var book1 = await _bookRepository.GetByNameAsync(bookName);
-        book1.ChangeName("CSharp1");
+        var specification = new OrderWithDetailsSpecification(FakeDataBuilder.OrderId);
+        var order1 = await _orderRepository.GetBySpecAsync(specification);
+        order1.AddOrderLine(Fixture);
 
-        var book2 = await _bookRepository.GetByNameAsync(bookName);
-        await _bookRepository.UpdateAsync(book2);
+        var order2 = await _orderRepository.GetBySpecAsync(specification);
+        await _orderRepository.UpdateAsync(order2);
 
-        await Assert.ThrowsAsync<DbUpdateConcurrencyException>(async () =>
-        {
-            await _bookRepository.UpdateAsync(book1);
-        });
+        await FluentActions.Awaiting(() => _orderRepository.UpdateAsync(order1))
+                           .Should()
+                           .ThrowAsync<DbUpdateConcurrencyException>();
     }
 
     [Fact]
     public async Task DeleteAsync_WhenEntityChanged_ThrowException()
     {
-        const string bookName = "CSharp";
-        var book1 = await _bookRepository.GetByNameAsync(bookName);
+        var specification = new OrderWithDetailsSpecification(FakeDataBuilder.OrderId);
+        var order1 = await _orderRepository.GetBySpecAsync(specification);
 
-        var book2 = await _bookRepository.GetByNameAsync(bookName);
-        book2.ChangeName("CSharp2");
-        await _bookRepository.UpdateAsync(book2);
+        var order2 = await _orderRepository.GetBySpecAsync(specification);
+        order2.AddOrderLine(Fixture);
+        await _orderRepository.UpdateAsync(order2);
 
-        await Assert.ThrowsAsync<DbUpdateConcurrencyException>(async () =>
-        {
-            await _bookRepository.HardDeleteAsync(book1);
-        });
+        await FluentActions.Awaiting(() => _orderRepository.HardDeleteAsync(order1))
+                           .Should()
+                           .ThrowAsync<DbUpdateConcurrencyException>();
     }
 }

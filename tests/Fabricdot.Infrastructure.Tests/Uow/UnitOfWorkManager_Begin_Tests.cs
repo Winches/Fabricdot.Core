@@ -1,20 +1,15 @@
-using System.Diagnostics.CodeAnalysis;
 using Fabricdot.Infrastructure.Uow.Abstractions;
-using Fabricdot.Testing;
 using Microsoft.Extensions.DependencyInjection;
-using Xunit;
 
 namespace Fabricdot.Infrastructure.Tests.Uow;
 
-[SuppressMessage("ReSharper", "InconsistentNaming")]
 public class UnitOfWorkManager_Begin_Tests : IntegrationTestBase<InfrastructureTestModule>
 {
     private readonly IUnitOfWorkManager _unitOfWorkManager;
 
     public UnitOfWorkManager_Begin_Tests()
     {
-        var provider = ServiceScope.ServiceProvider;
-        _unitOfWorkManager = provider.GetRequiredService<IUnitOfWorkManager>();
+        _unitOfWorkManager = ServiceProvider.GetRequiredService<IUnitOfWorkManager>();
     }
 
     [Fact]
@@ -30,13 +25,16 @@ public class UnitOfWorkManager_Begin_Tests : IntegrationTestBase<InfrastructureT
     {
         using var rootUow = _unitOfWorkManager.Begin();
         using var nestedUow = _unitOfWorkManager.Begin(requireNew: false);
+
         AssertNewUnitOfWork(nestedUow);
-        Assert.NotSame(rootUow, nestedUow);
-        Assert.Equal(rootUow.Id, nestedUow.Id);
+        nestedUow.Should().NotBe(rootUow);
+        nestedUow.Id.Should().Be(rootUow.Id);
+
         await nestedUow.CommitChangesAsync();
 
-        Assert.True(nestedUow.IsActive);
-        Assert.True(rootUow.IsActive);
+        nestedUow.IsActive.Should().BeTrue();
+        rootUow.IsActive.Should().BeTrue();
+
         await rootUow.CommitChangesAsync();
     }
 
@@ -45,20 +43,22 @@ public class UnitOfWorkManager_Begin_Tests : IntegrationTestBase<InfrastructureT
     {
         using var rootUow = _unitOfWorkManager.Begin();
         using var nestedUow = _unitOfWorkManager.Begin(requireNew: true);
+
         AssertNewUnitOfWork(nestedUow);
-        Assert.NotSame(rootUow, nestedUow);
-        Assert.NotEqual(rootUow.Id, nestedUow.Id);
+        nestedUow.Should().NotBe(rootUow);
+        nestedUow.Id.Should().NotBe(rootUow.Id);
+
         await nestedUow.CommitChangesAsync();
 
-        Assert.False(nestedUow.IsActive);
-        Assert.True(rootUow.IsActive);
+        nestedUow.IsActive.Should().BeFalse();
+        rootUow.IsActive.Should().BeTrue();
+
         await rootUow.CommitChangesAsync();
     }
 
     private static void AssertNewUnitOfWork(IUnitOfWork uow)
     {
-        Assert.NotNull(uow);
-        Assert.NotEqual(default, uow.Id);
-        Assert.True(uow.IsActive);
+        uow.Id.Should().NotBe(default(Guid));
+        uow.IsActive.Should().BeTrue();
     }
 }

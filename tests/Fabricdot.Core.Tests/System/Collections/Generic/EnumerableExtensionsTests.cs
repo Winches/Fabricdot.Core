@@ -1,13 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using FluentAssertions;
-using Xunit;
+﻿namespace Fabricdot.Core.Tests.System.Collections.Generic;
 
-namespace Fabricdot.Core.Tests.System.Collections.Generic;
-
-public class EnumerableExtensionsTests
+public class EnumerableExtensionsTests : TestFor<List<string>>
 {
     public static IEnumerable<object[]> GetEnumrables()
     {
@@ -22,42 +15,44 @@ public class EnumerableExtensionsTests
     public void IsNullOrEmpty_GivenInput_ReturnCorrectly(IEnumerable<object> enumerable)
     {
         var isNullOrEmpty = enumerable?.Any() != true;
+
         enumerable.IsNullOrEmpty().Should().Be(isNullOrEmpty);
     }
 
     [Fact]
     public void ForEach_GivenAction_IteratingElements()
     {
-        var collection = Enumerable.Range(1, 10).ToList();
         var count = 0;
-        collection.ForEach(_ => count++);
+        Sut.ForEach((v, i) =>
+        {
+            count++;
+            v.Should().Be(Sut[i]);
+        });
 
-        count.Should().Be(collection.Count);
-        collection.ForEach((v, i) => v.Should().Be(collection[i]));
+        count.Should().Be(Sut.Count);
     }
 
     [Fact]
     public async Task ForEachAsync_GivenAction_IteratingElementsAsync()
     {
-        var collection = Enumerable.Range(1, 10).ToList();
         var count = 0;
-        await collection.ForEachAsync((v, i) =>
+        await Sut.ForEachAsync((v, i) =>
         {
-            Task.Delay(10);
             count++;
-            v.Should().Be(collection[i]);
-            return Task.CompletedTask;
+            v.Should().Be(Sut[i]);
+            return Task.Delay(100);
         });
 
-        count.Should().Be(collection.Count());
+        count.Should().Be(Sut.Count);
     }
 
-    [Fact]
-    public void JoinAsString_GivenInput_JoinString()
+    [AutoData]
+    [Theory]
+    public void JoinAsString_GivenInput_JoinString(
+        string[] source,
+        string separator1,
+        char separator2)
     {
-        const string separator1 = "__";
-        const char separator2 = '_';
-        var source = new[] { " a", " -", " c" };
         var expected1 = string.Join(separator1, source);
         var expected2 = string.Join(separator2, source);
 

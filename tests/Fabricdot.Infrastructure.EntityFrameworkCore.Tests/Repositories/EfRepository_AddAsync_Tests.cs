@@ -1,58 +1,48 @@
-﻿using System;
-using System.Diagnostics.CodeAnalysis;
-using System.Threading.Tasks;
-using Fabricdot.Infrastructure.EntityFrameworkCore.Tests.Entities;
+﻿using AutoFixture.Xunit2;
+using Fabricdot.Test.Helpers.Domain.Aggregates.OrderAggregate;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
-using Xunit;
 
 namespace Fabricdot.Infrastructure.EntityFrameworkCore.Tests.Repositories;
 
-[SuppressMessage("ReSharper", "InconsistentNaming")]
-public class EfRepository_AddAsync_Tests : EfRepositoryTestsBase
+public class EfRepository_AddAsync_Tests : EntityFrameworkCoreTestsBase
 {
-    private readonly IBookRepository _bookRepository;
+    private readonly IOrderRepository _orderRepository;
 
     public EfRepository_AddAsync_Tests()
     {
-        var provider = ServiceScope.ServiceProvider;
-        _bookRepository = provider.GetRequiredService<IBookRepository>();
+        _orderRepository = ServiceProvider.GetRequiredService<IOrderRepository>();
     }
 
-    [Fact]
-    public async Task AddAsync_GivenUnsavedEntity_Correctly()
+    [AutoData]
+    [Theory]
+    public async Task AddAsync_GivenUnsavedEntity_Correctly(Order expected)
     {
-        var id = Guid.NewGuid().ToString();
-        var book = new Book(id, "Python");
-        var ret = await _bookRepository.AddAsync(book);
+        await _orderRepository.AddAsync(expected);
 
-        var retrievalBook = await _bookRepository.GetByIdAsync(id);
-        var findId = retrievalBook.Id;
+        var actual = await _orderRepository.GetByIdAsync(expected.Id);
 
-        Assert.Same(book, ret);
-        Assert.Equal(id, findId);
+        actual.Should().BeEquivalentTo(expected);
     }
 
-    [Fact]
-    public async Task AddAsync_GivenSavedEntity_ThrowException()
+    [AutoData]
+    [Theory]
+    public async Task AddAsync_GivenSavedEntity_ThrowException(Order order)
     {
-        async Task Func()
+        async Task TestCode()
         {
-            var book = await _bookRepository.GetByNameAsync("CSharp");
-            await _bookRepository.AddAsync(book);
+            await _orderRepository.AddAsync(order);
+            await _orderRepository.AddAsync(order);
         }
 
-        await Assert.ThrowsAsync<DbUpdateException>(Func);
+        await Awaiting(TestCode).Should().ThrowAsync<DbUpdateException>();
     }
 
     [Fact]
     public async Task AddAsync_GivenNull_ThrowException()
     {
-        async Task Func()
-        {
-            await _bookRepository.AddAsync(null);
-        }
-
-        await Assert.ThrowsAsync<ArgumentNullException>(Func);
+        await Awaiting(() => _orderRepository.AddAsync(null))
+                           .Should()
+                           .ThrowAsync<ArgumentNullException>();
     }
 }

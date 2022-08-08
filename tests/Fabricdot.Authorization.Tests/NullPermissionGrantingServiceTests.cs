@@ -1,18 +1,14 @@
-﻿using System.Threading.Tasks;
-using FluentAssertions;
-using Xunit;
+﻿namespace Fabricdot.Authorization.Tests;
 
-namespace Fabricdot.Authorization.Tests;
-
-public class NullPermissionGrantingServiceTests
+public class NullPermissionGrantingServiceTests : TestFor<NullPermissionGrantingService>
 {
-    [Fact]
-    public async Task IsGrantedAsync_Should_AlwaysGranted()
+    [AutoData]
+    [Theory]
+    public async Task IsGrantedAsync_Should_AlwaysGranted(
+        GrantSubject subject,
+        string[] permissions)
     {
-        var permissionGrantingService = new NullPermissionGrantingService();
-        var grantResults = await permissionGrantingService.IsGrantedAsync(
-            new GrantSubject(GrantTypes.User, "1"),
-            new[] { "object1" });
+        var grantResults = await Sut.IsGrantedAsync(subject, permissions);
 
         grantResults.Should().OnlyContain(v => v.IsGranted);
     }

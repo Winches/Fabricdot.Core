@@ -1,28 +1,22 @@
-﻿using System;
-using Fabricdot.Core.Randoms;
-using FluentAssertions;
-using Xunit;
+﻿using Fabricdot.Core.Randoms;
 
 namespace Fabricdot.Core.Tests.Randoms;
 
-public class DefaultRandomProviderTests
+public class DefaultRandomProviderTests : TestFor<DefaultRandomProvider>
 {
-    protected DefaultRandomProvider RandomProvider { get; } = new();
-
     [Fact]
     public void Next_ReturnCorrectly()
     {
-        var num1 = RandomProvider.Next();
-        var num2 = RandomProvider.Next();
+        var list = Enumerable.Range(1, 10000).Select(_ => Sut.Next()).ToList();
 
-        num1.Should().NotBe(num2);
+        list.Should().OnlyHaveUniqueItems();
     }
 
     [InlineData(5, 1)]
     [Theory]
     public void Next_GivenInvalidInput_ThrowException(int min, int max)
     {
-        FluentActions.Invoking(() => RandomProvider.Next(min, max))
+        Invoking(() => Sut.Next(min, max))
                      .Should()
                      .Throw<ArgumentOutOfRangeException>();
     }

@@ -1,15 +1,11 @@
-﻿using System;
-using FluentAssertions;
-using Xunit;
+﻿namespace Fabricdot.Core.Tests.System.Reflection;
 
-namespace Fabricdot.Core.Tests.System.Reflection;
-
-public class DateTimeExtensionsTests
+public class DateTimeExtensionsTests : TestBase
 {
     [Fact]
     public void ToDateTime_GivenInvalidTimestamp_ThrowException()
     {
-        FluentActions.Invoking(() => (-1d).ToDateTime())
+        Invoking(() => (-1d).ToDateTime())
                      .Should()
                      .Throw<ArgumentException>();
     }

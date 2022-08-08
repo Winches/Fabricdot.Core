@@ -1,31 +1,31 @@
-﻿using System;
-using System.Globalization;
-using FluentAssertions;
+﻿using System.Globalization;
 using Microsoft.Extensions.DependencyInjection;
-using Xunit;
 
 namespace Fabricdot.Core.Tests.System.Reflection;
 
-public class ObjectExtensionsTests
+public class ObjectExtensionsTests : TestBase
 {
-    [Fact]
-    public void IsNull_GivenInput_ReturnCorrectly()
+    [InlineAutoData]
+    [InlineAutoData(null)]
+    [Theory]
+    public void IsNull_GivenInput_ReturnCorrectly(object obj)
     {
-        (null as object)!.IsNull().Should().BeTrue();
-        new object().IsNull().Should().BeFalse();
+        var expected = obj == null;
+        obj.IsNull().Should().Be(expected);
     }
 
     [Fact]
     public void Cast_GivenInput_CastObject()
     {
-        object obj = 1;
+        object obj = Create<int>();
+
         obj.Cast<int>().Should().Be((int)obj);
     }
 
     [Fact]
     public void As_GivenInput_CastObjectSafely()
     {
-        object obj = 1;
+        object obj = Create<int>();
 
         ObjectExtensions.As<int>(obj).Should().Be((int)obj);
         ObjectExtensions.As<string>(obj).Should().BeNull();
@@ -34,7 +34,7 @@ public class ObjectExtensionsTests
     [Fact]
     public void To_GivenNull_ThrowException()
     {
-        FluentActions.Invoking(() => (null as object).To<string>())
+        Invoking(() => ObjectExtensions.To<string>(null))
                      .Should()
                      .Throw<ArgumentNullException>();
     }
@@ -42,22 +42,26 @@ public class ObjectExtensionsTests
     [Fact]
     public void To_GivenGuidType_ConvertToGuid()
     {
-        const string obj = "444AED21-D3F2-4341-B919-4FB6DDA87610";
+        var obj = Guid.NewGuid().ToString();
+
         obj.To<Guid>().Should().Be(Guid.Parse(obj));
     }
 
     [Fact]
     public void To_GivenEnumName_ConvertToEnum()
     {
-        nameof(ServiceLifetime.Singleton).To<ServiceLifetime>()
-                                         .Should()
-                                         .Be(ServiceLifetime.Singleton);
+        var @enum = Create<ServiceLifetime>();
+
+        @enum.ToString()
+             .To<ServiceLifetime>()
+             .Should()
+             .Be(@enum);
     }
 
     [Fact]
     public void To_GivenInvalidEnumName_ThrowException()
     {
-        FluentActions.Invoking(() => "Singleton1".To<ServiceLifetime>())
+        Invoking(() => Create<string>().To<ServiceLifetime>())
                      .Should()
                      .Throw<ArgumentException>();
     }
@@ -69,6 +73,7 @@ public class ObjectExtensionsTests
     public void To_GivenInput_ChangeType(IConvertible obj)
     {
         var expected = Convert.ChangeType(obj, typeof(int), CultureInfo.InvariantCulture).Cast<int>();
+
         obj.To<int>()
            .Should()
            .Be(expected);

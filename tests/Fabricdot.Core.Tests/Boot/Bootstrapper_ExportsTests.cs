@@ -3,54 +3,51 @@ using Fabricdot.Core.Tests.Modules;
 using Fabricdot.Core.Tests.Modules.Exports;
 using Fabricdot.Core.Tests.Modules.Exports.Core;
 using Fabricdot.Core.Tests.Modules.Exports.Core.Subdomain;
-using FluentAssertions;
-using Xunit;
 
 namespace Fabricdot.Core.Tests.Boot;
 
-public class Bootstrapper_ExportsTests
+public class Bootstrapper_ExportsTests : TestFor<IBootstrapperBuilder>
 {
     [Fact]
     public void BootstrapModules_ExportAll_RegisterServices()
     {
-        var serviceType = typeof(FakeService);
-        var options = new BootstrapperBuilderOptions();
-        var builder = Bootstrapper.CreateBuilder(options).AddModules(typeof(FakeStartupModule));
-        var services = builder.Services;
+        var services = Sut.Services;
+        Sut.AddModules(typeof(FakeStartupModule));
 
-        services.Should()
-                .ContainSingle(v => v.ServiceType == serviceType);
-        services.Should()
-                .ContainSingle(v => v.ServiceType == typeof(FakeCoreService));
+        services.Should().ContainSingle<FakeService>();
+        services.Should().ContainSingle<FakeCoreService>();
     }
 
     [Fact]
     public void BootstrapModules_ExportNamespace_RegisterServices()
     {
-        var options = new BootstrapperBuilderOptions();
-        var builder = Bootstrapper.CreateBuilder(options).AddModules(typeof(FakeCoreModule));
-        var services = builder.Services;
+        var services = Sut.Services;
+        Sut.AddModules(typeof(FakeCoreModule));
 
-        services.Should().ContainSingle(v => v.ServiceType == typeof(FakeCoreService));
-        services.Should().ContainSingle(v => v.ServiceType == typeof(FakeCoreSubDomainService));
-        services.Should().NotContain(v => v.ServiceType == typeof(FakeService));
+        services.Should().ContainSingle<FakeCoreService>();
+        services.Should().ContainSingle<FakeCoreSubDomainService>();
+        services.Should().NotContain<FakeService>();
     }
 
     [Fact]
     public void BootstrapModules_AddModulesTwice_RegisterCorrectly()
     {
         var moduleType = typeof(FakeStartupModule);
-        var bootstrapperBuilder = Bootstrapper.CreateBuilder(new BootstrapperBuilderOptions())
-                                              .AddModules(moduleType)
-                                              .AddModules(moduleType);
+        Sut.AddModules(moduleType)
+           .AddModules(moduleType);
 
-        bootstrapperBuilder.Services.Should().ContainSingle(v => v.ServiceType == typeof(FakeService));
+        Sut.Services.Should().ContainSingle<FakeService>();
     }
 
     [Fact]
     public void BootstrapModules_ModuleWithoutIConfigureService_IgnoreMethod()
     {
-        var moduleType = typeof(FakeCustomModule);
-        Bootstrapper.CreateBuilder(new BootstrapperBuilderOptions()).AddModules(moduleType);
+        Sut.AddModules(typeof(FakeCustomModule));
+    }
+
+    protected override IBootstrapperBuilder CreateSut()
+    {
+        var options = Create<BootstrapperBuilderOptions>();
+        return Bootstrapper.CreateBuilder(options);
     }
 }

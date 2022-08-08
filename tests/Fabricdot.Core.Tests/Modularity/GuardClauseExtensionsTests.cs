@@ -1,17 +1,14 @@
-﻿using System;
-using Ardalis.GuardClauses;
+﻿using Ardalis.GuardClauses;
 using Fabricdot.Core.Modularity;
-using FluentAssertions;
-using Xunit;
 
 namespace Fabricdot.Core.Tests.Modularity;
 
-public class GuardClauseExtensionsTests
+public class GuardClauseExtensionsTests : TestBase
 {
     [Fact]
     public void InvalidModuleType_WhenGuardIsNull_ThrowException()
     {
-        FluentActions.Invoking(() => ((IGuardClause)null).InvalidModuleType(GetType(), ""))
+        Invoking(() => ((IGuardClause)null).InvalidModuleType(GetType(), Create<string>()))
                      .Should()
                      .Throw<ArgumentException>();
     }
@@ -19,7 +16,7 @@ public class GuardClauseExtensionsTests
     [Fact]
     public void InvalidModuleType_WhenTypeIsNull_ThrowException()
     {
-        FluentActions.Invoking(() => Guard.Against.InvalidModuleType(null, ""))
+        Invoking(() => Guard.Against.InvalidModuleType(null, Create<string>()))
                      .Should()
                      .Throw<ArgumentNullException>();
     }
@@ -27,7 +24,7 @@ public class GuardClauseExtensionsTests
     [Fact]
     public void InvalidModuleType_WhenTypeIsInvalid_ThrowException()
     {
-        FluentActions.Invoking(() => Guard.Against.InvalidModuleType(GetType(), ""))
+        Invoking(() => Guard.Against.InvalidModuleType(GetType(), Create<string>()))
                      .Should()
                      .Throw<ArgumentException>();
     }

@@ -1,114 +1,109 @@
-﻿using System.Diagnostics.CodeAnalysis;
-using System.Threading;
-using System.Threading.Tasks;
+﻿using AutoFixture;
 using Fabricdot.Domain.Events;
 using Fabricdot.Domain.SharedKernel;
-using Fabricdot.Infrastructure.EntityFrameworkCore.Tests.Entities;
-using Fabricdot.Infrastructure.EntityFrameworkCore.Tests.Repositories;
+using Fabricdot.Infrastructure.EntityFrameworkCore.Tests.Data;
 using Fabricdot.Infrastructure.Security;
-using FluentAssertions;
+using Fabricdot.Infrastructure.Uow.Abstractions;
+using Fabricdot.Test.Helpers.Domain.Aggregates.CustomerAggregate;
+using Fabricdot.Test.Helpers.Domain.Aggregates.OrderAggregate;
+using Fabricdot.Test.Helpers.Domain.Specifications;
 using Microsoft.Extensions.DependencyInjection;
-using Moq;
-using Xunit;
 
 namespace Fabricdot.Infrastructure.EntityFrameworkCore.Tests;
 
-[SuppressMessage("ReSharper", "InconsistentNaming")]
 public class AuditPropertiesTests : EntityFrameworkCoreTestsBase
 {
-    internal class AuthorCreatedEventHandler : IDomainEventHandler<EntityCreatedEvent<Author>>
+    internal class CustomerCreatedEventHandler : IDomainEventHandler<EntityCreatedEvent<Customer>>
     {
-        private readonly IBookRepository _bookRepository;
+        private readonly IFixture _fixture;
+        private readonly IOrderRepository _orderRepository;
 
-        public AuthorCreatedEventHandler(IBookRepository bookRepository)
+        public CustomerCreatedEventHandler(
+            IFixture fixture,
+            IOrderRepository orderRepository)
         {
-            _bookRepository = bookRepository;
+            _fixture = fixture;
+            _orderRepository = orderRepository;
         }
 
         public async Task HandleAsync(
-            EntityCreatedEvent<Author> domainEvent,
+            EntityCreatedEvent<Customer> domainEvent,
             CancellationToken cancellationToken)
         {
-            var author = domainEvent.Entity;
-            var book = new Book(author.Id.ToString(), $"{author.FirstName} Default Book.");
-            await _bookRepository.AddAsync(book, cancellationToken);
+            var customer = domainEvent.Entity;
+            var order = new Order(Guid.NewGuid(), _fixture.Create<Address>(), customer.Id, null);
+            await _orderRepository.AddAsync(order, cancellationToken);
         }
     }
 
-    private readonly IAuthorRepository _authorRepository;
-    private readonly IBookRepository _bookRepository;
-    private static string CurrentUserId { get; } = "1";
-    private static string CurrentUserName { get; } = "Jason";
+    private readonly ICurrentUser _currentUser;
+    private readonly IOrderRepository _orderRepository;
+    private readonly ICustomerRepository _customerRepository;
 
     public AuditPropertiesTests()
     {
-        var serviceProvider = ServiceScope.ServiceProvider;
-        _authorRepository = serviceProvider.GetService<IAuthorRepository>();
-        _bookRepository = serviceProvider.GetService<IBookRepository>();
+        _currentUser = ServiceProvider.GetService<ICurrentUser>();
+        _orderRepository = ServiceProvider.GetService<IOrderRepository>();
+        _customerRepository = ServiceProvider.GetService<ICustomerRepository>();
     }
 
     [Fact]
     public async Task SaveChangesAsync_CreateEntity_SetCreationProperties()
     {
-        var author = new Author(100, "Martin", "Fowler");
-        await _authorRepository.AddAsync(author);
+        var expected = _currentUser.Id;
+        var actual = Create<Order>();
+        await _orderRepository.AddAsync(actual);
 
-        Assert.NotEqual(default, author.CreationTime);
-        Assert.Equal(CurrentUserId, author.CreatorId);
+        actual.CreationTime.Should().NotBe(default);
+        actual.CreatorId.Should().Be(expected);
     }
-
-    //[Fact]
-    //public async Task SaveChangesAsync_CreateEntity_SetModificationProperties()
-    //{
-    //    var author = new Author(100, "Martin", "Fowler");
-    //    await _authorRepository.AddAsync(author);
-
-    //    Assert.NotEqual(default, author.LastModificationTime);
-    //    Assert.Equal(CurrentUserId, author.LastModifierId);
-    //}
 
     [Fact]
     public async Task SaveChangesAsync_UpdateEntity_SetModificationProperties()
     {
-        var author = await _authorRepository.GetByIdAsync(1);
+        var expected = _currentUser.Id;
+        var actual = await _orderRepository.GetByIdAsync(FakeDataBuilder.OrderId);
         var low = SystemClock.Now;
-        await _authorRepository.UpdateAsync(author);
+        await _orderRepository.UpdateAsync(actual);
         var high = SystemClock.Now;
 
-        author.LastModificationTime.Should().NotBeNull();
-        author.LastModificationTime.Should().BeOnOrAfter(low).And.BeOnOrBefore(high);
-        author.LastModifierId.Should().Be(CurrentUserId);
+        actual.LastModificationTime.Should().BeOnOrAfter(low).And.BeOnOrBefore(high);
+        actual.LastModifierId.Should().Be(expected);
     }
 
     [Fact]
     public async Task SaveChangesAsync_DeleteEntity_SetDeletionProperties()
     {
-        var author = await _authorRepository.GetByIdAsync(1);
-        await _authorRepository.DeleteAsync(author);
+        var expected = _currentUser.Id;
+        var actual = await _orderRepository.GetByIdAsync(FakeDataBuilder.OrderId);
+        await _orderRepository.DeleteAsync(actual);
 
-        Assert.NotEqual(default, author.DeletionTime);
-        Assert.Equal(CurrentUserId, author.DeleterId);
+        actual.DeletionTime.Should().NotBe(default);
+        actual.DeleterId.Should().Be(expected);
     }
 
     [Fact]
     public async Task SaveChangesAsync_CreateEntityByDomainEvent_SetCreationProperties()
     {
-        var author = new Author(100, "Martin", "Fowler");
-        author.AddDomainEvent(new EntityCreatedEvent<Author>(author));
-        await _authorRepository.AddAsync(author);
+        var uowMgr = ServiceProvider.GetRequiredService<IUnitOfWorkManager>();
+        using var uow = uowMgr.Begin();
+        var expected = _currentUser.Id;
+        var customer = Create<Customer>();
+        customer.AddDomainEvent(new EntityCreatedEvent<Customer>(customer));
+        await _customerRepository.AddAsync(customer);
+        await uow.CommitChangesAsync();
 
-        var book = await _bookRepository.GetByIdAsync(author.Id.ToString());
+        var actual = (await _orderRepository.ListAsync(new OrderFilterSpecification(customer.Id)))[0];
 
-        Assert.NotEqual(default, book.CreationTime);
-        Assert.Equal(CurrentUserId, book.CreatorId);
+        actual.CreationTime.Should().NotBe(default);
+        actual.CreatorId.Should().Be(expected);
     }
 
     protected override void ConfigureServices(IServiceCollection serviceCollection)
     {
         base.ConfigureServices(serviceCollection);
-        var mock = new Mock<ICurrentUser>();
-        mock.SetupGet(v => v.Id).Returns(CurrentUserId);
-        mock.SetupGet(v => v.UserName).Returns(CurrentUserName);
+        var mock = Mock<ICurrentUser>();
+        mock.SetupGet(v => v.Id).Returns(Create<string>());
         serviceCollection.AddScoped(_ => mock.Object);
     }
 }

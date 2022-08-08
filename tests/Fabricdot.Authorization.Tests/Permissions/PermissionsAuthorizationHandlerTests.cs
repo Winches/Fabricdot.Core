@@ -1,62 +1,18 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using System.Security.Claims;
-using System.Threading.Tasks;
-using FluentAssertions;
+﻿using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
-using Xunit;
 
 namespace Fabricdot.Authorization.Tests.Permissions;
 
 public class PermissionsAuthorizationHandlerTests : AuthrizationHandlerTestsBase<PermissionsAuthorizationHandler>
 {
-    public static IEnumerable<object[]> GetRequirements()
-    {
-        var mixedPermissions = UngrantedPermissions.Union(GrantedPermissions).ToArray();
-
-        yield return new object[]
-        {
-            new[] { new PermissionsRequirement(UngrantedPermissions, PermissionRequireBehavior.Any) },
-            false
-        };
-
-        yield return new object[]
-        {
-            new[] { new PermissionsRequirement(GrantedPermissions, PermissionRequireBehavior.Any) },
-            true
-        };
-
-        yield return new object[]
-        {
-            new[] { new PermissionsRequirement(mixedPermissions, PermissionRequireBehavior.Any) },
-            true
-        };
-
-        yield return new object[]
-        {
-            new[] { new PermissionsRequirement(UngrantedPermissions, PermissionRequireBehavior.All) },
-            false
-        };
-
-        yield return new object[]
-        {
-            new[] { new PermissionsRequirement(GrantedPermissions, PermissionRequireBehavior.All) },
-            true
-        };
-
-        yield return new object[]
-        {
-            new[] { new PermissionsRequirement(mixedPermissions, PermissionRequireBehavior.All) },
-            false
-        };
-    }
-
-    [Fact]
-    public async Task HandleRequirementAsync_WhenNotAuthenticated_Failed()
+    [InlineData(PermissionRequireBehavior.All)]
+    [InlineData(PermissionRequireBehavior.Any)]
+    [Theory]
+    public async Task HandleRequirement_WhenNotAuthenticated_Failed(PermissionRequireBehavior requireBehavior)
     {
         var principal = new ClaimsPrincipal(new ClaimsIdentity());
         var context = new AuthorizationHandlerContext(
-            new[] { new PermissionsRequirement(GrantedPermissions, PermissionRequireBehavior.Any) },
+            new[] { new PermissionsRequirement(GrantedPermissions, requireBehavior) },
             principal,
             null);
         await AuthorizationHandler.HandleAsync(context);
@@ -65,13 +21,19 @@ public class PermissionsAuthorizationHandlerTests : AuthrizationHandlerTestsBase
         context.HasFailed.Should().BeTrue();
     }
 
-    [MemberData(nameof(GetRequirements))]
-    [Theory]
-    public async Task HandleRequirementAsync_WhenAuthenticated_HandleCorrectly(
-        PermissionsRequirement[] requirements,
-        bool hasSucceed)
+    [Fact]
+    public async Task HandleRequirement_Should_Failed()
     {
-        var identity = new ClaimsIdentity(new[] { new Claim(ClaimTypes.NameIdentifier, "1") }, "basic");
+        var requirements = new[]
+        {
+            new PermissionsRequirement(UngrantedPermissions, PermissionRequireBehavior.Any),
+            new PermissionsRequirement(UngrantedPermissions, PermissionRequireBehavior.All),
+            new PermissionsRequirement(Permissions, PermissionRequireBehavior.All)
+        };
+
+        var identity = new ClaimsIdentity(
+            Create<Claim[]>(),
+            Create<string>());
         var principal = new ClaimsPrincipal(identity);
         var context = new AuthorizationHandlerContext(
             requirements,
@@ -80,6 +42,31 @@ public class PermissionsAuthorizationHandlerTests : AuthrizationHandlerTestsBase
         await AuthorizationHandler.HandleAsync(context);
 
         principal.Identity.IsAuthenticated.Should().BeTrue();
-        context.HasSucceeded.Should().Be(hasSucceed);
+        context.HasSucceeded.Should().BeFalse();
+        context.PendingRequirements.Should().HaveSameCount(requirements);
+    }
+
+    [Fact]
+    public async Task HandleRequirement_Should_Success()
+    {
+        var requirements = new[]
+        {
+            new PermissionsRequirement(Permissions, PermissionRequireBehavior.Any),
+            new PermissionsRequirement(GrantedPermissions, PermissionRequireBehavior.All),
+        };
+
+        var identity = new ClaimsIdentity(
+            //Create<Claim[]>(),
+            new[] { new Claim(ClaimTypes.NameIdentifier, Create<string>()) },
+            Create<string>());
+        var principal = new ClaimsPrincipal(identity);
+        var context = new AuthorizationHandlerContext(
+            requirements,
+            principal,
+            null);
+        await AuthorizationHandler.HandleAsync(context);
+
+        principal.Identity.IsAuthenticated.Should().BeTrue();
+        context.HasSucceeded.Should().BeTrue();
     }
 }

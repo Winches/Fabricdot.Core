@@ -1,83 +1,69 @@
-﻿using System;
+﻿using AutoFixture.Idioms;
 using Fabricdot.Authorization.Permissions;
-using FluentAssertions;
-using Xunit;
 
 namespace Fabricdot.Authorization.Tests.Permissions;
 
-public class PermissionGroupTests
+public class PermissionGroupTests : TestFor<PermissionGroup, PermissionCustomization>
 {
-    [InlineData(null)]
-    [InlineData("")]
-    [InlineData(" ")]
-    [Theory]
-    public void Constructor_GivenInvalidName_Throw(string name)
+    [Fact]
+    public void Constructor_GivenInvalidInput_Throw()
     {
-        FluentActions.Invoking(() => new PermissionGroup(name, "group1"))
-                     .Should()
-                     .Throw<ArgumentException>();
+        var sut = typeof(PermissionGroup).GetConstructors();
+
+        Create<GuardClauseAssertion>().Verify(sut);
     }
 
-    [InlineData(null)]
-    [InlineData("")]
-    [InlineData(" ")]
-    [Theory]
-    public void DisplyName_GivenInvalidInput_Throw(string dispalyName)
+    [Fact]
+    public void Constructor_GivenInput_InitializeMember()
     {
-        FluentActions.Invoking(() => new PermissionGroup("name", dispalyName))
-                     .Should()
-                     .Throw<ArgumentException>();
+        var sut = typeof(PermissionGroup).GetConstructors();
+
+        Create<ConstructorInitializedMemberAssertion>().Verify(sut);
     }
+
 
     [Fact]
     public void AddPermission_GivenInput_Correctly()
     {
-        var expected = new
-        {
-            Name = new PermissionName("Object1.Create"),
-            DisplayName = "create object1",
-            Description = "description"
-        };
-
-        var group = new PermissionGroup("name", "dispaly name");
-        var permission = group.AddPermission(
+        var expected = Create<Permission>();
+        var permission = Sut.AddPermission(
             expected.Name,
             expected.DisplayName,
             expected.Description);
 
         permission.Should().BeEquivalentTo(expected);
-        group.Permissions.Should().Contain(permission);
+        Sut.Permissions.Should().Contain(permission);
     }
 
     [Fact]
     public void AddPermission_GivenDuplicateValue_Throw()
     {
-        var group = new PermissionGroup("name", "dispaly name");
-        const string name = "Object1.Create";
-        group.AddPermission(name, "create object1");
+        var permission = Create<Permission>();
+        void TestCode() => Sut.AddPermission(permission.Name, permission.DisplayName);
+        TestCode();
 
-        FluentActions.Invoking(() => group.AddPermission(name, "create object1"))
+        Invoking(TestCode)
                      .Should()
                      .Throw<InvalidOperationException>();
     }
 
-    [Fact]
-    public void RemovePermission_GivenInput_Correctly()
+    [AutoData]
+    [Theory]
+    public void RemovePermission_GivenInput_Correctly(
+        PermissionName name,
+        string displayName)
     {
-        var group = new PermissionGroup("name", "dispaly name");
-        const string name = "Object1.Create";
-        var permission = group.AddPermission(name, "create object1");
-        group.RemovePermission(permission);
+        var permission = Sut.AddPermission(name, displayName);
+        Sut.RemovePermission(permission);
 
-        group.Permissions.Should().BeEmpty();
+        Sut.Permissions.Should().NotContain(permission);
     }
 
     [Fact]
     public void ToString_Should_ReturnCorrectly()
     {
-        var group = new PermissionGroup("name", "dispaly name");
-        var expected = $"PermissionGroup:{group.Name}";
+        var expected = $"PermissionGroup:{Sut.Name}";
 
-        group.ToString().Should().Be(expected);
+        Sut.ToString().Should().Be(expected);
     }
 }

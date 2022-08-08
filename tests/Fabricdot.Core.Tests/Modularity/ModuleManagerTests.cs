@@ -1,21 +1,17 @@
-﻿using System;
-using System.Threading.Tasks;
-using Fabricdot.Core.Modularity;
+﻿using Fabricdot.Core.Modularity;
 using Fabricdot.Core.Tests.Modules;
-using FluentAssertions;
-using Microsoft.Extensions.Logging.Abstractions;
-using Xunit;
+using Microsoft.Extensions.Logging;
 
 namespace Fabricdot.Core.Tests.Modularity;
 
-public class ModuleManagerTests
+public class ModuleManagerTests : TestBase
 {
     [Fact]
     public async Task StartAsync_WhenErrorOccurred_ThrowException()
     {
         var moduleManager = CreateModuleManager<FakeRuntimeErrorModule>();
 
-        await FluentActions.Awaiting(() => moduleManager.StartAsync(null))
+        await Awaiting(() => moduleManager.StartAsync(null))
                            .Should()
                            .ThrowAsync<ModularityException>()
                            .WithInnerException(typeof(Exception))
@@ -27,7 +23,7 @@ public class ModuleManagerTests
     {
         var moduleManager = CreateModuleManager<FakeRuntimeErrorModule>();
 
-        await FluentActions.Awaiting(() => moduleManager.StopAsync(null))
+        await Awaiting(() => moduleManager.StopAsync(null))
                            .Should()
                            .ThrowAsync<ModularityException>()
                            .WithInnerException(typeof(Exception))
@@ -37,17 +33,17 @@ public class ModuleManagerTests
     [Fact]
     public void Modules_ReturnLoadedModules()
     {
-        var moduleLoader = new ModuleLoader();
-        var modules = moduleLoader.LoadModules(typeof(FakeRuntimeErrorModule));
-        var moduleManager = new ModuleManager(NullLogger<ModuleManager>.Instance, modules);
+        var modules = Create<ModuleCollection>();
+        Fixture.AddManyTo(modules, 5);
+        var moduleManager = new ModuleManager(Create<ILogger<ModuleManager>>(), modules);
 
         moduleManager.Modules.Should().BeEquivalentTo(modules);
     }
 
-    private static ModuleManager CreateModuleManager<T>() where T : IModule
+    private ModuleManager CreateModuleManager<T>() where T : IModule
     {
         var moduleLoader = new ModuleLoader();
         var modules = moduleLoader.LoadModules(typeof(T));
-        return new ModuleManager(NullLogger<ModuleManager>.Instance, modules);
+        return new ModuleManager(Create<ILogger<ModuleManager>>(), modules);
     }
 }

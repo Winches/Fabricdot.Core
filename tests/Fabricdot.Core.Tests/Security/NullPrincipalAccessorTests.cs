@@ -1,17 +1,14 @@
-﻿using System;
-using System.Security.Claims;
+﻿using System.Security.Claims;
 using Fabricdot.Core.Security;
-using FluentAssertions;
-using Xunit;
 
 namespace Fabricdot.Core.Tests.Security;
 
-public class NullPrincipalAccessorTests
+public class NullPrincipalAccessorTests : TestFor<NullPrincipalAccessor>
 {
     [Fact]
     public void Principal_AlwaysReturnEmptyPrincpal()
     {
-        var principal = new NullPrincipalAccessor().Principal;
+        var principal = Sut.Principal;
 
         principal.Should().NotBeNull();
         principal.Identities.Should().BeEmpty();
@@ -20,7 +17,7 @@ public class NullPrincipalAccessorTests
     [Fact]
     public void Change_GivenInput_ThrowException()
     {
-        FluentActions.Invoking(() => new NullPrincipalAccessor().Change(new ClaimsPrincipal()))
+        Invoking(() => Sut.Change(Create<ClaimsPrincipal>()))
                      .Should()
                      .ThrowExactly<NotSupportedException>();
     }

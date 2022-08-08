@@ -1,14 +1,9 @@
-﻿using System;
-using Fabricdot.Core.Randoms;
-using FluentAssertions;
-using Xunit;
+﻿using Fabricdot.Core.Randoms;
 
 namespace Fabricdot.Core.Tests.Randoms;
 
-public class RandomBuilderTests
+public class RandomBuilderTests : TestFor<RandomBuilder>
 {
-    protected RandomBuilder RandomBuilder { get; } = new(new DefaultRandomProvider());
-
     [InlineData(null, 1)]
     [InlineData("", 1)]
     [InlineData("abc", 0)]
@@ -18,21 +13,23 @@ public class RandomBuilderTests
         string source,
         int length)
     {
-        FluentActions.Invoking(() => RandomBuilder.GetRandomString(source, length))
+        Invoking(() => Sut.GetRandomString(source, length))
                      .Should()
                      .Throw<ArgumentException>();
     }
 
-    [Fact]
-    public void GetRandomString_GivenInput_ReturnCorrectly()
+    [AutoData]
+    [Theory]
+    public void GetRandomString_GivenInput_ReturnCorrectly(
+        string source,
+        uint leng)
     {
-        const string source = "abcde";
-        const int length = 10;
-        var text1 = RandomBuilder.GetRandomString(source, length);
-        var text2 = RandomBuilder.GetRandomString(source, length);
+        var length = (int)leng;
+        var text1 = Sut.GetRandomString(source, length);
+        var text2 = Sut.GetRandomString(source, length);
 
         text1.Should().HaveLength(length);
-        text1.ToCharArray().Should().OnlyContain(v => source.Contains(v));
+        text1.Except(source).Should().BeEmpty();
         text1.Should().NotBe(text2);
     }
 
@@ -41,7 +38,7 @@ public class RandomBuilderTests
     [Theory]
     public void GetRandomNumbers_GivenInvalidInput_ThrowException(int length)
     {
-        FluentActions.Invoking(() => RandomBuilder.GetRandomNumbers(length))
+        Invoking(() => Sut.GetRandomNumbers(length))
                      .Should()
                      .Throw<ArgumentException>();
     }
@@ -50,12 +47,12 @@ public class RandomBuilderTests
     public void GetRandomNumbers_GivenInput_ReturnCorrectly()
     {
         const string source = "0123456789";
-        const int length = 10;
-        var text1 = RandomBuilder.GetRandomNumbers(length);
-        var text2 = RandomBuilder.GetRandomNumbers(length);
+        var length = (int)Create<uint>();
+        var text1 = Sut.GetRandomNumbers(length);
+        var text2 = Sut.GetRandomNumbers(length);
 
         text1.Should().HaveLength(length);
-        text1.ToCharArray().Should().OnlyContain(v => source.Contains(v));
+        text1.Except(source).Should().BeEmpty();
         text1.Should().NotBe(text2);
     }
 
@@ -64,7 +61,7 @@ public class RandomBuilderTests
     [Theory]
     public void GetRandomLetters_GivenInvalidInput_ThrowException(int length)
     {
-        FluentActions.Invoking(() => RandomBuilder.GetRandomLetters(length))
+        Invoking(() => Sut.GetRandomLetters(length))
                      .Should()
                      .Throw<ArgumentException>();
     }
@@ -73,12 +70,14 @@ public class RandomBuilderTests
     public void GetRandomLetters_GivenInput_ReturnCorrectly()
     {
         const string source = "abcdefghijklmnopqrstuvwxyz";
-        const int length = 10;
-        var text1 = RandomBuilder.GetRandomLetters(length);
-        var text2 = RandomBuilder.GetRandomLetters(length);
+        var length = (int)Create<uint>();
+        var text1 = Sut.GetRandomLetters(length);
+        var text2 = Sut.GetRandomLetters(length);
 
         text1.Should().HaveLength(length);
-        text1.ToCharArray().Should().OnlyContain(v => source.Contains(v));
+        text1.Except(source).Should().BeEmpty();
         text1.Should().NotBe(text2);
     }
+
+    protected override RandomBuilder CreateSut() => new(new DefaultRandomProvider());
 }

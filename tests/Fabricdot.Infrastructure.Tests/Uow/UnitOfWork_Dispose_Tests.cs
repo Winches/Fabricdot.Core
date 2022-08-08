@@ -1,20 +1,15 @@
-using System.Diagnostics.CodeAnalysis;
 using Fabricdot.Infrastructure.Uow.Abstractions;
-using Fabricdot.Testing;
 using Microsoft.Extensions.DependencyInjection;
-using Xunit;
 
 namespace Fabricdot.Infrastructure.Tests.Uow;
 
-[SuppressMessage("ReSharper", "InconsistentNaming")]
 public class UnitOfWork_Dispose_Tests : IntegrationTestBase<InfrastructureTestModule>
 {
     private readonly IUnitOfWorkManager _unitOfWorkManager;
 
     public UnitOfWork_Dispose_Tests()
     {
-        var provider = ServiceScope.ServiceProvider;
-        _unitOfWorkManager = provider.GetRequiredService<IUnitOfWorkManager>();
+        _unitOfWorkManager = ServiceProvider.GetRequiredService<IUnitOfWorkManager>();
     }
 
     [Fact]
@@ -22,7 +17,8 @@ public class UnitOfWork_Dispose_Tests : IntegrationTestBase<InfrastructureTestMo
     {
         var uow = _unitOfWorkManager.Begin();
         uow.Dispose();
-        Assert.False(uow.IsActive);
+
+        uow.IsActive.Should().BeFalse();
     }
 
     [Fact]
@@ -31,6 +27,7 @@ public class UnitOfWork_Dispose_Tests : IntegrationTestBase<InfrastructureTestMo
         var uow = _unitOfWorkManager.Begin();
         uow.Dispose();
         uow.Dispose();
-        Assert.False(uow.IsActive);
+
+        uow.IsActive.Should().BeFalse();
     }
 }

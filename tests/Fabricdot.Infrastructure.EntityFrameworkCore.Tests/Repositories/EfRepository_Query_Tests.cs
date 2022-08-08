@@ -1,120 +1,112 @@
-﻿using System.Diagnostics.CodeAnalysis;
-using System.Linq;
-using System.Threading.Tasks;
-using Fabricdot.Domain.Auditing;
-using Fabricdot.Infrastructure.Data.Filters;
-using Fabricdot.Infrastructure.EntityFrameworkCore.Tests.Data;
-using Fabricdot.Infrastructure.EntityFrameworkCore.Tests.Entities;
+﻿using Fabricdot.Infrastructure.EntityFrameworkCore.Tests.Data;
+using Fabricdot.Test.Helpers.Domain.Aggregates.CustomerAggregate;
+using Fabricdot.Test.Helpers.Domain.Aggregates.OrderAggregate;
+using Fabricdot.Test.Helpers.Domain.Specifications;
 using Microsoft.Extensions.DependencyInjection;
-using Xunit;
 
 namespace Fabricdot.Infrastructure.EntityFrameworkCore.Tests.Repositories;
 
-[SuppressMessage("ReSharper", "InconsistentNaming")]
-public class EfRepository_Query_Tests : EfRepositoryTestsBase
+public class EfRepository_Query_Tests : EntityFrameworkCoreTestsBase
 {
-    private readonly IBookRepository _bookRepository;
-    private readonly IAuthorRepository _authorRepository;
-    private readonly IDataFilter _dataFilter;
+    private readonly ICustomerRepository _customerRepository;
+    private readonly IOrderRepository _orderRepository;
 
     public EfRepository_Query_Tests()
     {
-        var provider = ServiceScope.ServiceProvider;
-        _bookRepository = provider.GetRequiredService<IBookRepository>();
-        _authorRepository = provider.GetRequiredService<IAuthorRepository>();
-        _dataFilter = provider.GetRequiredService<IDataFilter>();
+        _customerRepository = ServiceProvider.GetRequiredService<ICustomerRepository>();
+        _orderRepository = ServiceProvider.GetRequiredService<IOrderRepository>();
     }
 
-    [Theory]
-    [InlineData("1")]
-    [InlineData(null)]
-    public async Task GetByIdAsync_GivenId_ReturnEntity(string bookId)
+    [Fact]
+    public async Task GetByIdAsync_GivenId_ReturnEntity()
     {
-        var actual = await _bookRepository.GetByIdAsync(bookId);
-        Assert.Equal(bookId, actual?.Id);
+        var expected = FakeDataBuilder.OrderId;
+        var actual = await _orderRepository.GetByIdAsync(expected);
+
+        actual.Id.Should().Be(expected);
     }
 
     [Fact]
     public async Task GetByIdAsync_GivenSoftDeletedId_ReturnNull()
     {
-        var actual = await _authorRepository.GetByIdAsync(FakeDataBuilder.DeletedAuthorId);
-        Assert.Null(actual);
+        var actual = await _orderRepository.GetByIdAsync(FakeDataBuilder.DeletedOrderId);
+
+        actual.Should().BeNull();
     }
 
-    [Theory]
-    [InlineData("CSharp")]
-    [InlineData(null)]
-    public async Task GetBySpecAsync_GivenSpec_ReturnSpecificEntity(string bookName)
+    [Fact]
+    public async Task GetBySpecAsync_GivenSpec_ReturnSpecificEntity()
     {
-        var specification = new BookFilterSpecification(bookName);
-        var expected = await _bookRepository.GetByNameAsync(bookName);
-        var actual = await _bookRepository.GetBySpecAsync(specification);
-        Assert.Equal(expected, actual);
+        var orderId = FakeDataBuilder.OrderId;
+        var expected = await _orderRepository.GetByIdAsync(orderId);
+        var specification = new OrderWithDetailsSpecification(orderId);
+        var actual = await _orderRepository.GetBySpecAsync(specification);
+
+        actual.Should().Be(expected);
+        actual.OrderLines.Should().NotBeEmpty();
     }
 
     [Fact]
     public async Task GetBySpecAsync_GivenSoftDeletedSpec_ReturnNull()
     {
-        var specification = new AuthorFilterSpecification(FakeDataBuilder.DeletedAuthorId);
-        var actual = await _authorRepository.GetBySpecAsync(specification);
-        Assert.Null(actual);
+        var specification = new OrderWithDetailsSpecification(FakeDataBuilder.DeletedOrderId);
+        var actual = await _orderRepository.GetBySpecAsync(specification);
+
+        actual.Should().BeNull();
     }
 
-    [Theory]
-    [InlineData("CSharp")]
-    [InlineData(null)]
-    public async Task ListAsync_GivenSpec_ReturnSpecificEntities(string bookName)
+    [Fact]
+    public async Task ListAsync_GivenSpec_ReturnSpecificEntities()
     {
-        var specification = new BookFilterSpecification(bookName);
-        var expected = await _bookRepository.GetByNameAsync(bookName);
-        var actual = (await _bookRepository.ListAsync(specification)).SingleOrDefault();
-        Assert.Equal(expected, actual);
+        var orderId = FakeDataBuilder.OrderId;
+        var expected = await _orderRepository.GetByIdAsync(orderId);
+        var specification = new OrderWithDetailsSpecification(orderId);
+        var actual = await _orderRepository.ListAsync(specification);
+
+        actual.Should().ContainSingle(expected);
     }
 
     [Fact]
     public async Task ListAsync_GivenSpec_ReturnSpecificEntitiesWithoutSoftDeleted()
     {
-        var specification = new AuthorFilterSpecification(FakeDataBuilder.DeletedAuthorId);
-        var actual = await _authorRepository.ListAsync(specification);
-        Assert.Empty(actual);
+        var specification = new OrderWithDetailsSpecification(FakeDataBuilder.DeletedOrderId);
+        var actual = await _orderRepository.ListAsync(specification);
+
+        actual.Should().BeEmpty();
     }
 
     [Fact]
     public async Task ListAsync_ReturnAllEntities()
     {
-        var actual = await _bookRepository.ListAsync();
-        Assert.NotEmpty(actual);
+        var actual = await _orderRepository.ListAsync();
+
+        actual.Should().NotBeEmpty();
     }
 
     [Fact]
     public async Task ListAsync_ReturnAllEntitiesWithoutSoftDeleted()
     {
-        var actual = await _authorRepository.ListAsync();
-        Assert.DoesNotContain(actual, v => v.Id == FakeDataBuilder.DeletedAuthorId);
+        var actual = await _orderRepository.ListAsync();
+
+        actual.Should().NotContain(v => v.Id == FakeDataBuilder.DeletedOrderId);
     }
 
-    [Theory]
-    [InlineData("CSharp")]
-    [InlineData("Java")]
-    public async Task CountAsync_GivenSpec_ReturnCorrectlyCount(string bookName)
+    [Fact]
+    public async Task CountAsync_GivenSpec_ReturnCorrectlyCount()
     {
-        var specification = new BookFilterSpecification(bookName);
-        var expected = 1;
-        var actual = await _bookRepository.CountAsync(specification);
-        Assert.Equal(expected, actual);
+        var specification = new OrderWithDetailsSpecification(FakeDataBuilder.OrderId);
+        const int expected = 1;
+        var actual = await _orderRepository.CountAsync(specification);
+
+        actual.Should().Be(expected);
     }
 
     [Fact]
     public async Task CountAsync_GivenSpec_ReturnCorrectlyCountWithoutSoftDeleted()
     {
-        var specification = new AuthorFilterSpecification(FakeDataBuilder.DeletedAuthorId);
-        var actual = await _authorRepository.CountAsync(specification);
-        Assert.Equal(0, actual);
-    }
+        var specification = new OrderWithDetailsSpecification(FakeDataBuilder.DeletedOrderId);
+        var actual = await _orderRepository.CountAsync(specification);
 
-    private async Task<Author> GetDeletedAuthorAsync()
-    {
-        using var scope = _dataFilter.Disable<ISoftDelete>();
-        return await _authorRepository.GetByIdAsync(FakeDataBuilder.DeletedAuthorId);
+        actual.Should().Be(0);
     }
 }

@@ -1,21 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using FluentAssertions;
-using Xunit;
+﻿namespace Fabricdot.Core.Tests.System.Collections.Generic;
 
-namespace Fabricdot.Core.Tests.System.Collections.Generic;
-
-public class CollectionExtensionsTests
+public class CollectionExtensionsTests : TestBase
 {
     [Fact]
     public void RemoveAll_GivenNull_ThrowException()
     {
-        FluentActions.Invoking(() => ((ICollection<object>)null).RemoveAll(_ => true))
+        Invoking(() => ((ICollection<object>)null).RemoveAll(_ => true))
                      .Should()
                      .Throw<ArgumentNullException>();
 
-        FluentActions.Invoking(() => new List<object>().RemoveAll(null))
+        Invoking(() => new List<object>().RemoveAll(null))
                      .Should()
                      .Throw<ArgumentNullException>();
     }

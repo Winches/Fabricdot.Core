@@ -1,58 +1,46 @@
-﻿using System;
-using Fabricdot.Authorization.Permissions;
-using FluentAssertions;
-using Xunit;
+﻿using Fabricdot.Authorization.Permissions;
 
 namespace Fabricdot.Authorization.Tests.Permissions;
 
-public class PermissionNameTest
+public class PermissionNameTest : TestFor<PermissionName>
 {
-    [InlineData(null)]
-    [InlineData("")]
-    [InlineData(" ")]
-    [Theory]
-    public void Constructor_GivenInvalidInput_Throw(string value)
+    [Fact]
+    public void Constructor_GivenInvalidInput_Throw()
     {
-        FluentActions.Invoking(() => new PermissionName(value))
-                     .Should()
-                     .Throw<ArgumentException>();
+        var sut = typeof(PermissionName).GetConstructors();
+
+        Create<GuardClauseAssertion>().Verify(sut);
     }
 
     [Fact]
-    public void Equal_Should_ReturnCorrectly()
+    public void EqualsOperator_Should_ReturnCorrectly()
     {
-        var name1 = new PermissionName("name1");
-        var name2 = new PermissionName(name1.Value);
+        var name = new PermissionName(Sut.Value);
 
-        name1.Equals(null).Should().BeFalse();
-        (name1 != name2).Should().BeFalse();
-        (name1 == name2).Should().BeTrue();
+        (Sut != name).Should().BeFalse();
+        (Sut == name).Should().BeTrue();
     }
 
     [Fact]
-    public void GetHashCode_Should_ReturnCorrectly()
+    public void Equality_Should_Correctly()
     {
-        var name1 = new PermissionName("name1");
-        var expected = name1.Value.GetHashCode();
+        var sut = typeof(PermissionName);
 
-        name1.GetHashCode().Should().Be(expected);
+        Create<EqualityAssertion>().Verify(sut);
     }
 
     [Fact]
     public void ToString_Should_ReturnCorrectly()
     {
-        var name = new PermissionName("name1");
+        var expected = Sut.Value;
 
-        name.ToString().Should().Be(name.Value);
+        Sut.ToString().Should().Be(expected);
     }
 
-    [Fact]
-    public void ConversionOperator_Should_ReturnCorrectly()
+    [AutoData]
+    [Theory]
+    public void ConversionOperator_Should_ReturnCorrectly(string permission)
     {
-        PermissionName name = "name1";
-        string nameString = name;
-
-        name.Should().BeOfType<PermissionName>();
-        nameString.Should().BeOfType<string>();
+        string _ = (PermissionName)permission;
     }
 }

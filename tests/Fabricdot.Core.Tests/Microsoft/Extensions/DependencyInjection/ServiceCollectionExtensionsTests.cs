@@ -1,47 +1,39 @@
-﻿using System;
-using Fabricdot.Core.Tests.Modules.Exports.Core;
-using FluentAssertions;
+﻿using Fabricdot.Core.Tests.Modules.Exports.Core;
 using Microsoft.Extensions.DependencyInjection;
-using Xunit;
 
 namespace Fabricdot.Core.Tests.Microsoft.Extensions.DependencyInjection;
 
-public class ServiceCollectionExtensionsTests
+public class ServiceCollectionExtensionsTests : TestFor<ServiceCollection>
 {
-    [Fact]
-    public void ContainsService_GivenType_ReturnCorrectly()
+    [AutoData]
+    [Theory]
+    public void ContainsService_GivenType_ReturnCorrectly(object service)
     {
-        var services = new ServiceCollection();
-        services.AddSingleton<object>(1);
+        Sut.AddSingleton(service);
 
-        services.ContainsService<object>().Should().BeTrue();
-        services.ContainsService<FakeCoreService>().Should().BeFalse();
+        Sut.ContainsService<object>().Should().BeTrue();
+        Sut.ContainsService<FakeCoreService>().Should().BeFalse();
     }
 
-    [Fact]
-    public void GetSingletonInstance_WhenServiceExists_ReturnInstance()
+    [AutoData]
+    [Theory]
+    public void GetSingletonInstance_WhenServiceExists_ReturnInstance(object expected)
     {
-        const int expected = 1;
-        var services = new ServiceCollection();
-        services.AddSingleton<object>(expected);
+        Sut.AddSingleton(expected);
 
-        services.GetSingletonInstance<object>().Should().Be(expected);
+        Sut.GetSingletonInstance<object>().Should().Be(expected);
     }
 
     [Fact]
     public void GetSingletonInstance_WhenServiceNotExists_ReturnNull()
     {
-        var services = new ServiceCollection();
-
-        services.GetSingletonInstance<object>().Should().BeNull();
+        Sut.GetSingletonInstance<object>().Should().BeNull();
     }
 
     [Fact]
     public void GetRequiredSingletonInstance_WhenServiceNotExists_ThrowException()
     {
-        var services = new ServiceCollection();
-
-        FluentActions.Invoking(services.GetRequiredSingletonInstance<object>)
+        Invoking(Sut.GetRequiredSingletonInstance<object>)
                      .Should()
                      .Throw<InvalidOperationException>();
     }

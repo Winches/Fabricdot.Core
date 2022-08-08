@@ -1,10 +1,8 @@
-﻿using System;
-using Fabricdot.Infrastructure.Tracing;
-using Xunit;
+﻿using Fabricdot.Infrastructure.Tracing;
 
 namespace Fabricdot.Infrastructure.Tests.Tracing;
 
-public class CorrelationIdTests
+public class CorrelationIdTests : TestFor<CorrelationId>
 {
     [Theory]
     [InlineData(" ")]
@@ -12,43 +10,40 @@ public class CorrelationIdTests
     [InlineData(null)]
     public void ImplicitOperator_GivenNullOrEmptyValue_ThrowException(string value)
     {
-        void Action()
-        {
-            var _ = (CorrelationId)value;
-        }
-
-        Assert.Throws<ArgumentException>(Action);
+        Invoking(() => (CorrelationId)value)
+                     .Should()
+                     .Throw<ArgumentException>();
     }
 
     [Fact]
     public void Equals_GivenSameValue_ReturnTrue()
     {
-        var correlationId1 = CorrelationId.New();
-        var correlationId2 = (CorrelationId)correlationId1.Value;
-        Assert.Equal(correlationId1, correlationId2);
+        var correlationId = (CorrelationId)Sut.Value;
+
+        Sut.Should().Be(correlationId);
     }
 
     [Fact]
     public void Equals_GivenDifferentValue_ReturnFalse()
     {
-        var correlationId1 = CorrelationId.New();
-        var correlationId2 = CorrelationId.New();
-        Assert.NotEqual(correlationId1, correlationId2);
+        var correlationId = CorrelationId.New();
+
+        Sut.Should().NotBe(correlationId);
     }
 
     [Fact]
     public void ToString_ReturnValue()
     {
-        var correlationId = CorrelationId.New();
-        var expected = correlationId.Value;
-        var actual = correlationId.ToString();
-        Assert.Equal(expected, actual);
+        var expected = Sut.Value;
+
+        Sut.ToString().Should().Be(expected);
     }
 
     [Fact]
     public void New_ReturnNewInstance()
     {
-        var correlationId = CorrelationId.New();
-        Assert.NotEmpty(correlationId.Value);
+        Sut.Value.Should().NotBeEmpty();
     }
+
+    protected override CorrelationId CreateSut() => CorrelationId.New();
 }

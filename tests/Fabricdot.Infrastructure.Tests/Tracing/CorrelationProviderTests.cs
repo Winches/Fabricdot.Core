@@ -1,21 +1,14 @@
 ﻿using Fabricdot.Infrastructure.Tracing;
-using Xunit;
 
 namespace Fabricdot.Infrastructure.Tests.Tracing;
 
-public class CorrelationProviderTests
+public class CorrelationProviderTests : TestFor<DefaultCorrelationIdProvider>
 {
-    private readonly ICorrelationIdProvider _correlationIdProvider;
-
-    public CorrelationProviderTests()
-    {
-        _correlationIdProvider = new DefaultCorrelationIdProvider();
-    }
-
     [Fact]
     public void Get_ReturnCorrelationId()
     {
-        var correlationId = _correlationIdProvider.Get();
-        Assert.IsType<CorrelationId>(correlationId);
+        var correlationId = Sut.Get();
+
+        Sut.Get().Should().NotBe(correlationId);
     }
 }

@@ -1,12 +1,8 @@
-﻿using System;
-using System.Linq;
-using System.Linq.Expressions;
-using FluentAssertions;
-using Xunit;
+﻿using System.Linq.Expressions;
 
 namespace Fabricdot.Core.Tests.System.Linq.Expressions;
 
-public class PredicateBuilderTests
+public class PredicateBuilderTests : TestBase
 {
     [Fact]
     public void True_Should_BeTrue()

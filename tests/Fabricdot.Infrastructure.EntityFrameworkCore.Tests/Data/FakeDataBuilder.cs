@@ -1,81 +1,69 @@
-﻿using System;
-using System.Linq;
-using System.Threading.Tasks;
-using Fabricdot.Infrastructure.EntityFrameworkCore.Tests.Entities;
+﻿using AutoFixture;
+using Fabricdot.Core.DependencyInjection;
+using Fabricdot.Test.Helpers.Domain.Aggregates.CustomerAggregate;
+using Fabricdot.Test.Helpers.Domain.Aggregates.OrderAggregate;
 
 namespace Fabricdot.Infrastructure.EntityFrameworkCore.Tests.Data;
 
-public class FakeDataBuilder
+public class FakeDataBuilder : ITransientDependency
 {
     private readonly FakeDbContext _dbContext;
+    private readonly FakeSecondDbContext _secondDbContext;
+    private readonly IFixture _fixture;
+
     public static int DeletedAuthorId => 2;
     public static string BookWithTagsId => "f00015fe-e5a7-419a-a235-a897a5f7df8c";
     public static string DeletedBookTag => "DeletedTag";
     public static Guid TenantId => new("86b2b1b1-ef3d-46e2-a4c6-5a1df6f694d4");
 
-    public FakeDataBuilder(FakeDbContext dbContext)
+    public static Guid OrderId => new("07385b8c-2cbd-4fca-878e-2770ab0abe30");
+
+    public static Guid DeletedOrderId => new("71b583f9-780d-4095-b1ca-03cbbea6c988");
+
+    public FakeDataBuilder(
+        FakeDbContext dbContext,
+        FakeSecondDbContext secondDbContext,
+        IFixture fixture)
     {
         _dbContext = dbContext;
+        _secondDbContext = secondDbContext;
+        _fixture = fixture;
     }
 
     public async Task BuildAsync()
     {
-        await AddBooks();
-        await AddAuthors();
-        await AddEmployeesAsync();
+        await AddOrdersAsync();
+        await AddCustomersAsync();
     }
 
-    private async Task AddBooks()
+    private async Task AddOrdersAsync()
     {
-        var books = new[]
+        var orders = _fixture.CreateMany<Order>(10).ToList();
+        orders.Add(factory(OrderId));
+        orders.Add(factory(DeletedOrderId));
+        foreach (var order in orders)
         {
-            new Book("1", "CSharp"),
-            new Book("2", "Java"),
-            new Book("3", "Typescript"),
-            new Book("4", "Rust"),
-            new Book("5", "CPP"),
-            new Book(
-            BookWithTagsId,
-            "BookWithTags",
-            new[] { "Tag1", "Tag2", "Tag3" })
-            {
-                Contents = new BookContents("Introduce something.")
-            }
-        };
-        books.Single(v => v.Id == BookWithTagsId).AddTag(DeletedBookTag, true);
-        foreach (var book in books)
-            await _dbContext.AddAsync(book);
-        _dbContext.SaveChanges();
+            order.AddOrderLine(_fixture);
+            order.AddOrderLine(_fixture);
+        }
+        await _dbContext.AddRangeAsync(orders);
+        await _dbContext.SaveChangesAsync();
+
+        _dbContext.Remove(orders.Find(v => v.Id == DeletedOrderId));
+        await _dbContext.SaveChangesAsync();
+
+        Order factory(Guid id) => new(id, _fixture.Create<Address>(), _fixture.Create<string>(), _fixture.Create<OrderDetails>());
     }
 
-    private async Task AddAuthors()
+    private async Task AddCustomersAsync()
     {
-        var authors = new[]
-        {
-            new Author(1, "Anders", "Hejlsberg"),
-            new Author(2, "James", "Gosling"),
-            new Author(3, "Bjarne", "Stroustrup"),
-            new Author(4, "Graydon", "Hoare")
-        };
-        authors.Single(v => v.Id == DeletedAuthorId).MarkDeleted();
+        var customers = _fixture.CreateMany<Customer>(5).ToList();
+        customers.Add(factory());
+        customers.Add(factory());
 
-        foreach (var author in authors)
-            await _dbContext.AddAsync(author);
-        _dbContext.SaveChanges();
-    }
+        await _secondDbContext.AddRangeAsync(customers);
+        await _secondDbContext.SaveChangesAsync();
 
-    private async Task AddEmployeesAsync()
-    {
-        var employees = new[]
-        {
-            new Employee(Guid.NewGuid(),"Name1",TenantId),
-            new Employee(Guid.NewGuid(),"Name2",TenantId),
-            new Employee(Guid.NewGuid(),"Name3",TenantId),
-            new Employee(Guid.NewGuid(),"Name4"),
-        };
-
-        foreach (var employee in employees)
-            await _dbContext.AddAsync(employee);
-        _dbContext.SaveChanges();
+        Customer factory() => new(_fixture.Create<Guid>(), _fixture.Create<string>(), TenantId);
     }
 }

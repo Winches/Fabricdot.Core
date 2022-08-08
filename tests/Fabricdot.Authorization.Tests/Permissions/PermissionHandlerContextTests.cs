@@ -1,17 +1,15 @@
-﻿using System.Linq;
-using Fabricdot.Authorization.Permissions;
-using FluentAssertions;
-using Xunit;
+﻿using Fabricdot.Authorization.Permissions;
 
 namespace Fabricdot.Authorization.Tests.Permissions;
 
-public class PermissionHandlerContextTests
+public class PermissionHandlerContextTests : TestFor<PermissionHandlerContext>
 {
-    [Fact]
-    public void Constructor_GivenInput_Correctly()
+    [AutoData]
+    [Theory]
+    public void Constructor_GivenInput_Correctly(
+        GrantSubject[] subjects,
+        PermissionName[] permissions)
     {
-        var subjects = new[] { new GrantSubject(GrantTypes.User, "1") };
-        var permissions = new[] { new PermissionName("name1") };
         var context = new PermissionHandlerContext(subjects, permissions);
 
         context.Subjects.Should().BeEquivalentTo(subjects);
@@ -23,33 +21,25 @@ public class PermissionHandlerContextTests
     [Fact]
     public void Succeed_Should_ClearPendingPermissions()
     {
-        var subjects = new[] { new GrantSubject(GrantTypes.User, "1") };
-        var permissions = new[] { new PermissionName("name1") };
-        var context = new PermissionHandlerContext(subjects, permissions);
-        context.Succeed();
+        Sut.Succeed();
 
-        context.PendingPermissions.Should().BeEmpty();
+        Sut.PendingPermissions.Should().BeEmpty();
     }
 
     [Fact]
     public void Succeed_GivenPermission_RemovePendingPermission()
     {
-        var subjects = new[] { new GrantSubject(GrantTypes.User, "1") };
-        var permissions = new[] { new PermissionName("name1") };
-        var context = new PermissionHandlerContext(subjects, permissions);
+        var permission = Sut.Permissions.First();
+        Sut.Succeed(permission);
 
-        var permission = context.Permissions.First();
-        context.Succeed(permission);
-        context.PendingPermissions.Should().NotContain(permission);
+        Sut.PendingPermissions.Should().NotContain(permission);
     }
 
     [Fact]
     public void GetResults_Should_ReturnCorrectly()
     {
-        var subjects = new[] { new GrantSubject(GrantTypes.User, "1") };
-        var permissions = new[] { new PermissionName("name1") };
-        var context = new PermissionHandlerContext(subjects, permissions);
+        var expected = Sut.Permissions;
 
-        context.GetResults().Should().HaveCount(permissions.Length);
+        Sut.GetResults().Should().HaveSameCount(expected);
     }
 }

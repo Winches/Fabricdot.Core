@@ -1,27 +1,22 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using Fabricdot.Infrastructure.EntityFrameworkCore.Tests.Entities;
-using Fabricdot.Infrastructure.EntityFrameworkCore.Tests.Repositories;
-using Fabricdot.Infrastructure.Uow.Abstractions;
+﻿using Fabricdot.Infrastructure.Uow.Abstractions;
+using Fabricdot.Test.Helpers.Domain.Aggregates.CustomerAggregate;
+using Fabricdot.Test.Helpers.Domain.Aggregates.OrderAggregate;
 using Microsoft.Extensions.DependencyInjection;
-using Xunit;
 
 namespace Fabricdot.Infrastructure.EntityFrameworkCore.Tests.Uow;
 
 public class UnitOfWorkTests : EntityFrameworkCoreTestsBase
 {
     private readonly IUnitOfWorkManager _unitOfWorkManager;
-    private readonly IBookRepository _bookRepository;
-    private readonly IPublisherRepository _publisherRepository;
+    private readonly IOrderRepository _orderRepository;
+    private readonly ICustomerRepository _customerRepository;
 
     /// <inheritdoc />
     public UnitOfWorkTests()
     {
-        var provider = ServiceScope.ServiceProvider;
-        _unitOfWorkManager = provider.GetRequiredService<IUnitOfWorkManager>();
-        _bookRepository = provider.GetRequiredService<IBookRepository>();
-        _publisherRepository = provider.GetRequiredService<IPublisherRepository>();
+        _unitOfWorkManager = ServiceProvider.GetRequiredService<IUnitOfWorkManager>();
+        _orderRepository = ServiceProvider.GetRequiredService<IOrderRepository>();
+        _customerRepository = ServiceProvider.GetRequiredService<ICustomerRepository>();
     }
 
     public static IEnumerable<object[]> GetUnitOfWorkOptions()
@@ -34,70 +29,71 @@ public class UnitOfWorkTests : EntityFrameworkCoreTestsBase
     [MemberData(nameof(GetUnitOfWorkOptions))]
     public async Task CommitChangesAsync_PerformDatabase_SaveChanges(UnitOfWorkOptions options)
     {
-        const string bookId = "9";
-        var book = new Book(bookId, "Python");
+        var expected = Create<Order>();
         using (var uow1 = _unitOfWorkManager.Begin(options))
         {
-            await _bookRepository.AddAsync(book);
+            await _orderRepository.AddAsync(expected);
             await uow1.CommitChangesAsync();
         }
 
-        var retrievalBook = await _bookRepository.GetByIdAsync(bookId);
-        Assert.NotNull(retrievalBook);
+        var actual = await _orderRepository.GetByIdAsync(expected.Id);
+
+        actual.Should().Be(expected);
     }
 
     [Theory]
     [MemberData(nameof(GetUnitOfWorkOptions))]
     public async Task CommitChangesAsync_WhenErrorOccurred_DiscardChanges(UnitOfWorkOptions options)
     {
-        const string bookId = "10";
-        var book = new Book(bookId, "Go");
-        var exception = new Exception("Something happened.");
+        var order = Create<Order>();
+        var exception = Create<Exception>();
         async Task UseUow()
         {
             using var _ = _unitOfWorkManager.Begin(options);
-            await _bookRepository.AddAsync(book);
+            await _orderRepository.AddAsync(order);
             throw exception;
         }
 
-        var recordException = await Record.ExceptionAsync(UseUow);
-        Assert.Same(exception, recordException);
+        await Awaiting(UseUow)
+                           .Should()
+                           .ThrowAsync<Exception>()
+                           .WithMessage(exception.Message);
 
-        var retrievalBook = await _bookRepository.GetByIdAsync(bookId);
-        Assert.Null(retrievalBook);
+        var actual = await _orderRepository.GetByIdAsync(order.Id);
+
+        actual.Should().BeNull();
     }
 
     [Theory]
     [MemberData(nameof(GetUnitOfWorkOptions))]
     public async Task Dispose_PerformDatabase_DiscardChanges(UnitOfWorkOptions options)
     {
-        const string bookId = "9";
-        var book = new Book(bookId, "Python");
+        var order = Create<Order>();
         using (var uow = _unitOfWorkManager.Begin(options))
         {
-            await _bookRepository.AddAsync(book);
+            await _orderRepository.AddAsync(order);
         }
-        var retrievalBook = await _bookRepository.GetByIdAsync(bookId);
-        Assert.Null(retrievalBook);
+        var actual = await _orderRepository.GetByIdAsync(order.Id);
+
+        actual.Should().BeNull();
     }
 
     [Fact]
     public async Task CommitChangesAsync_MultipleDbContext_SaveChanges()
     {
-        const string bookId = "10";
-        const string publisherId = "1";
-        var book = new Book(bookId, "Go");
-        var publisher = new Publisher(publisherId, "O’Reilly Media");
+        var order = Create<Order>();
+        var customer = Create<Customer>();
         using (var uow = _unitOfWorkManager.Begin(new UnitOfWorkOptions { IsTransactional = true }))
         {
-            await _bookRepository.AddAsync(book);
-            await _publisherRepository.AddAsync(publisher);
+            await _orderRepository.AddAsync(order);
+            await _customerRepository.AddAsync(customer);
             await uow.CommitChangesAsync();
         }
 
-        var retrievalBook = await _bookRepository.GetByIdAsync(bookId);
-        var retrievalPublisher = await _publisherRepository.GetByIdAsync(publisherId);
-        Assert.NotNull(retrievalBook);
-        Assert.NotNull(retrievalPublisher);
+        var actual1 = await _orderRepository.GetByIdAsync(order.Id);
+        var actual2 = await _customerRepository.GetByIdAsync(customer.Id);
+
+        actual1.Should().Be(order);
+        actual2.Should().Be(customer);
     }
 }

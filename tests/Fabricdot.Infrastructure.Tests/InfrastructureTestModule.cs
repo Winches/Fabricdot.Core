@@ -4,10 +4,6 @@ namespace Fabricdot.Infrastructure.Tests;
 
 [Requires(typeof(FabricdotInfrastructureModule))]
 [Exports]
-public class InfrastructureTestModule : ModuleBase, IPostConfigureService
+public class InfrastructureTestModule : ModuleBase
 {
-    public void PostConfigureServices(ConfigureServiceContext context)
-    {
-        //context.Services.AddInterceptors();
-    }
 }

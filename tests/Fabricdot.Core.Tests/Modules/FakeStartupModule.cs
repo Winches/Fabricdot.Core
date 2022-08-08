@@ -1,7 +1,5 @@
-﻿using System.Threading.Tasks;
-using Fabricdot.Core.Boot;
+﻿using Fabricdot.Core.Boot;
 using Fabricdot.Core.Modularity;
-using FluentAssertions;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 

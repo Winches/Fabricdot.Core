@@ -1,11 +1,9 @@
 ﻿using Fabricdot.Core.DependencyInjection;
-using FluentAssertions;
 using Microsoft.Extensions.DependencyInjection;
-using Xunit;
 
 namespace Fabricdot.Core.Tests.Modularity;
 
-public class DefaultDependencyRegistratrTests
+public class DefaultDependencyRegistratrTests : TestFor<ServiceCollection>
 {
     [Dependency(RegisterBehavior = RegistrationBehavior.TryAdd)]
     internal class FooService : IBarService, IFooService<string>, IScopedDependency
@@ -38,6 +36,11 @@ public class DefaultDependencyRegistratrTests
     {
     }
 
+    public DefaultDependencyRegistratrTests()
+    {
+        Sut.AddDependencyRegistrar<DefaultDependencyRegistrar>();
+    }
+
     internal interface IFooService
     {
     }
@@ -54,86 +57,72 @@ public class DefaultDependencyRegistratrTests
     [Fact]
     public void AddType_GivenInvalidType_IngoreType()
     {
-        var services = CreateServices();
         var typeWithoutLifetime = typeof(FooWithoutLifetimeService);
-        services.AddType(typeWithoutLifetime);
+        Sut.AddType(typeWithoutLifetime);
         var nestedType = typeof(IgnoredFooService);
-        services.AddType(nestedType);
+        Sut.AddType(nestedType);
 
-        services.Should().NotContain(v => v.ServiceType == typeWithoutLifetime);
-        services.Should().NotContain(v => v.ServiceType == nestedType);
+        Sut.Should().NotContain(typeWithoutLifetime);
+        Sut.Should().NotContain(nestedType);
     }
 
     [Fact]
     public void AddType_GivenClass_RegisterCorrectLifetime()
     {
-        var services = CreateServices();
         var transientType = typeof(FooTransientService);
         var scopedType = typeof(FooService);
         var singletonType = typeof(FooSingletonService);
-        services.AddType(transientType);
-        services.AddType(scopedType);
-        services.AddType(singletonType);
+        Sut.AddType(transientType);
+        Sut.AddType(scopedType);
+        Sut.AddType(singletonType);
 
-        services.Should().ContainSingle(v => v.ServiceType == transientType && v.Lifetime == ServiceLifetime.Transient);
-        services.Should().ContainSingle(v => v.ServiceType == scopedType && v.Lifetime == ServiceLifetime.Scoped);
-        services.Should().ContainSingle(v => v.ServiceType == singletonType && v.Lifetime == ServiceLifetime.Singleton);
+        Sut.Should().ContainSingle(transientType, ServiceLifetime.Transient);
+        Sut.Should().ContainSingle(scopedType, ServiceLifetime.Scoped);
+        Sut.Should().ContainSingle(singletonType, ServiceLifetime.Singleton);
     }
 
     [Fact]
     public void AddType_GivenClass_RegisterDefaultServices()
     {
-        var services = CreateServices();
         var implementationType = typeof(FooService);
-        services.AddType(implementationType);
+        Sut.AddType(implementationType);
 
-        services.Should().Contain(v => v.ServiceType == implementationType);
-        services.Should().Contain(v => v.ServiceType == typeof(IFooService));
-        services.Should().Contain(v => v.ServiceType == typeof(IFooService<string>));
+        Sut.Should().Contain(implementationType);
+        Sut.Should().Contain<IFooService>();
+        Sut.Should().Contain<IFooService<string>>();
     }
 
     [Fact]
     public void AddType_GivenClass_IgnoreSpecificServiceType()
     {
-        var services = CreateServices();
-        var serviceType1 = typeof(IFooService);
-        var serviceType2 = typeof(IFooService);
-        var implementationType = typeof(FooTransientService);
+        var serviceType1 = typeof(IFooService<string>);
+        var implementationType = typeof(FooService);
         DefaultDependencyRegistrar.IgnoredServiceTypes.Add(serviceType1);
-        services.AddType(implementationType);
+        Sut.AddType(implementationType);
 
-        services.Should().ContainSingle(v => v.ServiceType == implementationType);
-        services.Should().NotContain(v => v.ServiceType == serviceType1);
-        services.Should().NotContain(v => v.ServiceType == serviceType2);
+        Sut.Should().ContainSingle(implementationType);
+        Sut.Should().NotContain(serviceType1);
+        Sut.Should().Contain<IFooService>();
     }
 
     [Fact]
     public void AddType_GivenClass_TryAddService()
     {
-        var services = CreateServices();
         var implementationType = typeof(FooService);
-        services.AddType(implementationType);
-        services.AddType(implementationType);
+        Sut.AddType(implementationType);
+        Sut.AddType(implementationType);
 
-        services.Should().ContainSingle(v => v.ServiceType == implementationType);
+        Sut.Should().ContainSingle(implementationType);
     }
 
     [Fact]
     public void AddType_GivenClass_ReplaceService()
     {
-        var services = CreateServices();
         var originType = typeof(FooService);
         var replacedType = typeof(FooDerivedService);
-        services.AddType(originType);
-        services.AddType(replacedType);
+        Sut.AddType(originType);
+        Sut.AddType(replacedType);
 
-        services.Should().ContainSingle(v => v.ServiceType == originType && v.ImplementationType == replacedType);
-    }
-
-    private static ServiceCollection CreateServices()
-    {
-        var services = new ServiceCollection();
-        services.AddDependencyRegistrar<DefaultDependencyRegistrar>();
-        return services;
+        Sut.Should().ContainSingle(v => v.ServiceType == originType && v.ImplementationType == replacedType);
     }
 }

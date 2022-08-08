@@ -1,11 +1,8 @@
-﻿using System;
-using System.Text.Json;
-using FluentAssertions;
-using Xunit;
+﻿using System.Text.Json;
 
 namespace Fabricdot.Core.Tests.System.Text.Json;
 
-public class JsonExtensionsTests
+public class JsonExtensionsTests : TestBase
 {
     [Fact]
     public void FromJson_GivenInvalidJson_ThrowException()
@@ -28,6 +25,7 @@ public class JsonExtensionsTests
         };
         var json = JsonSerializer.Serialize(obj);
         var jsonObj = json.FromJson(obj);
+
         jsonObj.Should().BeEquivalentTo(obj);
     }
 
@@ -47,6 +45,7 @@ public class JsonExtensionsTests
             Value = 1
         };
         var expected = JsonSerializer.Serialize(obj);
+
         obj.ToJson().Should().Be(expected);
     }
 }

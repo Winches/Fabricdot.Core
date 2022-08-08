@@ -1,37 +1,36 @@
-﻿using System.Linq;
-using Fabricdot.Authorization.Permissions;
-using FluentAssertions;
+﻿using Fabricdot.Authorization.Permissions;
 using Microsoft.AspNetCore.Authorization;
-using Xunit;
 
 namespace Fabricdot.Authorization.Tests;
 
-public class AuthorizationPolicyBuilderExtensionsTests
+public class AuthorizationPolicyBuilderExtensionsTests : TestFor<AuthorizationPolicyBuilder>
 {
-    [Fact]
-    public void RequirePermission_GivenName_AddRequirement()
+    [AutoData]
+    [Theory]
+    public void RequirePermission_GivenName_AddRequirement(PermissionName permission)
     {
-        var permission = new PermissionName("name1");
-        var builder = new AuthorizationPolicyBuilder().RequirePermission(permission);
+        Sut.RequirePermission(permission);
 
-        builder.Requirements.OfType<PermissionRequirement>()
+        Sut.Requirements.OfType<PermissionRequirement>()
                             .Should()
-                            .ContainSingle(v => v.Permission == permission);
+                            .ContainSingle(permission);
     }
 
-    [InlineData(PermissionRequireBehavior.Any)]
-    [InlineData(PermissionRequireBehavior.All)]
+    [InlineAutoData(PermissionRequireBehavior.Any)]
+    [InlineAutoData(PermissionRequireBehavior.All)]
     [Theory]
-    public void RequirePermissions_GivenNames_AddRequirement(PermissionRequireBehavior requireBehavior)
+    public void RequirePermissions_GivenNames_AddRequirement(
+        PermissionRequireBehavior requireBehavior,
+        PermissionName[] permissions)
     {
-        var permissions = new[] { new PermissionName("name1"), new PermissionName("name2") };
-        var builder = new AuthorizationPolicyBuilder().RequirePermissions(permissions, requireBehavior);
+        var expected = new
+        {
+            Permissions = permissions
+        };
+        Sut.RequirePermissions(permissions, requireBehavior);
 
-        builder.Requirements.OfType<PermissionsRequirement>()
+        Sut.Requirements.OfType<PermissionsRequirement>()
                             .Should()
-                            .SatisfyRespectively(first => first.Should().BeEquivalentTo(new
-                            {
-                                Permissions = permissions
-                            }));
+                            .SatisfyRespectively(first => first.Should().BeEquivalentTo(expected));
     }
 }

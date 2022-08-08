@@ -1,57 +1,57 @@
-﻿using System.Diagnostics.CodeAnalysis;
+﻿using Fabricdot.Domain.Entities;
 using Fabricdot.Domain.SharedKernel;
-using Xunit;
 
 namespace Fabricdot.Infrastructure.Tests.Domain.Auditing;
 
-[SuppressMessage("ReSharper", "InconsistentNaming")]
 public class AuditPropertySetter_SetDeletionProperties_Tests : AuditPropertySetterTestBase
 {
     [Fact]
     public void SetDeletionProperties_GivenIHasDeletionTime_SetDeletionTime()
     {
-        var targetObject = new FakeAuditObject();
+        var targetObject = Create<FullAuditEntity<int>>();
         var startTime = SystemClock.Now;
-        AuditPropertySetter.SetDeletionProperties(targetObject);
+        Sut.SetDeletionProperties(targetObject);
         var endTime = SystemClock.Now;
-        var actual = targetObject.DeletionTime;
-        Assert.NotNull(actual);
-        Assert.InRange(actual.Value, startTime, endTime);
+
+        targetObject.DeletionTime.Should().BeOnOrAfter(startTime).And.BeOnOrBefore(endTime);
     }
 
     [Fact]
     public void SetDeletionProperties_GivenIHasDeletionTimeWithValue_DoNothing()
     {
-        var targetObject = GetAuditedObject();
-        var expected = targetObject.DeletionTime;
-        AuditPropertySetter.SetDeletionProperties(targetObject);
-        var actual = targetObject.DeletionTime;
-        Assert.Equal(expected, actual);
+        var expected = Create<DateTime>();
+        var mock = Mock<FullAuditEntity<int>>();
+        var targetObject = mock.Object;
+        mock.SetupProperty(v => v.DeletionTime, expected);
+        Sut.SetDeletionProperties(targetObject);
+
+        targetObject.DeletionTime.Should().Be(expected);
     }
 
     [Fact]
     public void SetDeletionProperties_GivenIHasDeleterId_SetDeleterId()
     {
-        var targetObject = new FakeAuditObject();
+        var targetObject = Create<FullAuditEntity<int>>();
         var expected = CurrentUser.Id;
-        AuditPropertySetter.SetDeletionProperties(targetObject);
-        var actual = targetObject.DeleterId;
-        Assert.Equal(expected, actual);
+        Sut.SetDeletionProperties(targetObject);
+
+        targetObject.DeleterId.Should().Be(expected);
     }
 
-    [Theory]
-    [MemberData(nameof(GetAuditObjects))]
-    public void SetDeletionProperties_GivenISoftDeleted_IsDeletedBeTrue(FakeAuditObject targetObject)
+    [Fact]
+    public void SetDeletionProperties_GivenISoftDeleted_IsDeletedBeTrue()
     {
-        AuditPropertySetter.SetDeletionProperties(targetObject);
-        var condition = targetObject.IsDeleted;
-        Assert.True(condition);
+        var targetObject = Create<FullAuditEntity<int>>();
+        Sut.SetDeletionProperties(targetObject);
+
+        targetObject.IsDeleted.Should().BeTrue();
     }
 
     [Theory]
-    [MemberData(nameof(GetNonAuditObjects))]
+    [InlineAutoData(null)]
+    [InlineAutoData]
     public void SetDeletionProperties_GivenNonAuditedObject_DoNothing(object targetObject)
     {
-        AuditPropertySetter.SetDeletionProperties(targetObject);
+        Sut.SetDeletionProperties(targetObject);
     }
 }

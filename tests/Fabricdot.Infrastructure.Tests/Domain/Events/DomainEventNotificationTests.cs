@@ -1,18 +1,20 @@
-﻿using System;
-using Fabricdot.Infrastructure.Domain.Events;
-using Xunit;
+﻿using Fabricdot.Infrastructure.Domain.Events;
 
 namespace Fabricdot.Infrastructure.Tests.Domain.Events;
 
-public class DomainEventNotificationTests
+public class DomainEventNotificationTests : TestFor<DomainEventNotification>
 {
     [Fact]
     public void New_GivenNull_ThrowException()
     {
-        static void Action()
-        {
-            var _ = new DomainEventNotification(null);
-        }
-        Assert.Throws<ArgumentNullException>(Action);
+        var sut = typeof(DomainEventNotification).GetConstructors();
+
+        Create<GuardClauseAssertion>().Verify(sut);
+    }
+
+    [Fact]
+    public void Constructor_Should_Correctly()
+    {
+        Sut.Event.Should().NotBeNull();
     }
 }

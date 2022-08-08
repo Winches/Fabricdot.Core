@@ -1,9 +1,6 @@
-﻿using Fabricdot.Testing;
-using FluentAssertions;
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
-using Xunit;
 
 namespace Fabricdot.Authorization.Tests.Permissions;
 
@@ -19,25 +16,28 @@ public class AuthorizationPolicyProviderTests : IntegrationTestBase<Authorizatio
         AuthorizationPolicyProvider = ServiceProvider.GetRequiredService<IAuthorizationPolicyProvider>();
     }
 
-    [Fact]
-    public async Task GetPolicyAsync_GivenNonExistsPolicy_BuildPolicy()
+    [AutoData]
+    [Theory]
+    public async Task GetPolicyAsync_GivenNonExistsPolicy_BuildPolicy(string policyName)
     {
-        const string policyName = "name1";
         var policy = await AuthorizationPolicyProvider.GetPolicyAsync(policyName);
 
         AuthorizationOptions.GetPolicy(policyName).Should().Be(policy);
         policy.Should().NotBeNull();
-        policy.Requirements.Single().Should().BeOfType<PermissionRequirement>();
+        policy.Requirements.Should()
+                           .ContainSingle().Which
+                           .Should()
+                           .BeOfType<PermissionRequirement>();
     }
 
-    [Fact]
-    public async Task GetPolicyAsync_GivenExistsPolicy_ReturnPolicy()
+    [AutoData]
+    [Theory]
+    public async Task GetPolicyAsync_GivenExistsPolicy_ReturnPolicy(string policyName)
     {
-        const string policyName = "name1";
-        var policy = new AuthorizationPolicyBuilder().RequirePermission(policyName).Build();
-        AuthorizationOptions.AddPolicy(policyName, policy);
+        var expected = new AuthorizationPolicyBuilder().RequirePermission(policyName).Build();
+        AuthorizationOptions.AddPolicy(policyName, expected);
         var authorizationPolicy = await AuthorizationPolicyProvider.GetPolicyAsync(policyName);
 
-        authorizationPolicy.Should().BeSameAs(policy);
+        authorizationPolicy.Should().BeSameAs(expected);
     }
 }

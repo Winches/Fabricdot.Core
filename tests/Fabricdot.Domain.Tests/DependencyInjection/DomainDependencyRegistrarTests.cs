@@ -1,42 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
-using Ardalis.Specification;
+﻿using Ardalis.Specification;
 using Fabricdot.Domain.DependencyInjection;
-using Fabricdot.Domain.Entities;
 using Fabricdot.Domain.Events;
 using Fabricdot.Domain.Services;
-using FluentAssertions;
+using Fabricdot.Test.Helpers.Domain.Aggregates.OrderAggregate;
 using Microsoft.Extensions.DependencyInjection;
-using Xunit;
 
 namespace Fabricdot.Domain.Tests.DependencyInjection;
 
-public class DomainDependencyRegistrarTests
+public class DomainDependencyRegistrarTests : TestFor<DomainDependencyRegistrar>
 {
-    public class Order : AggregateRoot<Guid>
-    {
-    }
-
-    private class OrderDomainService : IOrderDomainService
-    {
-    }
-
-    private class OrderCreatedDomainEvent : DomainEventBase
-    {
-    }
-
-    private class OrderCreatedDomainEventHandler : IDomainEventHandler<OrderCreatedDomainEvent>
-    {
-        public Task HandleAsync(OrderCreatedDomainEvent domainEvent, CancellationToken cancellationToken)
-        {
-            throw new NotImplementedException();
-        }
-    }
-
-    private class OrderRepository : RepositoryBase<Order>, IOrderRepository
+    public class OrderRepository : RepositoryBase<Order>, IOrderRepository
     {
         public override Task<Order> AddAsync(Order entity, CancellationToken cancellationToken = default)
         {
@@ -84,52 +57,58 @@ public class DomainDependencyRegistrarTests
         }
     }
 
-    public interface IOrderRepository : IRepository<Order, Guid>
+    private class OrderPlacedDomainEventHandler : IDomainEventHandler<OrderPlacedDomainEvent>
     {
+        public Task HandleAsync(OrderPlacedDomainEvent domainEvent, CancellationToken cancellationToken)
+        {
+            throw new NotImplementedException();
+        }
     }
 
-    internal interface IOrderDomainService : IDomainService
+    [AutoData]
+    [Theory]
+    public void Register_GivenDomainEventHandler_RegisterType(ServiceCollection services)
     {
+        var implementationType = typeof(OrderPlacedDomainEventHandler);
+
+        Sut.Register(services, implementationType);
+
+        services.Should()
+                .ContainSingle<IDomainEventHandler<OrderPlacedDomainEvent>>().Which.ImplementationType
+                .Should()
+                .Be(implementationType);
     }
 
-    [Fact]
-    public void Register_GivenDomainEventHandler_RegisterType()
+    [AutoData]
+    [Theory]
+    public void Register_GivenDomainService_RegisterType(ServiceCollection services)
     {
-        var services = new ServiceCollection();
-        var registrar = new DomainDependencyRegistrar();
-        var implementationType = typeof(OrderCreatedDomainEventHandler);
-        var serviceType = typeof(IDomainEventHandler<OrderCreatedDomainEvent>);
+        var implementationType = typeof(OrderNumberGenerator);
 
-        registrar.Register(services, implementationType);
+        Sut.Register(services, implementationType);
 
-        services.Should().ContainSingle(v => v.ServiceType == serviceType && v.ImplementationType == implementationType);
+        services.Should()
+                .ContainSingle<IOrderNumberGenerator>().Which.ImplementationType
+                .Should()
+                .Be(implementationType);
+        services.Should().NotContain<IDomainService>();
     }
 
-    [Fact]
-    public void Register_GivenDomainService_RegisterType()
+    [AutoData]
+    [Theory]
+    public void Register_GivenRepository_RegisterType(ServiceCollection services)
     {
-        var services = new ServiceCollection();
-        var registrar = new DomainDependencyRegistrar();
-        var implementationType = typeof(OrderDomainService);
-        var serviceType = typeof(IOrderDomainService);
-
-        registrar.Register(services, implementationType);
-
-        services.Should().ContainSingle(v => v.ServiceType == serviceType && v.ImplementationType == implementationType);
-        services.Should().NotContain(v => v.ServiceType == typeof(IDomainService));
-    }
-
-    [Fact]
-    public void Register_GivenRepository_RegisterType()
-    {
-        var services = new ServiceCollection();
-        var registrar = new DomainDependencyRegistrar();
         var implementationType = typeof(OrderRepository);
         var serviceTypes = new[] { typeof(IOrderRepository), typeof(IReadOnlyRepository<Order, Guid>) };
 
-        registrar.Register(services, implementationType);
-
-        services.Should().ContainSingle(v => serviceTypes.Contains(v.ServiceType) && v.ImplementationType == implementationType);
-        services.Should().NotContain(v => v.ServiceType == typeof(IRepository));
+        Sut.Register(services, implementationType);
+        serviceTypes.ForEach(v =>
+        {
+            services.Should()
+                    .ContainSingle(v).Which.ImplementationType
+                    .Should()
+                    .Be(implementationType);
+        });
+        services.Should().NotContain<IRepository>();
     }
 }

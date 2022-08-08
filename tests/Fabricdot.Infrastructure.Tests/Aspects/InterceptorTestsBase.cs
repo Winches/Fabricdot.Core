@@ -1,6 +1,5 @@
 ﻿using Fabricdot.Infrastructure.DependencyInjection;
 using Fabricdot.Infrastructure.Tests.Aspects.Interceptors;
-using Fabricdot.Testing;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Fabricdot.Infrastructure.Tests.Aspects;

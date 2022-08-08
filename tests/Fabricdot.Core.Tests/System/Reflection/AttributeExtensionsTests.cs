@@ -1,12 +1,9 @@
-﻿using System;
-using System.ComponentModel;
+﻿using System.ComponentModel;
 using System.Reflection;
-using FluentAssertions;
-using Xunit;
 
 namespace Fabricdot.Core.Tests.System.Reflection;
 
-public class AttributeExtensionsTests
+public class AttributeExtensionsTests : TestBase
 {
     [Description]
     private class Foo

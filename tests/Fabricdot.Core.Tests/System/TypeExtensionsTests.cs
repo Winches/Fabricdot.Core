@@ -1,12 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Runtime.CompilerServices;
-using FluentAssertions;
-using Xunit;
+﻿using System.Runtime.CompilerServices;
+using TypeExtensions = System.TypeExtensions;
 
 namespace Fabricdot.Core.Tests.System;
 
-public class TypeExtensionsTests
+public class TypeExtensionsTests : TestBase
 {
     private class IntCollection : List<int>
     {
@@ -34,34 +31,19 @@ public class TypeExtensionsTests
     }
 
     [Fact]
-    public void IsAssignableToGenericType_GivenNull_ThrowException()
+    public void IsAssignableToGenericType_GivenNull_Throw()
     {
-        FluentActions.Invoking(() => (null as Type).IsAssignableToGenericType(typeof(ICollection<>)))
-                     .Should()
-                     .Throw<ArgumentNullException>();
+        var sut = typeof(TypeExtensions).GetMethod(nameof(TypeExtensions.IsAssignableToGenericType));
 
-        FluentActions.Invoking(() => typeof(IList<int>).IsAssignableToGenericType(null))
-                     .Should()
-                     .Throw<ArgumentNullException>();
+        Create<GuardClauseAssertion>().Verify(sut);
     }
 
     [Fact]
-    public void IsInNamespace_GivenNullType_ThrowException()
+    public void IsInNamespace_GivenInvalidInput_Throw()
     {
-        FluentActions.Invoking(() => (null as Type).IsInNamespace(null))
-                     .Should()
-                     .Throw<ArgumentNullException>();
-    }
+        var sut = typeof(TypeExtensions).GetMethod(nameof(TypeExtensions.IsInNamespace));
 
-    [InlineData(null)]
-    [InlineData("")]
-    [InlineData(" ")]
-    [Theory]
-    public void IsInNamespace_GivenInvalidNamespace_ThrowException(string @namespace)
-    {
-        FluentActions.Invoking(() => typeof(int).IsInNamespace(@namespace))
-                     .Should()
-                     .Throw<ArgumentException>();
+        Create<GuardClauseAssertion>().Verify(sut);
     }
 
     [InlineData(typeof(int), nameof(System))]
@@ -74,28 +56,24 @@ public class TypeExtensionsTests
     }
 
     [Fact]
-    public void IsInNamespaces_GivenNull_ThrowException()
+    public void IsInNamespaces_GivenInvalidInput_Throw()
     {
-        FluentActions.Invoking(() => (null as Type).IsInNamespaces(null))
-                     .Should()
-                     .Throw<ArgumentNullException>();
+        var sut = typeof(TypeExtensions).GetMethod(nameof(TypeExtensions.IsInNamespaces));
 
-        FluentActions.Invoking(() => typeof(int).IsInNamespaces(null))
-                     .Should()
-                     .Throw<ArgumentNullException>();
+        Create<GuardClauseAssertion>().Verify(sut);
     }
 
     [Fact]
-    public void IsNonAbstractClass_GivenNull_ThrowException()
+    public void IsNonAbstractClass_GivenInvalidInput_Throw()
     {
-        FluentActions.Invoking(() => (null as Type).IsNonAbstractClass(false))
-            .Should()
-            .Throw<ArgumentNullException>();
+        var sut = typeof(TypeExtensions).GetMethod(nameof(TypeExtensions.IsNonAbstractClass));
+
+        Create<GuardClauseAssertion>().Verify(sut);
     }
 
     [InlineData(typeof(IntCollection), true, false)]
     [InlineData(typeof(IntCollection), false, true)]
-    [InlineData(typeof(PublicNonNestedType), true, true)]
+    [InlineData(typeof(TypeExtensionsTests), true, true)]
     [InlineData(typeof(SpecialType), false, false)]
     [Theory]
     public void IsNonAbstractClass_GivenInput_ReturnCorrectly(
@@ -125,8 +103,4 @@ public class TypeExtensionsTests
         var expected = $"{type.PrettyPrint()}[hash: {type.GetHashCode()}]";
         type.GetCacheKey().Should().Be(expected);
     }
-}
-
-public class PublicNonNestedType
-{
 }

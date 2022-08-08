@@ -1,81 +1,74 @@
-using System;
 using Fabricdot.Infrastructure.Uow;
 using Fabricdot.Infrastructure.Uow.Abstractions;
-using Moq;
-using Xunit;
 
 namespace Fabricdot.Infrastructure.Tests.Uow;
 
-public class AmbientUnitOfWorkTests
+public class AmbientUnitOfWorkTests : TestFor<AmbientUnitOfWork>
 {
-    private readonly IAmbientUnitOfWork _ambientUnitOfWork = new AmbientUnitOfWork();
-
     [Fact]
     public void UnitOfWork_SetNothing_ReturnNull()
     {
-        var currentUow = _ambientUnitOfWork.UnitOfWork;
-        Assert.Null(currentUow);
+        Sut.UnitOfWork.Should().BeNull();
     }
 
-    [Fact]
-    public void UnitOfWork_SetUnitOfWork_ReturnLatest()
+    [AutoMockData]
+    [Theory]
+    public void UnitOfWork_SetUnitOfWork_ReturnLatest(
+        IUnitOfWork uow1,
+        IUnitOfWork uow2)
     {
-        var uow1 = new Mock<IUnitOfWork>().Object;
-        _ambientUnitOfWork.UnitOfWork = uow1;
-        var currentUow1 = _ambientUnitOfWork.UnitOfWork;
-        Assert.Same(uow1, currentUow1);
+        Sut.UnitOfWork = uow1;
+        Sut.UnitOfWork.Should().BeSameAs(uow1);
 
-        var uow2 = new Mock<IUnitOfWork>().Object;
-        _ambientUnitOfWork.UnitOfWork = uow2;
-        var currentUow2 = _ambientUnitOfWork.UnitOfWork;
-        Assert.Same(uow2, currentUow2);
+        Sut.UnitOfWork = uow2;
+        Sut.UnitOfWork.Should().BeSameAs(uow2);
     }
 
     [Fact]
     public void UnitOfWork_SetNull_ThrowException()
     {
-        void testCode() => _ambientUnitOfWork.UnitOfWork = null;
-        Assert.Throws<ArgumentNullException>(testCode);
+        Invoking(() => Sut.UnitOfWork = null)
+                     .Should()
+                     .Throw<ArgumentNullException>();
     }
 
-    [Fact]
-    public void UnitOfWork_DropCurrent_ReturnOuterUow()
+    [AutoMockData]
+    [Theory]
+    public void UnitOfWork_DropCurrent_ReturnOuterUow(
+        IUnitOfWork uow1,
+        IUnitOfWork uow2)
     {
-        var uow1 = new Mock<IUnitOfWork>().Object;
-        _ambientUnitOfWork.UnitOfWork = uow1;
-        var uow2 = new Mock<IUnitOfWork>().Object;
-        _ambientUnitOfWork.UnitOfWork = uow2;
+        Sut.UnitOfWork = uow1;
+        Sut.UnitOfWork = uow2;
 
-        _ambientUnitOfWork.DropCurrent();
-        var currentUow1 = _ambientUnitOfWork.UnitOfWork;
-        Assert.Equal(uow1, currentUow1);
+        Sut.DropCurrent();
+        Sut.UnitOfWork.Should().Be(uow1);
 
-        _ambientUnitOfWork.DropCurrent();
-        var currentUow2 = _ambientUnitOfWork.UnitOfWork;
-        Assert.Null(currentUow2);
+        Sut.DropCurrent();
+        Sut.UnitOfWork.Should().BeNull();
     }
 
-    [Fact]
-    public void GetOuter_GivenUnitOfWork_ReturnPrevious()
+    [AutoMockData]
+    [Theory]
+    public void GetOuter_GivenUnitOfWork_ReturnOuterUow(
+        IUnitOfWork uow1,
+        IUnitOfWork uow2)
     {
-        var uow1 = new Mock<IUnitOfWork>().Object;
-        _ambientUnitOfWork.UnitOfWork = uow1;
-        var outer1 = _ambientUnitOfWork.GetOuter(uow1);
-        Assert.Null(outer1);
+        Sut.UnitOfWork = uow1;
+        Sut.UnitOfWork = uow2;
 
-        var uow2 = new Mock<IUnitOfWork>().Object;
-        _ambientUnitOfWork.UnitOfWork = uow2;
-        var outer2 = _ambientUnitOfWork.GetOuter(uow2);
-        Assert.Same(uow1, outer2);
+        Sut.GetOuter(uow1).Should().BeNull();
+        Sut.GetOuter(uow2).Should().Be(uow1);
     }
 
     [Fact]
     public void DropCurrent_NoExistedUow_ThrowException()
     {
-        void testCode() => _ambientUnitOfWork.DropCurrent();
-        var currentUow = _ambientUnitOfWork.UnitOfWork;
-
-        Assert.Null(currentUow);
-        Assert.Throws<InvalidOperationException>(testCode);
+        Sut.UnitOfWork.Should().BeNull();
+        Invoking(() => Sut.DropCurrent())
+                     .Should()
+                     .Throw<InvalidOperationException>();
     }
+
+    protected override AmbientUnitOfWork CreateSut() => new();
 }

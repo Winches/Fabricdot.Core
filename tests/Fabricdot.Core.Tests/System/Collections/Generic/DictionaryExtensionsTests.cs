@@ -1,52 +1,39 @@
-﻿using System.Collections.Generic;
-using FluentAssertions;
-using Xunit;
+﻿namespace Fabricdot.Core.Tests.System.Collections.Generic;
 
-namespace Fabricdot.Core.Tests.System.Collections.Generic;
-
-public class DictionaryExtensionsTests
+public class DictionaryExtensionsTests : TestFor<Dictionary<string, int>>
 {
     [Fact]
     public void GetOrDefault_WhenValueIsNotNull_ReturnValue()
     {
-        const string key = "Name1";
-        const int value = 1;
-        var dictionary = new Dictionary<string, int>()
-        {
-            { key,value }
-        };
-        dictionary.GetOrDefault(key).Should().Be(value);
+        var key = Sut.Keys.First();
+        var value = Sut[key];
+
+        Sut.GetOrDefault(key).Should().Be(value);
     }
 
     [Fact]
     public void GetOrDefault_WhenValueIsNull_ReturnDefaultValue()
     {
-        const string key = "Name1";
-        const int value = default;
-        var dictionary = new Dictionary<string, int>();
-        dictionary.GetOrDefault(key).Should().Be(value);
+        var key = Create<string>();
+
+        Sut.GetOrDefault(key).Should().Be(default);
     }
 
     [Fact]
     public void GetOrAdd_WhenKeyExists_ReturnValue()
     {
-        const string key = "Name1";
-        const int value = 1;
-        var dictionary = new Dictionary<string, int>()
-        {
-            { key,value }
-        };
+        var key = Sut.Keys.First();
+        var value = Sut[key];
 
-        dictionary.GetOrAdd(key, _ => value).Should().Be(value);
+        Sut.GetOrAdd(key, _ => value).Should().Be(value);
     }
 
-    [Fact]
-    public void GetOrAdd_WhenKeyNotExists_AddValue()
+    [AutoData]
+    [Theory]
+    public void GetOrAdd_WhenKeyNotExists_AddValue(
+        string key,
+        int value)
     {
-        const string key = "Name1";
-        const int value = 1;
-        var dictionary = new Dictionary<string, int>();
-
-        dictionary.GetOrAdd(key, _ => value).Should().Be(value);
+        Sut.GetOrAdd(key, _ => value).Should().Be(value);
     }
 }

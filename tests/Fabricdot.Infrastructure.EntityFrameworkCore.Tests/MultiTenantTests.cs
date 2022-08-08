@@ -1,28 +1,23 @@
-﻿using System;
-using System.Threading.Tasks;
-using Fabricdot.Domain.SharedKernel;
+﻿using Fabricdot.Domain.SharedKernel;
 using Fabricdot.Infrastructure.Data.Filters;
 using Fabricdot.Infrastructure.EntityFrameworkCore.Tests.Data;
-using Fabricdot.Infrastructure.EntityFrameworkCore.Tests.Repositories;
 using Fabricdot.MultiTenancy.Abstractions;
+using Fabricdot.Test.Helpers.Domain.Aggregates.CustomerAggregate;
 using Microsoft.Extensions.DependencyInjection;
-using Moq;
-using Xunit;
 
 namespace Fabricdot.Infrastructure.EntityFrameworkCore.Tests;
 
 public class MultiTenantTests : EntityFrameworkCoreTestsBase
 {
-    private readonly IEmployeeRepository _employeeRepository;
+    private readonly ICustomerRepository _customerRepository;
     private readonly IDataFilter _dataFilter;
 
     private static Guid? CurrentTenantId { get; set; }
 
     public MultiTenantTests()
     {
-        var serviceProvider = ServiceScope.ServiceProvider;
-        _employeeRepository = serviceProvider.GetService<IEmployeeRepository>();
-        _dataFilter = serviceProvider.GetService<IDataFilter>();
+        _customerRepository = ServiceProvider.GetService<ICustomerRepository>();
+        _dataFilter = ServiceProvider.GetService<IDataFilter>();
     }
 
     //[Fact]
@@ -58,10 +53,11 @@ public class MultiTenantTests : EntityFrameworkCoreTestsBase
     {
         CurrentTenantId = FakeDataBuilder.TenantId;
         using var scope = _dataFilter.Enable<IMultiTenant>();
-        var employees = await _employeeRepository.ListAsync();
+        var employees = await _customerRepository.ListAsync();
 
-        Assert.NotEmpty(employees);
-        Assert.DoesNotContain(employees, v => v.TenantId != CurrentTenantId);
+        employees.Should()
+                 .NotBeEmpty().And
+                 .OnlyContain(v => v.TenantId == CurrentTenantId);
     }
 
     [Fact]
@@ -69,10 +65,11 @@ public class MultiTenantTests : EntityFrameworkCoreTestsBase
     {
         CurrentTenantId = null;
         using var scope = _dataFilter.Enable<IMultiTenant>();
-        var employees = await _employeeRepository.ListAsync();
+        var employees = await _customerRepository.ListAsync();
 
-        Assert.NotEmpty(employees);
-        Assert.DoesNotContain(employees, v => v.TenantId.HasValue);
+        employees.Should()
+                 .NotBeEmpty().And
+                 .OnlyContain(v => !v.TenantId.HasValue);
     }
 
     [Fact]
@@ -80,17 +77,18 @@ public class MultiTenantTests : EntityFrameworkCoreTestsBase
     {
         CurrentTenantId = FakeDataBuilder.TenantId;
         using var scope = _dataFilter.Disable<IMultiTenant>();
-        var employees = await _employeeRepository.ListAsync();
+        var employees = await _customerRepository.ListAsync();
 
-        Assert.NotEmpty(employees);
-        Assert.Contains(employees, v => v.TenantId != CurrentTenantId);
+        employees.Should()
+                 .NotBeEmpty().And
+                 .Contain(v => v.TenantId != CurrentTenantId);
     }
 
     protected override void ConfigureServices(IServiceCollection serviceCollection)
     {
-        var currentTenant = new Mock<ICurrentTenant>();
-        currentTenant.SetupGet(v => v.Id).Returns(() => CurrentTenantId);
-        serviceCollection.AddTransient(_ => currentTenant.Object);
+        var currentTenantMock = Mock<ICurrentTenant>();
+        currentTenantMock.SetupGet(v => v.Id).Returns(() => CurrentTenantId);
+        serviceCollection.AddTransient(_ => currentTenantMock.Object);
 
         base.ConfigureServices(serviceCollection);
     }

@@ -1,6 +1,5 @@
 ﻿using Fabricdot.Infrastructure.DependencyInjection;
 using Fabricdot.Infrastructure.EntityFrameworkCore.Tests.Data;
-using Fabricdot.Testing;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Fabricdot.Infrastructure.EntityFrameworkCore.Tests;
@@ -9,8 +8,7 @@ public abstract class EntityFrameworkCoreTestsBase : IntegrationTestBase<EntityF
 {
     protected EntityFrameworkCoreTestsBase()
     {
-        var provider = ServiceScope.ServiceProvider;
-        var dataBuilder = provider.GetRequiredService<FakeDataBuilder>();
+        var dataBuilder = ServiceProvider.GetRequiredService<FakeDataBuilder>();
         dataBuilder.BuildAsync().GetAwaiter().GetResult();
     }
 

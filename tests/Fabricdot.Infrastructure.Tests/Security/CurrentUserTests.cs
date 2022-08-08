@@ -1,10 +1,7 @@
 ﻿using System.Security.Claims;
 using Fabricdot.Core.Security;
 using Fabricdot.Infrastructure.Security;
-using Fabricdot.Testing;
 using Microsoft.Extensions.DependencyInjection;
-using Moq;
-using Xunit;
 
 namespace Fabricdot.Infrastructure.Tests.Security;
 
@@ -33,8 +30,7 @@ public class CurrentUserTests : IntegrationTestBase<InfrastructureTestModule>
 
         yield return new object[]
         {
-            CreateClaimsPrincipal(new Claim(ClaimTypes.NameIdentifier, "1"),
-                new Claim(ClaimTypes.Name, "Allen"),
+            CreateClaimsPrincipal(
                 new Claim(ClaimTypes.Role, "Admin"),
                 new Claim(ClaimTypes.Role, "Employee"))
         };
@@ -42,71 +38,90 @@ public class CurrentUserTests : IntegrationTestBase<InfrastructureTestModule>
 
     [Theory]
     [MemberData(nameof(GetClaimPrincipals))]
-    public void Id_ReturnNameIdentifierClaim(ClaimsPrincipal claimsPrincipal)
+    public void Id_Should_ReturnNameIdentifier(ClaimsPrincipal claimsPrincipal)
     {
         ClaimsPrincipal = claimsPrincipal;
         var expected = claimsPrincipal?.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-        var actual = _currentUser.Id;
-        Assert.Equal(expected, actual);
+
+        _currentUser.Id.Should().Be(expected);
     }
 
     [Theory]
     [MemberData(nameof(GetClaimPrincipals))]
-    public void UserName_ReturnNameClaim(ClaimsPrincipal claimsPrincipal)
+    public void UserName_Should_ReturnName(ClaimsPrincipal claimsPrincipal)
     {
         ClaimsPrincipal = claimsPrincipal;
         var expected = claimsPrincipal?.FindFirst(ClaimTypes.Name)?.Value;
-        var actual = _currentUser.UserName;
-        Assert.Equal(expected, actual);
+
+        _currentUser.UserName.Should().Be(expected);
     }
 
     [Theory]
     [MemberData(nameof(GetClaimPrincipals))]
-    public void Roles_ReturnAllRoleClaims(ClaimsPrincipal claimsPrincipal)
+    public void Roles_Should_ReturnAllRoles(ClaimsPrincipal claimsPrincipal)
     {
         ClaimsPrincipal = claimsPrincipal;
         var expected = claimsPrincipal?.FindAll(ClaimTypes.Role).Select(v => v.Value).ToArray() ??
                        Array.Empty<string>();
-        var actual = _currentUser.Roles;
-        Assert.Equal(expected, actual);
+
+        _currentUser.Roles.Should().BeEquivalentTo(expected);
     }
 
-    [Fact]
-    public void IsInRole_GivenExistRole_ReturnTrue()
+    [InlineData("")]
+    [InlineAutoData]
+    [Theory]
+    public void IsAuthenticated_Should_ReturnCorrectly(string id)
     {
-        const string role = "Admin";
+        var expected = !id.IsNullOrEmpty();
+        ClaimsPrincipal = CreateClaimsPrincipal(new Claim(ClaimTypes.NameIdentifier, id));
+
+        _currentUser.IsAuthenticated.Should().Be(expected);
+    }
+
+    [AutoData]
+    [Theory]
+    public void IsInRole_GivenExistRole_ReturnTrue(string role)
+    {
         ClaimsPrincipal = CreateClaimsPrincipal(new Claim(ClaimTypes.Role, role));
-        var condition = _currentUser.IsInRole(role);
-        Assert.True(condition);
+
+        _currentUser.IsInRole(role).Should().BeTrue();
     }
 
     [Fact]
     public void IsInRole_GivenNull_ReturnFalse()
     {
-        ClaimsPrincipal = CreateClaimsPrincipal();
-        var condition = _currentUser.IsInRole(null);
-        Assert.False(condition);
+        ClaimsPrincipal = Create<ClaimsPrincipal>();
+
+        _currentUser.IsInRole(null).Should().BeFalse();
+    }
+
+    [Fact]
+    public void GetAllClaims_WhenPrincipalNotNull_ReturnCorrectly()
+    {
+        var expected = Create<Claim[]>();
+        ClaimsPrincipal = CreateClaimsPrincipal(expected);
+
+        _currentUser.GetAllClaims().Should().BeEquivalentTo(expected, opts => opts.Excluding(v => v.Subject));
+    }
+
+    [Fact]
+    public void GetAllClaims_WhenPrincipalIsNull_ReturnEmpty()
+    {
+        ClaimsPrincipal = null;
+
+        _currentUser.GetAllClaims().Should().BeEmpty();
     }
 
     /// <inheritdoc />
     protected override void ConfigureServices(IServiceCollection serviceCollection)
     {
-        var mock = new Mock<IPrincipalAccessor>();
+        var mock = Mock<IPrincipalAccessor>();
         mock.SetupGet(v => v.Principal).Returns(() => ClaimsPrincipal);
-        serviceCollection.AddScoped(_ => mock.Object);
-        //serviceCollection.AddScoped<ICurrentUser, CurrentUser>();
-    }
-
-    protected IDisposable ChangeCurrentPrincipal(ClaimsPrincipal claimsPrincipal)
-    {
-        return ServiceScope.ServiceProvider.GetRequiredService<IPrincipalAccessor>().Change(claimsPrincipal);
+        serviceCollection.AddSingleton(_ => mock.Object);
     }
 
     private static ClaimsPrincipal CreateClaimsPrincipal(params Claim[] claims)
     {
-        var claimsPrincipal = new ClaimsPrincipal();
-        var claimsIdentity = new ClaimsIdentity(claims ?? Array.Empty<Claim>(), "Bearer");
-        claimsPrincipal.AddIdentity(claimsIdentity);
-        return claimsPrincipal;
+        return new ClaimsPrincipal(new ClaimsIdentity(claims ?? Array.Empty<Claim>(), "Bearer"));
     }
 }

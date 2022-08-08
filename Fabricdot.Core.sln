@@ -1,4 +1,4 @@
-
+﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.0.32112.339
@@ -46,6 +46,8 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fabricdot.Authorization.Tests", "tests\Fabricdot.Authorization.Tests\Fabricdot.Authorization.Tests.csproj", "{E01EBD5D-A1A5-41D2-AF77-EA7F8EFF12C2}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fabricdot.AspNetCore.Testing", "tests\Fabricdot.AspNetCore.Testing\Fabricdot.AspNetCore.Testing.csproj", "{4E37E011-45ED-4545-8C3C-A43DDAE3A68D}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fabricdot.Test.Helpers", "tests\Fabricdot.Test.Helpers\Fabricdot.Test.Helpers.csproj", "{5DF334D0-7ABD-4D16-9815-67EDA43DD5DD}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -133,6 +135,10 @@ Global
 		{4E37E011-45ED-4545-8C3C-A43DDAE3A68D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4E37E011-45ED-4545-8C3C-A43DDAE3A68D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4E37E011-45ED-4545-8C3C-A43DDAE3A68D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5DF334D0-7ABD-4D16-9815-67EDA43DD5DD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5DF334D0-7ABD-4D16-9815-67EDA43DD5DD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5DF334D0-7ABD-4D16-9815-67EDA43DD5DD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5DF334D0-7ABD-4D16-9815-67EDA43DD5DD}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -158,6 +164,7 @@ Global
 		{13081FD8-0044-4110-93AF-4C51E54A2BF2} = {E4584D3B-649D-4069-82F1-647552F432FC}
 		{E01EBD5D-A1A5-41D2-AF77-EA7F8EFF12C2} = {331C270C-1154-413D-A0B4-29E4E4ACA7C3}
 		{4E37E011-45ED-4545-8C3C-A43DDAE3A68D} = {331C270C-1154-413D-A0B4-29E4E4ACA7C3}
+		{5DF334D0-7ABD-4D16-9815-67EDA43DD5DD} = {331C270C-1154-413D-A0B4-29E4E4ACA7C3}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {8A1CF1E5-6520-4250-8917-0413CEF753A8}

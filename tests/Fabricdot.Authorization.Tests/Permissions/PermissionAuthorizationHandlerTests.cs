@@ -1,9 +1,5 @@
-﻿using System.Linq;
-using System.Security.Claims;
-using System.Threading.Tasks;
-using FluentAssertions;
+﻿using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
-using Xunit;
 
 namespace Fabricdot.Authorization.Tests.Permissions;
 
@@ -26,7 +22,7 @@ public class PermissionAuthorizationHandlerTests : AuthrizationHandlerTestsBase<
     [Fact]
     public async Task HandleRequirementAsync_WhenAuthenticated_HandleCorrectly()
     {
-        var identity = new ClaimsIdentity(new[] { Superuser }, "basic");
+        var identity = new ClaimsIdentity(new[] { Superuser }, Create<string>());
 
         var principal = new ClaimsPrincipal(identity);
         var context = new AuthorizationHandlerContext(

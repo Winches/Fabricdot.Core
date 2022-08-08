@@ -1,7 +1,5 @@
 ﻿using Fabricdot.Infrastructure.DependencyInjection;
-using Fabricdot.Testing;
 using Microsoft.Extensions.DependencyInjection;
-using Xunit;
 
 namespace Fabricdot.Infrastructure.Tests.Uow;
 
@@ -11,8 +9,7 @@ public class UnitOfWorkInterceptor_TargetType_Tests : IntegrationTestBase<Infras
 
     public UnitOfWorkInterceptor_TargetType_Tests()
     {
-        var provider = ServiceScope.ServiceProvider;
-        _testService = provider.GetRequiredService<IFakeServiceWithUowScope>();
+        _testService = ServiceProvider.GetRequiredService<IFakeServiceWithUowScope>();
     }
 
     [Fact]
@@ -20,8 +17,8 @@ public class UnitOfWorkInterceptor_TargetType_Tests : IntegrationTestBase<Infras
     {
         _testService.UseTransactionalUow(uow =>
         {
-            Assert.NotNull(uow);
-            Assert.True(uow.IsActive);
+            uow.Should().NotBeNull();
+            uow.IsActive.Should().BeTrue();
         });
     }
 

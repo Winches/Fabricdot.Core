@@ -1,24 +1,18 @@
-﻿using System.Threading.Tasks;
-using Fabricdot.Core.Boot;
-using Xunit;
+﻿using Fabricdot.Core.Boot;
 
 namespace Fabricdot.Core.Tests.Boot;
 
-public class ApplicationTests
+public class ApplicationTests : TestFor<Application>
 {
-    private class FakeApplication : Application
+    [Fact]
+    public async Task StartAsync_Should_Correctly()
     {
+        await Sut.StartAsync();
     }
 
     [Fact]
-    public async Task StartAsync_DoNothing()
+    public async Task StopAsync_Should_Correctly()
     {
-        await new FakeApplication().StartAsync();
-    }
-
-    [Fact]
-    public async Task StopAsync_DoNothing()
-    {
-        await new FakeApplication().StopAsync();
+        await Sut.StopAsync();
     }
 }

@@ -1,38 +1,44 @@
-﻿using System.Threading.Tasks;
-using Fabricdot.Infrastructure.Uow.Abstractions;
+﻿using Fabricdot.Infrastructure.Uow.Abstractions;
 using Microsoft.Extensions.DependencyInjection;
-using Xunit;
 
 namespace Fabricdot.WebApi.Tests.Uow;
 
-public class UnitOfWorkActionFilterTests : AspNetCoreTestsBase<Startup>
+public class UnitOfWorkActionFilterTests : WebApplicationTestBase<WebApiTestModule>
 {
+    public UnitOfWorkActionFilterTests(TestWebApplicationFactory<WebApiTestModule> webAppFactory) : base(webAppFactory)
+    {
+    }
+
     [Fact]
     public async Task UnitOfWorkActionFilter_SendGetRequest_BeginNoTransactionalUow()
     {
         var response = await HttpClient.GetAsync("api/fake-uow/GetWithUow");
-        Assert.Equal(System.Net.HttpStatusCode.OK, response.StatusCode);
+
+        response.Should().BeSuccessful();
     }
 
     [Fact]
     public async Task UnitOfWorkActionFilter_SendNonGetRequest_BeginTransactionalUow()
     {
         var response = await HttpClient.PostAsync("api/fake-uow/CreateWithUow", null);
-        Assert.Equal(System.Net.HttpStatusCode.OK, response.StatusCode);
+
+        response.Should().BeSuccessful();
     }
 
     [Fact]
     public async Task UnitOfWorkActionFilter_AnnotateUowIsTransactional_BeginTransactionalUow()
     {
         var response = await HttpClient.GetAsync("api/fake-uow/GetWithTransactionalUow");
-        Assert.Equal(System.Net.HttpStatusCode.OK, response.StatusCode);
+
+        response.Should().BeSuccessful();
     }
 
     [Fact]
     public async Task UnitOfWorkActionFilter_AnnotateUowIsDisabled_NoAvailableUow()
     {
         var response = await HttpClient.GetAsync("api/fake-uow/GetWithoutUow");
-        Assert.Equal(System.Net.HttpStatusCode.OK, response.StatusCode);
+
+        response.Should().BeSuccessful();
     }
 
     [Fact]
@@ -48,7 +54,8 @@ public class UnitOfWorkActionFilterTests : AspNetCoreTestsBase<Startup>
                 return Task.CompletedTask;
             };
         var response = await HttpClient.PostAsync("api/fake-uow/ThrowException", null);
-        Assert.Equal(System.Net.HttpStatusCode.OK, response.StatusCode);
-        Assert.False(uow.IsActive);
+
+        response.Should().BeSuccessful();
+        uow.IsActive.Should().BeFalse();
     }
 }

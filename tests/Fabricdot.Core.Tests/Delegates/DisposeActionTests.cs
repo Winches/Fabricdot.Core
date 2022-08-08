@@ -1,38 +1,34 @@
-﻿using System;
-using Fabricdot.Core.Delegates;
-using FluentAssertions;
-using Xunit;
+﻿using Fabricdot.Core.Delegates;
 
 namespace Fabricdot.Core.Tests.Delegates;
 
-public class DisposeActionTests
+public class DisposeActionTests : TestFor<Mock<Action>>
 {
     [Fact]
     public void Constructor_GivenNull_TrowException()
     {
-        FluentActions.Invoking(() => new DisposeAction(null))
-                     .Should()
-                     .Throw<ArgumentException>();
+        var sut = typeof(DisposeAction).GetConstructors();
+
+        Create<GuardClauseAssertion>().Verify(sut);
     }
 
     [Fact]
     public void Dispose_GivenAction_InvokeAction()
     {
-        var isCalled = false;
-        using (var scope = new DisposeAction(() => isCalled = true))
+        using (var scope = new DisposeAction(Sut.Object))
         {
-            isCalled.Should().BeFalse();
+            Sut.Verify(v => v(), Times.Never);
         }
-        isCalled.Should().BeTrue();
+        Sut.Verify(v => v(), Times.Once);
     }
 
     [Fact]
     public void Dispose_InvokeTwice_InvokeActionOnce()
     {
-        var count = 0;
-        var scope = new DisposeAction(() => count++);
+        var scope = new DisposeAction(Sut.Object);
         scope.Dispose();
         scope.Dispose();
-        count.Should().Be(1);
+
+        Sut.Verify(v => v(), Times.Once);
     }
 }

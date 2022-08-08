@@ -1,35 +1,30 @@
-﻿using System.Linq;
-using System.Security.Claims;
-using System.Threading.Tasks;
-using FluentAssertions;
-using Xunit;
+﻿using System.Security.Claims;
 
 namespace Fabricdot.Authorization.Tests;
 
-public class GrantSubjectResolverTests
+public class GrantSubjectResolverTests : TestFor<GrantSubjectResolver>
 {
-    protected IGrantSubjectResolver GrantSubjectResolver { get; } = new GrantSubjectResolver();
-
     [Fact]
     public async Task ResolveAsync_GivenInput_ReturnCorrectly()
     {
         var claims = new[]
         {
-            new Claim(ClaimTypes.Role,"role1"),
-            new Claim(ClaimTypes.NameIdentifier,"1"),
-            new Claim(ClaimTypes.Name,"Jacky"),
+            new Claim(ClaimTypes.Role,Create<string>()),
+            new Claim(ClaimTypes.NameIdentifier,Create<string>()),
+            Create<Claim>(),
         };
-        var expectedClaims = claims.Select(v => v.Type switch
+
+        var expected = claims.Select(v => v.Type switch
         {
-            ClaimTypes.NameIdentifier => new GrantSubject(GrantTypes.User, v.Value),
-            ClaimTypes.Role => new GrantSubject(GrantTypes.Role, v.Value),
+            ClaimTypes.NameIdentifier => GrantSubject.User(v.Value),
+            ClaimTypes.Role => GrantSubject.Role(v.Value),
             _ => (GrantSubject?)null
         })
             .Where(v => v is not null);
         var pricinpal = new ClaimsPrincipal(new ClaimsIdentity(claims));
 
-        var grantSubjects = await GrantSubjectResolver.ResolveAsync(pricinpal);
+        var grantSubjects = await Sut.ResolveAsync(pricinpal);
 
-        grantSubjects.Should().BeEquivalentTo(expectedClaims);
+        grantSubjects.Should().BeEquivalentTo(expected);
     }
 }

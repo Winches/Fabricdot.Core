@@ -1,16 +1,14 @@
 ﻿using Fabricdot.Core.Validation;
-using FluentAssertions;
-using Xunit;
 
 namespace Fabricdot.Core.Tests.Validation;
 
-public class NotificationErrorTests
+public class NotificationErrorTests : TestBase
 {
     [Fact]
     public void Format_GivenInput_ReturnCorrectly()
     {
-        const string message = "Hello {0}!";
-        const string arg = "World";
+        var message = $"{Create<string>()} {0}";
+        var arg = Create<string>();
         var expected = string.Format(message, arg);
         var error = new Notification.Error(message);
 

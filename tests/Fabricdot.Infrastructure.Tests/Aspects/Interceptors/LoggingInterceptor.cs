@@ -1,5 +1,4 @@
-﻿using System.Threading.Tasks;
-using Fabricdot.Core.Aspects;
+﻿using Fabricdot.Core.Aspects;
 using Fabricdot.Core.DependencyInjection;
 
 namespace Fabricdot.Infrastructure.Tests.Aspects.Interceptors;

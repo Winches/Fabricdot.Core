@@ -1,42 +1,37 @@
-using System.Diagnostics.CodeAnalysis;
 using Fabricdot.Infrastructure.Uow.Abstractions;
-using Fabricdot.Testing;
 using Microsoft.Extensions.DependencyInjection;
-using Xunit;
 
 namespace Fabricdot.Infrastructure.Tests.Uow;
 
-[SuppressMessage("ReSharper", "InconsistentNaming")]
 public class UnitOfWork_CommitChangesAsync_Tests : IntegrationTestBase<InfrastructureTestModule>
 {
     private readonly IUnitOfWorkManager _unitOfWorkManager;
 
     public UnitOfWork_CommitChangesAsync_Tests()
     {
-        var provider = ServiceScope.ServiceProvider;
-        _unitOfWorkManager = provider.GetRequiredService<IUnitOfWorkManager>();
+        _unitOfWorkManager = ServiceProvider.GetRequiredService<IUnitOfWorkManager>();
     }
 
     [Fact]
     public async Task CommitChangesAsync_InvokeOnce_Inactive()
     {
-        using (var uow = _unitOfWorkManager.Begin())
-        {
-            Assert.True(uow.IsActive);
-            await uow.CommitChangesAsync();
-            Assert.False(uow.IsActive);
-        }
+        using var uow = _unitOfWorkManager.Begin();
+        uow.IsActive.Should().BeTrue();
+
+        await uow.CommitChangesAsync();
+
+        uow.IsActive.Should().BeFalse();
     }
 
     [Fact]
     public async Task CommitChangesAsync_InvokeTwice_ThrowException()
     {
-        using (var uow = _unitOfWorkManager.Begin())
-        {
-            await uow.CommitChangesAsync();
-            async Task testCode() => await uow.CommitChangesAsync();
-            await Assert.ThrowsAsync<InvalidOperationException>(testCode);
-        }
+        using var uow = _unitOfWorkManager.Begin();
+        await uow.CommitChangesAsync();
+
+        await Awaiting(() => uow.CommitChangesAsync())
+                           .Should()
+                           .ThrowAsync<InvalidOperationException>();
     }
 
     [Theory]
@@ -48,17 +43,15 @@ public class UnitOfWork_CommitChangesAsync_Tests : IntegrationTestBase<Infrastru
         {
             using (var nestUow = _unitOfWorkManager.Begin(requireNew: requireNew))
             {
-                Assert.True(nestUow.IsActive);
+                nestUow.IsActive.Should().BeTrue();
                 await nestUow.CommitChangesAsync();
-                if (requireNew)
-                    Assert.False(nestUow.IsActive);
-                else
-                    Assert.True(nestUow.IsActive);//child unit of work commit nothing
+                //child unit of work commit nothing
+                nestUow.IsActive.Should().Be(!requireNew);
             }
 
-            Assert.True(uow.IsActive);
+            uow.IsActive.Should().BeTrue();
             await uow.CommitChangesAsync();
-            Assert.False(uow.IsActive);
+            uow.IsActive.Should().BeFalse();
         }
     }
 
@@ -67,7 +60,9 @@ public class UnitOfWork_CommitChangesAsync_Tests : IntegrationTestBase<Infrastru
     {
         var uow = _unitOfWorkManager.Begin();
         uow.Dispose();
-        async Task testCode() => await uow.CommitChangesAsync();
-        await Assert.ThrowsAsync<InvalidOperationException>(testCode);
+
+        await Awaiting(() => uow.CommitChangesAsync())
+                           .Should()
+                           .ThrowAsync<InvalidOperationException>();
     }
 }

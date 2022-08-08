@@ -1,23 +1,18 @@
-﻿using System;
-using System.Collections.Generic;
-using Fabricdot.Core.UniqueIdentifier.CombGuid;
-using FluentAssertions;
-using Xunit;
+﻿using Fabricdot.Core.UniqueIdentifier.CombGuid;
 
 namespace Fabricdot.Core.Tests.UniqueIdentifier;
 
-public class SafetyCombGuidTimestampProviderTests
+public class SafetyCombGuidTimestampProviderTests : TestFor<SafetyCombGuidTimestampProvider>
 {
     [Fact]
     public void GetTimestamp_ReturnUniqueTimestamp()
     {
-        var timestampList = new List<long>();
-        500.Times(_ =>
-        {
-            var timestamp = SafetyCombGuidTimestampProvider.Instance.GetTimestamp();
-            timestampList.Add(timestamp);
-        });
+        var timestamps = Enumerable.Range(1, 1000)
+                      .Select(_ => Sut.GetTimestamp())
+                      .ToArray();
 
-        timestampList.Should().OnlyHaveUniqueItems();
+        timestamps.Should().OnlyHaveUniqueItems();
     }
+
+    protected override SafetyCombGuidTimestampProvider CreateSut() => SafetyCombGuidTimestampProvider.Instance;
 }

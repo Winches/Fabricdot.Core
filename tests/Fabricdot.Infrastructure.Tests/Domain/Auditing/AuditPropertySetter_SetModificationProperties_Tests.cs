@@ -1,20 +1,16 @@
-﻿using System.Diagnostics.CodeAnalysis;
+﻿using Fabricdot.Domain.Entities;
 using Fabricdot.Domain.SharedKernel;
-using FluentAssertions;
-using Xunit;
 
 namespace Fabricdot.Infrastructure.Tests.Domain.Auditing;
 
-[SuppressMessage("ReSharper", "InconsistentNaming")]
 public class AuditPropertySetter_SetModificationProperties_Tests : AuditPropertySetterTestBase
 {
-    [Theory]
-    [MemberData(nameof(GetAuditObjects))]
-    public void SetModificationProperties_GivenIHasModificationTime_SetLastModificationTime(
-        FakeAuditObject targetObject)
+    [Fact]
+    public void SetModificationProperties_GivenIHasModificationTime_SetLastModificationTime()
     {
+        var targetObject = Create<FullAuditEntity<int>>();
         var low = SystemClock.Now;
-        AuditPropertySetter.SetModificationProperties(targetObject);
+        Sut.SetModificationProperties(targetObject);
         var high = SystemClock.Now;
 
         targetObject.LastModificationTime.Should()
@@ -22,20 +18,21 @@ public class AuditPropertySetter_SetModificationProperties_Tests : AuditProperty
                                          .BeOnOrBefore(high);
     }
 
-    [Theory]
-    [MemberData(nameof(GetAuditObjects))]
-    public void SetModificationProperties_GivenIHasModifierId_SetLastModifierId(FakeAuditObject targetObject)
+    [Fact]
+    public void SetModificationProperties_GivenIHasModifierId_SetLastModifierId()
     {
+        var targetObject = Create<FullAuditEntity<int>>();
         var expected = CurrentUser.Id;
-        AuditPropertySetter.SetModificationProperties(targetObject);
-        var actual = targetObject.LastModifierId;
-        Assert.Equal(expected, actual);
+        Sut.SetModificationProperties(targetObject);
+
+        targetObject.LastModifierId.Should().Be(expected);
     }
 
     [Theory]
-    [MemberData(nameof(GetNonAuditObjects))]
+    [InlineAutoData(null)]
+    [InlineAutoData]
     public void SetModificationProperties_GivenNonAuditedObject_DoNothing(object targetObject)
     {
-        AuditPropertySetter.SetModificationProperties(targetObject);
+        Sut.SetModificationProperties(targetObject);
     }
 }

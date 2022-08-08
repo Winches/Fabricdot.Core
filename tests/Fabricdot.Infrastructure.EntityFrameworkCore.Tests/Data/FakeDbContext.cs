@@ -1,5 +1,5 @@
 ﻿using System.Reflection;
-using Fabricdot.Infrastructure.EntityFrameworkCore.Tests.Entities;
+using Fabricdot.Test.Helpers.Domain.Aggregates.OrderAggregate;
 using JetBrains.Annotations;
 using Microsoft.EntityFrameworkCore;
 
@@ -7,15 +7,11 @@ namespace Fabricdot.Infrastructure.EntityFrameworkCore.Tests.Data;
 
 public class FakeDbContext : DbContextBase
 {
-    public DbSet<Author> Authors { get; set; }
+    public DbSet<Order> Orders => Set<Order>();
 
-    public DbSet<Book> Books { get; set; }
+    public DbSet<OrderLine> OrderLines => Set<OrderLine>();
 
-    public DbSet<BookTag> BookTags { get; set; }
-
-    public DbSet<BookContents> BookContents { get; set; }
-
-    public DbSet<Employee> Employees { get; set; }
+    public DbSet<OrderDetails> OrderDetails => Set<OrderDetails>();
 
     /// <inheritdoc />
     public FakeDbContext([NotNull] DbContextOptions<FakeDbContext> options) : base(options)

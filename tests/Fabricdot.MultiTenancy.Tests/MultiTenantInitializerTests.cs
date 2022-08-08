@@ -1,12 +1,10 @@
-﻿using System;
-using Fabricdot.Domain.Internal;
+﻿using Fabricdot.Domain.Internal;
 using Fabricdot.MultiTenancy.Abstractions;
-using Fabricdot.MultiTenancy.Tests.Entities;
-using Xunit;
+using Fabricdot.Test.Helpers.Domain.Aggregates.CustomerAggregate;
 
 namespace Fabricdot.MultiTenancy.Tests;
 
-public class MultiTenantInitializerTests
+public class MultiTenantInitializerTests : TestBase
 {
     private readonly ITenantAccessor _tenantAccessor;
 
@@ -16,26 +14,35 @@ public class MultiTenantInitializerTests
         EntityInitializer.Instance.Add<MultiTenantInitializer>();
     }
 
-    [Fact]
-    public void Construct_Entity_SetTenantId()
+    [AutoData]
+    [Theory]
+    internal void Construct_Entity_SetTenantId(TenantInfo tenant)
     {
-        var tenant1 = new TenantInfo(Guid.NewGuid(), "tenant1");
-        using var scope1 = _tenantAccessor.Change(tenant1);
-        var entity1 = new MultiTenantEmployee("name1");
-        Assert.Equal(tenant1.Id, entity1.TenantId);
-        using var scope2 = _tenantAccessor.Change(null);
-        var entity2 = new MultiTenantEmployee("name2");
-        Assert.Null(entity2.TenantId);
+        using (var scope1 = _tenantAccessor.Change(tenant))
+        {
+            var entity1 = Create<Customer>();
+
+            entity1.TenantId.Should().Be(tenant.Id);
+
+            using (var scope2 = _tenantAccessor.Change(null))
+            {
+                var entity2 = Create<Customer>();
+
+                entity2.TenantId.Should().BeNull();
+            }
+        }
     }
 
-    [Fact]
-    public void Construct_GivenTenantId_OverwriteTenantId()
+    [AutoData]
+    [Theory]
+    internal void Construct_GivenTenantId_OverwriteTenantId(
+        [Greedy] Customer entity,
+        TenantInfo tenant)
     {
-        var tenantId = Guid.NewGuid();
-        var tenant1 = new TenantInfo(Guid.NewGuid(), "tenant1");
-        using var scope1 = _tenantAccessor.Change(tenant1);
-        var entity = new MultiTenantEmployee("name1", tenantId);
-        Assert.Equal(tenantId, entity.TenantId);
-        Assert.NotEqual(tenant1.Id, entity.TenantId);
+        var tenantId = entity.TenantId.Value;
+        using var scope = _tenantAccessor.Change(tenant);
+
+        tenant.Id.Should().NotBe(tenantId);
+        entity.TenantId.Should().Be(tenantId);
     }
 }

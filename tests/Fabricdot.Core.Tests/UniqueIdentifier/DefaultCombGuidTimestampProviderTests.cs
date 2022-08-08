@@ -1,11 +1,8 @@
-﻿using System;
-using Fabricdot.Core.UniqueIdentifier;
-using FluentAssertions;
-using Xunit;
+﻿using Fabricdot.Core.UniqueIdentifier;
 
 namespace Fabricdot.Core.Tests.UniqueIdentifier;
 
-public class DefaultCombGuidTimestampProviderTests
+public class DefaultCombGuidTimestampProviderTests : TestFor<DefaultCombGuidTimestampProvider>
 {
     [Fact]
     public void GetTimestamp_ShouldReturnUtcTimestamp()
@@ -18,4 +15,6 @@ public class DefaultCombGuidTimestampProviderTests
                  .BeGreaterThanOrEqualTo(before).And
                  .BeLessThanOrEqualTo(after);
     }
+
+    protected override DefaultCombGuidTimestampProvider CreateSut() => DefaultCombGuidTimestampProvider.Instance;
 }

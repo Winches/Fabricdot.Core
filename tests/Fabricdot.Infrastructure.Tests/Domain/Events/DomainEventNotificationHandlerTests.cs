@@ -1,36 +1,33 @@
 ﻿using Fabricdot.Domain.Events;
 using Fabricdot.Infrastructure.Domain.Events;
-using Fabricdot.Testing;
+using Fabricdot.Test.Helpers.Domain.Aggregates.OrderAggregate;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
-using Xunit;
 
 namespace Fabricdot.Infrastructure.Tests.Domain.Events;
 
 public class DomainEventNotificationHandlerTests : IntegrationTestBase<InfrastructureTestModule>
 {
-    internal class EmployeeCreatedEventHandler1 : IDomainEventHandler<EntityCreatedEvent<Employee>>
+    internal class OrderCreatedEventHandler1 : IDomainEventHandler<EntityCreatedEvent<Order>>
     {
-        public static string FirstName { get; private set; }
+        public static IDomainEvent Event { get; private set; }
 
         /// <inheritdoc />
-        public Task HandleAsync(EntityCreatedEvent<Employee> domainEvent, CancellationToken cancellationToken)
+        public Task HandleAsync(EntityCreatedEvent<Order> domainEvent, CancellationToken cancellationToken)
         {
-            var employee = domainEvent.Entity;
-            FirstName = employee.FirstName;
+            Event = domainEvent;
             return Task.CompletedTask;
         }
     }
 
-    internal class EmployeeCreatedEventHandler2 : IDomainEventHandler<EntityCreatedEvent<Employee>>
+    internal class OrderCreatedEventHandler2 : IDomainEventHandler<EntityCreatedEvent<Order>>
     {
-        public static string LastName { get; private set; }
+        public static IDomainEvent Event { get; private set; }
 
         /// <inheritdoc />
-        public Task HandleAsync(EntityCreatedEvent<Employee> domainEvent, CancellationToken cancellationToken)
+        public Task HandleAsync(EntityCreatedEvent<Order> domainEvent, CancellationToken cancellationToken)
         {
-            var employee = domainEvent.Entity;
-            LastName = employee.LastName;
+            Event = domainEvent;
             return Task.CompletedTask;
         }
     }
@@ -46,19 +43,17 @@ public class DomainEventNotificationHandlerTests : IntegrationTestBase<Infrastru
     [Fact]
     public async Task Handle_SubscribeMultipleEventHandlers_TriggerAllHandlers()
     {
-        var employee = new Employee("Allen", "Yeager", "1");
-        var @event = new EntityCreatedEvent<Employee>(employee);
+        var @event = Create<EntityCreatedEvent<Order>>();
         await _notificationHandler.Handle(new DomainEventNotification(@event), default);
 
-        Assert.Equal(employee.FirstName, EmployeeCreatedEventHandler1.FirstName);
-        Assert.Equal(employee.LastName, EmployeeCreatedEventHandler2.LastName);
+        OrderCreatedEventHandler1.Event.Should().Be(@event);
+        OrderCreatedEventHandler2.Event.Should().Be(@event);
     }
 
     [Fact]
     public async Task Handle_NonSubscription_DoNothing()
     {
-        var employee = new Employee("Allen", "Yeager", "1");
-        var @event = new EntityRemovedEvent<Employee>(employee);
+        var @event = Create<EntityRemovedEvent<Order>>();
         await _notificationHandler.Handle(new DomainEventNotification(@event), default);
     }
 }

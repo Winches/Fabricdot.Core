@@ -1,8 +1,6 @@
-﻿using System;
-using Fabricdot.Infrastructure.Uow;
+﻿using Fabricdot.Infrastructure.Uow;
 using Fabricdot.Infrastructure.Uow.Abstractions;
 using Microsoft.AspNetCore.Mvc;
-using Xunit;
 
 namespace Fabricdot.WebApi.Tests.Uow;
 
@@ -22,8 +20,8 @@ public class FakeUnitOfWorkController : ControllerBase
     {
         var unitOfWork = _unitOfWorkManager.Available;
         AssertBegunUow(unitOfWork);
-        var isTransactional = unitOfWork.Options.IsTransactional;
-        Assert.False(isTransactional);
+
+        unitOfWork.Options.IsTransactional.Should().BeFalse();
 
         return "Success";
     }
@@ -34,8 +32,8 @@ public class FakeUnitOfWorkController : ControllerBase
     {
         var unitOfWork = _unitOfWorkManager.Available;
         AssertBegunUow(unitOfWork);
-        var isTransactional = unitOfWork.Options.IsTransactional;
-        Assert.True(isTransactional);
+
+        unitOfWork.Options.IsTransactional.Should().BeTrue();
 
         return "Success";
     }
@@ -44,8 +42,7 @@ public class FakeUnitOfWorkController : ControllerBase
     [UnitOfWork(IsDisabled = true)]
     public string GetWithoutUow()
     {
-        var unitOfWork = _unitOfWorkManager.Available;
-        Assert.Null(unitOfWork);
+        _unitOfWorkManager.Available.Should().BeNull();
 
         return "Success";
     }
@@ -55,8 +52,8 @@ public class FakeUnitOfWorkController : ControllerBase
     {
         var unitOfWork = _unitOfWorkManager.Available;
         AssertBegunUow(unitOfWork);
-        var isTransactional = unitOfWork.Options.IsTransactional;
-        Assert.True(isTransactional);
+
+        unitOfWork.Options.IsTransactional.Should().BeTrue();
     }
 
     [HttpPost("[action]")]
@@ -69,7 +66,7 @@ public class FakeUnitOfWorkController : ControllerBase
 
     private static void AssertBegunUow(IUnitOfWork unitOfWork)
     {
-        Assert.NotNull(unitOfWork);
-        Assert.True(unitOfWork.IsActive);
+        unitOfWork.Should().NotBeNull();
+        unitOfWork.IsActive.Should().BeTrue();
     }
 }

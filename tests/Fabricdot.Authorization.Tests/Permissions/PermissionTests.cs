@@ -1,85 +1,71 @@
-﻿using System;
-using System.Linq;
-using Fabricdot.Authorization.Permissions;
-using FluentAssertions;
-using Xunit;
+﻿using Fabricdot.Authorization.Permissions;
 
 namespace Fabricdot.Authorization.Tests.Permissions;
 
-public class PermissionTests
+public class PermissionTests : TestFor<Permission, PermissionCustomization>
 {
     [Fact]
     public void Constructor_GivenInput_Correctly()
     {
-        var permission1 = new Permission("name1", "name 1", null, null);
-        var permission2 = new Permission("name2", "name 2", null, new[]
+        var permission1 = new Permission(Create<PermissionName>(), Create<string>(), null, null);
+        var permission2 = new Permission(Create<PermissionName>(), Create<string>(), null, new[]
         {
             permission1
         });
 
         permission1.Children.Should().BeEmpty();
-        permission2.Children.Single().Should().Be(permission1);
+        permission2.Children.Should().ContainSingle(permission1);
     }
 
-    [InlineData(null)]
-    [InlineData("")]
-    [InlineData(" ")]
-    [Theory]
-    public void DisplyName_GivenInvalidInput_Throw(string dispalyName)
+    [Fact]
+    public void Constructor_GivenInvalidInput_Throw()
     {
-        FluentActions.Invoking(() => new Permission("name", dispalyName))
-                     .Should()
-                     .Throw<ArgumentException>();
+        var sut = typeof(Permission).GetConstructors();
+
+        Create<GuardClauseAssertion>().Verify(sut);
     }
 
     [Fact]
     public void Add_GivenInput_Correctly()
     {
-        var expected = new
-        {
-            Name = new PermissionName("name1.name2"),
-            DisplayName = "name 2",
-            Description = "description"
-        };
-        var permission = new Permission("name1", "name 1");
+        var expected = Create<Permission>();
 
-        var self = permission.Add(
+        var self = Sut.Add(
             expected.Name,
             expected.DisplayName,
             expected.Description);
 
-        self.Should().BeSameAs(permission);
-        self.Children.Single().Should().BeEquivalentTo(expected);
+        Sut.Should().BeSameAs(self);
+        Sut.Children.Should().ContainSingle(expected);
+    }
+
+    [AutoData]
+    [Theory]
+    public void Remove_GivenInput_Correctly(
+        PermissionName name,
+        string displayName)
+    {
+        Sut.Add(name, displayName);
+        Sut.Remove(name);
+
+        Sut.Children.Should().NotContain(v => v.Name == name);
     }
 
     [Fact]
-    public void Remove_GivenInput_Correctly()
+    public void Equality_Should_Correctly()
     {
-        var permission = new Permission("name1", "name 1");
-        var name = new PermissionName("name1.name2");
-        permission.Add(name, "name2");
-        permission.Remove(name);
+        var sut = typeof(Permission);
+        var permission = new Permission(Sut.Name, Create<string>());
 
-        permission.Children.Should().BeEmpty();
-    }
-
-    [Fact]
-    public void Equal_Should_ReturnCorrectly()
-    {
-        const string name = "name1";
-        var permission1 = new Permission(name, "name 1");
-        var permission2 = new Permission(name, "name 2");
-
-        permission1.Equals(null).Should().BeFalse();
-        permission1.Equals(permission2).Should().BeTrue();
+        Create<EqualityAssertion>().Verify(sut);
+        Sut.Should().BeEquivalentTo(permission);
     }
 
     [Fact]
     public void ToString_Should_ReturnCorrectly()
     {
-        var permission = new Permission("name1", "name 1");
-        var expected = $"Permission:{permission.Name}";
+        var expected = $"Permission:{Sut.Name}";
 
-        permission.ToString().Should().Be(expected);
+        Sut.ToString().Should().Be(expected);
     }
 }

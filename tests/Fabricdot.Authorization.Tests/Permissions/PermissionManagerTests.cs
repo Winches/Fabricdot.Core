@@ -1,56 +1,53 @@
-﻿using System;
-using System.Threading.Tasks;
-using Fabricdot.Authorization.Permissions;
-using FluentAssertions;
-using Xunit;
+﻿using Fabricdot.Authorization.Permissions;
 
 namespace Fabricdot.Authorization.Tests.Permissions;
 
-public class PermissionManagerTests
+public class PermissionManagerTests : TestFor<PermissionManager>
 {
-    protected IPermissionManager PermissionManager { get; } = new PermissionManager();
-
-    [Fact]
-    public async Task AddGroupAsync_GivenDuplicateGroup_Throw()
+    [AutoData]
+    [Theory]
+    public async Task AddGroupAsync_GivenDuplicateGroup_Throw(PermissionGroup group)
     {
-        var group = new PermissionGroup("group1", "group 1");
-        await PermissionManager.AddGroupAsync(group);
+        Task TestCode() => Sut.AddGroupAsync(group);
+        await TestCode();
 
-        await FluentActions.Awaiting(() => PermissionManager.AddGroupAsync(group))
+        await Awaiting(TestCode)
                            .Should()
                            .ThrowAsync<ArgumentException>();
     }
 
-    [Fact]
-    public async Task AddGroupAsync_GivenDuplicatePermission_Throw()
+    [AutoData]
+    [Theory]
+    public async Task AddGroupAsync_GivenDuplicatePermission_Throw(
+        PermissionGroup group1,
+        PermissionGroup group2,
+        string permission)
     {
-        const string name1 = "name1";
-        var group1 = new PermissionGroup("group1", "group 1");
-        group1.AddPermission(name1, nameof(name1));
-        var group2 = new PermissionGroup("group2", "group 2");
-        group2.AddPermission(name1, nameof(name1));
-        await PermissionManager.AddGroupAsync(group1);
+        group1.AddPermission(permission, nameof(permission));
+        group2.AddPermission(permission, nameof(permission));
+        await Sut.AddGroupAsync(group1);
 
-        await FluentActions.Awaiting(() => PermissionManager.AddGroupAsync(group2))
+        await Awaiting(() => Sut.AddGroupAsync(group2))
                            .Should()
                            .ThrowAsync<InvalidOperationException>();
     }
 
-    [Fact]
-    public async Task AddGroupAsync_GivenInput_AddPermissions()
+    [AutoData]
+    [Theory]
+    public async Task AddGroupAsync_GivenInput_AddPermissions(
+        string permission1,
+        string permission2,
+        PermissionGroup group)
     {
-        const string name1 = "name1";
-        const string name2 = "name1.name2";
-        var group = new PermissionGroup("group1", "group 1");
-        group.AddPermission(name1, nameof(name1))
-             .Add(name2, nameof(name2));
+        group.AddPermission(permission1, nameof(permission1))
+             .Add(permission2, nameof(permission2));
 
-        await PermissionManager.AddGroupAsync(group);
-        var permissionGroups = await PermissionManager.ListGroupsAsync();
-        var permissions = await PermissionManager.ListAsync();
+        await Sut.AddGroupAsync(group);
+        var permissionGroups = await Sut.ListGroupsAsync();
+        var permissions = await Sut.ListAsync();
 
         permissionGroups.Should().Contain(group);
-        permissions.Should().ContainSingle(v => v.Name == name1);
-        permissions.Should().ContainSingle(v => v.Name == name2);
+        permissions.Should().ContainSingle(v => v.Name == permission1);
+        permissions.Should().ContainSingle(v => v.Name == permission2);
     }
 }
