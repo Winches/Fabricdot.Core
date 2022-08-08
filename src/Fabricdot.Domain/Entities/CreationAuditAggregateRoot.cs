@@ -6,8 +6,8 @@ namespace Fabricdot.Domain.Entities;
 public abstract class CreationAuditAggregateRoot<TKey> : AggregateRoot<TKey>, ICreationAuditEntity where TKey : notnull
 {
     /// <inheritdoc />
-    public DateTime CreationTime { get; protected set; }
+    public virtual DateTime CreationTime { get; protected set; }
 
     /// <inheritdoc />
-    public string? CreatorId { get; protected set; }
+    public virtual string? CreatorId { get; protected set; }
 }

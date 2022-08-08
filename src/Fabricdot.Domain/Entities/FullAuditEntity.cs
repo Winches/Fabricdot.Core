@@ -6,11 +6,11 @@ namespace Fabricdot.Domain.Entities;
 public abstract class FullAuditEntity<TKey> : AuditEntity<TKey>, IHasDeleterId, IHasDeletionTime where TKey : notnull
 {
     /// <inheritdoc />
-    public bool IsDeleted { get; protected set; }
+    public virtual bool IsDeleted { get; protected set; }
 
     /// <inheritdoc />
-    public string? DeleterId { get; protected set; }
+    public virtual string? DeleterId { get; protected set; }
 
     /// <inheritdoc />
-    public DateTime? DeletionTime { get; protected set; }
+    public virtual DateTime? DeletionTime { get; protected set; }
 }
