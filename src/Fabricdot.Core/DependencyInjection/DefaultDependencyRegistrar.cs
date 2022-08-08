@@ -53,7 +53,7 @@ public class DefaultDependencyRegistrar : IDependencyRegistrar
     protected virtual bool CanRegister(Type typeToRegister)
     {
         return typeToRegister?.IsNonAbstractClass(false) == true
-               && !typeToRegister.IsDefined(typeof(IgnoreDependencyAttribute), true);
+               && !typeToRegister.IsDefined(typeof(IgnoreDependencyAttribute), false);
     }
 
     protected virtual ICollection<Type> GetServiceTypes(Type implementationType)

@@ -21,10 +21,15 @@ public class DomainDependencyRegistrar : DefaultDependencyRegistrar
         return (typeToRegister.IsAssignableTo(DomainServiceType)
                 || typeToRegister.IsAssignableTo(RepositoryType)
                 || typeToRegister.IsAssignableToGenericType(DomainEventHanlderType))
+               && !typeToRegister.IsGenericType
                && base.CanRegister(typeToRegister);
     }
 
-    protected override ServiceLifetime? GetDefaultLifetime(Type type) => ServiceLifetime.Transient;
+    protected override ServiceLifetime? GetDefaultLifetime(Type type)
+    {
+        // TODO:Intereceptor is not working when respository services is scoped.
+        return type.IsAssignableTo(RepositoryType) ? ServiceLifetime.Transient : ServiceLifetime.Transient;
+    }
 
     protected override ICollection<Type> GetServiceTypes(Type implementationType)
     {
@@ -45,7 +50,11 @@ public class DomainDependencyRegistrar : DefaultDependencyRegistrar
         // Repository
         if (implementationType.IsAssignableTo(RepositoryType))
         {
-            return types.Where(v => v != RepositoryType).ToArray();
+            var ret = types.Where(v => v != RepositoryType).ToList();
+            var readonlyRepoType = implementationType.GetInterfaces()
+                                                     .Single(v => v.IsGenericType && v.GetGenericTypeDefinition() == typeof(IReadOnlyRepository<,>));
+            ret.AddIfNotContains(readonlyRepoType);
+            return ret;
         }
 
         throw new InvalidOperationException("Invalid domain type.");
