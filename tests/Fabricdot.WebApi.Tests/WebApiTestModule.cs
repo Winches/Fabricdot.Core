@@ -2,7 +2,6 @@
 using Fabricdot.Core.Boot;
 using Fabricdot.Core.Modularity;
 using Fabricdot.Infrastructure;
-using Fabricdot.WebApi.Configuration;
 using Fabricdot.WebApi.Tracing;
 using Fabricdot.WebApi.Uow;
 using Microsoft.AspNetCore.Builder;
@@ -19,7 +18,7 @@ public class WebApiTestModule : ModuleBase
     {
         var services = context.Services;
 
-        services.AddControllers(opts => opts.AddActionFilters());
+        services.AddControllers();
     }
 
     public override Task OnStartingAsync(ApplicationStartingContext context)
