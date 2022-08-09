@@ -1,5 +1,7 @@
 using System;
 using System.Collections.Generic;
+using System.Collections.Immutable;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Ardalis.GuardClauses;
@@ -74,9 +76,26 @@ public class UnitOfWorkFacade : IUnitOfWorkFacade, ISupportSaveChanges
 
     public virtual async Task SaveChangesAsync(CancellationToken cancellationToken)
     {
-        foreach (var database in Databases)
-            if (database is ISupportSaveChanges supportSaveChanges)
-                await supportSaveChanges.SaveChangesAsync(cancellationToken);
+        var visited = await SaveAsync();
+        // TODO: Consider handle domain events inside uow.
+        // Domain event handler may add new database.
+        while (Databases.Except(visited).Any())
+        {
+            visited = await SaveAsync();
+        }
+
+        async Task<ICollection<IDatabaseFacade>> SaveAsync()
+        {
+            var databases = Databases.ToList();
+            foreach (var database in databases)
+            {
+                if (database is ISupportSaveChanges supportSaveChanges)
+                {
+                    await supportSaveChanges.SaveChangesAsync(cancellationToken);
+                }
+            }
+            return databases;
+        }
     }
 
     public virtual async Task CommitAsync(CancellationToken cancellationToken)

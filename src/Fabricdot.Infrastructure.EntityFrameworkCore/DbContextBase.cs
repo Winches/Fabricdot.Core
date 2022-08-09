@@ -61,7 +61,7 @@ public abstract class DbContextBase : DbContext
                                         .ToArray();
         await DomainEventPublisher.PublishAsync(domainEntities, cancellationToken);
 
-        foreach (var entry in ChangeTracker.Entries())
+        foreach (var entry in ChangeTracker.Entries().ToList())
             await HandleEntityEntryAsync(entry, cancellationToken);
     }
 
