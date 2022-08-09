@@ -35,6 +35,16 @@ public class SingleValueObjectTests : TestFor<Money>
         Create<EqualityAssertion>().Verify(sut);
     }
 
+    [InlineAutoData]
+    [InlineAutoData(null)]
+    [Theory]
+    public void CompareTo_Should_Correctly(Money money)
+    {
+        var expected = Sut.Value.CompareTo(money?.Value);
+
+        Sut.CompareTo(money).Should().Be(expected);
+    }
+
     [Fact]
     public void CompareTo_GivenDifferentType_Throw()
     {
