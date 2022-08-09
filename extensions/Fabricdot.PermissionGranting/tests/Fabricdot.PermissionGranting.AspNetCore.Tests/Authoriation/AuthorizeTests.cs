@@ -1,34 +1,27 @@
 ﻿using System.Net;
-using System.Net.Http;
-using System.Threading.Tasks;
 using Fabricdot.PermissionGranting.Tests;
-using FluentAssertions;
-using Xunit;
 
 namespace Fabricdot.PermissionGranting.AspNetCore.Tests.Authoriation;
 
-public class AuthorizationTests : IClassFixture<WebAppFactory<PermissionGrantingAspNetCoreTestModule>>
+public class AuthorizationTests : WebApplicationTestBase<PermissionGrantingAspNetCoreTestModule>
 {
-    private readonly WebAppFactory<PermissionGrantingAspNetCoreTestModule> _applicationFactory;
-    private readonly HttpClient _httpClient;
-
-    public AuthorizationTests(WebAppFactory<PermissionGrantingAspNetCoreTestModule> applicationFactory)
+    public AuthorizationTests(TestWebApplicationFactory<PermissionGrantingAspNetCoreTestModule> webAppFactory) : base(webAppFactory)
     {
-        _applicationFactory = applicationFactory;
-        _httpClient = _applicationFactory.CreateClient();
     }
 
     [Fact]
     public async Task RequestApi_WithoutPermission_Forbidden()
     {
-        var httpResponseMessage = await _httpClient.GetAsync("/api/foo/shouldberejected");
-        httpResponseMessage.StatusCode.Should().Be(HttpStatusCode.Forbidden);
+        var httpResponseMessage = await HttpClient.GetAsync("/api/foo/shouldberejected");
+
+        httpResponseMessage.Should().HaveStatusCode(HttpStatusCode.Forbidden);
     }
 
     [Fact]
     public async Task RequestApi_WithPermission_Successful()
     {
-        var httpResponseMessage = await _httpClient.GetAsync("/api/foo/shouldbeallowed");
-        httpResponseMessage.StatusCode.Should().Be(HttpStatusCode.OK);
+        var httpResponseMessage = await HttpClient.GetAsync("/api/foo/shouldbeallowed");
+
+        httpResponseMessage.Should().HaveStatusCode(HttpStatusCode.OK);
     }
 }

@@ -1,11 +1,6 @@
-﻿using System;
-using System.Linq;
-using System.Threading.Tasks;
-using Fabricdot.Authorization;
+﻿using Fabricdot.Authorization;
 using Fabricdot.PermissionGranting.Tests.Data;
-using FluentAssertions;
 using Microsoft.Extensions.DependencyInjection;
-using Xunit;
 
 namespace Fabricdot.PermissionGranting.Tests.Domain;
 
@@ -18,25 +13,24 @@ public class PermissionGrantingServiceTests : PermissionGrantingTestBase
         PermissionGrantingService = ServiceProvider.GetRequiredService<IPermissionGrantingService>();
     }
 
-    [Fact]
-    public async Task IsGrantedAsync_GivenInvalidInput_Throw()
+    [AutoData]
+    [Theory]
+    public async Task IsGrantedAsync_GivenInvalidInput_Throw(GrantSubject subject)
     {
-        var subject = new GrantSubject("type", "a");
-
-        await FluentActions.Awaiting(() => PermissionGrantingService.IsGrantedAsync(subject, null))
+        await Awaiting(() => PermissionGrantingService.IsGrantedAsync(subject, null))
                            .Should()
                            .ThrowAsync<ArgumentNullException>();
-        await FluentActions.Awaiting(() => PermissionGrantingService.IsGrantedAsync(subject, Array.Empty<string>()))
+        await Awaiting(() => PermissionGrantingService.IsGrantedAsync(subject, Array.Empty<string>()))
                            .Should()
                            .ThrowAsync<ArgumentException>();
     }
 
-    [Fact]
-    public async Task IsGrantedAsync_GivenInput_ReturnCorrectly()
+    [AutoData]
+    [Theory]
+    public async Task IsGrantedAsync_GivenInput_ReturnCorrectly(string[] ungrantedObjects)
     {
         var subject = FakeDataBuilder.Subject;
         var grantedObjects = FakeDataBuilder.GrantedObjects;
-        var ungrantedObjects = new[] { "ungranted1", "ungranted2" };
         var objects = grantedObjects.Union(ungrantedObjects).ToArray();
         var grantResults = await PermissionGrantingService.IsGrantedAsync(subject, objects);
 

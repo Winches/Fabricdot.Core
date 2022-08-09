@@ -1,31 +1,27 @@
-﻿using System;
-using Fabricdot.Authorization;
+﻿using Fabricdot.Authorization;
 using Fabricdot.PermissionGranting.Domain;
-using FluentAssertions;
-using Xunit;
 
 namespace Fabricdot.PermissionGranting.Tests.Domain;
 
-public class GrantedPermissionTests
+public class GrantedPermissionTests : TestBase
 {
-    [InlineData(null)]
-    [InlineData("")]
-    [InlineData(" ")]
-    [Theory]
-    public void Constructor_GivenInvalidObject_Throw(string @object)
+    [Fact]
+    public void Constructor_GivenInvalidObject_Throw()
     {
-        FluentActions.Invoking(() => new GrantedPermission(Guid.NewGuid(), new GrantSubject("type", "a"), @object))
-                     .Should()
-                     .Throw<ArgumentException>();
+        var sut = typeof(GrantedPermission).GetConstructors();
+
+        Create<GuardClauseAssertion>().Verify(sut);
     }
 
-    [Fact]
-    public void Constructor_GivenInput_Correctly()
+    [AutoData]
+    [Theory]
+    public void Constructor_GivenInput_Correctly(
+        Guid tenantId,
+        Guid id,
+        GrantSubject subject,
+        string @object)
     {
-        var tenantId = Guid.Empty;
-        var subject = new GrantSubject("type", "a");
-        const string @object = "object1";
-        var grantedPermission = new GrantedPermission(tenantId, Guid.NewGuid(), subject, @object);
+        var grantedPermission = new GrantedPermission(tenantId, id, subject, @object);
         var expected = new
         {
             TenantId = tenantId,

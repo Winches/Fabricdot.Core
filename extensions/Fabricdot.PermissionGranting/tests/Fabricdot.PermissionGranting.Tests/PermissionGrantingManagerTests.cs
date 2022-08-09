@@ -1,11 +1,7 @@
-﻿using System.Linq;
-using System.Security.Claims;
-using System.Threading.Tasks;
+﻿using System.Security.Claims;
 using Fabricdot.PermissionGranting.Domain;
 using Fabricdot.PermissionGranting.Tests.Data;
-using FluentAssertions;
 using Microsoft.Extensions.DependencyInjection;
-using Xunit;
 
 namespace Fabricdot.PermissionGranting.Tests;
 
@@ -21,11 +17,11 @@ public class PermissionGrantingManagerTests : PermissionGrantingTestBase
         GrantedPermissionRepository = ServiceProvider.GetRequiredService<IGrantedPermissionRepository>();
     }
 
-    [Fact]
-    public async Task GrantAsync_GivenInput_Correctly()
+    [AutoData]
+    [Theory]
+    public async Task GrantAsync_GivenInput_Correctly(string @object)
     {
         var subject = FakeDataBuilder.Subject;
-        const string @object = "newobject";
         await PermissionGrantingManager.GrantAsync(subject, @object);
         var isGranted = await GrantedPermissionRepository.AnyAsync(subject, @object);
 
@@ -43,11 +39,11 @@ public class PermissionGrantingManagerTests : PermissionGrantingTestBase
         grantedPermissions.Should().ContainSingle(v => v.Object == @object);
     }
 
-    [Fact]
-    public async Task RevokeAsync_GivenUngrantedObject_Ignore()
+    [AutoData]
+    [Theory]
+    public async Task RevokeAsync_GivenUngrantedObject_Ignore(string @object)
     {
         var subject = FakeDataBuilder.Subject;
-        const string @object = "ungranted";
 
         var isGranted = await GrantedPermissionRepository.AnyAsync(subject, @object);
         isGranted.Should().BeFalse();
@@ -66,11 +62,12 @@ public class PermissionGrantingManagerTests : PermissionGrantingTestBase
         isGranted.Should().BeFalse();
     }
 
-    [Fact]
-    public async Task SetAsync_GivenInput_Correctly()
+    [AutoData]
+    [Theory]
+    public async Task SetAsync_GivenInput_Correctly(string @object)
     {
         var subject = FakeDataBuilder.Subject;
-        var objects = new[] { FakeDataBuilder.GrantedObjects[0], "object3" };
+        var objects = new[] { FakeDataBuilder.GrantedObjects[0], @object };
 
         await PermissionGrantingManager.SetAsync(subject, objects);
         var grantedPermissions = await GrantedPermissionRepository.ListAsync(subject);

@@ -3,7 +3,6 @@ using System.Diagnostics;
 using Fabricdot.Core.Modularity;
 using Fabricdot.Infrastructure.Data;
 using Fabricdot.PermissionGranting.Tests.Data;
-using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Storage;
@@ -18,12 +17,13 @@ public class PermissionGrantingTestModule : ModuleBase
     public override void ConfigureServices(ConfigureServiceContext context)
     {
         var services = context.Services;
-        const string connectionString = "Filename=:memory:";
+        var dbconnection = InMemoryDatabaseHelper.CreateConnection();
+        CreateInMemoryDatabase(dbconnection);
+
         services.Configure<DbConnectionOptions>(options =>
         {
-            options.ConnectionStrings.Default = connectionString;
+            options.ConnectionStrings.Default = dbconnection.ConnectionString;
         });
-        var dbconnection = CreateInMemoryDatabase(connectionString);
         services.AddEfDbContext<FakeDbContext>((_, opts) =>
         {
             opts.UseSqlite(dbconnection);
@@ -33,10 +33,8 @@ public class PermissionGrantingTestModule : ModuleBase
         services.AddPermissionGrantingStore<FakeDbContext>();
     }
 
-    private static DbConnection CreateInMemoryDatabase(string connectionString)
+    private static DbConnection CreateInMemoryDatabase(DbConnection connection)
     {
-        var connection = new SqliteConnection(connectionString);
-        connection.Open();
         using (var db = new FakeDbContext(new DbContextOptionsBuilder<FakeDbContext>().UseSqlite(connection).Options))
         {
             db.Database.GetService<IRelationalDatabaseCreator>().CreateTables();

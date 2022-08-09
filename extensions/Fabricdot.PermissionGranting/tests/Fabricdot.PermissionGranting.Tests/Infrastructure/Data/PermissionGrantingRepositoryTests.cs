@@ -1,11 +1,7 @@
-﻿using System.Linq;
-using System.Threading.Tasks;
-using Fabricdot.Authorization;
+﻿using Fabricdot.Authorization;
 using Fabricdot.PermissionGranting.Domain;
 using Fabricdot.PermissionGranting.Tests.Data;
-using FluentAssertions;
 using Microsoft.Extensions.DependencyInjection;
-using Xunit;
 
 namespace Fabricdot.PermissionGranting.Tests.Infrastructure.Data;
 
@@ -54,10 +50,10 @@ public class GrantedPermissionRepositoryTests : PermissionGrantingTestBase
                           .BeEquivalentTo(FakeDataBuilder.GrantedObjects);
     }
 
-    [Fact]
-    public async Task ListAsync_GivenSubjectWithObjects_ReturnCorrectly()
+    [AutoData]
+    [Theory]
+    public async Task ListAsync_GivenSubjectWithObjects_ReturnCorrectly(string[] ungrantedObjects)
     {
-        var ungrantedObjects = new[] { "ungranted1", "ungranted2" };
         var grantedObjects = FakeDataBuilder.GrantedObjects;
         var objects = grantedObjects.Union(ungrantedObjects).ToArray();
         var grantedPermissions = await GrantedPermissionRepository.ListAsync(FakeDataBuilder.Subject, objects);
@@ -66,10 +62,11 @@ public class GrantedPermissionRepositoryTests : PermissionGrantingTestBase
         grantedPermissions.Should().NotContain(v => ungrantedObjects.Contains(v.Object));
     }
 
-    [Fact]
-    public async Task ListAsync_GivenSubjects_ReturnCorrectly()
+    [AutoData]
+    [Theory]
+    public async Task ListAsync_GivenSubjects_ReturnCorrectly(List<GrantSubject> subjects)
     {
-        var subjects = new[] { FakeDataBuilder.Subject, new GrantSubject("type", "value") };
+        subjects.Add(FakeDataBuilder.Subject);
         var grantedPermissions = await GrantedPermissionRepository.ListAsync(subjects);
 
         grantedPermissions.Select(v => v.Object)

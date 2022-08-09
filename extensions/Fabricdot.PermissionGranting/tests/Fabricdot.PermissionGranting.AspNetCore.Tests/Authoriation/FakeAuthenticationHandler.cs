@@ -1,6 +1,5 @@
 ﻿using System.Security.Claims;
 using System.Text.Encodings.Web;
-using System.Threading.Tasks;
 using Fabricdot.PermissionGranting.Tests.Data;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.Extensions.Logging;
