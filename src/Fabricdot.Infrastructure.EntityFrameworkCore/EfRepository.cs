@@ -2,8 +2,10 @@
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Ardalis.GuardClauses;
 using Ardalis.Specification;
 using Ardalis.Specification.EntityFrameworkCore;
+using Fabricdot.Core.DependencyInjection;
 using Fabricdot.Domain.Entities;
 using Fabricdot.Domain.Services;
 using Fabricdot.Infrastructure.Uow.Abstractions;
@@ -11,8 +13,11 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Fabricdot.Infrastructure.EntityFrameworkCore;
 
-public class EfRepository<TDbContext, T, TKey> : RepositoryBase<T, TKey>, IUnitOfWorkManagerAccessor where TDbContext : DbContext
-where T : class, IAggregateRoot, Fabricdot.Domain.Entities.IEntity<TKey> where TKey : notnull
+[IgnoreDependency]
+public class EfRepository<TDbContext, T, TKey> : RepositoryBase<T, TKey>, IUnitOfWorkManagerAccessor
+    where TDbContext : DbContext
+    where T : class, IAggregateRoot, Fabricdot.Domain.Entities.IEntity<TKey>
+    where TKey : notnull
 {
     protected readonly ISpecificationEvaluator SpecificationEvaluator = new SpecificationEvaluator();
     protected readonly IDbContextProvider<TDbContext> DbContextProvider;
@@ -29,6 +34,8 @@ where T : class, IAggregateRoot, Fabricdot.Domain.Entities.IEntity<TKey> where T
         T entity,
         CancellationToken cancellationToken = default)
     {
+        Guard.Against.Null(entity, nameof(entity));
+
         var context = await GetDbContextAsync(cancellationToken);
         await context.AddAsync(entity, cancellationToken);
         return entity;
@@ -39,6 +46,8 @@ where T : class, IAggregateRoot, Fabricdot.Domain.Entities.IEntity<TKey> where T
         T entity,
         CancellationToken cancellationToken = default)
     {
+        Guard.Against.Null(entity, nameof(entity));
+
         var context = await GetDbContextAsync(cancellationToken);
         context.Remove(entity);
     }
@@ -49,6 +58,8 @@ where T : class, IAggregateRoot, Fabricdot.Domain.Entities.IEntity<TKey> where T
         CancellationToken cancellationToken = default)
     {
         // Id of GUID type will become binary parameter when use MySql.Data driver https://stackoverflow.com/questions/65503169/entity-framework-core-generate-wrong-guid-parameter-with-mysql
+        Guard.Against.Null(id, nameof(id));
+
         var queryable = await GetQueryableAsync(cancellationToken: cancellationToken);
         return await queryable.SingleOrDefaultAsync(v => v.Id.Equals(id), cancellationToken);
     }
@@ -58,6 +69,8 @@ where T : class, IAggregateRoot, Fabricdot.Domain.Entities.IEntity<TKey> where T
         ISpecification<T> specification,
         CancellationToken cancellationToken = default)
     {
+        Guard.Against.Null(specification, nameof(specification));
+
         var queryable = await GetQueryableAsync(specification, cancellationToken: cancellationToken);
         return await queryable.SingleOrDefaultAsync(cancellationToken);
     }
@@ -75,6 +88,8 @@ where T : class, IAggregateRoot, Fabricdot.Domain.Entities.IEntity<TKey> where T
         ISpecification<T> specification,
         CancellationToken cancellationToken = default)
     {
+        Guard.Against.Null(specification, nameof(specification));
+
         var queryable = await GetQueryableAsync(specification, cancellationToken: cancellationToken);
         return await queryable.ToListAsync(cancellationToken);
     }
@@ -84,6 +99,8 @@ where T : class, IAggregateRoot, Fabricdot.Domain.Entities.IEntity<TKey> where T
         T entity,
         CancellationToken cancellationToken = default)
     {
+        Guard.Against.Null(entity, nameof(entity));
+
         var context = await GetDbContextAsync(cancellationToken);
         context.Entry(entity).State = EntityState.Modified;
     }
@@ -100,6 +117,8 @@ where T : class, IAggregateRoot, Fabricdot.Domain.Entities.IEntity<TKey> where T
         ISpecification<T> specification,
         CancellationToken cancellationToken = default)
     {
+        Guard.Against.Null(specification, nameof(specification));
+
         var queryable = await GetQueryableAsync(specification, true, cancellationToken);
         return await queryable.CountAsync(cancellationToken);
     }

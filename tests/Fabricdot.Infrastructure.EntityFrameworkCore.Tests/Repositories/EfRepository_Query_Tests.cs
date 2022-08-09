@@ -27,6 +27,14 @@ public class EfRepository_Query_Tests : EntityFrameworkCoreTestsBase
     }
 
     [Fact]
+    public async Task GetByIdAsync_GivenNull_Throw()
+    {
+        await Awaiting(() => _customerRepository.GetByIdAsync(null))
+                           .Should()
+                           .ThrowAsync<ArgumentNullException>();
+    }
+
+    [Fact]
     public async Task GetByIdAsync_GivenSoftDeletedId_ReturnNull()
     {
         var actual = await _orderRepository.GetByIdAsync(FakeDataBuilder.DeletedOrderId);
@@ -47,6 +55,14 @@ public class EfRepository_Query_Tests : EntityFrameworkCoreTestsBase
     }
 
     [Fact]
+    public async Task GetBySpecAsync_GivenNull_Throw()
+    {
+        await Awaiting(() => _orderRepository.GetBySpecAsync(null))
+                           .Should()
+                           .ThrowAsync<ArgumentNullException>();
+    }
+
+    [Fact]
     public async Task GetBySpecAsync_GivenSoftDeletedSpec_ReturnNull()
     {
         var specification = new OrderWithDetailsSpecification(FakeDataBuilder.DeletedOrderId);
@@ -64,6 +80,14 @@ public class EfRepository_Query_Tests : EntityFrameworkCoreTestsBase
         var actual = await _orderRepository.ListAsync(specification);
 
         actual.Should().ContainSingle(expected);
+    }
+
+    [Fact]
+    public async Task ListAsync_GivenNull_Throw()
+    {
+        await Awaiting(() => _orderRepository.ListAsync(null))
+                           .Should()
+                           .ThrowAsync<ArgumentNullException>();
     }
 
     [Fact]
