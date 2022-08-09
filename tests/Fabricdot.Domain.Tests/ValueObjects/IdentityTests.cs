@@ -4,7 +4,7 @@ namespace Fabricdot.Domain.Tests.ValueObjects;
 
 public class IdentityTests : TestBase
 {
-    public class GuidIdentity : Identity<Guid>
+    public class GuidIdentity : Identity
     {
         public GuidIdentity(Guid value) : base(value)
         {
@@ -28,16 +28,36 @@ public class IdentityTests : TestBase
     [Fact]
     public void Equality_Should_Correctly()
     {
-        var sut = typeof(Identity<Guid>);
+        var sut = typeof(Identity);
 
         Create<EqualityAssertion>().Verify(sut);
+    }
+
+    [InlineData(typeof(GuidIdentity))]
+    [InlineData(typeof(StringIdenttiy))]
+    [InlineData(typeof(LongIdenttiy))]
+    [Theory]
+    public void Constructor_Should_Correctly(Type type)
+    {
+        var sut = type.GetConstructors();
+
+        Create<GuardClauseAssertion>().Verify(sut);
     }
 
     [Fact]
     public void Constructor_GivenInput_SetMember()
     {
-        var sut = typeof(Identity<Guid>).GetConstructors();
+        var sut = typeof(Identity).GetConstructors();
 
         Create<ConstructorInitializedMemberAssertion>().Verify(sut);
+    }
+
+    [AutoMockData]
+    [Theory]
+    public void ToString_Should_Correctly(Identity sut)
+    {
+        var expected = sut.Value.ToString();
+
+        sut.ToString().Should().Be(expected);
     }
 }

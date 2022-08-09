@@ -56,6 +56,13 @@ public class EnumerationTests : TestFor<OrderStatus>
         Sut.CompareTo(status).Should().Be(expected);
     }
 
+    [Fact]
+    public void CompareTo_GivenDifferentType_Throw()
+    {
+        Invoking(() => Sut.CompareTo(Create<object>())).Should()
+                                                       .Throw<ArgumentException>();
+    }
+
     [AutoData]
     [Theory]
     public void AbsoluteDifference_GivenInstance_ReturnAbsoluteValue(OrderStatus status)

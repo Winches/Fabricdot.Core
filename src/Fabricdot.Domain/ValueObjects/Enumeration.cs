@@ -83,9 +83,14 @@ public abstract class Enumeration : IComparable
         return Value.GetHashCode();
     }
 
-    public virtual int CompareTo(object? other)
+    public virtual int CompareTo(object? obj)
     {
-        return Value.CompareTo(other.As<Enumeration>()?.Value ?? 0);
+        if (obj is null)
+            return 1;
+
+        return obj is Enumeration other
+            ? Value.CompareTo(other.Value)
+            : throw new ArgumentException($"Cannot compare '{GetType().PrettyPrint()}' and '{obj.GetType().PrettyPrint()}'");
     }
 
     private static T Parse<T, TK>(

@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using Ardalis.GuardClauses;
 
 namespace Fabricdot.Domain.ValueObjects;
 
@@ -8,7 +7,7 @@ public abstract class SingleValueObject<T> : ValueObject, ISingleValueObject, IC
 {
     private static readonly Type _type = typeof(T);
 
-    public T Value { get; protected set; }
+    public virtual T Value { get; protected set; }
 
     protected SingleValueObject(T value)
     {
@@ -23,11 +22,12 @@ public abstract class SingleValueObject<T> : ValueObject, ISingleValueObject, IC
 
     public int CompareTo(object? obj)
     {
-        Guard.Against.Null(obj, nameof(obj));
+        if (obj is null)
+            return 1;
 
         return obj is SingleValueObject<T> other
             ? Value.CompareTo(other.Value)
-            : throw new ArgumentException($"Cannot compare '{_type.PrettyPrint()}' and '{obj.GetType().PrettyPrint()}'");
+            : throw new ArgumentException($"Cannot compare '{GetType().PrettyPrint()}' and '{obj.GetType().PrettyPrint()}'");
     }
 
     /// <inheritdoc />
@@ -35,4 +35,6 @@ public abstract class SingleValueObject<T> : ValueObject, ISingleValueObject, IC
     {
         yield return Value;
     }
+
+    public override string? ToString() => Value.ToString();
 }

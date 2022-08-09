@@ -8,7 +8,7 @@ using Fabricdot.Domain.SharedKernel;
 
 namespace Fabricdot.Domain.ValueObjects;
 
-public abstract class ValueObject : IEquatable<ValueObject>
+public abstract class ValueObject
 {
     private static readonly ConcurrentDictionary<Type, IReadOnlyCollection<PropertyInfo>> _properties = new();
 
@@ -28,19 +28,7 @@ public abstract class ValueObject : IEquatable<ValueObject>
             return false;
 
         var other = (ValueObject)obj;
-        using var thisValues = GetAtomicValues().GetEnumerator();
-        using var otherValues = other.GetAtomicValues().GetEnumerator();
-
-        while (thisValues.MoveNext() && otherValues.MoveNext())
-        {
-            if (thisValues.Current is null ^ otherValues.Current is null)
-                return false;
-
-            if (thisValues.Current?.Equals(otherValues.Current) == false)
-                return false;
-        }
-
-        return !thisValues.MoveNext() && !otherValues.MoveNext();
+        return GetAtomicValues().SequenceEqual(other.GetAtomicValues());
     }
 
     public override int GetHashCode()
@@ -49,14 +37,9 @@ public abstract class ValueObject : IEquatable<ValueObject>
                                 .Aggregate((x, y) => x ^ y);
     }
 
-    public override string ToString()
+    public override string? ToString()
     {
         return $"{{{GetProperties().Select(v => $"{v.Name}: {v.GetValue(this)}").JoinAsString(',')}}}";
-    }
-
-    public virtual bool Equals(ValueObject? other)
-    {
-        return Equals((object?)other);
     }
 
     protected virtual IEnumerable<PropertyInfo> GetProperties()
