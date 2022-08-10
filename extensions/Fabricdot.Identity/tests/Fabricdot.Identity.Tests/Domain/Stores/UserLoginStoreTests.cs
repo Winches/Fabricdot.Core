@@ -1,10 +1,7 @@
-﻿using System;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using Fabricdot.Identity.Domain.Entities.UserAggregate;
 using Fabricdot.Identity.Tests.Entities;
 using Fabricdot.Infrastructure.EntityFrameworkCore.Tests.Data;
 using Microsoft.AspNetCore.Identity;
-using Xunit;
 
 namespace Fabricdot.Identity.Tests.Domain.Stores;
 
@@ -23,23 +20,26 @@ public class UserLoginStoreTests : UserStoreTestBase
         await UseUowAsync(async () =>
         {
             var user = await UserRepository.GetDetailsByIdAsync(FakeDataBuilder.UserAndersId);
-            Task TestCode() => _userLoginStore.AddLoginAsync(user, null, default);
-            await Assert.ThrowsAsync<ArgumentNullException>(TestCode);
+
+            await _userLoginStore.Awaiting(v => v.AddLoginAsync(user, null, default))
+                                 .Should()
+                                 .ThrowAsync<ArgumentNullException>();
         });
     }
 
-    [Fact]
-    public async Task AddLoginAsync_GivenLogin_Correctly()
+    [AutoData]
+    [Theory]
+    public async Task AddLoginAsync_GivenLogin_Correctly(UserLoginInfo loginInfo)
     {
         await UseUowAsync(async () =>
         {
             var user = await UserRepository.GetDetailsByIdAsync(FakeDataBuilder.UserAndersId);
-            var login = new UserLoginInfo("provider1", "key1", "name1");
             await _userLoginStore.AddLoginAsync(
                 user,
-                login,
+                loginInfo,
                 default);
-            Assert.Contains(user.Logins, v => v.LoginProvider == login.LoginProvider && v.ProviderKey == login.ProviderKey);
+
+            user.Logins.Should().ContainEquivalentOf(loginInfo, opts => opts.ExcludingMissingMembers());
         });
     }
 
@@ -49,25 +49,29 @@ public class UserLoginStoreTests : UserStoreTestBase
         await UseUowAsync(async () =>
         {
             var user = await UserRepository.GetDetailsByIdAsync(FakeDataBuilder.UserAndersId);
-            var login = user.Logins.First();
+            var loginInfo = user.Logins.First();
             await _userLoginStore.RemoveLoginAsync(
                 user,
-                login.LoginProvider,
-                login.ProviderKey,
+                loginInfo.LoginProvider,
+                loginInfo.ProviderKey,
                 default);
 
-            Assert.DoesNotContain(user.Logins, v => v.LoginProvider == login.LoginProvider && v.ProviderKey == login.ProviderKey);
+            user.Logins.Should().NotContainEquivalentOf(loginInfo, opts => opts.ExcludingMissingMembers());
         });
     }
 
     [Fact]
-    public async Task GetLoginsAsync_ReturnCorrectly()
+    public async Task GetLoginsAsync_Should_ReturnCorrectly()
     {
         await UseUowAsync(async () =>
         {
             var user = await UserRepository.GetDetailsByIdAsync(FakeDataBuilder.UserAndersId);
+            var expected = user.Logins;
             var logins = await _userLoginStore.GetLoginsAsync(user, default);
-            Assert.Contains(logins, v => user.Logins.Any(o => o.LoginProvider == v.LoginProvider && o.ProviderKey == v.ProviderKey));
+
+            logins.Should().BeEquivalentTo(
+                expected,
+                opts => opts.ComparingByMembers<IdentityUserLogin>().ExcludingMissingMembers());
         });
     }
 
@@ -80,7 +84,7 @@ public class UserLoginStoreTests : UserStoreTestBase
             login.ProviderKey,
             default);
 
-        Assert.NotNull(user);
-        Assert.Equal(FakeDataBuilder.UserAndersId, user.Id);
+        user.Should().NotBeNull();
+        user.Id.Should().Be(FakeDataBuilder.UserAndersId);
     }
 }

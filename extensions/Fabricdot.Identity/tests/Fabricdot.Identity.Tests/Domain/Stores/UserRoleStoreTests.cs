@@ -1,9 +1,6 @@
-﻿using System;
-using System.Threading.Tasks;
-using Fabricdot.Identity.Tests.Entities;
+﻿using Fabricdot.Identity.Tests.Entities;
 using Fabricdot.Infrastructure.EntityFrameworkCore.Tests.Data;
 using Microsoft.AspNetCore.Identity;
-using Xunit;
 
 namespace Fabricdot.Identity.Tests.Domain.Stores;
 
@@ -16,13 +13,13 @@ public class UserRoleStoreTests : UserStoreTestBase
         _userRoleStore = (IUserRoleStore<User>)UserStore;
     }
 
-    [Fact]
-    public async Task AddToRoleAsync_GivenNotExistsRole_ThrowException()
+    [AutoData]
+    [Theory]
+    public async Task AddToRoleAsync_GivenNotExistsRole_ThrowException(string roleName)
     {
         var user = await UserRepository.GetDetailsByIdAsync(FakeDataBuilder.UserAndersId);
-        Task testCode() => _userRoleStore.AddToRoleAsync(user, "RoleNotExist", default);
 
-        await Assert.ThrowsAsync<InvalidOperationException>(testCode);
+        await _userRoleStore.Awaiting(v => v.AddToRoleAsync(user, roleName, default)).Should().ThrowAsync<InvalidOperationException>();
     }
 
     [Fact]
@@ -30,13 +27,13 @@ public class UserRoleStoreTests : UserStoreTestBase
     {
         await UseUowAsync(async () =>
         {
-            var roleId = FakeDataBuilder.Role1IdOfAnders;
-            var roleName = LookupNormalizer.NormalizeName(FakeDataBuilder.Role1NameOfAnders);
+            var roleId = FakeDataBuilder.RoleIdOfAnders;
+            var roleName = LookupNormalizer.NormalizeName(FakeDataBuilder.RoleNameOfAnders);
             var user = await UserRepository.GetDetailsByIdAsync(FakeDataBuilder.UserAndersId);
 
-            Assert.Contains(user.Roles, v => v.RoleId == roleId);
+            user.Roles.Should().ContainSingle(v => v.RoleId == roleId);
             await _userRoleStore.AddToRoleAsync(user, roleName, default);
-            Assert.Single(user.Roles, v => v.RoleId == roleId);
+            user.Roles.Should().ContainSingle(v => v.RoleId == roleId);
         });
     }
 
@@ -49,9 +46,9 @@ public class UserRoleStoreTests : UserStoreTestBase
             var roleName = LookupNormalizer.NormalizeName(FakeDataBuilder.RoleAuthor);
             var user = await UserRepository.GetDetailsByIdAsync(FakeDataBuilder.UserAndersId);
 
-            Assert.DoesNotContain(user.Roles, v => v.RoleId == roleId);
+            user.Roles.Should().NotContain(v => v.RoleId == roleId);
             await _userRoleStore.AddToRoleAsync(user, roleName, default);
-            Assert.Single(user.Roles, v => v.RoleId == roleId);
+            user.Roles.Should().ContainSingle(v => v.RoleId == roleId);
         });
     }
 
@@ -60,23 +57,27 @@ public class UserRoleStoreTests : UserStoreTestBase
     {
         await UseUowAsync(async () =>
         {
-            var roleId = FakeDataBuilder.Role1IdOfAnders;
-            var roleName = LookupNormalizer.NormalizeName(FakeDataBuilder.Role1NameOfAnders);
+            var roleId = FakeDataBuilder.RoleIdOfAnders;
+            var roleName = LookupNormalizer.NormalizeName(FakeDataBuilder.RoleNameOfAnders);
             var user = await UserRepository.GetDetailsByIdAsync(FakeDataBuilder.UserAndersId);
 
-            Assert.Contains(user.Roles, v => v.RoleId == roleId);
+            user.Roles.Should().ContainSingle(v => v.RoleId == roleId);
             await _userRoleStore.RemoveFromRoleAsync(user, roleName, default);
-            Assert.DoesNotContain(user.Roles, v => v.RoleId == roleId);
+            user.Roles.Should().NotContain(v => v.RoleId == roleId);
         });
     }
 
-    [Fact]
-    public async Task RemoveFromRoleAsync_GivenUnincludedRole_DoNothing()
+    [AutoData]
+    [Theory]
+    public async Task RemoveFromRoleAsync_GivenUnincludedRole_DoNothing(string roleName)
     {
         await UseUowAsync(async () =>
         {
             var user = await UserRepository.GetDetailsByIdAsync(FakeDataBuilder.UserAndersId);
-            await _userRoleStore.RemoveFromRoleAsync(user, "RoleNotExist", default);
+
+            await _userRoleStore.Awaiting(v => v.RemoveFromRoleAsync(user, roleName, default))
+                                .Should()
+                                .NotThrowAsync();
         });
     }
 
@@ -85,14 +86,14 @@ public class UserRoleStoreTests : UserStoreTestBase
     {
         await UseUowAsync(async () =>
         {
-            var roleId = FakeDataBuilder.Role1IdOfAnders;
-            var roleName = LookupNormalizer.NormalizeName(FakeDataBuilder.Role1NameOfAnders);
+            var roleId = FakeDataBuilder.RoleIdOfAnders;
+            var roleName = LookupNormalizer.NormalizeName(FakeDataBuilder.RoleNameOfAnders);
             var user = await UserRepository.GetDetailsByIdAsync(FakeDataBuilder.UserAndersId);
 
-            Assert.Contains(user.Roles, v => v.RoleId == FakeDataBuilder.Role1IdOfAnders);
-            Assert.True(await _userRoleStore.IsInRoleAsync(user, roleName, default));
-            Assert.False(await _userRoleStore.IsInRoleAsync(user, FakeDataBuilder.RoleAuthor, default));
-            Assert.False(await _userRoleStore.IsInRoleAsync(user, "RoleNotExist", default));
+            user.Roles.Should().ContainSingle(v => v.RoleId == roleId);
+            (await _userRoleStore.IsInRoleAsync(user, roleName, default)).Should().BeTrue();
+            (await _userRoleStore.IsInRoleAsync(user, FakeDataBuilder.RoleAuthor, default)).Should().BeFalse();
+            (await _userRoleStore.IsInRoleAsync(user, Create<string>(), default)).Should().BeFalse();
         });
     }
 
@@ -101,14 +102,16 @@ public class UserRoleStoreTests : UserStoreTestBase
     {
         var user = await UserRepository.GetDetailsByIdAsync(FakeDataBuilder.UserAndersId);
         var roleNames = await _userRoleStore.GetRolesAsync(user, default);
-        Assert.Contains(FakeDataBuilder.Role1NameOfAnders, roleNames);
+
+        roleNames.Should().Contain(FakeDataBuilder.RoleNameOfAnders);
     }
 
     [Fact]
     public async Task GetUsersInRoleAsync_ReturnCorrectly()
     {
-        var roleName = LookupNormalizer.NormalizeName(FakeDataBuilder.Role1NameOfAnders);
+        var roleName = LookupNormalizer.NormalizeName(FakeDataBuilder.RoleNameOfAnders);
         var users = await _userRoleStore.GetUsersInRoleAsync(roleName, default);
-        Assert.Contains(users, v => v.Id == FakeDataBuilder.UserAndersId);
+
+        users.Should().Contain(v => v.Id == FakeDataBuilder.UserAndersId);
     }
 }

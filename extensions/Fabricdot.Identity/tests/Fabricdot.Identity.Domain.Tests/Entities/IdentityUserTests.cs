@@ -1,41 +1,45 @@
-﻿using System;
+﻿using AutoFixture.Kernel;
 using Fabricdot.Identity.Domain.Entities.UserAggregate;
-using Xunit;
 
 namespace Fabricdot.Identity.Domain.Tests.Entities;
 
-public class IdentityUserTests
+public class IdentityUserTests : TestFor<IdentityUser>
 {
+    public IdentityUserTests()
+    {
+        Fixture.Customize<IdentityUser>(v => v.FromFactory(new MethodInvoker(new GreedyConstructorQuery())));
+    }
+
     [Fact]
     public void Constructor_GivenUserName_TrimWhiteSpace()
     {
-        const string userName = " name1 ";
-        var user = new IdentityUser(Guid.NewGuid(), userName);
-        Assert.Equal(userName.Trim(), user.UserName);
+        var expected = Sut.UserName;
+
+        Sut.UserName.Trim().Should().Be(expected);
     }
 
     [Fact]
     public void Constructor_GivenUserName_NormalizeUserName()
     {
-        const string userName = "name1";
-        var user = new IdentityUser(Guid.NewGuid(), userName);
-        Assert.Equal(userName.Normalize().ToUpperInvariant(), user.NormalizedUserName);
+        var expected = Sut.NormalizedUserName;
+
+        Sut.UserName.Normalize().ToUpperInvariant().Should().Be(expected);
     }
 
     [Fact]
     public void Constructor_GivenEmail_TrimWhiteSpace()
     {
-        const string email = " qwe@banana.com ";
-        var user = new IdentityUser(Guid.NewGuid(), "name1", email);
-        Assert.Equal(email.Trim(), user.Email);
+        var expected = Sut.Email;
+
+        Sut.Email.Trim().Should().Be(expected);
     }
 
     [Fact]
     public void Constructor_GivenEmail_NormalizeEmail()
     {
-        const string email = "qwe@banana.com";
-        var user = new IdentityUser(Guid.NewGuid(), "name1", email);
-        Assert.Equal(email.Normalize().ToUpperInvariant(), user.NormalizedEmail);
+        var expected = Sut.NormalizedEmail;
+
+        Sut.Email.Normalize().ToUpperInvariant().Should().Be(expected);
     }
 
     [InlineData(null)]
@@ -44,7 +48,7 @@ public class IdentityUserTests
     [Theory]
     public void Constructor_GivenInvalidUserName_ThrowException(string userName)
     {
-        Assert.ThrowsAny<Exception>(() => new IdentityUser(Guid.NewGuid(), userName));
+        Invoking(() => new IdentityUser(Create<Guid>(), userName)).Should().Throw<ArgumentException>();
     }
 
     [InlineData(null)]
@@ -53,28 +57,31 @@ public class IdentityUserTests
     [Theory]
     public void Constructor_GivenInvalidEmail_ThrowException(string email)
     {
-        Assert.ThrowsAny<Exception>(() => new IdentityUser(Guid.NewGuid(), "name1", email));
+        Invoking(() => new IdentityUser(Create<Guid>(), Create<string>(), email)).Should().Throw<ArgumentException>();
     }
 
     [Fact]
-    public void Enable_UserIsActive()
+    public void Enable_Should_Active()
     {
-        var user = new IdentityUser(Guid.NewGuid(), "name1")
-        {
-            IsActive = false
-        };
-        user.Enable();
-        Assert.True(user.IsActive);
+        Sut.Enable();
+
+        Sut.IsActive.Should().BeTrue();
     }
 
     [Fact]
-    public void Disable_UserIsInActive()
+    public void Disable_Should_InActive()
     {
-        var user = new IdentityUser(Guid.NewGuid(), "name1")
-        {
-            IsActive = true
-        };
-        user.Disable();
-        Assert.False(user.IsActive);
+        Sut.Disable();
+
+        Sut.IsActive.Should().BeFalse();
+    }
+
+    [Fact]
+    public void ClearRoles_Should_Correctly()
+    {
+        Sut.AddRole(Create<Guid>());
+        Sut.ClearRoles();
+
+        Sut.Roles.Should().BeEmpty();
     }
 }

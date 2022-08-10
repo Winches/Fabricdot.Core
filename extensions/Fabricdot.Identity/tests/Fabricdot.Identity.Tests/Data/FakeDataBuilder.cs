@@ -1,6 +1,4 @@
-﻿using System;
-using System.Security.Claims;
-using System.Threading.Tasks;
+﻿using System.Security.Claims;
 using Fabricdot.Core.DependencyInjection;
 using Fabricdot.Identity.Domain.Repositories;
 using Fabricdot.Identity.Tests.Entities;
@@ -15,8 +13,8 @@ public class FakeDataBuilder
 {
     public static readonly string UserAnders = "Anders";
     public static readonly Guid UserAndersId = new("edbaafdb-6665-4941-9fbf-ca1140fa80f0");
-    public static readonly string Role1NameOfAnders = "role1";
-    public static readonly Guid Role1IdOfAnders = new("6ca5767c-c692-4479-af60-765442aacb6d");
+    public static readonly string RoleNameOfAnders = "role1";
+    public static readonly Guid RoleIdOfAnders = new("6ca5767c-c692-4479-af60-765442aacb6d");
     public static readonly Claim ClaimOfAnders = new("claimtype1", "value1");
     public static readonly UserLoginInfo LoginOfAnders = new("microsoft", "1", "microsoft login");
 
@@ -25,14 +23,16 @@ public class FakeDataBuilder
 
     public static readonly Guid TenantId = new("b87393db-1784-4dc8-aa45-3370fb04b36b");
     public static readonly Guid TenantUserId = new("284f0139-ab9c-4ecc-a44a-d99e3f6faa80");
-
+    private readonly IFixture _fixture;
     private readonly IUserRepository<User> _userRepository;
     private readonly IRoleRepository<Role> _roleRepository;
 
     public FakeDataBuilder(
+        IFixture fixture,
         IUserRepository<User> userRepository,
         IRoleRepository<Role> roleRepository)
     {
+        _fixture = fixture;
         _userRepository = userRepository;
         _roleRepository = roleRepository;
     }
@@ -55,7 +55,7 @@ public class FakeDataBuilder
             },
             new User(TenantUserId, "name2", "qwe2@banana.com",tenantId:TenantId),
         };
-        users[0].AddRole(Role1IdOfAnders);
+        users[0].AddRole(RoleIdOfAnders);
         users[0].AddClaim(
             Guid.NewGuid(),
             ClaimOfAnders.Type,
@@ -67,7 +67,7 @@ public class FakeDataBuilder
         users[0].AddOrUpdateToken(
             LoginOfAnders.LoginProvider,
             "Authentication",
-            Guid.NewGuid().ToString("N"));
+            _fixture.Create<string>());
 
         foreach (var user in users)
             await _userRepository.AddAsync(user);
@@ -79,11 +79,16 @@ public class FakeDataBuilder
         var roles = new[]
         {
             new Role(RoleAuthorId, RoleAuthor),
-            new Role(Role1IdOfAnders, Role1NameOfAnders),
-            new Role(Guid.NewGuid(), "role3"),
+            new Role(RoleIdOfAnders, RoleNameOfAnders),
+            _fixture.Create<Role>()
         };
-        roles[0].AddClaim(Guid.NewGuid(), "claimType1", "value1");
-        foreach (var user in roles)
-            await _roleRepository.AddAsync(user);
+        foreach (var role in roles)
+        {
+            role.AddClaim(
+                _fixture.Create<Guid>(),
+                _fixture.Create<string>(),
+                _fixture.Create<string>());
+            await _roleRepository.AddAsync(role);
+        }
     }
 }

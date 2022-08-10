@@ -1,42 +1,45 @@
-﻿using System.Threading.Tasks;
-using Xunit;
+﻿using Fabricdot.Identity.Domain.Entities.UserAggregate;
 
 namespace Fabricdot.Identity.Domain.Tests.Stores;
 
 public class UserPhoneNumberStoreTests : UserStoreTestsBase
 {
-    [Fact]
-    public async Task GetPhoneNumberAsync_ReturnCorrectly()
+    public UserPhoneNumberStoreTests()
     {
-        var user = EntityBuilder.NewUserWithPhoneNumber();
-        var phoneNumber = await UserStore.GetPhoneNumberAsync(user, default);
-
-        Assert.Equal(user.PhoneNumber, phoneNumber);
+        Fixture.Customize<IdentityUser>(opts => opts.Do(v => v.ChangePhoneNumber(Create<string>(), Create<bool>())));
     }
 
-    [InlineData(true)]
-    [InlineData(false)]
-    [Theory]
-    public async Task GetPhoneNumberConfirmedAsync_ReturnCorrectly(bool isConfirmed)
+    [Fact]
+    public async Task GetPhoneNumberAsync_Should_ReturnCorrectly()
     {
-        var user = EntityBuilder.NewUserWithPhoneNumber(phoneNumberConfirmed: isConfirmed);
-        var phoneNumberConfirmed = await UserStore.GetPhoneNumberConfirmedAsync(user, default);
+        var user = Create<IdentityUser>();
+        var expected = user.PhoneNumber;
+        var phoneNumber = await Sut.GetPhoneNumberAsync(user, default);
 
-        Assert.Equal(isConfirmed, phoneNumberConfirmed);
+        phoneNumber.Should().Be(expected);
+    }
+
+    [Fact]
+    public async Task GetPhoneNumberConfirmedAsync_Should_ReturnCorrectly()
+    {
+        var user = Create<IdentityUser>();
+        var expected = user.PhoneNumberConfirmed;
+        var phoneNumberConfirmed = await Sut.GetPhoneNumberConfirmedAsync(user, default);
+
+        phoneNumberConfirmed.Should().Be(expected);
     }
 
     [InlineData(null)]
-    [InlineData("10000000000")]
-    [InlineData(" 10000000000 ")]
+    [InlineAutoData]
     [Theory]
     public async Task SetPhoneNumberAsync_GivenInput_Correctly(string phoneNumber)
     {
-        var user = EntityBuilder.NewUserWithPhoneNumber();
+        var user = Create<IdentityUser>();
         var confirmed = user.PhoneNumberConfirmed;
-        await UserStore.SetPhoneNumberAsync(user, phoneNumber, default);
+        await Sut.SetPhoneNumberAsync(user, phoneNumber is null ? null : $" {phoneNumber} ", default);
 
-        Assert.Equal(phoneNumber?.Trim(), user.PhoneNumber);
-        Assert.Equal(confirmed, user.PhoneNumberConfirmed);
+        user.PhoneNumber.Should().Be(phoneNumber);
+        user.PhoneNumberConfirmed.Should().Be(confirmed);
     }
 
     [InlineData(true)]
@@ -44,9 +47,9 @@ public class UserPhoneNumberStoreTests : UserStoreTestsBase
     [Theory]
     public async Task SetPhoneNumberConfirmedAsync_GivenInput_Correctly(bool isConfirmed)
     {
-        var user = EntityBuilder.NewUserWithPhoneNumber();
-        await UserStore.SetPhoneNumberConfirmedAsync(user, isConfirmed, default);
+        var user = Create<IdentityUser>();
+        await Sut.SetPhoneNumberConfirmedAsync(user, isConfirmed, default);
 
-        Assert.Equal(isConfirmed, user.PhoneNumberConfirmed);
+        user.PhoneNumberConfirmed.Should().Be(isConfirmed);
     }
 }

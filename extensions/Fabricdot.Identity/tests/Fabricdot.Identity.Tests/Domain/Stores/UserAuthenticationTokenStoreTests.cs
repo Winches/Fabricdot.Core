@@ -1,10 +1,6 @@
-﻿using System;
-using System.Linq;
-using System.Threading.Tasks;
-using Fabricdot.Identity.Tests.Entities;
+﻿using Fabricdot.Identity.Tests.Entities;
 using Fabricdot.Infrastructure.EntityFrameworkCore.Tests.Data;
 using Microsoft.AspNetCore.Identity;
-using Xunit;
 
 namespace Fabricdot.Identity.Tests.Domain.Stores;
 
@@ -17,43 +13,46 @@ public class UserAuthenticationTokenStoreTests : UserStoreTestBase
         _userAuthenticationTokenStore = (IUserAuthenticationTokenStore<User>)UserStore;
     }
 
-    [Fact]
-    public async Task SetTokenAsync_GivenNewToken_AddToken()
+    [AutoData]
+    [Theory]
+    public async Task SetTokenAsync_GivenNewToken_AddToken(
+        string loginProvider,
+        string tokenName,
+        string tokenValue)
     {
         await UseUowAsync(async () =>
         {
             var user = await UserRepository.GetDetailsByIdAsync(FakeDataBuilder.UserAndersId);
-            const string loginProvider = "NewProvider";
-            const string tokenName = "name1";
             await _userAuthenticationTokenStore.SetTokenAsync(
                 user,
                 loginProvider,
                 tokenName,
-                "1",
+                tokenValue,
                 default);
 
-            Assert.NotNull(user.FindToken(loginProvider, tokenName));
+            user.FindToken(loginProvider, tokenName).Should().NotBeNull();
         });
     }
 
-    [Fact]
-    public async Task SetTokenAsync_GivenExistedToken_UpdateToken()
+    [AutoData]
+    [Theory]
+    public async Task SetTokenAsync_GivenExistedToken_UpdateToken(string tokenValue)
     {
         await UseUowAsync(async () =>
         {
             var user = await UserRepository.GetDetailsByIdAsync(FakeDataBuilder.UserAndersId);
             var token = user.Tokens.First();
-            var tokenValue = Guid.NewGuid().ToString("N");
             await _userAuthenticationTokenStore.SetTokenAsync(
                 user,
                 token.LoginProvider,
                 token.Name,
                 tokenValue,
                 default);
+
             token = user.FindToken(token.LoginProvider, token.Name);
 
-            Assert.NotNull(token);
-            Assert.Equal(tokenValue, token.Value);
+            token.Should().NotBeNull();
+            token.Value.Should().Be(tokenValue);
         });
     }
 
@@ -69,9 +68,8 @@ public class UserAuthenticationTokenStoreTests : UserStoreTestBase
                 token.LoginProvider,
                 token.Name,
                 default);
-            var removedToken = user.FindToken(token.LoginProvider, token.Name);
 
-            Assert.Null(removedToken);
+            user.FindToken(token.LoginProvider, token.Name).Should().BeNull();
         });
     }
 
@@ -88,7 +86,7 @@ public class UserAuthenticationTokenStoreTests : UserStoreTestBase
                 token.Name,
                 default);
 
-            Assert.Equal(token.Value, tokenValue);
+            token.Value.Should().Be(tokenValue);
         });
     }
 }

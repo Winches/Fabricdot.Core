@@ -1,8 +1,5 @@
-﻿using System;
-using System.Threading.Tasks;
-using Fabricdot.Identity.Tests.Entities;
+﻿using Fabricdot.Identity.Tests.Entities;
 using Fabricdot.Infrastructure.EntityFrameworkCore.Tests.Data;
-using Xunit;
 
 namespace Fabricdot.Identity.Tests.Domain.Stores;
 
@@ -11,45 +8,42 @@ public class UserStoreTests : UserStoreTestBase
     [Fact]
     public async Task CreateAsync_GivenNull_ThrownException()
     {
-        Task TestCode() => UserStore.CreateAsync(null, default);
-        await Assert.ThrowsAsync<ArgumentNullException>(TestCode);
+        await UserStore.Awaiting(v => v.CreateAsync(null, default)).Should().ThrowAsync<ArgumentNullException>();
     }
 
-    [Fact]
-    public async Task CreateAsync_GivenUser_Correctly()
+    [AutoData]
+    [Theory]
+    public async Task CreateAsync_GivenUser_Correctly(User user)
     {
-        var user = new User(Guid.NewGuid(), "James");
         var res = await UserStore.CreateAsync(user, default);
         var retrievalUser = await UserRepository.GetByIdAsync(user.Id);
 
-        Assert.True(res.Succeeded);
-        Assert.NotNull(retrievalUser);
+        res.Succeeded.Should().BeTrue();
+        retrievalUser.Should().NotBeNull();
     }
 
     [Fact]
     public async Task UpdateAsync_GivenNull_ThrownException()
     {
-        Task TestCode() => UserStore.UpdateAsync(null, default);
-        await Assert.ThrowsAsync<ArgumentNullException>(TestCode);
+        await UserStore.Awaiting(v => v.UpdateAsync(null, default)).Should().ThrowAsync<ArgumentNullException>();
     }
 
-    [Fact]
-    public async Task UpdateAsync_GivenUser_Correctly()
+    [AutoData]
+    [Theory]
+    public async Task UpdateAsync_GivenUser_Correctly(string givenName)
     {
         var user = await UserRepository.GetDetailsByIdAsync(FakeDataBuilder.UserAndersId);
-        const string givenName = "Anders1";
         user.GivenName = givenName;
         var res = await UserStore.UpdateAsync(user, default);
 
-        Assert.True(res.Succeeded);
-        Assert.Equal(givenName, user.GivenName);
+        res.Succeeded.Should().BeTrue();
+        user.GivenName.Should().Be(givenName);
     }
 
     [Fact]
     public async Task DeleteAsync_GivenNull_ThrownException()
     {
-        Task TestCode() => UserStore.DeleteAsync(null, default);
-        await Assert.ThrowsAsync<ArgumentNullException>(TestCode);
+        await UserStore.Awaiting(v => v.DeleteAsync(null, default)).Should().ThrowAsync<ArgumentNullException>();
     }
 
     [Fact]
@@ -59,8 +53,8 @@ public class UserStoreTests : UserStoreTestBase
         var res = await UserStore.DeleteAsync(user, default);
         var retrievalUser = await UserRepository.GetByIdAsync(user.Id);
 
-        Assert.True(res.Succeeded);
-        Assert.Null(retrievalUser);
+        res.Succeeded.Should().BeTrue();
+        retrievalUser.Should().BeNull();
     }
 
     [Fact]
@@ -69,9 +63,9 @@ public class UserStoreTests : UserStoreTestBase
         var userId = FakeDataBuilder.UserAndersId;
         var user = await UserStore.FindByIdAsync(userId.ToString(), default);
 
-        Assert.NotNull(user);
-        Assert.Equal(userId, user.Id);
-        Assert.NotEmpty(user.Roles);
+        user.Should().NotBeNull();
+        user.Id.Should().Be(userId);
+        user.Roles.Should().NotBeEmpty();
     }
 
     [Fact]
@@ -80,8 +74,8 @@ public class UserStoreTests : UserStoreTestBase
         var normalizedUserName = LookupNormalizer.NormalizeName(FakeDataBuilder.UserAnders);
         var user = await UserStore.FindByNameAsync(normalizedUserName, default);
 
-        Assert.NotNull(user);
-        Assert.Equal(normalizedUserName, user.NormalizedUserName);
-        Assert.NotEmpty(user.Roles);
+        user.Should().NotBeNull();
+        user.NormalizedUserName.Should().Be(normalizedUserName);
+        user.Roles.Should().NotBeEmpty();
     }
 }

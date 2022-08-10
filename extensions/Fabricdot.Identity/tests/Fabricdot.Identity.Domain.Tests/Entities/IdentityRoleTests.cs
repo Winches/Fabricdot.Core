@@ -1,26 +1,25 @@
-﻿using System;
-using System.Linq;
+﻿using System.Security.Claims;
 using Fabricdot.Identity.Domain.Entities.RoleAggregate;
-using Xunit;
 
 namespace Fabricdot.Identity.Domain.Tests.Entities;
 
-public class IdentityRoleTests
+public class IdentityRoleTests : TestFor<IdentityRole>
 {
-    [Fact]
-    public void Constructor_GivenName_TrimWhiteSpace()
+    [AutoData]
+    [Theory]
+    public void Constructor_GivenName_TrimWhiteSpace(string roleName)
     {
-        const string roleName = " Administrator ";
-        var role = new IdentityRole(Guid.NewGuid(), roleName);
-        Assert.Equal(roleName.Trim(), role.Name);
+        var role = new IdentityRole(Guid.NewGuid(), $" {roleName} ");
+
+        role.Name.Should().Be(roleName);
     }
 
     [Fact]
     public void Constructor_GivenName_NormalizeName()
     {
-        const string roleName = "Administrator";
-        var role = new IdentityRole(Guid.NewGuid(), roleName);
-        Assert.Equal(roleName.Normalize().ToUpperInvariant(), role.NormalizedName);
+        var expected = Sut.NormalizedName;
+
+        Sut.Name.Normalize().ToUpperInvariant().Should().Be(expected);
     }
 
     [InlineData(null)]
@@ -29,34 +28,29 @@ public class IdentityRoleTests
     [Theory]
     public void Constructor_GivenInvalidName_ThrowException(string roleName)
     {
-        Assert.ThrowsAny<Exception>(() => new IdentityRole(Guid.NewGuid(), roleName));
+        Invoking(() => new IdentityRole(Guid.NewGuid(), roleName)).Should().Throw<ArgumentException>();
     }
 
-    [Fact]
-    public void AddClaim_GivenInput_Correctly()
+    [AutoMockData]
+    [Theory]
+    public void AddClaim_GivenInput_Correctly(Claim claim)
     {
-        var role = new IdentityRole(Guid.NewGuid(), "Administrator");
-        const string claimType = "claimType1";
-        const string claimValue = "claimValue1";
-        role.AddClaim(Guid.NewGuid(), claimType, claimValue);
-        var claim = role.Claims.Single();
+        Sut.AddClaim(Create<Guid>(), claim.Type, claim.Value);
 
-        Assert.Equal(claimType, claim.ClaimType);
-        Assert.Equal(claimValue, claim.ClaimValue);
+        Sut.Claims.Should().ContainSingle(v => v.ClaimType == claim.Type && v.ClaimValue == claim.Value);
     }
 
-    [Fact]
-    public void RemoveClaim_GivenInput_Correctly()
+    [AutoData]
+    [Theory]
+    public void RemoveClaim_GivenInput_Correctly(string claimType, string[] claimValues)
     {
-        var role = new IdentityRole(Guid.NewGuid(), "Administrator");
-        const string claimType = "claimType1";
-        const string claimValue1 = "claimValue1";
-        const string claimValue2 = "claimValue2";
-        role.AddClaim(Guid.NewGuid(), claimType, claimValue1);
-        role.AddClaim(Guid.NewGuid(), claimType, claimValue2);
-        role.RemoveClaim(claimType, claimValue1);
+        var claimValue1 = claimValues[0];
+        var claimValue2 = claimValues[^1];
+        Sut.AddClaim(base.Create<Guid>(), claimType, claimValue1);
+        Sut.AddClaim(Create<Guid>(), claimType, claimValue2);
+        Sut.RemoveClaim(claimType, claimValue2);
 
-        Assert.DoesNotContain(role.Claims, v => v.ClaimType == claimType && v.ClaimValue == claimValue1);
-        Assert.Contains(role.Claims, v => v.ClaimType == claimType && v.ClaimValue == claimValue2);
+        Sut.Claims.Should().Contain(v => v.ClaimType == claimType && v.ClaimValue == claimValue1);
+        Sut.Claims.Should().NotContain(v => v.ClaimType == claimType && v.ClaimValue == claimValue2);
     }
 }

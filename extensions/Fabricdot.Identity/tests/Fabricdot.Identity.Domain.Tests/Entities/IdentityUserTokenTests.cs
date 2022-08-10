@@ -1,10 +1,8 @@
-﻿using System;
-using Fabricdot.Identity.Domain.Entities.UserAggregate;
-using Xunit;
+﻿using Fabricdot.Identity.Domain.Entities.UserAggregate;
 
 namespace Fabricdot.Identity.Domain.Tests.Entities;
 
-public class IdentityUserTokenTests
+public class IdentityUserTokenTests : TestFor<IdentityUserToken>
 {
     [InlineData("provider1", "")]
     [InlineData("provider2", null)]
@@ -15,18 +13,19 @@ public class IdentityUserTokenTests
         string loginProvider,
         string tokeName)
     {
-        Assert.ThrowsAny<Exception>(() => new IdentityUserToken(loginProvider, tokeName, null));
+        Invoking(() => new IdentityUserToken(loginProvider, tokeName, null)).Should().Throw<ArgumentException>();
     }
 
-    [Fact]
-    public void ChangeValue_GivenInput_CloneInstance()
+    [AutoData]
+    [Theory]
+    public void ChangeValue_GivenInput_CloneInstance(string value)
     {
-        var token = new IdentityUserToken("provider1", "name1", "value1");
-        var newToken1 = token.ChangeValue(token.Value);
-        var newToken2 = token.ChangeValue("value2");
+        var newToken1 = Sut.ChangeValue(Sut.Value);
+        var newToken2 = Sut.ChangeValue(value);
 
-        Assert.Equal(token, newToken1);
-        Assert.NotEqual(token, newToken2);
-        Assert.NotSame(token, newToken1);
+        Sut.Should()
+           .Be(newToken1).And
+           .NotBeSameAs(newToken1).And
+           .NotBe(newToken2);
     }
 }

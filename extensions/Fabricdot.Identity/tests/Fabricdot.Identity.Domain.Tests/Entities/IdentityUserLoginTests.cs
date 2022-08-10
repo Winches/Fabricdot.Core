@@ -1,10 +1,9 @@
-﻿using System;
-using Fabricdot.Identity.Domain.Entities.UserAggregate;
-using Xunit;
+﻿using Fabricdot.Identity.Domain.Entities.UserAggregate;
+using Fabricdot.Testing.AutoFixture;
 
 namespace Fabricdot.Identity.Domain.Tests.Entities;
 
-public class IdentityUserLoginTests
+public class IdentityUserLoginTests : TestBase
 {
     [InlineData("provider1", "")]
     [InlineData("provider2", null)]
@@ -15,6 +14,14 @@ public class IdentityUserLoginTests
         string loginProvider,
         string providerKey)
     {
-        Assert.ThrowsAny<Exception>(() => new IdentityUserLogin(loginProvider, providerKey, null));
+        Invoking(() => new IdentityUserLogin(loginProvider, providerKey, null)).Should().Throw<ArgumentException>();
+    }
+
+    [Fact]
+    public void Equality_Should_Correctly()
+    {
+        var sut = typeof(IdentityUserLogin);
+
+        Create<EqualityAssertion>().Verify(sut);
     }
 }

@@ -1,106 +1,116 @@
-﻿using System;
-using System.Threading.Tasks;
-using Xunit;
+﻿using Fabricdot.Identity.Domain.Entities.UserAggregate;
 
 namespace Fabricdot.Identity.Domain.Tests.Stores;
 
 public class UserLockoutStoreTests : UserStoreTestsBase
 {
-    [Fact]
-    public async Task GetAccessFailedCountAsync_ReturnCorrectly()
+    [AutoData]
+    [Theory]
+    public async Task GetAccessFailedCountAsync_Should_ReturnCorrectly(IdentityUser user)
     {
-        var user = EntityBuilder.NewUser();
         user.AccessFailed();
-        var accessFailedCount = await UserStore.GetAccessFailedCountAsync(user, default);
+        var expected = user.AccessFailedCount;
+        var accessFailedCount = await Sut.GetAccessFailedCountAsync(user, default);
 
-        Assert.Equal(user.AccessFailedCount, accessFailedCount);
+        accessFailedCount.Should().Be(expected);
     }
 
-    [Fact]
-    public async Task GetLockoutEnabledAsync_ReturnCorrectly()
-    {
-        var user = EntityBuilder.NewUser();
-        var lockloutEnabled = await UserStore.GetLockoutEnabledAsync(user, default);
-
-        Assert.Equal(user.LockoutEnabled, lockloutEnabled);
-    }
-
-    [InlineData("2099-01-01T00:00:00.0000000Z")]
-    [InlineData("1970-01-01T00:00:00.0000000Z")]
+    [AutoData]
     [Theory]
-    public async Task GetLockoutEndDateAsync_ReturnCorrectly(string lockoutEndString)
+    public async Task GetLockoutEnabledAsync_Should_ReturnCorrectly(IdentityUser user)
     {
-        var user = EntityBuilder.NewUser();
-        user.Lockout(DateTime.Parse(lockoutEndString));
-        var lockoutEnd = await UserStore.GetLockoutEndDateAsync(user, default);
+        var expected = user.LockoutEnabled;
+        var lockloutEnabled = await Sut.GetLockoutEnabledAsync(user, default);
 
-        Assert.Equal(user.LockoutEnd, lockoutEnd);
+        lockloutEnabled.Should().Be(expected);
     }
 
-    [Fact]
-    public async Task IncrementAccessFailedCountAsync_Correctly()
+    [AutoData]
+    [Theory]
+    public async Task GetLockoutEndDateAsync_Should_ReturnCorrectly(
+        IdentityUser user,
+        DateTime lockoutEndTime)
     {
-        var user = EntityBuilder.NewUser();
+        user.LockoutEnabled = true;
+        user.Lockout(lockoutEndTime);
+        var expected = user.LockoutEnd;
+        var lockoutEnd = await Sut.GetLockoutEndDateAsync(user, default);
+
+        lockoutEnd.Should().Be(expected);
+    }
+
+    [AutoData]
+    [Theory]
+    public async Task IncrementAccessFailedCountAsync_Should_Correctly(IdentityUser user)
+    {
         var accessFailedCount = user.AccessFailedCount;
-        var failedCount = await UserStore.IncrementAccessFailedCountAsync(user, default);
+        var failedCount = await Sut.IncrementAccessFailedCountAsync(user, default);
 
-        Assert.Equal(++accessFailedCount, user.AccessFailedCount);
-        Assert.Equal(user.AccessFailedCount, failedCount);
+        failedCount.Should()
+                   .Be(user.AccessFailedCount).And
+                   .Be(++accessFailedCount);
     }
 
-    [Fact]
-    public async Task ResetAccessFailedCountAsync_Correctly()
-    {
-        var user = EntityBuilder.NewUser();
-        await UserStore.IncrementAccessFailedCountAsync(user, default);
-        await UserStore.ResetAccessFailedCountAsync(user, default);
-
-        Assert.Equal(0, user.AccessFailedCount);
-    }
-
-    [InlineData(true)]
-    [InlineData(false)]
+    [AutoData]
     [Theory]
-    public async Task SetLockoutEnabledAsync_GivenInput_Correctly(bool lockoutEnabled)
+    public async Task ResetAccessFailedCountAsync_Should_Correctly(IdentityUser user)
     {
-        var user = EntityBuilder.NewUser();
-        await UserStore.SetLockoutEnabledAsync(user, lockoutEnabled, default);
+        await Sut.IncrementAccessFailedCountAsync(user, default);
+        await Sut.ResetAccessFailedCountAsync(user, default);
 
-        Assert.Equal(lockoutEnabled, user.LockoutEnabled);
+        user.AccessFailedCount.Should().Be(0);
     }
 
-    [Fact]
-    public async Task SetLockoutEndDateAsync_GivenInput_LockUser()
+    [AutoData]
+    [Theory]
+    public async Task SetLockoutEnabledAsync_GivenInput_Correctly(
+        IdentityUser user,
+        bool lockoutEnabled)
     {
-        var user = EntityBuilder.NewUser();
-        var lockoutEnd = DateTimeOffset.Now.AddMinutes(5);
-        await UserStore.SetLockoutEndDateAsync(user, lockoutEnd, default);
+        await Sut.SetLockoutEnabledAsync(user, lockoutEnabled, default);
 
-        Assert.Equal(lockoutEnd, user.LockoutEnd);
-        Assert.True(user.IsLockedOut);
+        user.LockoutEnabled.Should().Be(lockoutEnabled);
     }
 
-    [Fact]
-    public async Task SetLockoutEndDateAsync_DisableLockout_DoNothing()
+    [AutoData]
+    [Theory]
+    public async Task SetLockoutEndDateAsync_GivenInput_LockUser(
+        IdentityUser user,
+        DateTimeOffset lockoutEnd)
     {
-        var user = EntityBuilder.NewUser(lockoutEnabled: false);
+        var expected = lockoutEnd > DateTimeOffset.UtcNow;
+        user.LockoutEnabled = true;
+        await Sut.SetLockoutEndDateAsync(user, lockoutEnd, default);
+
+        user.LockoutEnd.Should().Be(lockoutEnd);
+        user.IsLockedOut.Should().Be(expected);
+    }
+
+    [AutoData]
+    [Theory]
+    public async Task SetLockoutEndDateAsync_DisableLockout_DoNothing(IdentityUser user)
+    {
+        user.LockoutEnabled = false;
         var lockoutEnd = user.LockoutEnd;
-        await UserStore.SetLockoutEndDateAsync(
+        await Sut.SetLockoutEndDateAsync(
             user,
             DateTimeOffset.Now.AddMinutes(5),
             default);
 
-        Assert.Equal(lockoutEnd, user.LockoutEnd);
+        user.LockoutEnd.Should().Be(lockoutEnd);
     }
 
-    [Fact]
-    public async Task SetLockoutEndDateAsync_GivenNull_UnlockUser()
+    [AutoData]
+    [Theory]
+    public async Task SetLockoutEndDateAsync_GivenNull_UnlockUser(
+        IdentityUser user,
+        DateTimeOffset lockoutEnd)
     {
-        var user = EntityBuilder.NewUser();
-        user.Lockout(DateTimeOffset.Now.AddMinutes(5));
-        await UserStore.SetLockoutEndDateAsync(user, null, default);
+        user.LockoutEnabled = true;
+        user.Lockout(lockoutEnd);
+        await Sut.SetLockoutEndDateAsync(user, null, default);
 
-        Assert.Null(user.LockoutEnd);
-        Assert.False(user.IsLockedOut);
+        user.LockoutEnd.Should().BeNull();
+        user.IsLockedOut.Should().BeFalse();
     }
 }

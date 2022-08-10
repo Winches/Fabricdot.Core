@@ -1,11 +1,8 @@
-﻿using System.Linq;
-using System.Security.Claims;
-using System.Threading.Tasks;
+﻿using System.Security.Claims;
 using Fabricdot.Identity.Tests.Entities;
 using Fabricdot.Infrastructure.EntityFrameworkCore.Tests.Data;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;
-using Xunit;
 
 namespace Fabricdot.Identity.Tests;
 
@@ -30,18 +27,12 @@ public class DefaultUserClaimsPrincipalFactoryTests : IdentityTestBase
             var userRoles = await ((IUserRoleStore<User>)_userStore).GetRolesAsync(user, default);
             var claimsPrincipal = await _factory.CreateAsync(user);
 
-            var givenName = claimsPrincipal.FindFirstValue(ClaimTypes.GivenName);
-            var surname = claimsPrincipal.FindFirstValue(ClaimTypes.Surname);
-            var email = claimsPrincipal.FindFirstValue(ClaimTypes.Email);
-            var phone = claimsPrincipal.FindFirstValue(ClaimTypes.MobilePhone);
-            var roles = claimsPrincipal.FindAll(ClaimTypes.Role).Select(v => v.Value);
-
-            Assert.NotNull(claimsPrincipal);
-            Assert.Equal(user.GivenName, givenName);
-            Assert.Equal(user.Surname, surname);
-            Assert.Equal(user.Email, email);
-            Assert.Equal(user.PhoneNumber, phone);
-            Assert.Equal(userRoles, roles);
+            claimsPrincipal.Should().NotBeNull();
+            claimsPrincipal.Should()
+                           .HaveSingleClaim(ClaimTypes.GivenName, user.GivenName).And
+                           .HaveSingleClaim(ClaimTypes.Surname, user.Surname).And
+                           .HaveSingleClaim(ClaimTypes.Email, user.Email).And
+                           .HaveSameClaimValues(ClaimTypes.Role, userRoles);
         });
     }
 }

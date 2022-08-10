@@ -6,6 +6,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\Fabricdot.Identity.Domain\Fabricdot.Identity.Domain.csproj" />
+    <ProjectReference Include="..\..\..\..\tests\Fabricdot.Testing\Fabricdot.Testing.csproj" />
   </ItemGroup>
 
 </Project>

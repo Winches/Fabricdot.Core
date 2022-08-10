@@ -1,7 +1,6 @@
 ﻿using Fabricdot.Infrastructure.DependencyInjection;
 using Fabricdot.Infrastructure.EntityFrameworkCore.Tests.Data;
 using Fabricdot.Infrastructure.Uow.Abstractions;
-using Fabricdot.Testing;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Fabricdot.Identity.Tests;

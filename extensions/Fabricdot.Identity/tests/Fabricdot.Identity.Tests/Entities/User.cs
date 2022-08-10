@@ -1,5 +1,4 @@
-﻿using System;
-using Fabricdot.Domain.SharedKernel;
+﻿using Fabricdot.Domain.SharedKernel;
 using Fabricdot.Identity.Domain.Entities.UserAggregate;
 
 namespace Fabricdot.Identity.Tests.Entities;
@@ -7,6 +6,12 @@ namespace Fabricdot.Identity.Tests.Entities;
 public class User : IdentityUser, IMultiTenant
 {
     public Guid? TenantId { get; private set; }
+
+    public User(
+    Guid userId,
+    string userName) : base(userId, userName)
+    {
+    }
 
     public User(
         Guid userId,

@@ -5,5 +5,5 @@ namespace Fabricdot.PermissionGranting.Infrastructure.Data;
 
 public interface IPermissionGrantingDbContext
 {
-    DbSet<GrantedPermission> GrantedPermissions { get; set; }
+    DbSet<GrantedPermission> GrantedPermissions { get; }
 }

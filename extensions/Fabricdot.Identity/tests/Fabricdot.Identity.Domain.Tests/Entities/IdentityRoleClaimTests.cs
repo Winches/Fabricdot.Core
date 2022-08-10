@@ -1,22 +1,31 @@
-﻿using System;
+﻿using System.Security.Claims;
 using Fabricdot.Identity.Domain.Entities.RoleAggregate;
-using Xunit;
+using Fabricdot.Identity.Domain.SharedKernel;
 
 namespace Fabricdot.Identity.Domain.Tests.Entities;
 
-public class IdentityRoleClaimTests
+public class IdentityRoleClaimTests : TestBase
 {
     [InlineData(null)]
     [InlineData("")]
     [Theory]
     public void Constructor_GivenInvalidClaimType_ThrowException(string claimType)
     {
-        Assert.ThrowsAny<Exception>(() => new IdentityRoleClaim(Guid.NewGuid(), claimType, null));
+        Invoking(() => new IdentityRoleClaim(Guid.NewGuid(), claimType, null)).Should().Throw<ArgumentException>();
     }
 
     [Fact]
     public void Constructor_GivenNullClaimValue_Correctly()
     {
-        _ = new IdentityRoleClaim(Guid.NewGuid(), "claimType1", null);
+        _ = new IdentityRoleClaim(Create<Guid>(), Create<string>(), null);
+    }
+
+    [AutoMockData]
+    [Theory]
+    public void SetClaim_GivenInput_ChangeValue(IdentityRoleClaim roleClaim, Claim claim)
+    {
+        roleClaim.SetClaim(claim.Type, claim.Value);
+
+        roleClaim.ToClaim().Should().BeEquivalentTo(claim);
     }
 }

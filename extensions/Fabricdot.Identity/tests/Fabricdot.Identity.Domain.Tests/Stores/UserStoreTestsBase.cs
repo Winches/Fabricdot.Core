@@ -1,5 +1,4 @@
-﻿using System;
-using Fabricdot.Core.UniqueIdentifier;
+﻿using Fabricdot.Core.UniqueIdentifier;
 using Fabricdot.Identity.Domain.Entities.RoleAggregate;
 using Fabricdot.Identity.Domain.Entities.UserAggregate;
 using Fabricdot.Identity.Domain.Repositories;
@@ -9,26 +8,17 @@ using Moq;
 
 namespace Fabricdot.Identity.Domain.Tests.Stores;
 
-public abstract class UserStoreTestsBase
+public abstract class UserStoreTestsBase : TestFor<UserStore<IdentityUser, IdentityRole>>
 {
-    protected UserStore<IdentityUser, IdentityRole> UserStore { get; }
-
     protected UserStoreTestsBase()
     {
-        var mockUserRepository = new Mock<IUserRepository<IdentityUser>>();
-        var mockRoleRepository = new Mock<IRoleRepository<IdentityRole>>();
+        var mockUserRepository = InjectMock<IUserRepository<IdentityUser>>();
+        var mockRoleRepository = InjectMock<IRoleRepository<IdentityRole>>();
+        var mockGuidGenerator = InjectMock<IGuidGenerator>();
+        var mockLookupNormalizer = InjectMock<ILookupNormalizer>();
 
-        var mockGuidGenerator = new Mock<IGuidGenerator>();
         mockGuidGenerator.Setup(x => x.Create()).Returns(() => Guid.NewGuid());
-
-        var mockLookupNormalizer = new Mock<ILookupNormalizer>();
         mockLookupNormalizer.Setup(x => x.NormalizeName(It.IsAny<string>())).Returns<string>(v => v.ToUpperInvariant());
         mockLookupNormalizer.Setup(x => x.NormalizeEmail(It.IsAny<string>())).Returns<string>(v => v.ToUpperInvariant());
-
-        UserStore = new UserStore<IdentityUser, IdentityRole>(
-            mockUserRepository.Object,
-            mockRoleRepository.Object,
-            mockGuidGenerator.Object,
-            mockLookupNormalizer.Object);
     }
 }

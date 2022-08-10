@@ -1,58 +1,65 @@
-﻿using System.Threading.Tasks;
-using Xunit;
+﻿using Fabricdot.Identity.Domain.Entities.UserAggregate;
 
 namespace Fabricdot.Identity.Domain.Tests.Stores;
 
 public class UserStoreTests : UserStoreTestsBase
 {
-    [Fact]
-    public async Task GetUserIdAsync_ReturnCorrectly()
+    [AutoData]
+    [Theory]
+    public async Task GetUserIdAsync_Shoud_ReturnCorrectly(IdentityUser user)
     {
-        var user = EntityBuilder.NewUser();
-        var id = await UserStore.GetUserIdAsync(user, default);
-        Assert.Equal(user.Id.ToString(), id);
+        var expected = user.Id.ToString();
+        var id = await Sut.GetUserIdAsync(user, default);
+
+        id.Should().Be(expected);
     }
 
-    [Fact]
-    public async Task GetUserNameAsync_ReturnCorrectly()
+    [AutoData]
+    [Theory]
+    public async Task GetUserNameAsync_Should_ReturnCorrectly(IdentityUser user)
     {
-        var user = EntityBuilder.NewUser();
-        var userName = await UserStore.GetUserNameAsync(user, default);
-        Assert.Equal(user.UserName, userName);
+        var expected = user.UserName;
+        var userName = await Sut.GetUserNameAsync(user, default);
+
+        userName.Should().Be(expected);
     }
 
-    [Fact]
-    public async Task GetNormalizedUserNameAsync_ReturnCorrectly()
+    [AutoData]
+    [Theory]
+    public async Task GetNormalizedUserNameAsync_Should_ReturnCorrectly(IdentityUser user)
     {
-        var user = EntityBuilder.NewUser();
-        var normalizedUserName = await UserStore.GetNormalizedUserNameAsync(user, default);
-        Assert.Equal(user.NormalizedUserName, normalizedUserName);
+        var expected = user.NormalizedUserName;
+        var normalizedUserName = await Sut.GetNormalizedUserNameAsync(user, default);
+
+        normalizedUserName.Should().Be(expected);
     }
 
-    [Fact]
-    public async Task SetUserNameAsync_GivenUserName_Correctly()
+    [AutoData]
+    [Theory]
+    public async Task SetUserNameAsync_GivenUserName_Correctly(
+        IdentityUser user,
+        string userName)
     {
-        var user = EntityBuilder.NewUser();
-        const string userName = "name2";
-        await UserStore.SetUserNameAsync(user, userName, default);
-        Assert.Equal(user.UserName, userName);
+        await Sut.SetUserNameAsync(user, userName, default);
+
+        user.UserName.Should().Be(userName);
     }
 
     [Fact]
     public async Task SetUserNameAsync_GivenInvalidInput_ThrowException()
     {
-        var user = EntityBuilder.NewUser();
-        const string userName = "name2";
-        await UserStore.SetUserNameAsync(user, userName, default);
-        Assert.Equal(user.UserName, userName);
+        await Sut.Awaiting(v => v.SetUserNameAsync(null, Create<string>(), default)).Should().ThrowAsync<ArgumentException>();
     }
 
-    [Fact]
-    public async Task SetNormalizedUserNameAsync_GivenNormalizedUserName_Correctly()
+    [AutoData]
+    [Theory]
+    public async Task SetNormalizedUserNameAsync_GivenNormalizedUserName_Correctly(
+        IdentityUser user,
+        string userName)
     {
-        var user = EntityBuilder.NewUser();
-        const string normalizedUserName = "NAME2";
-        await UserStore.SetNormalizedUserNameAsync(user, normalizedUserName, default);
-        Assert.Equal(user.NormalizedUserName, normalizedUserName);
+        var expected = userName.Normalize().ToUpperInvariant();
+        await Sut.SetNormalizedUserNameAsync(user, expected, default);
+
+        user.NormalizedUserName.Should().Be(expected);
     }
 }

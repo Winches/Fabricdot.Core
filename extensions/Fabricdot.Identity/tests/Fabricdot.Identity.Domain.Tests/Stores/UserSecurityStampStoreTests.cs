@@ -1,27 +1,27 @@
-﻿using System.Threading.Tasks;
-using Xunit;
+﻿using Fabricdot.Identity.Domain.Entities.UserAggregate;
 
 namespace Fabricdot.Identity.Domain.Tests.Stores;
 
 public class UserSecurityStampStoreTests : UserStoreTestsBase
 {
-    [Fact]
-    public async Task GetSecurityStampAsync_ReturnCorrectly()
+    [AutoData]
+    [Theory]
+    public async Task GetSecurityStampAsync_Should_ReturnCorrectly(IdentityUser user)
     {
-        var user = EntityBuilder.NewUser();
-        var securityStamp = await UserStore.GetSecurityStampAsync(user, default);
+        var expected = user.SecurityStamp;
+        var securityStamp = await Sut.GetSecurityStampAsync(user, default);
 
-        Assert.Equal(user.SecurityStamp, securityStamp);
+        securityStamp.Should().Be(expected);
     }
 
-    [InlineData(null)]
-    [InlineData("EC6B1C44595C4F5792E18E1BC0567876")]
+    [AutoData]
     [Theory]
-    public async Task SetSecurityStampAsync_GivenInput_Correctly(string securityStamp)
+    public async Task SetSecurityStampAsync_Should_GivenInput_Correctly(
+        IdentityUser user,
+        string securityStamp)
     {
-        var user = EntityBuilder.NewUser();
-        await UserStore.SetSecurityStampAsync(user, securityStamp, default);
+        await Sut.SetSecurityStampAsync(user, securityStamp, default);
 
-        Assert.Equal(securityStamp, user.SecurityStamp);
+        user.SecurityStamp.Should().Be(securityStamp);
     }
 }

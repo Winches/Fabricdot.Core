@@ -1,13 +1,10 @@
-﻿using System.Security.Claims;
-using System.Threading.Tasks;
-using Fabricdot.Domain.SharedKernel;
+﻿using Fabricdot.Domain.SharedKernel;
 using Fabricdot.Identity.Tests.Entities;
 using Fabricdot.Infrastructure.Data.Filters;
 using Fabricdot.Infrastructure.EntityFrameworkCore.Tests.Data;
 using Fabricdot.MultiTenancy.Abstractions;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;
-using Xunit;
 
 namespace Fabricdot.Identity.Tests;
 
@@ -34,10 +31,8 @@ public class DefaultUserClaimsPrincipalFactory_MultiTenancy_Tests : IdentityTest
             var user = await _userStore.FindByIdAsync(userId, default);
             var claimsPrincipal = await _factory.CreateAsync(user);
 
-            var tenantId = claimsPrincipal.FindFirstValue(TenantClaimTypes.TenantId);
-
-            Assert.NotNull(claimsPrincipal);
-            Assert.Equal(user.TenantId.ToString(), tenantId);
+            claimsPrincipal.Should().NotBeNull();
+            claimsPrincipal.Should().HaveSingleClaim(TenantClaimTypes.TenantId, user.TenantId.ToString());
         });
     }
 }
