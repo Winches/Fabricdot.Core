@@ -109,7 +109,6 @@ Task("Test")
             var settings = new DotNetTestSettings
             {
                 Framework = framework,
-                Configuration = configuration,
                 NoBuild = true,
                 NoRestore = true,
                 Collectors = new [] { "XPlat Code Coverage" },
