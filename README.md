@@ -23,7 +23,7 @@ PM> Install-Package Fabricdot.MultiTenancy
 PM> Install-Package Fabricdot.MultiTenancy.AspNetCore
 ```
 
-Fabricdot provides some useful extensions,following packages are available to isntall:
+Fabricdot provides some useful extensions,following packages are available to install:
 
 ```
 PM> Install-Package Fabricdot.Identity.Domain;
