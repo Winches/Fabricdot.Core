@@ -9,11 +9,19 @@ dotnet_naming_rule.private_field_should_be_begin_with__.severity = suggestion
 dotnet_naming_rule.private_field_should_be_begin_with__.symbols = private_field
 dotnet_naming_rule.private_field_should_be_begin_with__.style = begin_with__
 
+dotnet_naming_rule.private_field_should_be_begin_with__.severity = suggestion
+dotnet_naming_rule.private_field_should_be_begin_with__.symbols = const_field
+dotnet_naming_rule.private_field_should_be_begin_with__.style = pascal_case
+
 # Symbol specifications
 
 dotnet_naming_symbols.private_field.applicable_kinds = field
 dotnet_naming_symbols.private_field.applicable_accessibilities = private
 dotnet_naming_symbols.private_field.required_modifiers = 
+
+dotnet_naming_symbols.const_field.applicable_kinds = field
+dotnet_naming_symbols.const_field.applicable_accessibilities = const
+dotnet_naming_symbols.const_field.required_modifiers = 
 
 # Naming styles
 
