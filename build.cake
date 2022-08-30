@@ -108,6 +108,7 @@ Task("Test")
             var testResultName = $"{project.GetFilenameWithoutExtension()}_{framework}_TestResults.xml";
             var settings = new DotNetTestSettings
             {
+                Configuration = configuration,
                 Framework = framework,
                 NoBuild = true,
                 NoRestore = true,

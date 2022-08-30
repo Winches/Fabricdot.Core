@@ -1,0 +1,37 @@
+name: CI
+
+on:
+  push:
+    branches: [ dev ]
+  pull_request:
+    branches: [ dev ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    env:
+      NUGET_API_KEY: ${{secrets.NUGET_API_KEY}}
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v2
+      with:
+        dotnet-version: |
+          5.0.x
+          6.0.x
+
+    - name: Build and Test
+      run: ./build.sh
+
+    - name: Codecov
+      uses: codecov/codecov-action@v3
+
+    - name: Upload NuGet packages
+      uses: actions/upload-artifact@v3
+      if: ${{ startsWith(github.ref, 'refs/tags/v') }}
+      with:
+        name: packages
+        path: "**/*nupkg"
+        if-no-files-found: error
