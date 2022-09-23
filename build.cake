@@ -159,10 +159,11 @@ Task("Publish")
     .IsDependentOn("Package")
     .Does(()=>
     {
-        RunTarget("PushNuget");
+        RunTarget("PublishNuget");
     })
     .OnError((exception, parameters) =>
     {
+        Information(exception.Message);
         Information("Publish Task failed, but continuing with next Task...");
     });
 
