@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Linq.Expressions;
-using System.Threading;
-using System.Threading.Tasks;
+﻿using System.Linq.Expressions;
 using Ardalis.GuardClauses;
 using Ardalis.Specification;
 using Fabricdot.Identity.Domain.Entities.RoleAggregate;
@@ -22,7 +17,7 @@ public class RoleRepository<TDbContext, TRole> : EfRepository<TDbContext, TRole,
     {
     }
 
-    public virtual async Task<TRole> GetDetailsByIdAsync(
+    public virtual async Task<TRole?> GetDetailsByIdAsync(
         Guid id,
         CancellationToken cancellationToken = default)
     {
@@ -31,7 +26,7 @@ public class RoleRepository<TDbContext, TRole> : EfRepository<TDbContext, TRole,
                           .SingleOrDefaultAsync(cancellationToken);
     }
 
-    public virtual async Task<TRole> GetByNormalizedNameAsync(
+    public virtual async Task<TRole?> GetByNormalizedNameAsync(
         string normalizedName,
         bool includeDetails = true,
         CancellationToken cancellationToken = default)
@@ -61,7 +56,7 @@ public class RoleRepository<TDbContext, TRole> : EfRepository<TDbContext, TRole,
 
         var dbContext = await GetDbContextAsync(cancellationToken);
         await dbContext.Entry(entity)
-                       .Reference(propertyExpression)
+                       .Reference(propertyExpression!)
                        .LoadAsync(cancellationToken);
     }
 

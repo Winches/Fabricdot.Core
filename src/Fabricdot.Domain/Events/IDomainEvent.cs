@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Fabricdot.Domain.Events;
+﻿namespace Fabricdot.Domain.Events;
 
 public interface IDomainEvent
 {

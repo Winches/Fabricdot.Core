@@ -1,5 +1,4 @@
-﻿using System.Linq;
-using Ardalis.GuardClauses;
+﻿using Ardalis.GuardClauses;
 
 namespace Fabricdot.Infrastructure.Queryable;
 

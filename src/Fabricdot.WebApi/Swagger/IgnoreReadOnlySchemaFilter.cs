@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using Fabricdot.Infrastructure.Commands;
+﻿using Fabricdot.Infrastructure.Commands;
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.SwaggerGen;
 

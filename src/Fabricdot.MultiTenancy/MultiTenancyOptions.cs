@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using Fabricdot.MultiTenancy.Abstractions;
+﻿using Fabricdot.MultiTenancy.Abstractions;
 using Fabricdot.MultiTenancy.Strategies;
 
 namespace Fabricdot.MultiTenancy;

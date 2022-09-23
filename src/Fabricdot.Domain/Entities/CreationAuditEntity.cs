@@ -1,5 +1,4 @@
-﻿using System;
-using Fabricdot.Domain.Entities;
+﻿using Fabricdot.Domain.Entities;
 
 namespace Fabricdot.Domain.Auditing;
 

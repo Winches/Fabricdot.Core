@@ -1,5 +1,4 @@
-﻿using System;
-using Fabricdot.Domain.Auditing;
+﻿using Fabricdot.Domain.Auditing;
 using Fabricdot.Domain.Entities;
 using Fabricdot.Domain.SharedKernel;
 using Fabricdot.Domain.ValueObjects;

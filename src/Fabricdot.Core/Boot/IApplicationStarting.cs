@@ -1,6 +1,4 @@
-﻿using System.Threading.Tasks;
-
-namespace Fabricdot.Core.Boot;
+﻿namespace Fabricdot.Core.Boot;
 
 public interface IApplicationStarting
 {

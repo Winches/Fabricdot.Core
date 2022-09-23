@@ -1,5 +1,4 @@
-﻿using System.Threading.Tasks;
-using Fabricdot.Core.Boot;
+﻿using Fabricdot.Core.Boot;
 
 namespace Fabricdot.Core.Modularity;
 

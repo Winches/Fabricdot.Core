@@ -1,7 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Threading;
-using System.Threading.Tasks;
-using Ardalis.Specification;
+﻿using Ardalis.Specification;
 using Fabricdot.Domain.Entities;
 
 namespace Fabricdot.Domain.Services;
@@ -24,7 +21,7 @@ public abstract class RepositoryBase<T> : IRepository<T> where T : IAggregateRoo
         CancellationToken cancellationToken = default);
 
     /// <inheritdoc />
-    public abstract Task<T> GetBySpecAsync(
+    public abstract Task<T?> GetBySpecAsync(
         ISpecification<T> specification,
         CancellationToken cancellationToken = default);
 
@@ -48,7 +45,7 @@ public abstract class RepositoryBase<T> : IRepository<T> where T : IAggregateRoo
 public abstract class RepositoryBase<T, TKey> : RepositoryBase<T>, IRepository<T, TKey> where T : IAggregateRoot, Entities.IEntity<TKey>
 {
     /// <inheritdoc />
-    public abstract Task<T> GetByIdAsync(
+    public abstract Task<T?> GetByIdAsync(
         TKey id,
         CancellationToken cancellationToken = default);
 }

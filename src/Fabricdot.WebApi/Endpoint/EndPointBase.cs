@@ -1,5 +1,4 @@
-﻿using System;
-using AutoMapper;
+﻿using AutoMapper;
 using Fabricdot.Infrastructure.Security;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;

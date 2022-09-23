@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Threading.Tasks;
-using Fabricdot.Core.DependencyInjection;
+﻿using Fabricdot.Core.DependencyInjection;
 using Microsoft.Extensions.Options;
 
 namespace Fabricdot.Infrastructure.Data;

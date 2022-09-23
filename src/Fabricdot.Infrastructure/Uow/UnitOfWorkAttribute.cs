@@ -1,4 +1,3 @@
-using System;
 using System.Data;
 using Fabricdot.Core.Aspects;
 using Fabricdot.Infrastructure.Uow.Abstractions;

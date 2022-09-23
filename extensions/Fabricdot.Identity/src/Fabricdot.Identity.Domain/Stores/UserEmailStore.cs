@@ -1,6 +1,4 @@
-﻿using System.Threading;
-using System.Threading.Tasks;
-using Ardalis.GuardClauses;
+﻿using Ardalis.GuardClauses;
 using Microsoft.AspNetCore.Identity;
 
 namespace Fabricdot.Identity.Domain.Stores;
@@ -17,10 +15,10 @@ public partial class UserStore<TUser, TRole> : IUserEmailStore<TUser>
         cancellationToken.ThrowIfCancellationRequested();
         Guard.Against.NullOrEmpty(normalizedEmail, nameof(normalizedEmail));
 
-        return await UserRepository.GetByNormalizedEmailAsync(
+        return (await UserRepository.GetByNormalizedEmailAsync(
             normalizedEmail,
             false,
-            cancellationToken);
+            cancellationToken))!;
     }
 
     public virtual Task<string?> GetEmailAsync(

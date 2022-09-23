@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using Fabricdot.Core.DependencyInjection;
+﻿using Fabricdot.Core.DependencyInjection;
 using Fabricdot.Domain.Events;
 using Fabricdot.Domain.Services;
 using Microsoft.Extensions.DependencyInjection;

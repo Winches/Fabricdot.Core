@@ -1,8 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
-using Ardalis.GuardClauses;
+﻿using Ardalis.GuardClauses;
 using Microsoft.AspNetCore.Identity;
 
 namespace Fabricdot.Identity.Domain.Stores;
@@ -60,10 +56,10 @@ public partial class UserStore<TUser, TRole> : IUserLoginStore<TUser>
     {
         cancellationToken.ThrowIfCancellationRequested();
 
-        return await UserRepository.GetByLoginAsync(
+        return (await UserRepository.GetByLoginAsync(
             loginProvider,
             providerKey,
             true,
-            cancellationToken);
+            cancellationToken))!;
     }
 }

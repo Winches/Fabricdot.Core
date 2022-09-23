@@ -1,5 +1,4 @@
-﻿using System.Threading.Tasks;
-using Fabricdot.MultiTenancy.Abstractions;
+﻿using Fabricdot.MultiTenancy.Abstractions;
 using Microsoft.AspNetCore.Http;
 
 namespace Fabricdot.MultiTenancy.AspNetCore.Strategies;

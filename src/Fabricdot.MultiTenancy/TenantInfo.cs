@@ -1,5 +1,4 @@
-﻿using System;
-using Fabricdot.MultiTenancy.Abstractions;
+﻿using Fabricdot.MultiTenancy.Abstractions;
 
 namespace Fabricdot.MultiTenancy;
 

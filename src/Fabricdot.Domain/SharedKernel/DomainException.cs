@@ -1,5 +1,4 @@
-﻿using System;
-using Fabricdot.Core.ExceptionHandling;
+﻿using Fabricdot.Core.ExceptionHandling;
 
 namespace Fabricdot.Domain.SharedKernel;
 

@@ -1,6 +1,4 @@
-﻿using System.Threading.Tasks;
-
-namespace Fabricdot.Infrastructure.Data;
+﻿namespace Fabricdot.Infrastructure.Data;
 
 public interface IConnectionStringResolver
 {

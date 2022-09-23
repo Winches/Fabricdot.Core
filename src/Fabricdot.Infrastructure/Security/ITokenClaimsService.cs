@@ -1,6 +1,4 @@
-﻿using System.Threading.Tasks;
-
-namespace Fabricdot.Infrastructure.Security;
+﻿namespace Fabricdot.Infrastructure.Security;
 
 public interface ITokenClaimsService
 {

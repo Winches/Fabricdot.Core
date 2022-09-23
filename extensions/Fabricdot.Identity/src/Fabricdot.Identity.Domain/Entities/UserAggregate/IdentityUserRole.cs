@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using Fabricdot.Domain.ValueObjects;
+﻿using Fabricdot.Domain.ValueObjects;
 
 namespace Fabricdot.Identity.Domain.Entities.UserAggregate;
 

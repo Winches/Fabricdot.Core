@@ -1,7 +1,4 @@
-﻿using System.Threading;
-using System.Threading.Tasks;
-
-namespace Fabricdot.MultiTenancy.Abstractions;
+﻿namespace Fabricdot.MultiTenancy.Abstractions;
 
 public interface ITenantStore<TTenant> where TTenant : ITenant
 {

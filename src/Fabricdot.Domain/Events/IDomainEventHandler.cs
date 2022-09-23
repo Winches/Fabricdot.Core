@@ -1,7 +1,4 @@
-﻿using System.Threading;
-using System.Threading.Tasks;
-
-namespace Fabricdot.Domain.Events;
+﻿namespace Fabricdot.Domain.Events;
 
 public interface IDomainEventHandler<in TDomainEvent> where TDomainEvent : IDomainEvent
 {

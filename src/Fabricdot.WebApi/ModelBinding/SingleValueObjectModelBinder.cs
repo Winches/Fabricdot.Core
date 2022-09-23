@@ -1,8 +1,5 @@
-﻿using System;
-using System.ComponentModel;
-using System.Linq;
+﻿using System.ComponentModel;
 using System.Runtime.ExceptionServices;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 
 namespace Fabricdot.WebApi.ModelBinding;
@@ -38,7 +35,7 @@ internal class SingleValueObjectModelBinder : IModelBinder
                     return Task.CompletedTask;
                 }
 
-                var argument = new[] { converter.ConvertFrom(null, valueProviderResult.Culture, value) };
+                var argument = new[] { converter.ConvertFrom(null, valueProviderResult.Culture, value!) };
                 result = constructor.Invoke(argument);
             }
         }

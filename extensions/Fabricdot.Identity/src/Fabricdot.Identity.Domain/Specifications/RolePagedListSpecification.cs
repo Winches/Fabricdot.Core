@@ -1,5 +1,4 @@
-﻿using System.Linq;
-using Ardalis.GuardClauses;
+﻿using Ardalis.GuardClauses;
 using Ardalis.Specification;
 using Fabricdot.Identity.Domain.Entities.RoleAggregate;
 

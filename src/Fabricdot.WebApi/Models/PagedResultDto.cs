@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-namespace Fabricdot.WebApi.Models;
+﻿namespace Fabricdot.WebApi.Models;
 
 public class PagedResultDto<T> : IPagedResult<T>
 {

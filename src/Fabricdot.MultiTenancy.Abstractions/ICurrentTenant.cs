@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Fabricdot.MultiTenancy.Abstractions;
+﻿namespace Fabricdot.MultiTenancy.Abstractions;
 
 public interface ICurrentTenant
 {

@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-namespace Fabricdot.MultiTenancy.Abstractions;
+﻿namespace Fabricdot.MultiTenancy.Abstractions;
 
 public class TenantResolveResult
 {

@@ -1,7 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Threading.Tasks;
-
-namespace Fabricdot.Authorization.Permissions;
+﻿namespace Fabricdot.Authorization.Permissions;
 
 public interface IPermissionManager
 {

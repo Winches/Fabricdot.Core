@@ -1,13 +1,13 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net5.0</TargetFramework>
+    <TargetFramework>net6.0</TargetFramework>
     <PackageId>Fabricdot.Domain</PackageId>
     <Description>Build DDD domain layer in a simple way</Description>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Ardalis.Specification" Version="5.2.0" />
+    <PackageReference Include="Ardalis.Specification" Version="6.1.0" />
   </ItemGroup>
 
   <ItemGroup>

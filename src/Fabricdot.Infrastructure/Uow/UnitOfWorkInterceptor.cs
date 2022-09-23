@@ -1,5 +1,4 @@
 using System.Reflection;
-using System.Threading.Tasks;
 using Fabricdot.Core.Aspects;
 using Fabricdot.Core.DependencyInjection;
 using Fabricdot.Domain.Services;

@@ -1,7 +1,4 @@
-﻿using System;
-using System.Threading;
-using System.Threading.Tasks;
-using Fabricdot.Domain.Events;
+﻿using Fabricdot.Domain.Events;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 

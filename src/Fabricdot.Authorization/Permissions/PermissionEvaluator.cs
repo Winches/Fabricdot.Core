@@ -1,9 +1,5 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using System.Security.Claims;
+﻿using System.Security.Claims;
 using System.Text.Json;
-using System.Threading;
-using System.Threading.Tasks;
 using Ardalis.GuardClauses;
 using Fabricdot.Core.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection;

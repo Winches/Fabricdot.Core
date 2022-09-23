@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Fabricdot.Infrastructure.Commands;
+﻿namespace Fabricdot.Infrastructure.Commands;
 
 public class CommandBase : ICommand
 {

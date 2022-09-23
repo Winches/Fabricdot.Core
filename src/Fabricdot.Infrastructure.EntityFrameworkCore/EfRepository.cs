@@ -1,8 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
-using Ardalis.GuardClauses;
+﻿using Ardalis.GuardClauses;
 using Ardalis.Specification;
 using Ardalis.Specification.EntityFrameworkCore;
 using Fabricdot.Core.DependencyInjection;
@@ -53,7 +49,7 @@ public class EfRepository<TDbContext, T, TKey> : RepositoryBase<T, TKey>, IUnitO
     }
 
     /// <inheritdoc />
-    public override async Task<T> GetByIdAsync(
+    public override async Task<T?> GetByIdAsync(
         TKey id,
         CancellationToken cancellationToken = default)
     {
@@ -65,7 +61,7 @@ public class EfRepository<TDbContext, T, TKey> : RepositoryBase<T, TKey>, IUnitO
     }
 
     /// <inheritdoc />
-    public override async Task<T> GetBySpecAsync(
+    public override async Task<T?> GetBySpecAsync(
         ISpecification<T> specification,
         CancellationToken cancellationToken = default)
     {

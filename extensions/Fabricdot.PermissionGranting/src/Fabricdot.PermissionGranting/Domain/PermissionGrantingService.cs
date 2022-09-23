@@ -1,8 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
-using Fabricdot.Authorization;
+﻿using Fabricdot.Authorization;
 using Fabricdot.Core.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection;
 

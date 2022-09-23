@@ -1,6 +1,4 @@
-﻿using System.Threading;
-using System.Threading.Tasks;
-using Fabricdot.Core.DependencyInjection;
+﻿using Fabricdot.Core.DependencyInjection;
 using Fabricdot.MultiTenancy.Abstractions;
 using Microsoft.Extensions.DependencyInjection;
 

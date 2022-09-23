@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Fabricdot.Core.Boot;
+﻿namespace Fabricdot.Core.Boot;
 
 public interface ISupportSetServiceProvider
 {

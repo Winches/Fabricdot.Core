@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Linq.Expressions;
-using System.Threading;
-using System.Threading.Tasks;
+﻿using System.Linq.Expressions;
 using Ardalis.GuardClauses;
 using Fabricdot.Identity.Domain.Entities.RoleAggregate;
 using Fabricdot.Identity.Domain.Entities.UserAggregate;
@@ -22,7 +17,7 @@ public class UserRepository<TDbContext, TUser> : EfRepository<TDbContext, TUser,
     {
     }
 
-    public virtual async Task<TUser> GetDetailsByIdAsync(
+    public virtual async Task<TUser?> GetDetailsByIdAsync(
         Guid id,
         CancellationToken cancellationToken = default)
     {
@@ -31,7 +26,7 @@ public class UserRepository<TDbContext, TUser> : EfRepository<TDbContext, TUser,
                           .SingleOrDefaultAsync(cancellationToken);
     }
 
-    public virtual async Task<TUser> GetByLoginAsync(
+    public virtual async Task<TUser?> GetByLoginAsync(
         string loginProvider,
         string providerKey,
         bool includeDetails = true,
@@ -42,7 +37,7 @@ public class UserRepository<TDbContext, TUser> : EfRepository<TDbContext, TUser,
                           .SingleOrDefaultAsync(cancellationToken);
     }
 
-    public virtual async Task<TUser> GetByNormalizedEmailAsync(
+    public virtual async Task<TUser?> GetByNormalizedEmailAsync(
         string normalizedEmail,
         bool includeDetails = true,
         CancellationToken cancellationToken = default)
@@ -52,7 +47,7 @@ public class UserRepository<TDbContext, TUser> : EfRepository<TDbContext, TUser,
                           .SingleOrDefaultAsync(cancellationToken);
     }
 
-    public virtual async Task<TUser> GetByNormalizedUserNameAsync(
+    public virtual async Task<TUser?> GetByNormalizedUserNameAsync(
         string normalizedUserName,
         bool includeDetails = true,
         CancellationToken cancellationToken = default)
@@ -115,7 +110,7 @@ public class UserRepository<TDbContext, TUser> : EfRepository<TDbContext, TUser,
 
         var dbContext = await GetDbContextAsync(cancellationToken);
         await dbContext.Entry(entity)
-                       .Reference(propertyExpression)
+                       .Reference(propertyExpression!)
                        .LoadAsync(cancellationToken);
     }
 

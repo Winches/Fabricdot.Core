@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using Fabricdot.Domain.Events;
+﻿using Fabricdot.Domain.Events;
 
 namespace Fabricdot.Domain.Entities;
 

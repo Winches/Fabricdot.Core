@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Fabricdot.MultiTenancy;
+﻿namespace Fabricdot.MultiTenancy;
 
 public class TenantNotFoundException : Exception
 {

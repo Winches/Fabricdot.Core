@@ -1,5 +1,4 @@
-﻿using System;
-using Fabricdot.Core.DependencyInjection;
+﻿using Fabricdot.Core.DependencyInjection;
 using Fabricdot.MultiTenancy.Abstractions;
 using Microsoft.Extensions.DependencyInjection;
 

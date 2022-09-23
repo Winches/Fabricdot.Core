@@ -1,5 +1,3 @@
-using System;
-
 namespace Fabricdot.Core.Delegates;
 
 public sealed class NullDisposable : IDisposable

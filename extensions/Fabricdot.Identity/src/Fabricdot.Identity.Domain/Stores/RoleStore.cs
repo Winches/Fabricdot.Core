@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq.Expressions;
-using System.Threading;
-using System.Threading.Tasks;
+﻿using System.Linq.Expressions;
 using Ardalis.GuardClauses;
 using Fabricdot.Core.UniqueIdentifier;
 using Fabricdot.Identity.Domain.Entities.RoleAggregate;
@@ -64,7 +60,7 @@ public partial class RoleStore<TRole> : IdentityStoreBase, IRoleStore<TRole> whe
     {
         cancellationToken.ThrowIfCancellationRequested();
 
-        return await RoleRepository.GetDetailsByIdAsync(ConvertIdFromString(roleId), cancellationToken);
+        return (await RoleRepository.GetDetailsByIdAsync(ConvertIdFromString(roleId), cancellationToken))!;
     }
 
     public virtual async Task<TRole> FindByNameAsync(
@@ -73,9 +69,9 @@ public partial class RoleStore<TRole> : IdentityStoreBase, IRoleStore<TRole> whe
     {
         cancellationToken.ThrowIfCancellationRequested();
 
-        return await RoleRepository.GetByNormalizedNameAsync(
+        return (await RoleRepository.GetByNormalizedNameAsync(
             normalizedRoleName,
-            cancellationToken: cancellationToken);
+            cancellationToken: cancellationToken))!;
     }
 
     public virtual Task<string> GetNormalizedRoleNameAsync(

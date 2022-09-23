@@ -1,5 +1,4 @@
-﻿using System.Linq;
-using Ardalis.GuardClauses;
+﻿using Ardalis.GuardClauses;
 
 // ReSharper disable once CheckNamespace
 namespace System;

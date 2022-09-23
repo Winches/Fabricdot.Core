@@ -1,6 +1,3 @@
-using System;
-using System.Collections.Generic;
-
 namespace Fabricdot.Infrastructure.Uow.Abstractions;
 
 public interface IUnitOfWorkScope : IDisposable

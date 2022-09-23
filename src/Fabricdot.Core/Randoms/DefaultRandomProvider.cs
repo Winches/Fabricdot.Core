@@ -1,5 +1,4 @@
-﻿using System;
-using Fabricdot.Core.DependencyInjection;
+﻿using Fabricdot.Core.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Fabricdot.Core.Randoms;

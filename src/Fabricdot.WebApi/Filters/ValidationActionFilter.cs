@@ -1,5 +1,4 @@
-﻿using System.Threading.Tasks;
-using Fabricdot.Core.DependencyInjection;
+﻿using Fabricdot.Core.DependencyInjection;
 using Fabricdot.WebApi.Endpoint;
 using Fabricdot.WebApi.Validation;
 using Microsoft.AspNetCore.Mvc.Filters;

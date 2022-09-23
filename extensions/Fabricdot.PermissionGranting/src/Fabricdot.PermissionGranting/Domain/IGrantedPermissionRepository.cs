@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Threading;
-using System.Threading.Tasks;
-using Fabricdot.Authorization;
+﻿using Fabricdot.Authorization;
 using Fabricdot.Domain.Services;
 
 namespace Fabricdot.PermissionGranting.Domain;
@@ -14,7 +10,7 @@ public interface IGrantedPermissionRepository : IRepository<GrantedPermission, G
             string @object,
             CancellationToken cancellationToken = default);
 
-    Task<GrantedPermission> GetAsync(
+    Task<GrantedPermission?> GetAsync(
         GrantSubject subject,
         string @object,
         CancellationToken cancellationToken = default);

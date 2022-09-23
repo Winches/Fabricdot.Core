@@ -1,8 +1,6 @@
 // ReSharper disable CheckNamespace
 
 using System.Data;
-using System.Threading;
-using System.Threading.Tasks;
 using Ardalis.GuardClauses;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Storage;

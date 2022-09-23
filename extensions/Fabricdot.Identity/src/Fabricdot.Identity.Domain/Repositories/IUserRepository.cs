@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Threading;
-using System.Threading.Tasks;
-using Fabricdot.Domain.Services;
+﻿using Fabricdot.Domain.Services;
 using Fabricdot.Identity.Domain.Entities.RoleAggregate;
 using Fabricdot.Identity.Domain.Entities.UserAggregate;
 
@@ -10,21 +6,21 @@ namespace Fabricdot.Identity.Domain.Repositories;
 
 public interface IUserRepository<TUser> : IRepository<TUser, Guid> where TUser : IdentityUser
 {
-    Task<TUser> GetDetailsByIdAsync(
+    Task<TUser?> GetDetailsByIdAsync(
         Guid id,
         CancellationToken cancellationToken = default);
 
-    Task<TUser> GetByNormalizedUserNameAsync(
+    Task<TUser?> GetByNormalizedUserNameAsync(
         string normalizedUserName,
         bool includeDetails = true,
         CancellationToken cancellationToken = default);
 
-    Task<TUser> GetByNormalizedEmailAsync(
+    Task<TUser?> GetByNormalizedEmailAsync(
         string normalizedEmail,
         bool includeDetails = true,
         CancellationToken cancellationToken = default);
 
-    Task<TUser> GetByLoginAsync(
+    Task<TUser?> GetByLoginAsync(
         string loginProvider,
         string providerKey,
         bool includeDetails = true,

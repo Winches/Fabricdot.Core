@@ -1,7 +1,4 @@
-﻿using System;
-using System.Threading;
-using System.Threading.Tasks;
-using Fabricdot.Infrastructure.Uow.Abstractions;
+﻿using Fabricdot.Infrastructure.Uow.Abstractions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 

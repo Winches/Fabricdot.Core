@@ -1,8 +1,4 @@
-﻿using System;
-using System.Threading;
-using System.Threading.Tasks;
-
-namespace Fabricdot.Core.Boot;
+﻿namespace Fabricdot.Core.Boot;
 
 public abstract class Application : IApplication
 {

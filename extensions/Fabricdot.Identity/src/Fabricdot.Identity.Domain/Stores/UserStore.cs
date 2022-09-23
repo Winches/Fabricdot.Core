@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq.Expressions;
-using System.Threading;
-using System.Threading.Tasks;
+﻿using System.Linq.Expressions;
 using Ardalis.GuardClauses;
 using Fabricdot.Core.UniqueIdentifier;
 using Fabricdot.Identity.Domain.Entities.RoleAggregate;
@@ -76,7 +72,9 @@ public partial class UserStore<TUser, TRole> : IdentityStoreBase, IUserStore<TUs
     {
         cancellationToken.ThrowIfCancellationRequested();
 
-        return await UserRepository.GetDetailsByIdAsync(ConvertIdFromString(userId), cancellationToken);
+        return (await UserRepository.GetDetailsByIdAsync(
+            ConvertIdFromString(userId),
+            cancellationToken))!;
     }
 
     public virtual async Task<TUser> FindByNameAsync(
@@ -85,7 +83,9 @@ public partial class UserStore<TUser, TRole> : IdentityStoreBase, IUserStore<TUs
     {
         cancellationToken.ThrowIfCancellationRequested();
 
-        return await UserRepository.GetByNormalizedUserNameAsync(normalizedUserName, cancellationToken: cancellationToken);
+        return (await UserRepository.GetByNormalizedUserNameAsync(
+            normalizedUserName,
+            cancellationToken: cancellationToken))!;
     }
 
     public virtual Task<string> GetNormalizedUserNameAsync(

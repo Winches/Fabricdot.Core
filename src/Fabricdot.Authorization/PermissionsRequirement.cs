@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using Ardalis.GuardClauses;
+﻿using Ardalis.GuardClauses;
 using Fabricdot.Authorization.Permissions;
 using Microsoft.AspNetCore.Authorization;
 

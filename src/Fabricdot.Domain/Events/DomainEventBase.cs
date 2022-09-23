@@ -1,5 +1,4 @@
-﻿using System;
-using Fabricdot.Domain.SharedKernel;
+﻿using Fabricdot.Domain.SharedKernel;
 
 namespace Fabricdot.Domain.Events;
 

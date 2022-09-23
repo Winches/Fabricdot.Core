@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-namespace Fabricdot.Domain.Internal;
+﻿namespace Fabricdot.Domain.Internal;
 
 public class EntityInitializer
 {

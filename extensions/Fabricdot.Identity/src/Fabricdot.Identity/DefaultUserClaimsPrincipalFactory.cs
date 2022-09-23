@@ -1,7 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using System.Security.Claims;
-using System.Threading.Tasks;
+﻿using System.Security.Claims;
 using Fabricdot.Domain.SharedKernel;
 using Fabricdot.Identity.Domain.Entities.RoleAggregate;
 using Fabricdot.Identity.Domain.Entities.UserAggregate;

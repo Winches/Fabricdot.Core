@@ -1,6 +1,4 @@
-﻿using System;
-using System.Net.Http;
-using Fabricdot.Core.DependencyInjection;
+﻿using Fabricdot.Core.DependencyInjection;
 using Fabricdot.Infrastructure.Uow;
 using Fabricdot.Infrastructure.Uow.Abstractions;
 using Microsoft.AspNetCore.Http;

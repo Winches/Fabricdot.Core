@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using Fabricdot.Domain.Auditing;
+﻿using Fabricdot.Domain.Auditing;
 
 namespace Fabricdot.Infrastructure.Data;
 

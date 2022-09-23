@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace Fabricdot.Infrastructure.Data.Filters;
+﻿namespace Fabricdot.Infrastructure.Data.Filters;
 
 public class DataFilterOptions
 {

@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Fabricdot.Core.Aspects;
+﻿namespace Fabricdot.Core.Aspects;
 
 /// <summary>
 ///     Specific interceptor meta data

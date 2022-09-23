@@ -37,15 +37,15 @@ public static class ObjectExtensions
     /// <param name="value"></param>
     /// <typeparam name="T"></typeparam>
     /// <returns></returns>
-    public static T To<T>(this object value)
+    public static T? To<T>(this object value)
     {
         Guard.Against.Null(value, nameof(value));
 
         var type = typeof(T);
         if (type == typeof(Guid))
         {
-            return (T)TypeDescriptor.GetConverter(type)
-                                    .ConvertFromInvariantString(value.ToString());
+            return (T?)TypeDescriptor.GetConverter(type)
+                                    .ConvertFromInvariantString(value.ToString()!);
         }
 
         if (type.IsEnum)

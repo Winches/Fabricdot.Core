@@ -1,4 +1,3 @@
-using System.Threading.Tasks;
 using Fabricdot.Core.DependencyInjection;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.DependencyInjection;

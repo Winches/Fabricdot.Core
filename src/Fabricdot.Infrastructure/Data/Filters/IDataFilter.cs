@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Fabricdot.Infrastructure.Data.Filters;
+﻿namespace Fabricdot.Infrastructure.Data.Filters;
 
 public interface IDataFilter
 {

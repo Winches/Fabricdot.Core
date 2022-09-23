@@ -1,5 +1,3 @@
-using System.Collections.Generic;
-
 namespace Fabricdot.WebApi.Uow;
 
 public class HttpUnitOfWorkOptions

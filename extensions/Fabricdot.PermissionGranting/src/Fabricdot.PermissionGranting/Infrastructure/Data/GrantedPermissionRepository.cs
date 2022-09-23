@@ -1,10 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.Immutable;
-using System.Linq;
+﻿using System.Collections.Immutable;
 using System.Linq.Expressions;
-using System.Threading;
-using System.Threading.Tasks;
 using Ardalis.GuardClauses;
 using Fabricdot.Authorization;
 using Fabricdot.Infrastructure.EntityFrameworkCore;
@@ -34,7 +29,7 @@ public class GrantedPermissionRepository<TDbContext> : EfRepository<TDbContext, 
         return count > 0;
     }
 
-    public virtual async Task<GrantedPermission> GetAsync(
+    public virtual async Task<GrantedPermission?> GetAsync(
         GrantSubject subject,
         string @object,
         CancellationToken cancellationToken = default)

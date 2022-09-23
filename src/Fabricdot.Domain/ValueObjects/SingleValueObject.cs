@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace Fabricdot.Domain.ValueObjects;
+﻿namespace Fabricdot.Domain.ValueObjects;
 
 public abstract class SingleValueObject<T> : ValueObject, ISingleValueObject, IComparable where T : IComparable
 {

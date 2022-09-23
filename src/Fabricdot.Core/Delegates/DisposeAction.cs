@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Fabricdot.Core.Delegates;
+﻿namespace Fabricdot.Core.Delegates;
 
 /// <summary>
 ///     This class can be used to provide an action when
