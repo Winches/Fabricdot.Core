@@ -6,6 +6,10 @@ namespace Fabricdot.Domain.Tests.Services;
 
 public class RepositoryExtensionsTests : TestFor<IReadOnlyRepository<Order>>
 {
+    public class OrderFilter : Specification<Order>
+    {
+    }
+
     [Fact]
     public async void AnyAsync_Should_Correctly()
     {
@@ -17,7 +21,7 @@ public class RepositoryExtensionsTests : TestFor<IReadOnlyRepository<Order>>
 
     [AutoMockData]
     [Theory]
-    public async void AnyAsync_GivenSpecification_Correctly(Specification<Order> specification)
+    public async void AnyAsync_GivenSpecification_Correctly(OrderFilter specification)
     {
         var expected = await Sut.CountAsync(specification) > 0;
         var actual = await Sut.AnyAsync(specification);
