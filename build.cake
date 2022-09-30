@@ -102,7 +102,7 @@ Task("Test")
     .IsDependentOn("Build")
     .DoesForEach(()=> GetFiles("**/*.Tests.csproj"), project=>
     {
-        foreach(var framework in new [] { "net5.0" })
+        foreach(var framework in new [] { "net6.0" })
         {
             // var testResultsPath = System.IO.Path.Combine(reportDir,$"{project.GetFilenameWithoutExtension()}_TestResults.xml");
             var testResultName = $"{project.GetFilenameWithoutExtension()}_{framework}_TestResults.xml";
