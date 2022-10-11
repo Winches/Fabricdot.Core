@@ -5,9 +5,9 @@ namespace Fabricdot.Infrastructure.Data;
 
 public class DefaultConnectionStringResolver : IConnectionStringResolver, ITransientDependency
 {
-    private readonly DbConnectionOptions _options;
+    private readonly ConnectionOptions _options;
 
-    public DefaultConnectionStringResolver(IOptionsSnapshot<DbConnectionOptions> options)
+    public DefaultConnectionStringResolver(IOptionsSnapshot<ConnectionOptions> options)
     {
         _options = options.Value;
     }

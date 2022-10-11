@@ -24,7 +24,7 @@ public class IdentityTestModule : ModuleBase
         var dbconnection = InMemoryDatabaseHelper.CreateConnection();
         CreateInMemoryDatabase(dbconnection);
 
-        services.Configure<DbConnectionOptions>(options =>
+        services.Configure<ConnectionOptions>(options =>
         {
             options.ConnectionStrings.Default = dbconnection.ConnectionString;
         });
