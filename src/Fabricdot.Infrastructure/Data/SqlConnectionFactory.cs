@@ -7,7 +7,7 @@ public abstract class SqlConnectionFactory : ISqlConnectionFactory, IDisposable
     private readonly string _connectionString;
     private IDbConnection? _connection;
 
-    public SqlConnectionFactory(string connectionString)
+    protected SqlConnectionFactory(string connectionString)
     {
         _connectionString = connectionString;
     }
