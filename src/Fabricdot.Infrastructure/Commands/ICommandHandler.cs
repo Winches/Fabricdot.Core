@@ -1,12 +1,19 @@
-﻿using MediatR;
+﻿namespace Fabricdot.Infrastructure.Commands;
 
-namespace Fabricdot.Infrastructure.Commands;
-
-public interface ICommandHandler<in TCommand> : IRequestHandler<TCommand> where TCommand : ICommand
+public interface ICommandHandler
 {
 }
 
-public interface ICommandHandler<in TCommand, TResult> : IRequestHandler<TCommand, TResult>
-    where TCommand : ICommand<TResult>
+public interface ICommandHandler<TCommand> where TCommand : ICommand<object>
 {
+    Task ExecuteAsync(
+        TCommand command,
+        CancellationToken cancellationToken);
+}
+
+public interface ICommandHandler<TCommand, TResult> where TCommand : ICommand<TResult>
+{
+    Task<TResult> ExecuteAsync(
+        TCommand command,
+        CancellationToken cancellationToken);
 }

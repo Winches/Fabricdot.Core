@@ -1,5 +1,6 @@
 ﻿namespace Fabricdot.Infrastructure.Commands;
 
+[Obsolete("Use Command", true)]
 public class CommandBase : ICommand
 {
     public Guid Id { get; }
@@ -15,6 +16,7 @@ public class CommandBase : ICommand
     }
 }
 
+[Obsolete("Use Command", true)]
 public abstract class CommandBase<TResult> : ICommand<TResult>
 {
     public Guid Id { get; }

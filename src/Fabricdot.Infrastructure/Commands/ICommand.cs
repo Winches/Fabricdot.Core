@@ -1,13 +1,10 @@
-﻿using MediatR;
+﻿namespace Fabricdot.Infrastructure.Commands;
 
-namespace Fabricdot.Infrastructure.Commands;
-
-public interface ICommand : IRequest
+public interface ICommand
 {
-    Guid Id { get; }
 }
 
-public interface ICommand<out TResult> : IRequest<TResult>
+public interface ICommand<TResult> : ICommand
 {
     Guid Id { get; }
 }
