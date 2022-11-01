@@ -1,5 +1,5 @@
 ﻿namespace Fabricdot.Infrastructure.Queries;
 
-public abstract class ListQueryBase<TResult> : IQuery<IList<TResult>>
+public abstract class ListQueryBase<TResult> : Query<IList<TResult>>
 {
 }

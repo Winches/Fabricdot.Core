@@ -3,7 +3,7 @@ using Ardalis.GuardClauses;
 
 namespace Fabricdot.Infrastructure.Queries;
 
-public abstract class PageQueryBase<TResult> : IQuery<TResult>
+public abstract class PageQueryBase<TResult> : Query<TResult>
 {
     /// <summary>
     ///     page number

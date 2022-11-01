@@ -1,15 +1,17 @@
-﻿using AutoMapper;
+﻿using MediatR;
 
 namespace Fabricdot.Infrastructure.Queries;
 
-public abstract class QueryHandler<TQuery, TResult> : IQueryHandler<TQuery, TResult> where TQuery : IQuery<TResult>
+public abstract class QueryHandler<TQuery, TResult> : IQueryHandler<TQuery, TResult>, IRequestHandler<TQuery, TResult> where TQuery : Query<TResult>
 {
-    protected IMapper Mapper { get; }
+    public abstract Task<TResult> ExecuteAsync(
+        TQuery query,
+        CancellationToken cancellationToken);
 
-    protected QueryHandler(IMapper mapper)
+    public async Task<TResult> Handle(
+        TQuery request,
+        CancellationToken cancellationToken)
     {
-        Mapper = mapper;
+        return await ExecuteAsync(request, cancellationToken);
     }
-
-    public abstract Task<TResult> Handle(TQuery request, CancellationToken cancellationToken);
 }
