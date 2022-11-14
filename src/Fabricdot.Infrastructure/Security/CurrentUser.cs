@@ -15,12 +15,12 @@ public class CurrentUser : ICurrentUser
     public virtual bool IsAuthenticated => !string.IsNullOrEmpty(Id);
 
     public virtual string? Id => _principalAccessor.Principal?.Claims
-        .FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)
+        .FirstOrDefault(c => c.Type == SharedClaimTypes.NameIdentifier)
         ?.Value;
 
-    public virtual string? UserName => FindClaim(ClaimTypes.Name)?.Value;
+    public virtual string? UserName => FindClaim(SharedClaimTypes.Name)?.Value;
 
-    public virtual string[] Roles => FindClaims(ClaimTypes.Role).Select(c => c.Value).ToArray();
+    public virtual string[] Roles => FindClaims(SharedClaimTypes.Role).Select(c => c.Value).ToArray();
 
     public CurrentUser(IPrincipalAccessor principalAccessor)
     {
@@ -44,6 +44,6 @@ public class CurrentUser : ICurrentUser
 
     public virtual bool IsInRole(string roleName)
     {
-        return FindClaims(ClaimTypes.Role).Any(c => c.Value == roleName);
+        return FindClaims(SharedClaimTypes.Role).Any(c => c.Value == roleName);
     }
 }

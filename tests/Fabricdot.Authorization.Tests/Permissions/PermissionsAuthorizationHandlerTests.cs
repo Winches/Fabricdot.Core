@@ -1,4 +1,5 @@
 ﻿using System.Security.Claims;
+using Fabricdot.Core.Security;
 using Microsoft.AspNetCore.Authorization;
 
 namespace Fabricdot.Authorization.Tests.Permissions;
@@ -57,7 +58,7 @@ public class PermissionsAuthorizationHandlerTests : AuthrizationHandlerTestsBase
 
         var identity = new ClaimsIdentity(
             //Create<Claim[]>(),
-            new[] { new Claim(ClaimTypes.NameIdentifier, Create<string>()) },
+            new[] { new Claim(SharedClaimTypes.NameIdentifier, Create<string>()) },
             Create<string>());
         var principal = new ClaimsPrincipal(identity);
         var context = new AuthorizationHandlerContext(

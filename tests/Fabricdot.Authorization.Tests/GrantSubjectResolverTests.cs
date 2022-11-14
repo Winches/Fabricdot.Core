@@ -1,4 +1,5 @@
 ﻿using System.Security.Claims;
+using Fabricdot.Core.Security;
 
 namespace Fabricdot.Authorization.Tests;
 
@@ -9,15 +10,15 @@ public class GrantSubjectResolverTests : TestFor<GrantSubjectResolver>
     {
         var claims = new[]
         {
-            new Claim(ClaimTypes.Role,Create<string>()),
-            new Claim(ClaimTypes.NameIdentifier,Create<string>()),
+            new Claim(SharedClaimTypes.Role,Create<string>()),
+            new Claim(SharedClaimTypes.NameIdentifier,Create<string>()),
             Create<Claim>(),
         };
 
         var expected = claims.Select(v => v.Type switch
         {
-            ClaimTypes.NameIdentifier => GrantSubject.User(v.Value),
-            ClaimTypes.Role => GrantSubject.Role(v.Value),
+            var x when x == SharedClaimTypes.NameIdentifier => GrantSubject.User(v.Value),
+            var y when y == SharedClaimTypes.Role => GrantSubject.Role(v.Value),
             _ => (GrantSubject?)null
         })
             .Where(v => v is not null);

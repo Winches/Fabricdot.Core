@@ -21,18 +21,18 @@ public class CurrentUserTests : IntegrationTestBase<InfrastructureTestModule>
         yield return new object[] { CreateClaimsPrincipal() };
         yield return new object[]
         {
-            CreateClaimsPrincipal(new Claim(ClaimTypes.NameIdentifier, "1"))
+            CreateClaimsPrincipal(new Claim(SharedClaimTypes.NameIdentifier, "1"))
         };
         yield return new object[]
         {
-            CreateClaimsPrincipal(new Claim(ClaimTypes.Name, "Allen"))
+            CreateClaimsPrincipal(new Claim(SharedClaimTypes.Name, "Allen"))
         };
 
         yield return new object[]
         {
             CreateClaimsPrincipal(
-                new Claim(ClaimTypes.Role, "Admin"),
-                new Claim(ClaimTypes.Role, "Employee"))
+                new Claim(SharedClaimTypes.Role, "Admin"),
+                new Claim(SharedClaimTypes.Role, "Employee"))
         };
     }
 
@@ -41,7 +41,7 @@ public class CurrentUserTests : IntegrationTestBase<InfrastructureTestModule>
     public void Id_Should_ReturnNameIdentifier(ClaimsPrincipal claimsPrincipal)
     {
         ClaimsPrincipal = claimsPrincipal;
-        var expected = claimsPrincipal?.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        var expected = claimsPrincipal?.FindFirst(SharedClaimTypes.NameIdentifier)?.Value;
 
         _currentUser.Id.Should().Be(expected);
     }
@@ -51,7 +51,7 @@ public class CurrentUserTests : IntegrationTestBase<InfrastructureTestModule>
     public void UserName_Should_ReturnName(ClaimsPrincipal claimsPrincipal)
     {
         ClaimsPrincipal = claimsPrincipal;
-        var expected = claimsPrincipal?.FindFirst(ClaimTypes.Name)?.Value;
+        var expected = claimsPrincipal?.FindFirst(SharedClaimTypes.Name)?.Value;
 
         _currentUser.UserName.Should().Be(expected);
     }
@@ -61,7 +61,7 @@ public class CurrentUserTests : IntegrationTestBase<InfrastructureTestModule>
     public void Roles_Should_ReturnAllRoles(ClaimsPrincipal claimsPrincipal)
     {
         ClaimsPrincipal = claimsPrincipal;
-        var expected = claimsPrincipal?.FindAll(ClaimTypes.Role).Select(v => v.Value).ToArray() ??
+        var expected = claimsPrincipal?.FindAll(SharedClaimTypes.Role).Select(v => v.Value).ToArray() ??
                        Array.Empty<string>();
 
         _currentUser.Roles.Should().BeEquivalentTo(expected);
@@ -73,7 +73,7 @@ public class CurrentUserTests : IntegrationTestBase<InfrastructureTestModule>
     public void IsAuthenticated_Should_ReturnCorrectly(string id)
     {
         var expected = !id.IsNullOrEmpty();
-        ClaimsPrincipal = CreateClaimsPrincipal(new Claim(ClaimTypes.NameIdentifier, id));
+        ClaimsPrincipal = CreateClaimsPrincipal(new Claim(SharedClaimTypes.NameIdentifier, id));
 
         _currentUser.IsAuthenticated.Should().Be(expected);
     }
@@ -82,7 +82,7 @@ public class CurrentUserTests : IntegrationTestBase<InfrastructureTestModule>
     [Theory]
     public void IsInRole_GivenExistRole_ReturnTrue(string role)
     {
-        ClaimsPrincipal = CreateClaimsPrincipal(new Claim(ClaimTypes.Role, role));
+        ClaimsPrincipal = CreateClaimsPrincipal(new Claim(SharedClaimTypes.Role, role));
 
         _currentUser.IsInRole(role).Should().BeTrue();
     }

@@ -1,5 +1,6 @@
 ﻿using System.Security.Claims;
 using Fabricdot.Authorization.Permissions;
+using Fabricdot.Core.Security;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Moq;
@@ -22,8 +23,8 @@ public class AuthorizationTestBase : IntegrationTestBase<AuthorizationTestModule
 
     public AuthorizationTestBase()
     {
-        Superuser = new(ClaimTypes.NameIdentifier, Create<string>());
-        Superrole = new(ClaimTypes.Role, Create<string>());
+        Superuser = new(SharedClaimTypes.NameIdentifier, Create<string>());
+        Superrole = new(SharedClaimTypes.Role, Create<string>());
         GrantedPermissions = Create<PermissionName[]>();
         UngrantedPermissions = Create<PermissionName[]>();
         Permissions = GrantedPermissions.Union(UngrantedPermissions).ToArray();

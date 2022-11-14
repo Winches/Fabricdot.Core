@@ -1,6 +1,7 @@
 ﻿using System.Security.Claims;
 using Ardalis.GuardClauses;
 using Fabricdot.Core.DependencyInjection;
+using Fabricdot.Core.Security;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Fabricdot.Authorization;
@@ -16,11 +17,11 @@ public class GrantSubjectResolver : IGrantSubjectResolver
 
         var subjects = new List<GrantSubject>();
 
-        var id = claimsPrincipal.FindFirst(ClaimTypes.NameIdentifier);
+        var id = claimsPrincipal.FindFirst(SharedClaimTypes.NameIdentifier);
         if (id != null)
             subjects.Add(new GrantSubject(GrantTypes.User, id.Value));
 
-        var roles = claimsPrincipal.FindAll(ClaimTypes.Role)
+        var roles = claimsPrincipal.FindAll(SharedClaimTypes.Role)
                                    .Select(v => v.Value)
                                    .Distinct()
                                    .Select(v => new GrantSubject(GrantTypes.Role, v));

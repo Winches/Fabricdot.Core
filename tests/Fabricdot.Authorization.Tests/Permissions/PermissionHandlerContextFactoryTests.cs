@@ -1,5 +1,6 @@
 ﻿using System.Security.Claims;
 using Fabricdot.Authorization.Permissions;
+using Fabricdot.Core.Security;
 using Moq;
 
 namespace Fabricdot.Authorization.Tests.Permissions;
@@ -31,7 +32,6 @@ public class PermissionHandlerContextFactoryTests : TestFor<PermissionHandlerCon
         await Awaiting(() => Sut.CreateAsync(principal, permissions))
                            .Should()
                            .ThrowAsync<ArgumentException>();
-        // TODO:Simplify
     }
 
     [AutoData]
@@ -40,9 +40,9 @@ public class PermissionHandlerContextFactoryTests : TestFor<PermissionHandlerCon
     {
         var claims = new[]
         {
-            new Claim(ClaimTypes.Role,Create<string>()),
-            new Claim(ClaimTypes.NameIdentifier,Create<string>()),
-            new Claim(ClaimTypes.Name,Create<string>()),
+            new Claim(SharedClaimTypes.Role,Create<string>()),
+            new Claim(SharedClaimTypes.NameIdentifier,Create<string>()),
+            new Claim(SharedClaimTypes.Name,Create<string>()),
         };
         var expectedClaims = claims.Select(v => (GrantSubject)v).ToList();
         var pricinpal = new ClaimsPrincipal(new ClaimsIdentity(claims));

@@ -1,4 +1,5 @@
 ﻿using System.Security.Claims;
+using Fabricdot.Core.Security;
 using Fabricdot.Domain.SharedKernel;
 using Fabricdot.Identity.Domain.Entities.RoleAggregate;
 using Fabricdot.Identity.Domain.Entities.UserAggregate;
@@ -25,22 +26,22 @@ public class DefaultUserClaimsPrincipalFactory<TUser, TRole> : UserClaimsPrincip
 
         if (!string.IsNullOrWhiteSpace(user.GivenName))
         {
-            identity.GetOrAdd(ClaimTypes.GivenName, user.GivenName);
+            identity.GetOrAdd(SharedClaimTypes.GivenName, user.GivenName);
         }
 
         if (!string.IsNullOrWhiteSpace(user.Surname))
         {
-            identity.GetOrAdd(ClaimTypes.Surname, user.Surname);
+            identity.GetOrAdd(SharedClaimTypes.Surname, user.Surname);
         }
 
         if (!string.IsNullOrWhiteSpace(user.PhoneNumber))
         {
-            identity.GetOrAdd(ClaimTypes.MobilePhone, user.PhoneNumber);
+            identity.GetOrAdd(SharedClaimTypes.MobilePhone, user.PhoneNumber);
         }
 
         if (!string.IsNullOrWhiteSpace(user.Email))
         {
-            identity.GetOrAdd(ClaimTypes.Email, user.Email);
+            identity.GetOrAdd(SharedClaimTypes.Email, user.Email);
         }
 
         if (user is IMultiTenant multiTenant && multiTenant.TenantId.HasValue)

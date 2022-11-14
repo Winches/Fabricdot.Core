@@ -1,5 +1,6 @@
 ﻿using System.Security.Claims;
 using Fabricdot.Authorization.Permissions;
+using Fabricdot.Core.Security;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Fabricdot.Authorization.Tests.Permissions;
@@ -29,7 +30,6 @@ public class PermissionEvaluatorTests : AuthorizationTestBase
         async Task TestCode() => await PermissionEvaluator.EvaluateAsync(principal, permissions);
 
         await Awaiting(TestCode).Should().ThrowAsync<ArgumentException>();
-        // TODO:Simplify
     }
 
     [AutoData]
@@ -45,7 +45,7 @@ public class PermissionEvaluatorTests : AuthorizationTestBase
     public async Task EvaluateAsync_GivenInput_ReturnCorrectly()
     {
         var principal = new ClaimsPrincipal(new ClaimsIdentity(new[] {
-            new Claim(ClaimTypes.NameIdentifier, Create<string>())
+            new Claim(SharedClaimTypes.NameIdentifier, Create<string>())
         }));
         var grantResults = await PermissionEvaluator.EvaluateAsync(principal, Permissions);
 
@@ -73,7 +73,7 @@ public class PermissionEvaluatorTests : AuthorizationTestBase
     {
         var principal = new ClaimsPrincipal(new ClaimsIdentity(new[] {
             Superrole,
-            new Claim(ClaimTypes.Role, Create<string>())
+            new Claim(SharedClaimTypes.Role, Create<string>())
         }));
         var grantResults = await PermissionEvaluator.EvaluateAsync(principal, GrantedPermissions);
 
