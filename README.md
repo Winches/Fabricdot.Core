@@ -1,6 +1,6 @@
 # Fabericdot Core
 [![nuget](https://img.shields.io/nuget/v/Fabricdot.Core.svg?style=flat-square&color=blue)](https://www.nuget.org/packages/Fabricdot.Core)
-![build](https://img.shields.io/github/workflow/status/Winches/Fabricdot.Core/CI?style=flat-square)
+![build](https://img.shields.io/github/actions/workflow/status/Winches/Fabricdot.Core/ci.yml?style=flat-square)
 ![codecov](https://img.shields.io/codecov/c/gh/Winches/Fabricdot.Core?branch=dev&style=flat-square&token=615Z4TKL1D)
 ![license](https://img.shields.io/github/license/winches/Fabricdot.Core?style=flat-square)
 
@@ -288,7 +288,7 @@ Create command and handler for your task:
     using Fabricdot.Infrastructure.Commands;
 
     // Command
-    public class PlaceOrderCommand: CommandBase
+    public class PlaceOrderCommand: Command
     {
         [Required]
         [MinLength(1)]
@@ -297,7 +297,7 @@ Create command and handler for your task:
     }
 
     // Command handler
-    internal class PlaceOrderCommandHandler: ICommandHandler<PlaceOrderCommand>
+    internal class PlaceOrderCommandHandler: CommandHandler<PlaceOrderCommand>
     {
         private readonly IOrderService _orderService;
         private readonly IOrderRepository _orderRepository;
@@ -310,12 +310,45 @@ Create command and handler for your task:
             _orderRepository = orderRepository
         }
 
-        public async Task<Unit> Handle(
-            PlaceOrderCommand request,
+        public override async Task<Unit> ExecuteAsync(
+            PlaceOrderCommand command,
             CancellationToken cancellationToken)
         {
-            var order = _orderService.Create(request.Address,request.CustomerId);
+            var order = _orderService.Create(command.Address,command.CustomerId);
             await _orderRepository.AddAsync(order,cancellationToken);
+        }
+    }
+```
+
+Create query and handler
+
+```c#
+    using Fabricdot.Infrastructure.Queries;
+    // Query
+    public class GetOrderDetailsQuery : Query<OrderDetailsDto>
+    {
+        public Guid OrderId { get; }
+
+        public GetOrderDetailsQuery(Guid orderId)
+        {
+            OrderId = orderId;
+        }
+    }
+    // Query handler
+    internal class GetOrderDetailsQueryHandler : QueryHandler<GetOrderDetailsQuery, OrderDetailsDto>
+    {
+        private readonly IOrderQueries _orderQueries;
+
+        public GetOrderDetailsQueryHandler(IOrderQueries orderQueries)
+        {
+            _orderQueries = orderQueries;
+        }
+
+        public override async Task<OrderDetailsDto> ExecuteAsync(
+            GetOrderDetailsQuery query,
+            CancellationToken cancellationToken)e
+        {
+            return await _orderQueries.GetDetailsAsync(query.OrderId);
         }
     }
 ```
@@ -328,7 +361,12 @@ Create api controller
     public class OrderController : EndPointBase
     {
         [HttpPost]
-        public async Task CreateAsync([FromBody] PlaceOrderCommand command) => await Sender.Send(command);
+        public async Task CreateAsync([FromBody] PlaceOrderCommand command) 
+                => await CommandBus.PublishAsync(command);
+
+        [HttpGet("{id}")]
+        public async Task<OrderDetailsDto> GetDetails([FromRoute] Guid id)
+                => await QueryProcessor.ProcessAsync(new GetOrderDetailsQuery(id));
     }
 ```
 
@@ -347,14 +385,7 @@ Module
         public override ConfigureServices(ConfigureServiceContext context)
         {
             var services = context.Services;
-            services.AddControllers(opts =>
-            {
-                opts.AddActionFilters();
-            })
-                .ConfigureApiBehaviorOptions(opts =>
-                {
-                    opts.SuppressModelStateInvalidFilter = true;
-                });
+            services.AddControllers();
         }
 
         public override OnStartingAsync(ApplicationStartingContext context)
@@ -369,46 +400,19 @@ Module
     }
 ```
 
-Modify `Startup.cs` 
-
-```c#
-    using Fabricdot.Core.Boot;
-    using Microsoft.AspNetCore.Builder;
-
-    public class Startup
-    {
-        public void ConfigureServices(IServiceCollection services)
-        {
-            services.AddBootstrapper<SampleApplicationModule>();
-        }
-
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
-        {
-            app.Bootstrap();
-        }
-    }
-
-```
-
 Modify `Programm.cs`
 
 ```c#
+    using Fabricdot.Core.Boot;
     using Fabricdot.Infrastructure.DependencyInjection;
 
-    public static class Program
-    {
-        public static async Task Main(string[] args)
-        {
-            await CreateHostBuilder(args).Build().StartAsync();
-        }
+    var builder = WebApplication.CreateBuilder(args);
+    builder.Host.UseServiceProviderFactory(new FabricdotServiceProviderFactory());
+    builder.Services.AddBootstrapper<MallApplicationModule>();
 
-        public static IHostBuilder CreateHostBuilder(string[] args)
-        {
-            return Host.CreateDefaultBuilder(args)
-                       .ConfigureWebHostDefaults(webBuilder => webBuilder.UseStartup<Startup>())
-                       .UseServiceProviderFactory(new FabricdotServiceProviderFactory());
-        }
-    }
+    var app = builder.Build();
+    await app.BootstrapAsync();
+    await app.RunAsync();
 ```
 
 Finally we can use `dotnet run` to see the web host.
