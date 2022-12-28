@@ -1,11 +1,11 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net5.0</TargetFramework>
+    <TargetFramework>net6.0</TargetFramework>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Fabricdot.Domain" Version="0.6.0" />
+    <PackageReference Include="Fabricdot.Domain" Version="0.7.0" />
   </ItemGroup>
 
 </Project>

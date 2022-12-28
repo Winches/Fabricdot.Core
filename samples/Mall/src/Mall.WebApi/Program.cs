@@ -1,23 +1,13 @@
-using System;
-using System.IO;
-using System.Threading.Tasks;
+using Fabricdot.Core.Boot;
 using Fabricdot.Infrastructure.DependencyInjection;
 using Mall.Infrastructure.Data;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
+using Mall.WebApi;
 using Serilog;
 using Serilog.Events;
 
-namespace Mall.WebApi;
-
-public static class Program
-{
-    public static async Task Main(string[] args)
-    {
-        var baseDir = AppDomain.CurrentDomain.BaseDirectory;
-        var logfile = Path.Combine(baseDir, "logs", "app.log");
-        Log.Logger = new LoggerConfiguration()
+var baseDir = AppDomain.CurrentDomain.BaseDirectory;
+var logfile = Path.Combine(baseDir, "logs", "app.log");
+Log.Logger = new LoggerConfiguration()
 #if DEBUG
             .MinimumLevel.Debug()
 #else
@@ -35,33 +25,28 @@ public static class Program
                 rollOnFileSizeLimit: false))
             .CreateLogger();
 
-        var logger = Log.Logger;
-        try
-        {
-            var host = CreateHostBuilder(args).Build();
+var logger = Log.Logger;
+try
+{
+    var builder = WebApplication.CreateBuilder(args);
+    builder.Host.UseServiceProviderFactory(new FabricdotServiceProviderFactory());
+    builder.Services.AddBootstrapper<MallApplicationModule>();
+    var app = builder.Build();
 
-            var dbMigrator = host.Services.GetRequiredService<DbMigrator>();
-            await dbMigrator.MigrateAsync();
+    await app.BootstrapAsync();
 
-            await host.RunAsync();
+    var dbMigrator = app.Services.GetRequiredService<DbMigrator>();
+    await dbMigrator.MigrateAsync();
 
-            logger.Information("App host starting..");
-        }
-        catch (Exception ex)
-        {
-            Log.Logger.Fatal(ex, "An error occurred when host running.");
-        }
-        finally
-        {
-            logger.Information("App host shutting..");
-            Log.CloseAndFlush();
-        }
-    }
+    await app.RunAsync();
 
-    public static IHostBuilder CreateHostBuilder(string[] args)
-    {
-        return Host.CreateDefaultBuilder(args)
-                   .ConfigureWebHostDefaults(webBuilder => webBuilder.UseStartup<Startup>())
-                   .UseServiceProviderFactory(new FabricdotServiceProviderFactory());
-    }
+    logger.Information("App host starting..");
+}
+catch (Exception ex)
+{
+    Log.Logger.Fatal(ex, "An error occurred when host running.");
+}
+finally
+{
+    logger.Information("App host shutting..");
 }

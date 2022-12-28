@@ -1,6 +1,5 @@
-﻿using System;
-using Ardalis.GuardClauses;
-using Fabricdot.Domain.Auditing;
+﻿using Ardalis.GuardClauses;
+using Fabricdot.Domain.Entities;
 
 namespace Mall.Domain.Aggregates.OrderAggregate;
 

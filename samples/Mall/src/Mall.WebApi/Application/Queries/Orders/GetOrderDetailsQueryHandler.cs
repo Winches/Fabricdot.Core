@@ -1,10 +1,8 @@
-﻿using System.Threading;
-using System.Threading.Tasks;
-using Fabricdot.Infrastructure.Queries;
+﻿using Fabricdot.Infrastructure.Queries;
 
 namespace Mall.WebApi.Application.Queries.Orders;
 
-internal class GetOrderDetailsQueryHandler : IQueryHandler<GetOrderDetailsQuery, OrderDetailsDto>
+internal class GetOrderDetailsQueryHandler : QueryHandler<GetOrderDetailsQuery, OrderDetailsDto>
 {
     private readonly IOrderQueries _orderQueries;
 
@@ -13,10 +11,10 @@ internal class GetOrderDetailsQueryHandler : IQueryHandler<GetOrderDetailsQuery,
         _orderQueries = orderQueries;
     }
 
-    public async Task<OrderDetailsDto> Handle(
-        GetOrderDetailsQuery request,
+    public override async Task<OrderDetailsDto> ExecuteAsync(
+        GetOrderDetailsQuery query,
         CancellationToken cancellationToken)
     {
-        return await _orderQueries.GetDetailsAsync(request.OrderId);
+        return await _orderQueries.GetDetailsAsync(query.OrderId);
     }
 }

@@ -1,14 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Threading;
-using System.Threading.Tasks;
-using Fabricdot.Infrastructure.Commands;
+﻿using Fabricdot.Infrastructure.Commands;
 using Mall.Domain.Aggregates.OrderAggregate;
 using Mall.Domain.Repositories;
 
 namespace Mall.WebApi.Application.Commands.Orders;
 
-public class PlaceOrderCommandHandler : ICommandHandler<PlaceOrderCommand, Guid>
+public class PlaceOrderCommandHandler : CommandHandler<PlaceOrderCommand, Guid>
 {
     private readonly IOrderRepository _orderRepository;
     private readonly IOrderService _orderService;
@@ -21,18 +17,18 @@ public class PlaceOrderCommandHandler : ICommandHandler<PlaceOrderCommand, Guid>
         _orderService = orderService;
     }
 
-    public async Task<Guid> Handle(
-        PlaceOrderCommand request,
+    public override async Task<Guid> ExecuteAsync(
+        PlaceOrderCommand command,
         CancellationToken cancellationToken)
     {
-        var addressDto = request.ShippingAddress;
+        var addressDto = command.ShippingAddress;
         var address = new Address(
             addressDto.Country,
             addressDto.State,
             addressDto.City,
             addressDto.Street);
-        var order = _orderService.Create(address, request.CustomerId);
-        request.OrderLines.ForEach(v => order.AddOrderLine(v.ProductId, v.Quantity, v.Price));
+        var order = _orderService.Create(address, command.CustomerId);
+        command.OrderLines.ForEach(v => order.AddOrderLine(v.ProductId, v.Quantity, v.Price));
 
         await _orderRepository.AddAsync(order);
         return order.Id;

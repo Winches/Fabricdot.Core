@@ -1,9 +1,8 @@
-﻿using System;
-using Fabricdot.Infrastructure.Queries;
+﻿using Fabricdot.Infrastructure.Queries;
 
 namespace Mall.WebApi.Application.Queries.Orders;
 
-public class GetOrderDetailsQuery : IQuery<OrderDetailsDto>
+public class GetOrderDetailsQuery : Query<OrderDetailsDto>
 {
     public Guid OrderId { get; }
 

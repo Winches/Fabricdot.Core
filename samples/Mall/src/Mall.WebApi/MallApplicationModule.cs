@@ -1,18 +1,11 @@
-using System;
-using System.Threading.Tasks;
 using Fabricdot.Core.Boot;
 using Fabricdot.Core.Modularity;
 using Fabricdot.Domain.SharedKernel;
 using Fabricdot.WebApi;
-using Fabricdot.WebApi.Configuration;
 using Mall.Domain;
 using Mall.Infrastructure;
 using Mall.WebApi.Configuration;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.StaticFiles;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
 
 namespace Mall.WebApi;
 
@@ -26,22 +19,9 @@ public class MallApplicationModule : ModuleBase
     {
         var services = context.Services;
 
-        #region endpoint
+        services.AddControllers();
 
-        services.AddControllers(opts => opts.AddActionFilters())
-            .ConfigureApiBehaviorOptions(opts =>
-            {
-                opts.SuppressModelStateInvalidFilter = true;
-            });
-
-        #endregion endpoint
-
-        #region api-doc
-
-        //swagger
         services.AddSwagger();
-
-        #endregion api-doc
 
         SystemClock.Configure(DateTimeKind.Utc);
         services.AddSingleton<IContentTypeProvider, FileExtensionContentTypeProvider>();

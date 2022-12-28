@@ -1,5 +1,4 @@
-﻿using System.Threading.Tasks;
-using Fabricdot.WebApi.Endpoint;
+﻿using Fabricdot.WebApi.Endpoint;
 using Mall.WebApi.Application.Queries.Orders;
 using Microsoft.AspNetCore.Mvc;
 
@@ -11,6 +10,6 @@ public class CustomerOrderController : EndPointBase
     [HttpGet("amount")]
     public async Task<decimal> GetSpendingAmount([FromQuery] GetCustomerSpendingAmountQuery query)
     {
-        return await Sender.Send(query);
+        return await QueryProcessor.ProcessAsync(query);
     }
 }

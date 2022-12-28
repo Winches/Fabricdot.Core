@@ -1,10 +1,8 @@
-﻿using System.Threading;
-using System.Threading.Tasks;
-using Fabricdot.Infrastructure.Queries;
+﻿using Fabricdot.Infrastructure.Queries;
 
 namespace Mall.WebApi.Application.Queries.Orders;
 
-internal class GetCustomerSpendingAmountQueryHandler : IQueryHandler<GetCustomerSpendingAmountQuery, decimal>
+internal class GetCustomerSpendingAmountQueryHandler : QueryHandler<GetCustomerSpendingAmountQuery, decimal>
 {
     private readonly IOrderQueries _orderQueries;
 
@@ -13,10 +11,10 @@ internal class GetCustomerSpendingAmountQueryHandler : IQueryHandler<GetCustomer
         _orderQueries = orderQueries;
     }
 
-    public Task<decimal> Handle(
-        GetCustomerSpendingAmountQuery request,
+    public override Task<decimal> ExecuteAsync(
+        GetCustomerSpendingAmountQuery query,
         CancellationToken cancellationToken)
     {
-        return _orderQueries.GetSpendingAmount(request.CustomerId);
+        return _orderQueries.GetSpendingAmount(query.CustomerId);
     }
 }

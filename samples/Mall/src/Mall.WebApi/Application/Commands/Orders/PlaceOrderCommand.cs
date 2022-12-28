@@ -1,10 +1,9 @@
-﻿using System;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using Fabricdot.Infrastructure.Commands;
 
 namespace Mall.WebApi.Application.Commands.Orders;
 
-public class PlaceOrderCommand : CommandBase<Guid>
+public class PlaceOrderCommand : Command<Guid>
 {
     [Required]
     public Guid CustomerId { get; set; }
