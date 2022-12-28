@@ -61,7 +61,7 @@ public abstract class IntegrationTestBase<TModule> : IntegrationTestBase where T
         RootServiceProvider = ServiceProviderFactory.CreateServiceProvider(services);
         ServiceScope = RootServiceProvider.CreateScope();
 
-        app.Build(ServiceScope.ServiceProvider);
+        //app.Build(ServiceScope.ServiceProvider);
 
         RootServiceProvider.BootstrapAsync().GetAwaiter().GetResult();
         Inject(RootServiceProvider);
