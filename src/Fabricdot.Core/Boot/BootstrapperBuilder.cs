@@ -41,15 +41,17 @@ internal sealed class BootstrapperBuilder : IBootstrapperBuilder
 
     public IApplication Build(IServiceProvider serviceProvider)
     {
-        var app = new Bootstrapper();
-        app.SetServiceProvider(serviceProvider);
-        Services.AddSingleton<IApplication>(app);
+        var app = Services.GetRequiredSingletonInstance<IApplication>();
+        (app as ISupportSetServiceProvider)?.SetServiceProvider(serviceProvider);
+
+        //Services.AddSingleton<IApplication>(app);
         return app;
     }
 
     private void AddCoreServices(ConfigurationBuilderOptions configurationOptions)
     {
         Services.AddSingleton<IBootstrapperBuilder>(this);
+        Services.AddSingleton<IApplication>(new Bootstrapper());
         Services.TryAddConfiguration(configurationOptions);
         Services.AddLogging();
         Services.AddOptions();
