@@ -21,7 +21,7 @@ public class DomainDependencyRegistrarTests : TestFor<DomainDependencyRegistrar>
             throw new NotImplementedException();
         }
 
-        public override Task<int> CountAsync(ISpecification<Order> specification, CancellationToken cancellationToken = default)
+        public override Task<long> CountAsync(ISpecification<Order> specification, CancellationToken cancellationToken = default)
         {
             throw new NotImplementedException();
         }
@@ -31,7 +31,12 @@ public class DomainDependencyRegistrarTests : TestFor<DomainDependencyRegistrar>
             throw new NotImplementedException();
         }
 
-        public Task<Order> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
+        public override Task<Order> GetAsync(ISpecification<Order> specification, CancellationToken cancellationToken = default)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<Order> GetByIdAsync(Guid id, bool includeDetails = true, CancellationToken cancellationToken = default)
         {
             throw new NotImplementedException();
         }
@@ -41,12 +46,17 @@ public class DomainDependencyRegistrarTests : TestFor<DomainDependencyRegistrar>
             throw new NotImplementedException();
         }
 
-        public override Task<IReadOnlyList<Order>> ListAsync(CancellationToken cancellationToken = default)
+        public override Task<IReadOnlyList<Order>> ListAsync(bool includeDetails = false, CancellationToken cancellationToken = default)
         {
             throw new NotImplementedException();
         }
 
         public override Task<IReadOnlyList<Order>> ListAsync(ISpecification<Order> specification, CancellationToken cancellationToken = default)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<IReadOnlyList<Order>> ListAsync(IEnumerable<Guid> keys, bool includeDetails = false, CancellationToken cancellationToken = default)
         {
             throw new NotImplementedException();
         }

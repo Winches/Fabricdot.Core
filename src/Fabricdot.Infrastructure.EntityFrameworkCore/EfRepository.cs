@@ -15,14 +15,16 @@ public class EfRepository<TDbContext, T, TKey> : RepositoryBase<T, TKey>, IUnitO
     where T : class, IAggregateRoot, Fabricdot.Domain.Entities.IEntity<TKey>
     where TKey : notnull
 {
-    protected readonly ISpecificationEvaluator SpecificationEvaluator = new SpecificationEvaluator();
-    protected readonly IDbContextProvider<TDbContext> DbContextProvider;
+    private readonly ISpecificationEvaluator _specificationEvaluator;
 
     public IUnitOfWorkManager UnitOfWorkManager => DbContextProvider.UnitOfWorkManager;
+
+    protected IDbContextProvider<TDbContext> DbContextProvider { get; }
 
     public EfRepository(IDbContextProvider<TDbContext> dbContextProvider)
     {
         DbContextProvider = dbContextProvider;
+        _specificationEvaluator = SpecificationEvaluator.Default;
     }
 
     /// <inheritdoc />
@@ -38,6 +40,17 @@ public class EfRepository<TDbContext, T, TKey> : RepositoryBase<T, TKey>, IUnitO
     }
 
     /// <inheritdoc />
+    public override async Task UpdateAsync(
+        T entity,
+        CancellationToken cancellationToken = default)
+    {
+        Guard.Against.Null(entity, nameof(entity));
+
+        var context = await GetDbContextAsync(cancellationToken);
+        context.Entry(entity).State = EntityState.Modified;
+    }
+
+    /// <inheritdoc />
     public override async Task DeleteAsync(
         T entity,
         CancellationToken cancellationToken = default)
@@ -50,18 +63,29 @@ public class EfRepository<TDbContext, T, TKey> : RepositoryBase<T, TKey>, IUnitO
 
     /// <inheritdoc />
     public override async Task<T?> GetByIdAsync(
-        TKey id,
+        TKey key,
+        bool includeDetails = true,
         CancellationToken cancellationToken = default)
     {
         // Id of GUID type will become binary parameter when use MySql.Data driver https://stackoverflow.com/questions/65503169/entity-framework-core-generate-wrong-guid-parameter-with-mysql
-        Guard.Against.Null(id, nameof(id));
+        Guard.Against.Null(key, nameof(key));
 
-        var queryable = await GetQueryableAsync(cancellationToken: cancellationToken);
-        return await queryable.SingleOrDefaultAsync(v => v.Id.Equals(id), cancellationToken);
+        var queryable = await GetQueryableAsync(cancellationToken);
+        if (includeDetails)
+            queryable = IncludeDetails(queryable);
+        return await queryable.SingleOrDefaultAsync(v => v.Id.Equals(key), cancellationToken);
     }
 
     /// <inheritdoc />
     public override async Task<T?> GetBySpecAsync(
+        ISpecification<T> specification,
+        CancellationToken cancellationToken = default)
+    {
+        return await GetAsync(specification, cancellationToken);
+    }
+
+    /// <inheritdoc />
+    public override async Task<T?> GetAsync(
         ISpecification<T> specification,
         CancellationToken cancellationToken = default)
     {
@@ -73,9 +97,12 @@ public class EfRepository<TDbContext, T, TKey> : RepositoryBase<T, TKey>, IUnitO
 
     /// <inheritdoc />
     public override async Task<IReadOnlyList<T>> ListAsync(
+        bool includeDetails = false,
         CancellationToken cancellationToken = default)
     {
         var queryable = await GetQueryableAsync(cancellationToken: cancellationToken);
+        if (includeDetails)
+            queryable = IncludeDetails(queryable);
         return await queryable.ToListAsync(cancellationToken);
     }
 
@@ -91,32 +118,34 @@ public class EfRepository<TDbContext, T, TKey> : RepositoryBase<T, TKey>, IUnitO
     }
 
     /// <inheritdoc />
-    public override async Task UpdateAsync(
-        T entity,
+    public override async Task<IReadOnlyList<T>> ListAsync(
+        IEnumerable<TKey> keys,
+        bool includeDetails = false,
         CancellationToken cancellationToken = default)
     {
-        Guard.Against.Null(entity, nameof(entity));
-
-        var context = await GetDbContextAsync(cancellationToken);
-        context.Entry(entity).State = EntityState.Modified;
+        Guard.Against.NullOrEmpty(keys, nameof(keys));
+        var queryable = await GetQueryableAsync(cancellationToken: cancellationToken);
+        if (includeDetails)
+            queryable = IncludeDetails(queryable);
+        return await queryable.Where(v => keys.Contains(v.Id)).ToListAsync(cancellationToken);
     }
 
     /// <inheritdoc />
     public override async Task<long> CountAsync(CancellationToken cancellationToken = default)
     {
         var queryable = await GetQueryableAsync(cancellationToken: cancellationToken);
-        return await queryable.CountAsync(cancellationToken);
+        return await queryable.LongCountAsync(cancellationToken);
     }
 
     /// <inheritdoc />
-    public override async Task<int> CountAsync(
+    public override async Task<long> CountAsync(
         ISpecification<T> specification,
         CancellationToken cancellationToken = default)
     {
         Guard.Against.Null(specification, nameof(specification));
 
         var queryable = await GetQueryableAsync(specification, true, cancellationToken);
-        return await queryable.CountAsync(cancellationToken);
+        return await queryable.LongCountAsync(cancellationToken);
     }
 
     protected virtual async Task<DbContext> GetDbContextAsync(CancellationToken cancellationToken)
@@ -124,13 +153,23 @@ public class EfRepository<TDbContext, T, TKey> : RepositoryBase<T, TKey>, IUnitO
         return await DbContextProvider.GetDbContextAsync(cancellationToken);
     }
 
+    /// <summary>
+    ///     Get <see cref="IQueryable{T}" /> with predefined filter
+    /// </summary>
+    /// <param name="cancellationToken"></param>
+    /// <returns></returns>
+    protected virtual async Task<IQueryable<T>> GetQueryableAsync(CancellationToken cancellationToken = default)
+    {
+        var context = await GetDbContextAsync(cancellationToken);
+        return ApplyQueryFilter(context.Set<T>());
+    }
+
     protected virtual async Task<IQueryable<T>> GetQueryableAsync(
         ISpecification<T>? specification = null,
         bool evaluateCriteriaOnly = false,
         CancellationToken cancellationToken = default)
     {
-        var context = await GetDbContextAsync(cancellationToken);
-        var queryable = ApplyQueryFilter(context.Set<T>());
+        var queryable = await GetQueryableAsync(cancellationToken);
         return specification == null
             ? queryable
             : ApplySpecification(queryable, specification, evaluateCriteriaOnly);
@@ -143,8 +182,10 @@ public class EfRepository<TDbContext, T, TKey> : RepositoryBase<T, TKey>, IUnitO
     {
         // Method won't evaluate Take, Skip, Ordering, and Include expressions in the specification
         // when 'evaluateCriteriaOnly' is true. https://github.com/ardalis/Specification/issues/134
-        return SpecificationEvaluator.GetQuery(queryable, specification, evaluateCriteriaOnly);
+        return _specificationEvaluator.GetQuery(queryable, specification, evaluateCriteriaOnly);
     }
 
     protected virtual IQueryable<T> ApplyQueryFilter(IQueryable<T> queryable) => queryable;
+
+    protected virtual IQueryable<T> IncludeDetails(IQueryable<T> queryable) => queryable;
 }

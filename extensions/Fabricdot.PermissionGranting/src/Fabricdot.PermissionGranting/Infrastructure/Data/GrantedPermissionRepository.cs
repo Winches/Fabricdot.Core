@@ -22,7 +22,7 @@ public class GrantedPermissionRepository<TDbContext> : EfRepository<TDbContext, 
     {
         Guard.Against.NullOrEmpty(@object, nameof(@object));
 
-        var query = await GetQueryableAsync();
+        var query = await GetQueryableAsync(cancellationToken);
         var count = await query.CountAsync(
             v => v.GrantType == subject.Type && v.Subject == subject.Value && v.Object == @object,
             cancellationToken: cancellationToken);

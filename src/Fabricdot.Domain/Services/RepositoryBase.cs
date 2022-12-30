@@ -26,7 +26,14 @@ public abstract class RepositoryBase<T> : IRepository<T> where T : IAggregateRoo
         CancellationToken cancellationToken = default);
 
     /// <inheritdoc />
-    public abstract Task<IReadOnlyList<T>> ListAsync(CancellationToken cancellationToken = default);
+    public abstract Task<T?> GetAsync(
+        ISpecification<T> specification,
+        CancellationToken cancellationToken = default);
+
+    /// <inheritdoc />
+    public abstract Task<IReadOnlyList<T>> ListAsync(
+        bool includeDetails = false,
+        CancellationToken cancellationToken = default);
 
     /// <inheritdoc />
     public abstract Task<IReadOnlyList<T>> ListAsync(
@@ -37,7 +44,7 @@ public abstract class RepositoryBase<T> : IRepository<T> where T : IAggregateRoo
     public abstract Task<long> CountAsync(CancellationToken cancellationToken = default);
 
     /// <inheritdoc />
-    public abstract Task<int> CountAsync(
+    public abstract Task<long> CountAsync(
         ISpecification<T> specification,
         CancellationToken cancellationToken = default);
 }
@@ -46,6 +53,13 @@ public abstract class RepositoryBase<T, TKey> : RepositoryBase<T>, IRepository<T
 {
     /// <inheritdoc />
     public abstract Task<T?> GetByIdAsync(
-        TKey id,
+        TKey key,
+        bool includeDetails = true,
+        CancellationToken cancellationToken = default);
+
+    /// <inheritdoc />
+    public abstract Task<IReadOnlyList<T>> ListAsync(
+        IEnumerable<TKey> keys,
+        bool includeDetails = false,
         CancellationToken cancellationToken = default);
 }
