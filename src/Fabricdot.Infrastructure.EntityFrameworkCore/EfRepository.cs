@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore;
 namespace Fabricdot.Infrastructure.EntityFrameworkCore;
 
 [IgnoreDependency]
-public class EfRepository<TDbContext, T, TKey> : RepositoryBase<T, TKey>, IUnitOfWorkManagerAccessor
+public class EfRepository<TDbContext, T, TKey> : RepositoryBase<T, TKey>, IEfCoreRepository<T>, IUnitOfWorkManagerAccessor
     where TDbContext : DbContext
     where T : class, IAggregateRoot, Fabricdot.Domain.Entities.IEntity<TKey>
     where TKey : notnull
@@ -148,24 +148,21 @@ public class EfRepository<TDbContext, T, TKey> : RepositoryBase<T, TKey>, IUnitO
         return await queryable.LongCountAsync(cancellationToken);
     }
 
-    protected virtual async Task<DbContext> GetDbContextAsync(CancellationToken cancellationToken)
+    public virtual async Task<DbContext> GetDbContextAsync(CancellationToken cancellationToken = default)
     {
         return await DbContextProvider.GetDbContextAsync(cancellationToken);
     }
 
-    /// <summary>
-    ///     Get <see cref="IQueryable{T}" /> with predefined filter
-    /// </summary>
-    /// <param name="cancellationToken"></param>
-    /// <returns></returns>
-    protected virtual async Task<IQueryable<T>> GetQueryableAsync(CancellationToken cancellationToken = default)
+    public virtual async Task<IQueryable<T>> GetQueryableAsync(CancellationToken cancellationToken = default)
     {
         var context = await GetDbContextAsync(cancellationToken);
-        return ApplyQueryFilter(context.Set<T>());
+        return context.Set<T>();
     }
 
+    public virtual IQueryable<T> IncludeDetails(IQueryable<T> queryable) => queryable;
+
     protected virtual async Task<IQueryable<T>> GetQueryableAsync(
-        ISpecification<T>? specification = null,
+            ISpecification<T>? specification = null,
         bool evaluateCriteriaOnly = false,
         CancellationToken cancellationToken = default)
     {
@@ -184,8 +181,4 @@ public class EfRepository<TDbContext, T, TKey> : RepositoryBase<T, TKey>, IUnitO
         // when 'evaluateCriteriaOnly' is true. https://github.com/ardalis/Specification/issues/134
         return _specificationEvaluator.GetQuery(queryable, specification, evaluateCriteriaOnly);
     }
-
-    protected virtual IQueryable<T> ApplyQueryFilter(IQueryable<T> queryable) => queryable;
-
-    protected virtual IQueryable<T> IncludeDetails(IQueryable<T> queryable) => queryable;
 }
