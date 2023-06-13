@@ -43,30 +43,30 @@ public class EfRepository_Query_Tests : EntityFrameworkCoreTestsBase
     }
 
     [Fact]
-    public async Task GetBySpecAsync_GivenSpec_ReturnSpecificEntity()
+    public async Task GetAsync_GivenSpec_ReturnSpecificEntity()
     {
         var orderId = FakeDataBuilder.OrderId;
         var expected = await _orderRepository.GetByIdAsync(orderId);
         var specification = new OrderWithDetailsSpecification(orderId);
-        var actual = await _orderRepository.GetBySpecAsync(specification);
+        var actual = await _orderRepository.GetAsync(specification);
 
         actual.Should().Be(expected);
         actual.OrderLines.Should().NotBeEmpty();
     }
 
     [Fact]
-    public async Task GetBySpecAsync_GivenNull_Throw()
+    public async Task GetAsync_GivenNull_Throw()
     {
-        await Awaiting(() => _orderRepository.GetBySpecAsync(null))
+        await Awaiting(() => _orderRepository.GetAsync(null))
                            .Should()
                            .ThrowAsync<ArgumentNullException>();
     }
 
     [Fact]
-    public async Task GetBySpecAsync_GivenSoftDeletedSpec_ReturnNull()
+    public async Task GetAsync_GivenSoftDeletedSpec_ReturnNull()
     {
         var specification = new OrderWithDetailsSpecification(FakeDataBuilder.DeletedOrderId);
-        var actual = await _orderRepository.GetBySpecAsync(specification);
+        var actual = await _orderRepository.GetAsync(specification);
 
         actual.Should().BeNull();
     }

@@ -20,10 +20,10 @@ public class ConcurrencyStampTest : EntityFrameworkCoreTestsBase
     public async Task UpdateAsync_WhenEntityChanged_ThrowException()
     {
         var specification = new OrderWithDetailsSpecification(FakeDataBuilder.OrderId);
-        var order1 = await _orderRepository.GetBySpecAsync(specification);
+        var order1 = await _orderRepository.GetAsync(specification);
         order1.AddOrderLine(Fixture);
 
-        var order2 = await _orderRepository.GetBySpecAsync(specification);
+        var order2 = await _orderRepository.GetAsync(specification);
         await _orderRepository.UpdateAsync(order2);
 
         await FluentActions.Awaiting(() => _orderRepository.UpdateAsync(order1))
@@ -35,9 +35,9 @@ public class ConcurrencyStampTest : EntityFrameworkCoreTestsBase
     public async Task DeleteAsync_WhenEntityChanged_ThrowException()
     {
         var specification = new OrderWithDetailsSpecification(FakeDataBuilder.OrderId);
-        var order1 = await _orderRepository.GetBySpecAsync(specification);
+        var order1 = await _orderRepository.GetAsync(specification);
 
-        var order2 = await _orderRepository.GetBySpecAsync(specification);
+        var order2 = await _orderRepository.GetAsync(specification);
         order2.AddOrderLine(Fixture);
         await _orderRepository.UpdateAsync(order2);
 

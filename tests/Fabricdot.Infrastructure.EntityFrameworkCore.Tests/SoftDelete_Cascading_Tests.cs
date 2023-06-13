@@ -1,4 +1,4 @@
-using Fabricdot.Domain.Auditing;
+﻿using Fabricdot.Domain.Auditing;
 using Fabricdot.Infrastructure.Data.Filters;
 using Fabricdot.Infrastructure.EntityFrameworkCore.Tests.Data;
 using Fabricdot.Infrastructure.Uow.Abstractions;
@@ -26,7 +26,7 @@ public class SoftDelete_Cascading_Tests : EntityFrameworkCoreTestsBase
         var productId = Guid.Empty;
         await UseUowAsync(async () =>
         {
-            var order = await _orderRepository.GetBySpecAsync(specification);
+            var order = await _orderRepository.GetAsync(specification);
             var orderLine = order.OrderLines.First();
             productId = orderLine.ProductId;
             order.RemoveOrderLine(productId);
@@ -34,7 +34,7 @@ public class SoftDelete_Cascading_Tests : EntityFrameworkCoreTestsBase
         });
 
         using var scope = _dataFilter.Disable<ISoftDelete>();
-        var order = await _orderRepository.GetBySpecAsync(specification);
+        var order = await _orderRepository.GetAsync(specification);
 
         order.OrderLines.Should().Contain(v => v.ProductId == productId && v.IsDeleted);
     }
@@ -45,19 +45,18 @@ public class SoftDelete_Cascading_Tests : EntityFrameworkCoreTestsBase
         var specification = new OrderWithDetailsSpecification(FakeDataBuilder.OrderId);
         await UseUowAsync(async () =>
         {
-            var order = await _orderRepository.GetBySpecAsync(specification);
+            var order = await _orderRepository.GetAsync(specification);
             order.Details = null;
             // PK property should be nullable.
             await _orderRepository.UpdateAsync(order);
         });
 
         using var scope = _dataFilter.Disable<ISoftDelete>();
-        var order = await _orderRepository.GetBySpecAsync(specification);
+        var order = await _orderRepository.GetAsync(specification);
         var details = order.Details;
 
         details.Should().NotBeNull();
         details.Should().BeEquivalentTo(new { IsDeleted = true }, opts => opts.ExcludingFields());
-
     }
 
     [Fact]
@@ -67,7 +66,7 @@ public class SoftDelete_Cascading_Tests : EntityFrameworkCoreTestsBase
         var productId = Guid.Empty;
         await UseUowAsync(async () =>
         {
-            var order = await _orderRepository.GetBySpecAsync(specification);
+            var order = await _orderRepository.GetAsync(specification);
             var orderLine = order.OrderLines.First();
             productId = orderLine.ProductId;
             order.RemoveOrderLine(productId);
@@ -75,7 +74,7 @@ public class SoftDelete_Cascading_Tests : EntityFrameworkCoreTestsBase
         });
 
         using var scope = _dataFilter.Disable<ISoftDelete>();
-        var order = await _orderRepository.GetBySpecAsync(specification);
+        var order = await _orderRepository.GetAsync(specification);
 
         order.Should().NotBeNull();
         order.IsDeleted.Should().BeTrue();
@@ -91,13 +90,13 @@ public class SoftDelete_Cascading_Tests : EntityFrameworkCoreTestsBase
         var productId = Guid.Empty;
         await UseUowAsync(async () =>
         {
-            var order = await _orderRepository.GetBySpecAsync(specification);
+            var order = await _orderRepository.GetAsync(specification);
             var orderLine = order.OrderLines.First();
             productId = orderLine.ProductId;
             order.RemoveOrderLine(productId);
             await _orderRepository.UpdateAsync(order);
         });
-        var order = await _orderRepository.GetBySpecAsync(specification);
+        var order = await _orderRepository.GetAsync(specification);
 
         order.OrderLines.Should()
                         .OnlyContain(v => !v.IsDeleted).And
