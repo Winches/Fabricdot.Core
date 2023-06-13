@@ -20,10 +20,14 @@ internal class SingleValueObjectModelBinder : IModelBinder
         }
 
         var value = valueProviderResult.FirstValue;
-        object result;
+        object? result;
         try
         {
-            if (parameterType == typeof(string))
+            if (value.IsNullOrEmpty())
+            {
+                result = null;
+            }
+            else if (parameterType == typeof(string))
             {
                 result = constructor.Invoke(new object?[] { value });
             }

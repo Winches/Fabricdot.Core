@@ -14,12 +14,21 @@ public class EnumerationModelBinderTests : ModelBinderTestBase
     }
 
     [Fact]
-    public async Task FromQuery_GivenNull_DoNotThrow()
+    public async Task NonNullableQuery_GivenNull_ReturnBadRequest()
     {
         const string url = BaseUrl + "/query?orderstatus=";
         var response = await HttpClient.GetAsync(url);
 
         response.Should().HaveStatusCode(HttpStatusCode.BadRequest);
+    }
+
+    [Fact]
+    public async Task NullableQuery_GivenNull_Correctly()
+    {
+        const string url = BaseUrl + "/nullable-query?orderstatus=";
+        var response = await HttpClient.GetAsync(url);
+
+        response.Should().BeSuccessful();
     }
 
     [Fact]
@@ -52,7 +61,7 @@ public class EnumerationModelBinderTests : ModelBinderTestBase
         var res = await response.Content.ReadFromJsonAsync<Response<object>>();
 
         response.Should().BeSuccessful();
-        res.Success.Should().BeTrue();
+        res!.Success.Should().BeTrue();
     }
 
     [Fact]
@@ -64,6 +73,7 @@ public class EnumerationModelBinderTests : ModelBinderTestBase
         var res = await response.Content.ReadFromJsonAsync<Response<object>>();
 
         response.Should().BeSuccessful();
-        res.Success.Should().BeTrue();
+        res.Should().NotBeNull();
+        res!.Success.Should().BeTrue();
     }
 }

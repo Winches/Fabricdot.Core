@@ -18,14 +18,21 @@ internal class EnumerationModelBinder : IModelBinder
             return Task.CompletedTask;
         }
         bindingContext.ModelState.SetModelValue(modelName, valueProviderResult);
-        var value = valueProviderResult.FirstValue ?? string.Empty;
 
-        object result;
+        var value = valueProviderResult.FirstValue;
+        object? result;
         try
         {
-            var method = typeof(Enumeration).GetMethod(nameof(Enumeration.FromValue), BindingFlags.Static | BindingFlags.Public)!
-                                            .MakeGenericMethod(modelType);
-            result = method.Invoke(null, new object[] { int.Parse(value) }) ?? throw new InvalidOperationException();
+            if (value.IsNullOrEmpty())
+            {
+                result = null;
+            }
+            else
+            {
+                var method = typeof(Enumeration).GetMethod(nameof(Enumeration.FromValue), BindingFlags.Static | BindingFlags.Public)!
+                                .MakeGenericMethod(modelType);
+                result = method.Invoke(null, new object[] { int.Parse(value!) }) ?? throw new InvalidOperationException();
+            }
         }
         catch (Exception ex)
         {
