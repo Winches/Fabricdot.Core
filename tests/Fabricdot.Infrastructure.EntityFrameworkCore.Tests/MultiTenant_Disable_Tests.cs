@@ -1,4 +1,4 @@
-﻿using Fabricdot.Domain.SharedKernel;
+using Fabricdot.Domain.SharedKernel;
 using Fabricdot.Infrastructure.Data.Filters;
 using Fabricdot.Test.Helpers.Domain.Aggregates.CustomerAggregate;
 using Microsoft.Extensions.DependencyInjection;
@@ -12,8 +12,8 @@ public class MultiTenant_Disable_Tests : EntityFrameworkCoreTestsBase
 
     public MultiTenant_Disable_Tests()
     {
-        _customerRepository = ServiceProvider.GetService<ICustomerRepository>();
-        _dataFilter = ServiceProvider.GetService<IDataFilter>();
+        _customerRepository = ServiceProvider.GetRequiredService<ICustomerRepository>();
+        _dataFilter = ServiceProvider.GetRequiredService<IDataFilter>();
     }
 
     [Fact]

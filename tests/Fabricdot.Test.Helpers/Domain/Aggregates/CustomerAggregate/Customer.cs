@@ -7,7 +7,7 @@ public class Customer : FullAuditAggregateRoot<string>, IMultiTenant
 {
     public Guid? TenantId { get; private set; }
 
-    public string Name { get; private set; }
+    public string Name { get; private set; } = null!;
 
     public Customer(
         Guid id,

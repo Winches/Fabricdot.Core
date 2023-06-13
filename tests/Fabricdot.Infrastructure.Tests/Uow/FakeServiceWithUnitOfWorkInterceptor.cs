@@ -24,7 +24,7 @@ public class FakeServiceWithUnitOfWorkInterceptor : ITransientDependency
 
     private void UseUow(Action<IUnitOfWork> action)
     {
-        var unitOfWork = _unitOfWorkManager.Available;
+        var unitOfWork = _unitOfWorkManager.Available!;
         action.Invoke(unitOfWork);
     }
 }

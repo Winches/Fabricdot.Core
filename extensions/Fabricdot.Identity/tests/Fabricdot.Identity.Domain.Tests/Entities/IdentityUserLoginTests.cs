@@ -14,7 +14,7 @@ public class IdentityUserLoginTests : TestBase
         string loginProvider,
         string providerKey)
     {
-        Invoking(() => new IdentityUserLogin(loginProvider, providerKey, null)).Should().Throw<ArgumentException>();
+        Invoking(() => new IdentityUserLogin(loginProvider, providerKey, null!)).Should().Throw<ArgumentException>();
     }
 
     [Fact]

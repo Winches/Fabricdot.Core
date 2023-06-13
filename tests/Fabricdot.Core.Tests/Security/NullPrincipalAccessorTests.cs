@@ -11,7 +11,7 @@ public class NullPrincipalAccessorTests : TestFor<NullPrincipalAccessor>
         var principal = Sut.Principal;
 
         principal.Should().NotBeNull();
-        principal.Identities.Should().BeEmpty();
+        principal!.Identities.Should().BeEmpty();
     }
 
     [Fact]

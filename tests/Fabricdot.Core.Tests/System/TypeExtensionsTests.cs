@@ -51,7 +51,7 @@ public class TypeExtensionsTests : TestBase
     [Theory]
     public void IsInNamespace_GivenInput_ReturnCorrectly(Type type, string @namespace)
     {
-        var expected = type.Namespace.StartsWith(@namespace);
+        var expected = type.Namespace!.StartsWith(@namespace);
         type.IsInNamespace(@namespace).Should().Be(expected);
     }
 

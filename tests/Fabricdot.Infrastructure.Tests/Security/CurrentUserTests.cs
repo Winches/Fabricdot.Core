@@ -8,18 +8,18 @@ namespace Fabricdot.Infrastructure.Tests.Security;
 public class CurrentUserTests : IntegrationTestBase<InfrastructureTestModule>
 {
     private readonly ICurrentUser _currentUser;
-    public static ClaimsPrincipal ClaimsPrincipal { get; set; }
+    public static ClaimsPrincipal? ClaimsPrincipal { get; set; }
 
     public CurrentUserTests()
     {
         _currentUser = ServiceProvider.GetRequiredService<ICurrentUser>();
     }
 
-    public static IEnumerable<object[]> GetClaimPrincipals()
+    public static IEnumerable<object?[]> GetClaimPrincipals()
     {
-        yield return new object[] { null };
-        yield return new object[] { CreateClaimsPrincipal() };
-        yield return new object[]
+        yield return new object?[] { null };
+        yield return new object?[] { CreateClaimsPrincipal() };
+        yield return new object?[]
         {
             CreateClaimsPrincipal(new Claim(SharedClaimTypes.NameIdentifier, "1"))
         };
@@ -92,7 +92,7 @@ public class CurrentUserTests : IntegrationTestBase<InfrastructureTestModule>
     {
         ClaimsPrincipal = Create<ClaimsPrincipal>();
 
-        _currentUser.IsInRole(null).Should().BeFalse();
+        _currentUser.IsInRole(null!).Should().BeFalse();
     }
 
     [Fact]

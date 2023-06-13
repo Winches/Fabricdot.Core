@@ -15,7 +15,7 @@ public class CommandBusTests : IntegrationTestBase<InfrastructureTestModule>
     [Fact]
     public async Task PublishAsync_GivenNull_Throw()
     {
-        await _commandBus.Awaiting(v => v.PublishAsync<object>(null))
+        await _commandBus.Awaiting(v => v.PublishAsync<object>(null!))
                          .Should()
                          .ThrowAsync<ArgumentNullException>();
     }

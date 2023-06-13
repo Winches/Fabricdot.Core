@@ -6,7 +6,7 @@ namespace Fabricdot.AspNetCore.Testing;
 
 public abstract class WebApplicationTestBase<TModule> : TestBase, IClassFixture<TestWebApplicationFactory<TModule>> where TModule : class, IModule
 {
-    private HttpClient _httpClient;
+    private HttpClient? _httpClient;
 
     protected WebApplicationFactory<TestStartup<TModule>> WebAppFactory { get; set; }
 
@@ -25,7 +25,7 @@ public abstract class WebApplicationTestBase<TModule> : TestBase, IClassFixture<
     {
     }
 
-    protected virtual HttpClient CreateClient(WebApplicationFactoryClientOptions options = null)
+    protected virtual HttpClient CreateClient(WebApplicationFactoryClientOptions? options = null)
     {
         return options is null ? WebAppFactory.CreateClient() : WebAppFactory.CreateClient(options);
     }

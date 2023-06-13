@@ -44,7 +44,7 @@ public class UnitOfWorkActionFilterTests : WebApplicationTestBase<WebApiTestModu
     [Fact]
     public async Task UnitOfWorkActionFilter_WhenErrorOccurred_DisposeUow()
     {
-        IUnitOfWork uow = null;
+        IUnitOfWork? uow = null;
         ServiceProvider.GetRequiredService<ActionMiddlewareProvider>()
             .ExecutingAction = context =>
             {
@@ -56,6 +56,6 @@ public class UnitOfWorkActionFilterTests : WebApplicationTestBase<WebApiTestModu
         var response = await HttpClient.PostAsync("api/fake-uow/ThrowException", null);
 
         response.Should().BeSuccessful();
-        uow.IsActive.Should().BeFalse();
+        uow!.IsActive.Should().BeFalse();
     }
 }

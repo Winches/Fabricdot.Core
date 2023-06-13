@@ -1,4 +1,4 @@
-﻿using System.Text.Json;
+using System.Text.Json;
 
 namespace Fabricdot.Core.Tests.System.Text.Json;
 
@@ -7,11 +7,11 @@ public class JsonExtensionsTests : TestBase
     [Fact]
     public void FromJson_GivenInvalidJson_ThrowException()
     {
-        FluentActions.Invoking(() => (null as string).FromJson<object>())
+        Invoking(() => (null as string)!.FromJson<object>())
                      .Should()
                      .Throw<ArgumentNullException>();
 
-        FluentActions.Invoking(() => "".FromJson<object>())
+        Invoking(() => "".FromJson<object>())
                      .Should()
                      .Throw<JsonException>();
     }
@@ -32,7 +32,7 @@ public class JsonExtensionsTests : TestBase
     [Fact]
     public void ToJson_GivenNull_ThrowException()
     {
-        FluentActions.Invoking(() => (null as object).ToJson())
+        Invoking(() => (null as object).ToJson())
                      .Should()
                      .Throw<ArgumentNullException>();
     }

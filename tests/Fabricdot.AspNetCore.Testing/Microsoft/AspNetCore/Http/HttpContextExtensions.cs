@@ -5,7 +5,7 @@ namespace Microsoft.AspNetCore.Http;
 
 public static class HttpContextExtensions
 {
-    public static string ReadRequestBody(this HttpContext context)
+    public static string? ReadRequestBody(this HttpContext context)
     {
         Guard.Against.Null(context, nameof(context));
 

@@ -24,7 +24,7 @@ public class EfRepository_DataFilter_Tests : EntityFrameworkCoreTestsBase
         var actual = await _orderRepository.GetByIdAsync(FakeDataBuilder.DeletedOrderId);
 
         actual.Should().NotBeNull();
-        actual.IsDeleted.Should().BeTrue();
+        actual!.IsDeleted.Should().BeTrue();
     }
 
     [Fact]

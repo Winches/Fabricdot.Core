@@ -1,4 +1,4 @@
-﻿using Fabricdot.Domain.Auditing;
+using Fabricdot.Domain.Auditing;
 using Fabricdot.Infrastructure.Data.Filters;
 using Fabricdot.Infrastructure.Domain.Services;
 using Fabricdot.Infrastructure.EntityFrameworkCore.Tests.Data;
@@ -39,18 +39,17 @@ public class SoftDelete_Tests : EntityFrameworkCoreTestsBase
         var order2 = await _orderRepository.GetByIdAsync(orderId);
 
         order2.Should().NotBeNull();
-        order2.IsDeleted.Should().BeTrue();
+        order2!.IsDeleted.Should().BeTrue();
     }
 
     [Fact]
     public async Task HardDeleteAsync_GivenISoftDelete_HardDelete()
     {
-        var orderId = Guid.Empty;
+        var orderId = FakeDataBuilder.OrderId;
         await UseUowAsync(async () =>
         {
             var order = await _orderRepository.GetByIdAsync(FakeDataBuilder.OrderId);
-            orderId = order.Id;
-            await _orderRepository.HardDeleteAsync(order);
+            await _orderRepository.HardDeleteAsync(order!);
         });
 
         using var scope = _dataFilter.Disable<ISoftDelete>();

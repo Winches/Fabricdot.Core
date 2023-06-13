@@ -16,7 +16,7 @@ public class FakeServiceWithUowScope : IFakeServiceWithUowScope, ITransientDepen
     [UnitOfWork(true)]
     public virtual void UseTransactionalUow(Action<IUnitOfWork> action)
     {
-        var unitOfWork = _unitOfWorkManager.Available;
+        var unitOfWork = _unitOfWorkManager.Available!;
         action.Invoke(unitOfWork);
     }
 }

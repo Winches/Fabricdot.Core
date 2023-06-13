@@ -15,19 +15,19 @@ public class Order : FullAuditAggregateRoot<Guid>
 
     public DateTime OrderTime { get; private set; }
 
-    public OrderStatus OrderStatus { get; private set; }
+    public OrderStatus OrderStatus { get; private set; } = null!;
 
-    public Address ShippingAddress { get; private set; }
+    public Address ShippingAddress { get; private set; } = null!;
 
-    public string CustomerId { get; private set; }
+    public string CustomerId { get; private set; } = null!;
 
-    public OrderDetails Details { get; set; }
+    public OrderDetails? Details { get; set; }
 
     public Order(
         Guid id,
         Address shippingAddress,
         string customerId,
-        OrderDetails details)
+        OrderDetails? details)
     {
         Id = Guard.Against.Default(id, nameof(id));
         ShippingAddress = Guard.Against.Null(shippingAddress, nameof(shippingAddress));

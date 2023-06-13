@@ -21,7 +21,7 @@ public class UserLoginStoreTests : UserStoreTestBase
         {
             var user = await UserRepository.GetByIdAsync(FakeDataBuilder.UserAndersId);
 
-            await _userLoginStore.Awaiting(v => v.AddLoginAsync(user, null, default))
+            await _userLoginStore.Awaiting(v => v.AddLoginAsync(user!, null, default))
                                  .Should()
                                  .ThrowAsync<ArgumentNullException>();
         });
@@ -33,7 +33,7 @@ public class UserLoginStoreTests : UserStoreTestBase
     {
         await UseUowAsync(async () =>
         {
-            var user = await UserRepository.GetByIdAsync(FakeDataBuilder.UserAndersId);
+            var user = (await UserRepository.GetByIdAsync(FakeDataBuilder.UserAndersId))!;
             await _userLoginStore.AddLoginAsync(
                 user,
                 loginInfo,
@@ -48,7 +48,7 @@ public class UserLoginStoreTests : UserStoreTestBase
     {
         await UseUowAsync(async () =>
         {
-            var user = await UserRepository.GetByIdAsync(FakeDataBuilder.UserAndersId);
+            var user = (await UserRepository.GetByIdAsync(FakeDataBuilder.UserAndersId))!;
             var loginInfo = user.Logins.First();
             await _userLoginStore.RemoveLoginAsync(
                 user,
@@ -66,7 +66,7 @@ public class UserLoginStoreTests : UserStoreTestBase
         await UseUowAsync(async () =>
         {
             var user = await UserRepository.GetByIdAsync(FakeDataBuilder.UserAndersId);
-            var expected = user.Logins;
+            var expected = user!.Logins;
             var logins = await _userLoginStore.GetLoginsAsync(user, default);
 
             logins.Should().BeEquivalentTo(

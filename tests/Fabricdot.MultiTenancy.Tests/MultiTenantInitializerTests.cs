@@ -39,7 +39,7 @@ public class MultiTenantInitializerTests : TestBase
         [Greedy] Customer entity,
         TenantInfo tenant)
     {
-        var tenantId = entity.TenantId.Value;
+        var tenantId = entity.TenantId!.Value;
         using var scope = _tenantAccessor.Change(tenant);
 
         tenant.Id.Should().NotBe(tenantId);

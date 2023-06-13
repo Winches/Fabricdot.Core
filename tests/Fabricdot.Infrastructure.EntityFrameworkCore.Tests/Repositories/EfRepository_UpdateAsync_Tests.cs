@@ -37,7 +37,7 @@ public class EfRepository_UpdateAsync_Tests : EntityFrameworkCoreTestsBase
     [Fact]
     public async Task UpdateAsync_GivenNull_ThrowException()
     {
-        await Awaiting(() => _orderRepository.UpdateAsync(null))
+        await Awaiting(() => _orderRepository.UpdateAsync(null!))
                            .Should()
                            .ThrowAsync<ArgumentNullException>();
     }

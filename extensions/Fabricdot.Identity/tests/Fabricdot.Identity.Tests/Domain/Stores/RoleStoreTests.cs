@@ -8,7 +8,7 @@ public class RoleStoreTests : RoleStoreTestBase
     [Fact]
     public async Task CreateAsync_GivenNull_ThrownException()
     {
-        await RoleStore.Awaiting(v => v.CreateAsync(null, default))
+        await RoleStore.Awaiting(v => v.CreateAsync(null!, default))
                        .Should()
                        .ThrowAsync<ArgumentNullException>();
     }
@@ -27,7 +27,7 @@ public class RoleStoreTests : RoleStoreTestBase
     [Fact]
     public async Task UpdateAsync_GivenNull_ThrownException()
     {
-        await RoleStore.Awaiting(v => v.UpdateAsync(null, default))
+        await RoleStore.Awaiting(v => v.UpdateAsync(null!, default))
                        .Should()
                        .ThrowAsync<ArgumentNullException>();
     }
@@ -36,7 +36,7 @@ public class RoleStoreTests : RoleStoreTestBase
     [Theory]
     public async Task UpdateAsync_GivenRole_Correctly(string description)
     {
-        var role = await RoleRepository.GetByIdAsync(FakeDataBuilder.RoleAuthorId);
+        var role = (await RoleRepository.GetByIdAsync(FakeDataBuilder.RoleAuthorId))!;
         role.Description = description;
         var res = await RoleStore.UpdateAsync(role, default);
 
@@ -47,7 +47,7 @@ public class RoleStoreTests : RoleStoreTestBase
     [Fact]
     public async Task DeleteAsync_GivenNull_ThrownException()
     {
-        await RoleStore.Awaiting(v => v.DeleteAsync(null, default))
+        await RoleStore.Awaiting(v => v.DeleteAsync(null!, default))
                        .Should()
                        .ThrowAsync<ArgumentNullException>();
     }
@@ -55,7 +55,7 @@ public class RoleStoreTests : RoleStoreTestBase
     [Fact]
     public async Task DeleteAsync_GivenRole_Correctly()
     {
-        var role = await RoleRepository.GetByIdAsync(FakeDataBuilder.RoleAuthorId);
+        var role = (await RoleRepository.GetByIdAsync(FakeDataBuilder.RoleAuthorId))!;
         var res = await RoleStore.DeleteAsync(role, default);
         var retrievalRole = await RoleRepository.GetByIdAsync(role.Id);
 

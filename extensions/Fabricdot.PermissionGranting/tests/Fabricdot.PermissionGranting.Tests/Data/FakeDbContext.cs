@@ -9,7 +9,7 @@ namespace Fabricdot.PermissionGranting.Tests.Data;
 
 public class FakeDbContext : DbContextBase, IPermissionGrantingDbContext
 {
-    public DbSet<GrantedPermission> GrantedPermissions { get; set; }
+    public DbSet<GrantedPermission> GrantedPermissions { get; set; } = null!;
 
     /// <inheritdoc />
     public FakeDbContext([NotNull] DbContextOptions<FakeDbContext> options) : base(options)

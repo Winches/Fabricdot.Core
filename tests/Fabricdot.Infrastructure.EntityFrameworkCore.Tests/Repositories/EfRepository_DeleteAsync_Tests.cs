@@ -18,10 +18,11 @@ public class EfRepository_DeleteAsync_Tests : EntityFrameworkCoreTestsBase
     [Fact]
     public async Task DeleteAsync_GivenEntity_DeleteCorrectly()
     {
-        var order = await _orderRepository.GetByIdAsync(FakeDataBuilder.OrderId);
-        await _orderRepository.DeleteAsync(order);
+        var orderId = FakeDataBuilder.OrderId;
+        var order = await _orderRepository.GetByIdAsync(orderId);
+        await _orderRepository.DeleteAsync(order!);
 
-        var deletedAuthor = await _orderRepository.GetByIdAsync(order.Id);
+        var deletedAuthor = await _orderRepository.GetByIdAsync(orderId);
 
         deletedAuthor.Should().BeNull();
     }
@@ -38,7 +39,7 @@ public class EfRepository_DeleteAsync_Tests : EntityFrameworkCoreTestsBase
     [Fact]
     public async Task DeleteAsync_GivenNull_ThrowException()
     {
-        await Awaiting(() => _orderRepository.DeleteAsync(null))
+        await Awaiting(() => _orderRepository.DeleteAsync(null!))
                            .Should()
                            .ThrowAsync<ArgumentNullException>();
     }

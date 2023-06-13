@@ -5,11 +5,11 @@ public class CollectionExtensionsTests : TestBase
     [Fact]
     public void RemoveAll_GivenNull_ThrowException()
     {
-        Invoking(() => ((ICollection<object>)null).RemoveAll(_ => true))
+        Invoking(() => (null as ICollection<object>)!.RemoveAll(_ => true))
                      .Should()
                      .Throw<ArgumentNullException>();
 
-        Invoking(() => new List<object>().RemoveAll(null))
+        Invoking(() => new List<object>().RemoveAll(null!))
                      .Should()
                      .Throw<ArgumentNullException>();
     }
@@ -18,12 +18,12 @@ public class CollectionExtensionsTests : TestBase
     public void RemoveAll_GivenPredicate_RemoveElements()
     {
         var collection = Enumerable.Range(1, 10).ToList();
-        Func<int, bool> Predicate = v => v <= 5;
+        Func<int, bool> predicate = v => v <= 5;
 
-        collection.RemoveAll(Predicate)
+        collection.RemoveAll(predicate)
                   .Should()
-                  .OnlyContain(v => Predicate(v));
+                  .OnlyContain(v => predicate(v));
         collection.Should()
-                  .OnlyContain(v => !Predicate(v));
+                  .OnlyContain(v => !predicate(v));
     }
 }

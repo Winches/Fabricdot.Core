@@ -11,7 +11,7 @@ public class OrderLine : FullAuditEntity<int>
 
     public int Quantity { get; private set; }
 
-    public Money Price { get; private set; }
+    public Money Price { get; private set; } = null!;
 
     internal OrderLine(
         Guid orderId,

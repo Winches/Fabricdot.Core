@@ -7,7 +7,7 @@ public class PredicateBuilderTests : TestBase
     [Fact]
     public void True_Should_BeTrue()
     {
-        PredicateBuilder.True<object>()
+        PredicateBuilder.True<object?>()
                         .Compile()
                         .Invoke(null)
                         .Should()
@@ -17,7 +17,7 @@ public class PredicateBuilderTests : TestBase
     [Fact]
     public void False_Should_BeFalse()
     {
-        PredicateBuilder.False<object>()
+        PredicateBuilder.False<object?>()
                         .Compile()
                         .Invoke(null)
                         .Should()

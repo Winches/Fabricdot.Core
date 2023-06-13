@@ -22,7 +22,7 @@ public class UserAuthenticationTokenStoreTests : UserStoreTestBase
     {
         await UseUowAsync(async () =>
         {
-            var user = await UserRepository.GetByIdAsync(FakeDataBuilder.UserAndersId);
+            var user = (await UserRepository.GetByIdAsync(FakeDataBuilder.UserAndersId))!;
             await _userAuthenticationTokenStore.SetTokenAsync(
                 user,
                 loginProvider,
@@ -41,7 +41,7 @@ public class UserAuthenticationTokenStoreTests : UserStoreTestBase
         await UseUowAsync(async () =>
         {
             var user = await UserRepository.GetByIdAsync(FakeDataBuilder.UserAndersId);
-            var token = user.Tokens.First();
+            var token = user!.Tokens.First();
             await _userAuthenticationTokenStore.SetTokenAsync(
                 user,
                 token.LoginProvider,
@@ -52,7 +52,7 @@ public class UserAuthenticationTokenStoreTests : UserStoreTestBase
             token = user.FindToken(token.LoginProvider, token.Name);
 
             token.Should().NotBeNull();
-            token.Value.Should().Be(tokenValue);
+            token!.Value.Should().Be(tokenValue);
         });
     }
 
@@ -62,7 +62,7 @@ public class UserAuthenticationTokenStoreTests : UserStoreTestBase
         await UseUowAsync(async () =>
         {
             var user = await UserRepository.GetByIdAsync(FakeDataBuilder.UserAndersId);
-            var token = user.Tokens.First();
+            var token = user!.Tokens.First();
             await _userAuthenticationTokenStore.RemoveTokenAsync(
                 user,
                 token.LoginProvider,
@@ -79,7 +79,7 @@ public class UserAuthenticationTokenStoreTests : UserStoreTestBase
         await UseUowAsync(async () =>
         {
             var user = await UserRepository.GetByIdAsync(FakeDataBuilder.UserAndersId);
-            var token = user.Tokens.First();
+            var token = user!.Tokens.First();
             var tokenValue = await _userAuthenticationTokenStore.GetTokenAsync(
                 user,
                 token.LoginProvider,

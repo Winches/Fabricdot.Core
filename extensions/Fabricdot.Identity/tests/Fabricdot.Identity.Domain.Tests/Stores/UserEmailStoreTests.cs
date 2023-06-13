@@ -40,11 +40,11 @@ public class UserEmailStoreTests : UserStoreTestsBase
     [InlineData(null)]
     [InlineAutoData]
     [Theory]
-    public async Task SetEmailAsync_GiveInput_Correctly(MailAddress email)
+    public async Task SetEmailAsync_GiveInput_Correctly(MailAddress? email)
     {
         var expected = email?.Address;
         var user = Create<IdentityUser>();
-        await Sut.SetEmailAsync(user, expected, default);
+        await Sut.SetEmailAsync(user, expected!, default);
 
         user.Email.Should().Be(expected);
     }
@@ -52,11 +52,11 @@ public class UserEmailStoreTests : UserStoreTestsBase
     [InlineData(null)]
     [InlineAutoData]
     [Theory]
-    public async Task SetNormalizedEmailAsync_GiveInput_Correctly(MailAddress email)
+    public async Task SetNormalizedEmailAsync_GiveInput_Correctly(MailAddress? email)
     {
         var expected = email?.Address?.Normalize()?.ToUpperInvariant();
         var user = Create<IdentityUser>();
-        await Sut.SetNormalizedEmailAsync(user, expected, default);
+        await Sut.SetNormalizedEmailAsync(user, expected!, default);
 
         user.NormalizedEmail.Should().Be(expected);
     }

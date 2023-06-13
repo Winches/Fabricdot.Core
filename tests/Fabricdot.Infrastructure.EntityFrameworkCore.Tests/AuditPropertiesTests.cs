@@ -42,9 +42,9 @@ public class AuditPropertiesTests : EntityFrameworkCoreTestsBase
 
     public AuditPropertiesTests()
     {
-        _currentUser = ServiceProvider.GetService<ICurrentUser>();
-        _orderRepository = ServiceProvider.GetService<IOrderRepository>();
-        _customerRepository = ServiceProvider.GetService<ICustomerRepository>();
+        _currentUser = ServiceProvider.GetRequiredService<ICurrentUser>();
+        _orderRepository = ServiceProvider.GetRequiredService<IOrderRepository>();
+        _customerRepository = ServiceProvider.GetRequiredService<ICustomerRepository>();
     }
 
     [Fact]
@@ -62,7 +62,7 @@ public class AuditPropertiesTests : EntityFrameworkCoreTestsBase
     public async Task SaveChangesAsync_UpdateEntity_SetModificationProperties()
     {
         var expected = _currentUser.Id;
-        var actual = await _orderRepository.GetByIdAsync(FakeDataBuilder.OrderId);
+        var actual = (await _orderRepository.GetByIdAsync(FakeDataBuilder.OrderId))!;
         var low = SystemClock.Now;
         await _orderRepository.UpdateAsync(actual);
         var high = SystemClock.Now;
@@ -75,7 +75,7 @@ public class AuditPropertiesTests : EntityFrameworkCoreTestsBase
     public async Task SaveChangesAsync_DeleteEntity_SetDeletionProperties()
     {
         var expected = _currentUser.Id;
-        var actual = await _orderRepository.GetByIdAsync(FakeDataBuilder.OrderId);
+        var actual = (await _orderRepository.GetByIdAsync(FakeDataBuilder.OrderId))!;
         await _orderRepository.DeleteAsync(actual);
 
         actual.DeletionTime.Should().NotBe(default);

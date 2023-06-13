@@ -31,17 +31,17 @@ public class DomainDependencyRegistrarTests : TestFor<DomainDependencyRegistrar>
             throw new NotImplementedException();
         }
 
-        public override Task<Order> GetAsync(ISpecification<Order> specification, CancellationToken cancellationToken = default)
+        public override Task<Order?> GetAsync(ISpecification<Order> specification, CancellationToken cancellationToken = default)
         {
             throw new NotImplementedException();
         }
 
-        public Task<Order> GetByIdAsync(Guid id, bool includeDetails = true, CancellationToken cancellationToken = default)
+        public Task<Order?> GetByIdAsync(Guid id, bool includeDetails = true, CancellationToken cancellationToken = default)
         {
             throw new NotImplementedException();
         }
 
-        public override Task<Order> GetBySpecAsync(ISpecification<Order> specification, CancellationToken cancellationToken = default)
+        public override Task<Order?> GetBySpecAsync(ISpecification<Order> specification, CancellationToken cancellationToken = default)
         {
             throw new NotImplementedException();
         }

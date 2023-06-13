@@ -27,7 +27,7 @@ public class SoftDelete_Cascading_Tests : EntityFrameworkCoreTestsBase
         await UseUowAsync(async () =>
         {
             var order = await _orderRepository.GetAsync(specification);
-            var orderLine = order.OrderLines.First();
+            var orderLine = order!.OrderLines.First();
             productId = orderLine.ProductId;
             order.RemoveOrderLine(productId);
             await _orderRepository.UpdateAsync(order);
@@ -36,7 +36,7 @@ public class SoftDelete_Cascading_Tests : EntityFrameworkCoreTestsBase
         using var scope = _dataFilter.Disable<ISoftDelete>();
         var order = await _orderRepository.GetAsync(specification);
 
-        order.OrderLines.Should().Contain(v => v.ProductId == productId && v.IsDeleted);
+        order!.OrderLines.Should().Contain(v => v.ProductId == productId && v.IsDeleted);
     }
 
     [Fact]
@@ -46,14 +46,14 @@ public class SoftDelete_Cascading_Tests : EntityFrameworkCoreTestsBase
         await UseUowAsync(async () =>
         {
             var order = await _orderRepository.GetAsync(specification);
-            order.Details = null;
+            order!.Details = null;
             // PK property should be nullable.
             await _orderRepository.UpdateAsync(order);
         });
 
         using var scope = _dataFilter.Disable<ISoftDelete>();
         var order = await _orderRepository.GetAsync(specification);
-        var details = order.Details;
+        var details = order!.Details;
 
         details.Should().NotBeNull();
         details.Should().BeEquivalentTo(new { IsDeleted = true }, opts => opts.ExcludingFields());
@@ -67,7 +67,7 @@ public class SoftDelete_Cascading_Tests : EntityFrameworkCoreTestsBase
         await UseUowAsync(async () =>
         {
             var order = await _orderRepository.GetAsync(specification);
-            var orderLine = order.OrderLines.First();
+            var orderLine = order!.OrderLines.First();
             productId = orderLine.ProductId;
             order.RemoveOrderLine(productId);
             await _orderRepository.DeleteAsync(order);
@@ -77,10 +77,10 @@ public class SoftDelete_Cascading_Tests : EntityFrameworkCoreTestsBase
         var order = await _orderRepository.GetAsync(specification);
 
         order.Should().NotBeNull();
-        order.IsDeleted.Should().BeTrue();
+        order!.IsDeleted.Should().BeTrue();
         order.OrderLines.Should().Contain(v => v.ProductId == productId && v.IsDeleted);
         order.Details.Should().NotBeNull();
-        order.Details.IsDeleted.Should().BeFalse();
+        order.Details!.IsDeleted.Should().BeFalse();
     }
 
     [Fact]
@@ -91,16 +91,16 @@ public class SoftDelete_Cascading_Tests : EntityFrameworkCoreTestsBase
         await UseUowAsync(async () =>
         {
             var order = await _orderRepository.GetAsync(specification);
-            var orderLine = order.OrderLines.First();
+            var orderLine = order!.OrderLines.First();
             productId = orderLine.ProductId;
             order.RemoveOrderLine(productId);
             await _orderRepository.UpdateAsync(order);
         });
         var order = await _orderRepository.GetAsync(specification);
 
-        order.OrderLines.Should()
-                        .OnlyContain(v => !v.IsDeleted).And
-                        .NotContain(v => v.ProductId == productId);
+        order!.OrderLines.Should()
+                         .OnlyContain(v => !v.IsDeleted).And
+                         .NotContain(v => v.ProductId == productId);
     }
 
     private async Task UseUowAsync(Func<Task> func)

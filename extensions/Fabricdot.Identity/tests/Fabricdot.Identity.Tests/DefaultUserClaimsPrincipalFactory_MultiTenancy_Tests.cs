@@ -32,7 +32,7 @@ public class DefaultUserClaimsPrincipalFactory_MultiTenancy_Tests : IdentityTest
             var claimsPrincipal = await _factory.CreateAsync(user);
 
             claimsPrincipal.Should().NotBeNull();
-            claimsPrincipal.Should().HaveSingleClaim(TenantClaimTypes.TenantId, user.TenantId.ToString());
+            claimsPrincipal.Should().HaveSingleClaim(TenantClaimTypes.TenantId, user.TenantId.ToString()!);
         });
     }
 }

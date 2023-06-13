@@ -11,7 +11,7 @@ public class ModuleManagerTests : TestBase
     {
         var moduleManager = CreateModuleManager<FakeRuntimeErrorModule>();
 
-        await Awaiting(() => moduleManager.StartAsync(null))
+        await Awaiting(() => moduleManager.StartAsync(null!))
                            .Should()
                            .ThrowAsync<ModularityException>()
                            .WithInnerException(typeof(Exception))
@@ -23,7 +23,7 @@ public class ModuleManagerTests : TestBase
     {
         var moduleManager = CreateModuleManager<FakeRuntimeErrorModule>();
 
-        await Awaiting(() => moduleManager.StopAsync(null))
+        await Awaiting(() => moduleManager.StopAsync(null!))
                            .Should()
                            .ThrowAsync<ModularityException>()
                            .WithInnerException(typeof(Exception))

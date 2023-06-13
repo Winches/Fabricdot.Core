@@ -15,7 +15,7 @@ public class PermissionAuthorizationHandlerTests : AuthrizationHandlerTestsBase<
             null);
         await AuthorizationHandler.HandleAsync(context);
 
-        principal.Identity.IsAuthenticated.Should().BeFalse();
+        principal.Identity!.IsAuthenticated.Should().BeFalse();
         context.HasFailed.Should().BeTrue();
     }
 
@@ -31,7 +31,7 @@ public class PermissionAuthorizationHandlerTests : AuthrizationHandlerTestsBase<
             null);
         await AuthorizationHandler.HandleAsync(context);
 
-        principal.Identity.IsAuthenticated.Should().BeTrue();
+        principal.Identity!.IsAuthenticated.Should().BeTrue();
         context.HasSucceeded.Should().BeTrue();
     }
 }

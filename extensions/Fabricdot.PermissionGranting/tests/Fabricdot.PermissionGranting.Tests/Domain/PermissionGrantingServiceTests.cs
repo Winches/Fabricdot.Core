@@ -17,7 +17,7 @@ public class PermissionGrantingServiceTests : PermissionGrantingTestBase
     [Theory]
     public async Task IsGrantedAsync_GivenInvalidInput_Throw(GrantSubject subject)
     {
-        await Awaiting(() => PermissionGrantingService.IsGrantedAsync(subject, null))
+        await Awaiting(() => PermissionGrantingService.IsGrantedAsync(subject, null!))
                            .Should()
                            .ThrowAsync<ArgumentNullException>();
         await Awaiting(() => PermissionGrantingService.IsGrantedAsync(subject, Array.Empty<string>()))

@@ -32,11 +32,11 @@ public class UserPhoneNumberStoreTests : UserStoreTestsBase
     [InlineData(null)]
     [InlineAutoData]
     [Theory]
-    public async Task SetPhoneNumberAsync_GivenInput_Correctly(string phoneNumber)
+    public async Task SetPhoneNumberAsync_GivenInput_Correctly(string? phoneNumber)
     {
         var user = Create<IdentityUser>();
         var confirmed = user.PhoneNumberConfirmed;
-        await Sut.SetPhoneNumberAsync(user, phoneNumber is null ? null : $" {phoneNumber} ", default);
+        await Sut.SetPhoneNumberAsync(user, phoneNumber is null ? null! : $" {phoneNumber} ", default);
 
         user.PhoneNumber.Should().Be(phoneNumber);
         user.PhoneNumberConfirmed.Should().Be(confirmed);

@@ -16,8 +16,8 @@ public class MultiTenantTests : EntityFrameworkCoreTestsBase
 
     public MultiTenantTests()
     {
-        _customerRepository = ServiceProvider.GetService<ICustomerRepository>();
-        _dataFilter = ServiceProvider.GetService<IDataFilter>();
+        _customerRepository = ServiceProvider.GetRequiredService<ICustomerRepository>();
+        _dataFilter = ServiceProvider.GetRequiredService<IDataFilter>();
     }
 
     //[Fact]

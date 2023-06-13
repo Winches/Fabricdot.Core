@@ -26,7 +26,7 @@ public class AttributeExtensionsTests : TestBase
     [Fact]
     public void IsDefined_GivenMemberInfo_ReturnCorrectly()
     {
-        typeof(Foo).GetMethod(nameof(Foo.Print))
+        typeof(Foo).GetMethod(nameof(Foo.Print))!
                    .IsDefined<DescriptionAttribute>()
                    .Should()
                    .BeTrue();
@@ -35,7 +35,7 @@ public class AttributeExtensionsTests : TestBase
     [Fact]
     public void IsDefined_GivenParameterInfo_ReturnCorrectly()
     {
-        typeof(Foo).GetMethod(nameof(Foo.Print))
+        typeof(Foo).GetMethod(nameof(Foo.Print))!
                    .GetParameters()[0]
                    .IsDefined<DescriptionAttribute>()
                    .Should()

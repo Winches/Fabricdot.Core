@@ -21,7 +21,7 @@ public class UserClaimStoreTests : UserStoreTestBase
     {
         await UseUowAsync(async () =>
         {
-            var user = await UserRepository.GetByIdAsync(FakeDataBuilder.UserAndersId);
+            var user = (await UserRepository.GetByIdAsync(FakeDataBuilder.UserAndersId))!;
             Task TestCode1() => _userClaimStore.AddClaimsAsync(user, null, default);
             Task TestCode2() => _userClaimStore.AddClaimsAsync(user, Array.Empty<Claim>(), default);
 
@@ -36,7 +36,7 @@ public class UserClaimStoreTests : UserStoreTestBase
     {
         await UseUowAsync(async () =>
         {
-            var user = await UserRepository.GetByIdAsync(FakeDataBuilder.UserAndersId);
+            var user = (await UserRepository.GetByIdAsync(FakeDataBuilder.UserAndersId))!;
             await _userClaimStore.AddClaimsAsync(
                 user,
                 claims,
@@ -51,7 +51,7 @@ public class UserClaimStoreTests : UserStoreTestBase
     {
         await UseUowAsync(async () =>
         {
-            var user = await UserRepository.GetByIdAsync(FakeDataBuilder.UserAndersId);
+            var user = (await UserRepository.GetByIdAsync(FakeDataBuilder.UserAndersId))!;
             Task TestCode1() => _userClaimStore.RemoveClaimsAsync(user, null, default);
             Task TestCode2() => _userClaimStore.RemoveClaimsAsync(user, Array.Empty<Claim>(), default);
 
@@ -65,11 +65,11 @@ public class UserClaimStoreTests : UserStoreTestBase
     {
         await UseUowAsync(async () =>
         {
-            var user = await UserRepository.GetByIdAsync(FakeDataBuilder.UserAndersId);
+            var user = (await UserRepository.GetByIdAsync(FakeDataBuilder.UserAndersId))!;
             var userClaim = user.Claims.First();
             await _userClaimStore.RemoveClaimsAsync(
                 user,
-                new[] { new Claim(userClaim.ClaimType, userClaim.ClaimValue) },
+                new[] { new Claim(userClaim.ClaimType, userClaim.ClaimValue!) },
                 default);
 
             user.Claims.Should().NotContain(userClaim);
@@ -81,9 +81,9 @@ public class UserClaimStoreTests : UserStoreTestBase
     {
         await UseUowAsync(async () =>
         {
-            var user = await UserRepository.GetByIdAsync(FakeDataBuilder.UserAndersId);
+            var user = (await UserRepository.GetByIdAsync(FakeDataBuilder.UserAndersId))!;
             var userClaim = user.Claims.First();
-            var originClaim = new Claim(userClaim.ClaimType, userClaim.ClaimValue);
+            var originClaim = new Claim(userClaim.ClaimType, userClaim.ClaimValue!);
             var newClaim = new Claim(userClaim.ClaimType, Create<string>());
             Task TestCode1() => _userClaimStore.ReplaceClaimAsync(user, originClaim, null, default);
             Task TestCode2() => _userClaimStore.ReplaceClaimAsync(user, null, newClaim, default);
@@ -98,7 +98,7 @@ public class UserClaimStoreTests : UserStoreTestBase
     {
         await UseUowAsync(async () =>
         {
-            var user = await UserRepository.GetByIdAsync(FakeDataBuilder.UserAndersId);
+            var user = (await UserRepository.GetByIdAsync(FakeDataBuilder.UserAndersId))!;
             var originClaim = user.Claims.First().ToClaim();
             var newClaim = new Claim(originClaim.Type, Create<string>());
             await _userClaimStore.ReplaceClaimAsync(
@@ -118,7 +118,7 @@ public class UserClaimStoreTests : UserStoreTestBase
     {
         await UseUowAsync(async () =>
         {
-            var user = await UserRepository.GetByIdAsync(FakeDataBuilder.UserAndersId);
+            var user = (await UserRepository.GetByIdAsync(FakeDataBuilder.UserAndersId))!;
             var claims = await _userClaimStore.GetClaimsAsync(user, default);
 
             claims.Should().BeEquivalentTo(user.Claims, opts => opts.ComparingByMembers<IdentityUserClaim>().ExcludingMissingMembers());

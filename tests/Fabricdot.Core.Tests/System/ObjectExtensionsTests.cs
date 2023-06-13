@@ -8,7 +8,7 @@ public class ObjectExtensionsTests : TestBase
     [InlineAutoData]
     [InlineAutoData(null)]
     [Theory]
-    public void IsNull_GivenInput_ReturnCorrectly(object obj)
+    public void IsNull_GivenInput_ReturnCorrectly(object? obj)
     {
         var expected = obj == null;
         obj.IsNull().Should().Be(expected);
@@ -34,7 +34,7 @@ public class ObjectExtensionsTests : TestBase
     [Fact]
     public void To_GivenNull_ThrowException()
     {
-        Invoking(() => ObjectExtensions.To<string>(null))
+        Invoking(() => ObjectExtensions.To<string>(null!))
                      .Should()
                      .Throw<ArgumentNullException>();
     }

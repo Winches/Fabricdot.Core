@@ -8,11 +8,11 @@ public abstract class IntegrationTestBase : TestBase, IDisposable
 {
     protected IServiceProviderFactory<IServiceCollection> ServiceProviderFactory { get; set; } = new DefaultServiceProviderFactory();
 
-    protected IServiceProvider RootServiceProvider { get; set; }
+    protected IServiceProvider RootServiceProvider { get; set; } = null!;
 
     protected IServiceProvider ServiceProvider => ServiceScope.ServiceProvider;
 
-    protected IServiceScope ServiceScope { get; set; }
+    protected IServiceScope ServiceScope { get; set; } = null!;
 
     protected IntegrationTestBase()
     {

@@ -5,20 +5,20 @@ namespace Fabricdot.Test.Helpers.Domain.Aggregates.OrderAggregate;
 
 public class Address : ValueObject
 {
-    public string State { get; }
+    public string State { get; } = null!;
 
-    public string City { get; }
+    public string City { get; } = null!;
 
-    public string Street { get; }
+    public string Street { get; } = null!;
 
     [IgnoreMember]
-    public string Remark { get; }
+    public string? Remark { get; }
 
     public Address(
         string state,
         string city,
         string street,
-        string remark = null)
+        string? remark = null)
     {
         State = state;
         City = city;

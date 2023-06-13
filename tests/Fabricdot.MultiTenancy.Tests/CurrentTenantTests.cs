@@ -4,7 +4,7 @@ namespace Fabricdot.MultiTenancy.Tests;
 
 public class CurrentTenantTests : TestFor<CurrentTenant>
 {
-    protected static ITenant CurrentTenant { get; set; }
+    protected static ITenant? CurrentTenant { get; set; }
 
     public CurrentTenantTests()
     {
@@ -15,7 +15,7 @@ public class CurrentTenantTests : TestFor<CurrentTenant>
     [InlineAutoData(null)]
     [InlineAutoData]
     [Theory]
-    internal void Id_GivenTenant_ReturnCorrectly(TenantInfo tenant)
+    internal void Id_GivenTenant_ReturnCorrectly(TenantInfo? tenant)
     {
         CurrentTenant = tenant;
 
@@ -25,7 +25,7 @@ public class CurrentTenantTests : TestFor<CurrentTenant>
     [InlineAutoData(null)]
     [InlineAutoData]
     [Theory]
-    internal void Name_GivenTenant_ReturnCorrectly(TenantInfo tenant)
+    internal void Name_GivenTenant_ReturnCorrectly(TenantInfo? tenant)
     {
         CurrentTenant = tenant;
 
@@ -35,7 +35,7 @@ public class CurrentTenantTests : TestFor<CurrentTenant>
     [InlineAutoData(null)]
     [InlineAutoData]
     [Theory]
-    internal void IsAvailable_GivenTenant_ReturnCorrectly(TenantInfo tenant)
+    internal void IsAvailable_GivenTenant_ReturnCorrectly(TenantInfo? tenant)
     {
         CurrentTenant = tenant;
         var expected = CurrentTenant?.Id != null;

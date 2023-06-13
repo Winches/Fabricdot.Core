@@ -36,8 +36,9 @@ public class ModuleMetadataTests : TestBase
             new FakeStartupModule());
         var dependency = new ModuleMetadata(typeof(FakeInfrastructureModule), new FakeInfrastructureModule());
 
-        module.Should().BeEquivalentTo(module);
-        module.Should().NotBeEquivalentTo(dependency);
-        module.Should().NotBeEquivalentTo((ModuleMetadata)null);
+        module.Should()
+              .NotBeNull().And
+              .BeEquivalentTo(module).And
+              .NotBeEquivalentTo(dependency);
     }
 }

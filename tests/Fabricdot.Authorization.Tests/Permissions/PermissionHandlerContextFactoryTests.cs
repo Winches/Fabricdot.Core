@@ -16,11 +16,11 @@ public class PermissionHandlerContextFactoryTests : TestFor<PermissionHandlerCon
                                CancellationToken _) => principal.Claims.Select(v => (GrantSubject)v).ToList());
     }
 
-    public static IEnumerable<object[]> GetInvalidInput()
+    public static IEnumerable<object?[]> GetInvalidInput()
     {
-        yield return new object[] { null, new[] { new PermissionName("name") } };
-        yield return new object[] { new ClaimsPrincipal(), null };
-        yield return new object[] { new ClaimsPrincipal(), Array.Empty<PermissionName>() };
+        yield return new object?[] { null, new[] { new PermissionName("name") } };
+        yield return new object?[] { new ClaimsPrincipal(), null };
+        yield return new object?[] { new ClaimsPrincipal(), Array.Empty<PermissionName>() };
     }
 
     [MemberData(nameof(GetInvalidInput))]

@@ -2,12 +2,12 @@
 
 public class EnumerableExtensionsTests : TestFor<List<string>>
 {
-    public static IEnumerable<object[]> GetEnumrables()
+    public static IEnumerable<object?[]> GetEnumrables()
     {
-        yield return new object[] { null };
-        yield return new object[] { Array.Empty<object>() };
-        yield return new object[] { new List<object>() };
-        yield return new object[] { new object[] { 1 } };
+        yield return new object?[] { null };
+        yield return new object?[] { Array.Empty<object>() };
+        yield return new object?[] { new List<object>() };
+        yield return new object?[] { new object[] { 1 } };
     }
 
     [MemberData(nameof(GetEnumrables))]

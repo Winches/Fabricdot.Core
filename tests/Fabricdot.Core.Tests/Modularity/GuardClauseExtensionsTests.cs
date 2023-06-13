@@ -8,7 +8,7 @@ public class GuardClauseExtensionsTests : TestBase
     [Fact]
     public void InvalidModuleType_WhenGuardIsNull_ThrowException()
     {
-        Invoking(() => ((IGuardClause)null).InvalidModuleType(GetType(), Create<string>()))
+        Invoking(() => (null as IGuardClause)!.InvalidModuleType(GetType(), Create<string>()))
                      .Should()
                      .Throw<ArgumentException>();
     }
@@ -16,7 +16,7 @@ public class GuardClauseExtensionsTests : TestBase
     [Fact]
     public void InvalidModuleType_WhenTypeIsNull_ThrowException()
     {
-        Invoking(() => Guard.Against.InvalidModuleType(null, Create<string>()))
+        Invoking(() => Guard.Against.InvalidModuleType(null!, Create<string>()))
                      .Should()
                      .Throw<ArgumentNullException>();
     }

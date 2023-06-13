@@ -15,7 +15,7 @@ public class QueryProcessorTests : IntegrationTestBase<InfrastructureTestModule>
     [Fact]
     public async Task PublishAsync_GivenNull_Throw()
     {
-        await _queryProcessor.Awaiting(v => v.ProcessAsync<object>(null))
+        await _queryProcessor.Awaiting(v => v.ProcessAsync<object>(null!))
                          .Should()
                          .ThrowAsync<ArgumentNullException>();
     }

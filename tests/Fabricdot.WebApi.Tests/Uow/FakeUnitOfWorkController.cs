@@ -21,7 +21,7 @@ public class FakeUnitOfWorkController : ControllerBase
         var unitOfWork = _unitOfWorkManager.Available;
         AssertBegunUow(unitOfWork);
 
-        unitOfWork.Options.IsTransactional.Should().BeFalse();
+        unitOfWork!.Options.IsTransactional.Should().BeFalse();
 
         return "Success";
     }
@@ -33,7 +33,7 @@ public class FakeUnitOfWorkController : ControllerBase
         var unitOfWork = _unitOfWorkManager.Available;
         AssertBegunUow(unitOfWork);
 
-        unitOfWork.Options.IsTransactional.Should().BeTrue();
+        unitOfWork!.Options.IsTransactional.Should().BeTrue();
 
         return "Success";
     }
@@ -53,7 +53,7 @@ public class FakeUnitOfWorkController : ControllerBase
         var unitOfWork = _unitOfWorkManager.Available;
         AssertBegunUow(unitOfWork);
 
-        unitOfWork.Options.IsTransactional.Should().BeTrue();
+        unitOfWork!.Options.IsTransactional.Should().BeTrue();
     }
 
     [HttpPost("[action]")]
@@ -64,9 +64,9 @@ public class FakeUnitOfWorkController : ControllerBase
         throw new InvalidOperationException("Something happened.");
     }
 
-    private static void AssertBegunUow(IUnitOfWork unitOfWork)
+    private static void AssertBegunUow(IUnitOfWork? unitOfWork)
     {
         unitOfWork.Should().NotBeNull();
-        unitOfWork.IsActive.Should().BeTrue();
+        unitOfWork!.IsActive.Should().BeTrue();
     }
 }

@@ -7,7 +7,7 @@ public class StreamExtensionsTests : TestBase
     [Fact]
     public async Task GetBytesAsync_GivenNull_ThrowException()
     {
-        await Awaiting(() => StreamExtensions.GetBytesAsync(null))
+        await Awaiting(() => StreamExtensions.GetBytesAsync(null!))
                            .Should()
                            .ThrowAsync<ArgumentNullException>();
     }
@@ -25,7 +25,7 @@ public class StreamExtensionsTests : TestBase
     [Fact]
     public async Task GetStringAsync_GivenNull_ThrowException()
     {
-        await Awaiting(() => StreamExtensions.GetStringAsync(null))
+        await Awaiting(() => StreamExtensions.GetStringAsync(null!))
                .Should()
                .ThrowAsync<ArgumentNullException>();
     }

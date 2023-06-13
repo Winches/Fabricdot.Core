@@ -48,7 +48,7 @@ public class UserStoreTests : UserStoreTestsBase
     [Fact]
     public async Task SetUserNameAsync_GivenInvalidInput_ThrowException()
     {
-        await Sut.Awaiting(v => v.SetUserNameAsync(null, Create<string>(), default)).Should().ThrowAsync<ArgumentException>();
+        await Sut.Awaiting(v => v.SetUserNameAsync(null!, Create<string>(), default)).Should().ThrowAsync<ArgumentException>();
     }
 
     [AutoData]

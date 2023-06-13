@@ -23,13 +23,14 @@ public class EfRepository_Query_Tests : EntityFrameworkCoreTestsBase
         var expected = FakeDataBuilder.OrderId;
         var actual = await _orderRepository.GetByIdAsync(expected);
 
-        actual.Id.Should().Be(expected);
+        actual.Should().NotBeNull();
+        actual!.Id.Should().Be(expected);
     }
 
     [Fact]
     public async Task GetByIdAsync_GivenNull_Throw()
     {
-        await Awaiting(() => _customerRepository.GetByIdAsync(null))
+        await Awaiting(() => _customerRepository.GetByIdAsync(null!))
                            .Should()
                            .ThrowAsync<ArgumentNullException>();
     }
@@ -50,14 +51,14 @@ public class EfRepository_Query_Tests : EntityFrameworkCoreTestsBase
         var specification = new OrderWithDetailsSpecification(orderId);
         var actual = await _orderRepository.GetAsync(specification);
 
-        actual.Should().Be(expected);
-        actual.OrderLines.Should().NotBeEmpty();
+        actual.Should().NotBeNull().And.Be(expected);
+        actual!.OrderLines.Should().NotBeEmpty();
     }
 
     [Fact]
     public async Task GetAsync_GivenNull_Throw()
     {
-        await Awaiting(() => _orderRepository.GetAsync(null))
+        await Awaiting(() => _orderRepository.GetAsync(null!))
                            .Should()
                            .ThrowAsync<ArgumentNullException>();
     }
@@ -79,13 +80,13 @@ public class EfRepository_Query_Tests : EntityFrameworkCoreTestsBase
         var specification = new OrderWithDetailsSpecification(orderId);
         var actual = await _orderRepository.ListAsync(specification);
 
-        actual.Should().ContainSingle(expected);
+        actual.Should().ContainSingle(expected!);
     }
 
     [Fact]
     public async Task ListAsync_GivenNull_Throw()
     {
-        await Awaiting(() => _orderRepository.ListAsync(null))
+        await Awaiting(() => _orderRepository.ListAsync(null!))
                            .Should()
                            .ThrowAsync<ArgumentNullException>();
     }

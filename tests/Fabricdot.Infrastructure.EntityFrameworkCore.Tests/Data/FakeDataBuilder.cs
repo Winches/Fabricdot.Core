@@ -39,8 +39,8 @@ public class FakeDataBuilder : ITransientDependency
     private async Task AddOrdersAsync()
     {
         var orders = _fixture.CreateMany<Order>(10).ToList();
-        orders.Add(factory(OrderId));
-        orders.Add(factory(DeletedOrderId));
+        orders.Add(Factory(OrderId));
+        orders.Add(Factory(DeletedOrderId));
         foreach (var order in orders)
         {
             order.AddOrderLine(_fixture);
@@ -49,21 +49,21 @@ public class FakeDataBuilder : ITransientDependency
         await _dbContext.AddRangeAsync(orders);
         await _dbContext.SaveChangesAsync();
 
-        _dbContext.Remove(orders.Find(v => v.Id == DeletedOrderId));
+        _dbContext.Remove(orders.Find(v => v.Id == DeletedOrderId)!);
         await _dbContext.SaveChangesAsync();
 
-        Order factory(Guid id) => new(id, _fixture.Create<Address>(), _fixture.Create<string>(), _fixture.Create<OrderDetails>());
+        Order Factory(Guid id) => new(id, _fixture.Create<Address>(), _fixture.Create<string>(), _fixture.Create<OrderDetails>());
     }
 
     private async Task AddCustomersAsync()
     {
         var customers = _fixture.CreateMany<Customer>(5).ToList();
-        customers.Add(factory());
-        customers.Add(factory());
+        customers.Add(Factory());
+        customers.Add(Factory());
 
         await _secondDbContext.AddRangeAsync(customers);
         await _secondDbContext.SaveChangesAsync();
 
-        Customer factory() => new(_fixture.Create<Guid>(), _fixture.Create<string>(), TenantId);
+        Customer Factory() => new(_fixture.Create<Guid>(), _fixture.Create<string>(), TenantId);
     }
 }

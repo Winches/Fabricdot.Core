@@ -10,7 +10,7 @@ public class DomainEventNotificationHandlerTests : IntegrationTestBase<Infrastru
 {
     internal class OrderCreatedEventHandler1 : IDomainEventHandler<EntityCreatedEvent<Order>>
     {
-        public static IDomainEvent Event { get; private set; }
+        public static IDomainEvent? Event { get; private set; }
 
         /// <inheritdoc />
         public Task HandleAsync(EntityCreatedEvent<Order> domainEvent, CancellationToken cancellationToken)
@@ -22,7 +22,7 @@ public class DomainEventNotificationHandlerTests : IntegrationTestBase<Infrastru
 
     internal class OrderCreatedEventHandler2 : IDomainEventHandler<EntityCreatedEvent<Order>>
     {
-        public static IDomainEvent Event { get; private set; }
+        public static IDomainEvent? Event { get; private set; }
 
         /// <inheritdoc />
         public Task HandleAsync(EntityCreatedEvent<Order> domainEvent, CancellationToken cancellationToken)

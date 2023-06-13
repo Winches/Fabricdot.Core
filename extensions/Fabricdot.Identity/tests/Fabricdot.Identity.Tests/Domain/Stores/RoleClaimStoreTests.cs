@@ -21,7 +21,7 @@ public class RoleClaimStoreTests : RoleStoreTestBase
         {
             var role = await RoleRepository.GetByIdAsync(FakeDataBuilder.RoleAuthorId);
 
-            await _roleClaimStore.Awaiting(v => v.AddClaimAsync(role, null, default))
+            await _roleClaimStore.Awaiting(v => v.AddClaimAsync(role!, null, default))
                                  .Should()
                                  .ThrowAsync<ArgumentNullException>();
         });
@@ -33,7 +33,7 @@ public class RoleClaimStoreTests : RoleStoreTestBase
     {
         await UseUowAsync(async () =>
         {
-            var role = await RoleRepository.GetByIdAsync(FakeDataBuilder.RoleAuthorId);
+            var role = (await RoleRepository.GetByIdAsync(FakeDataBuilder.RoleAuthorId))!;
             await _roleClaimStore.AddClaimAsync(role, claim, default);
 
             role.Claims.Should().ContainSingle(v => v.ClaimType == claim.Type && v.ClaimValue == claim.Value);
@@ -47,7 +47,7 @@ public class RoleClaimStoreTests : RoleStoreTestBase
         {
             var role = await RoleRepository.GetByIdAsync(FakeDataBuilder.RoleAuthorId);
 
-            await _roleClaimStore.Awaiting(v => v.RemoveClaimAsync(role, null, default))
+            await _roleClaimStore.Awaiting(v => v.RemoveClaimAsync(role!, null, default))
                                  .Should()
                                  .ThrowAsync<ArgumentNullException>();
         });
@@ -59,8 +59,8 @@ public class RoleClaimStoreTests : RoleStoreTestBase
         await UseUowAsync(async () =>
         {
             var role = await RoleRepository.GetByIdAsync(FakeDataBuilder.RoleAuthorId);
-            var roleClaim = role.Claims.First();
-            var claim = new Claim(roleClaim.ClaimType, roleClaim.ClaimValue);
+            var roleClaim = role!.Claims.First();
+            var claim = new Claim(roleClaim.ClaimType, roleClaim.ClaimValue!);
             await _roleClaimStore.RemoveClaimAsync(role, claim, default);
 
             role.Claims.Should().NotContain(v => v.ClaimType == claim.Type && v.ClaimValue == claim.Value);

@@ -24,10 +24,10 @@ public class AuthorizationPolicyProviderTests : IntegrationTestBase<Authorizatio
 
         AuthorizationOptions.GetPolicy(policyName).Should().Be(policy);
         policy.Should().NotBeNull();
-        policy.Requirements.Should()
-                           .ContainSingle().Which
-                           .Should()
-                           .BeOfType<PermissionRequirement>();
+        policy!.Requirements.Should()
+                            .ContainSingle().Which
+                            .Should()
+                            .BeOfType<PermissionRequirement>();
     }
 
     [AutoData]

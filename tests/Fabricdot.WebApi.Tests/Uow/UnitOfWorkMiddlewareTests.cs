@@ -26,7 +26,7 @@ public class UnitOfWorkMiddlewareTests : WebApplicationTestBase<WebApiTestModule
     [MemberData(nameof(GetHttpMethods))]
     public async Task UnitOfWorkMiddleware_SendHttpRequest_ReserveUnitOfWork(HttpMethod httpMethod)
     {
-        IUnitOfWork uow = null;
+        IUnitOfWork? uow = null;
         ServiceProvider.GetRequiredService<ActionMiddlewareProvider>()
             .ExecutingAction = context =>
             {
@@ -34,7 +34,8 @@ public class UnitOfWorkMiddlewareTests : WebApplicationTestBase<WebApiTestModule
                 var ambientUnitOfWork = serviceProvider.GetRequiredService<IAmbientUnitOfWork>();
                 uow = ambientUnitOfWork.UnitOfWork;
 
-                uow.IsReservedFor(UnitOfWorkManager.RESERVATION_NAME).Should().BeTrue();
+                uow.Should().NotBeNull();
+                uow!.IsReservedFor(UnitOfWorkManager.RESERVATION_NAME).Should().BeTrue();
 
                 return Task.CompletedTask;
             };
@@ -42,7 +43,7 @@ public class UnitOfWorkMiddlewareTests : WebApplicationTestBase<WebApiTestModule
         using var request = new HttpRequestMessage(httpMethod, "/");
         await HttpClient.SendAsync(request);
 
-        await FluentActions.Awaiting(() => uow.CommitChangesAsync())
+        await FluentActions.Awaiting(() => uow!.CommitChangesAsync())
                            .Should()
                            .ThrowAsync<InvalidOperationException>();
     }

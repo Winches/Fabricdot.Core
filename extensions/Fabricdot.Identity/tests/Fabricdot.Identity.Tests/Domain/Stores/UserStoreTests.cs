@@ -8,7 +8,7 @@ public class UserStoreTests : UserStoreTestBase
     [Fact]
     public async Task CreateAsync_GivenNull_ThrownException()
     {
-        await UserStore.Awaiting(v => v.CreateAsync(null, default)).Should().ThrowAsync<ArgumentNullException>();
+        await UserStore.Awaiting(v => v.CreateAsync(null!, default)).Should().ThrowAsync<ArgumentNullException>();
     }
 
     [AutoData]
@@ -25,7 +25,7 @@ public class UserStoreTests : UserStoreTestBase
     [Fact]
     public async Task UpdateAsync_GivenNull_ThrownException()
     {
-        await UserStore.Awaiting(v => v.UpdateAsync(null, default)).Should().ThrowAsync<ArgumentNullException>();
+        await UserStore.Awaiting(v => v.UpdateAsync(null!, default)).Should().ThrowAsync<ArgumentNullException>();
     }
 
     [AutoData]
@@ -33,7 +33,7 @@ public class UserStoreTests : UserStoreTestBase
     public async Task UpdateAsync_GivenUser_Correctly(string givenName)
     {
         var user = await UserRepository.GetByIdAsync(FakeDataBuilder.UserAndersId);
-        user.GivenName = givenName;
+        user!.GivenName = givenName;
         var res = await UserStore.UpdateAsync(user, default);
 
         res.Succeeded.Should().BeTrue();
@@ -43,15 +43,15 @@ public class UserStoreTests : UserStoreTestBase
     [Fact]
     public async Task DeleteAsync_GivenNull_ThrownException()
     {
-        await UserStore.Awaiting(v => v.DeleteAsync(null, default)).Should().ThrowAsync<ArgumentNullException>();
+        await UserStore.Awaiting(v => v.DeleteAsync(null!, default)).Should().ThrowAsync<ArgumentNullException>();
     }
 
     [Fact]
     public async Task DeleteAsync_GivenUser_Correctly()
     {
         var user = await UserRepository.GetByIdAsync(FakeDataBuilder.UserAndersId);
-        var res = await UserStore.DeleteAsync(user, default);
-        var retrievalUser = await UserRepository.GetByIdAsync(user.Id);
+        var res = await UserStore.DeleteAsync(user!, default);
+        var retrievalUser = await UserRepository.GetByIdAsync(user!.Id);
 
         res.Succeeded.Should().BeTrue();
         retrievalUser.Should().BeNull();

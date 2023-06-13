@@ -31,7 +31,7 @@ public class IdentityUserTests : TestFor<IdentityUser>
     {
         var expected = Sut.Email;
 
-        Sut.Email.Trim().Should().Be(expected);
+        Sut.Email!.Trim().Should().Be(expected);
     }
 
     [Fact]
@@ -39,25 +39,25 @@ public class IdentityUserTests : TestFor<IdentityUser>
     {
         var expected = Sut.NormalizedEmail;
 
-        Sut.Email.Normalize().ToUpperInvariant().Should().Be(expected);
+        Sut.Email!.Normalize().ToUpperInvariant().Should().Be(expected);
     }
 
     [InlineData(null)]
     [InlineData("")]
     [InlineData(" ")]
     [Theory]
-    public void Constructor_GivenInvalidUserName_ThrowException(string userName)
+    public void Constructor_GivenInvalidUserName_ThrowException(string? userName)
     {
-        Invoking(() => new IdentityUser(Create<Guid>(), userName)).Should().Throw<ArgumentException>();
+        Invoking(() => new IdentityUser(Create<Guid>(), userName!)).Should().Throw<ArgumentException>();
     }
 
     [InlineData(null)]
     [InlineData("")]
     [InlineData(" ")]
     [Theory]
-    public void Constructor_GivenInvalidEmail_ThrowException(string email)
+    public void Constructor_GivenInvalidEmail_ThrowException(string? email)
     {
-        Invoking(() => new IdentityUser(Create<Guid>(), Create<string>(), email)).Should().Throw<ArgumentException>();
+        Invoking(() => new IdentityUser(Create<Guid>(), Create<string>(), email!)).Should().Throw<ArgumentException>();
     }
 
     [Fact]

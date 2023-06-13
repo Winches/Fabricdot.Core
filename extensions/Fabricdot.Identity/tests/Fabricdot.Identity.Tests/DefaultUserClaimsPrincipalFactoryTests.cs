@@ -29,9 +29,9 @@ public class DefaultUserClaimsPrincipalFactoryTests : IdentityTestBase
 
             claimsPrincipal.Should().NotBeNull();
             claimsPrincipal.Should()
-                           .HaveSingleClaim(ClaimTypes.GivenName, user.GivenName).And
-                           .HaveSingleClaim(ClaimTypes.Surname, user.Surname).And
-                           .HaveSingleClaim(ClaimTypes.Email, user.Email).And
+                           .HaveSingleClaim(ClaimTypes.GivenName, user.GivenName!).And
+                           .HaveSingleClaim(ClaimTypes.Surname, user.Surname!).And
+                           .HaveSingleClaim(ClaimTypes.Email, user.Email!).And
                            .HaveSameClaimValues(ClaimTypes.Role, userRoles);
         });
     }

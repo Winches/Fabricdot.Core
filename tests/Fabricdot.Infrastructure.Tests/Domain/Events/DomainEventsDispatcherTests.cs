@@ -28,7 +28,7 @@ public class DomainEventsDispatcherTests : TestFor<DomainEventsDispatcher>
     [Fact]
     public async Task DispatchEventsAsync_GivenNull_ThrowException()
     {
-        await Awaiting(() => Sut.DispatchEventsAsync(null)).Should()
+        await Awaiting(() => Sut.DispatchEventsAsync(null!)).Should()
                                                            .ThrowAsync<ArgumentNullException>();
     }
 

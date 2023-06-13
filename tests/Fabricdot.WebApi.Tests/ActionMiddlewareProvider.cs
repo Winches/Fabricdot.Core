@@ -5,7 +5,7 @@ namespace Fabricdot.WebApi.Tests;
 
 public class ActionMiddlewareProvider : ISingletonDependency
 {
-    public RequestDelegate ExecutingAction { get; set; }
+    public RequestDelegate? ExecutingAction { get; set; }
 
-    public RequestDelegate ExecutedAction { get; set; }
+    public RequestDelegate? ExecutedAction { get; set; }
 }

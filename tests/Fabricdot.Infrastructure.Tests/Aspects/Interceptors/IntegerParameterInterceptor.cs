@@ -6,7 +6,7 @@ namespace Fabricdot.Infrastructure.Tests.Aspects.Interceptors;
 [ServiceContract(typeof(IParameterInterceptor))]
 internal class IntegerParameterInterceptor : IParameterInterceptor, ITransientDependency
 {
-    public static int[] Parameters { get; set; }
+    public static int[]? Parameters { get; set; }
 
     /// <inheritdoc />
     public async Task InvokeAsync(IInvocationContext invocationContext)
