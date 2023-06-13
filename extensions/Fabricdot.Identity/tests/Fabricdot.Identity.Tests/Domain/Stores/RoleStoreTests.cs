@@ -36,7 +36,7 @@ public class RoleStoreTests : RoleStoreTestBase
     [Theory]
     public async Task UpdateAsync_GivenRole_Correctly(string description)
     {
-        var role = await RoleRepository.GetDetailsByIdAsync(FakeDataBuilder.RoleAuthorId);
+        var role = await RoleRepository.GetByIdAsync(FakeDataBuilder.RoleAuthorId);
         role.Description = description;
         var res = await RoleStore.UpdateAsync(role, default);
 
@@ -55,7 +55,7 @@ public class RoleStoreTests : RoleStoreTestBase
     [Fact]
     public async Task DeleteAsync_GivenRole_Correctly()
     {
-        var role = await RoleRepository.GetDetailsByIdAsync(FakeDataBuilder.RoleAuthorId);
+        var role = await RoleRepository.GetByIdAsync(FakeDataBuilder.RoleAuthorId);
         var res = await RoleStore.DeleteAsync(role, default);
         var retrievalRole = await RoleRepository.GetByIdAsync(role.Id);
 

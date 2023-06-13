@@ -32,7 +32,7 @@ public class UserStoreTests : UserStoreTestBase
     [Theory]
     public async Task UpdateAsync_GivenUser_Correctly(string givenName)
     {
-        var user = await UserRepository.GetDetailsByIdAsync(FakeDataBuilder.UserAndersId);
+        var user = await UserRepository.GetByIdAsync(FakeDataBuilder.UserAndersId);
         user.GivenName = givenName;
         var res = await UserStore.UpdateAsync(user, default);
 
@@ -49,7 +49,7 @@ public class UserStoreTests : UserStoreTestBase
     [Fact]
     public async Task DeleteAsync_GivenUser_Correctly()
     {
-        var user = await UserRepository.GetDetailsByIdAsync(FakeDataBuilder.UserAndersId);
+        var user = await UserRepository.GetByIdAsync(FakeDataBuilder.UserAndersId);
         var res = await UserStore.DeleteAsync(user, default);
         var retrievalUser = await UserRepository.GetByIdAsync(user.Id);
 

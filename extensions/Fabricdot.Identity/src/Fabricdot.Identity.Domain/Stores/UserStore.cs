@@ -72,9 +72,9 @@ public partial class UserStore<TUser, TRole> : IdentityStoreBase, IUserStore<TUs
     {
         cancellationToken.ThrowIfCancellationRequested();
 
-        return (await UserRepository.GetDetailsByIdAsync(
+        return (await UserRepository.GetByIdAsync(
             ConvertIdFromString(userId),
-            cancellationToken))!;
+            cancellationToken: cancellationToken))!;
     }
 
     public virtual async Task<TUser> FindByNameAsync(

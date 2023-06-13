@@ -22,7 +22,7 @@ public class UserAuthenticationTokenStoreTests : UserStoreTestBase
     {
         await UseUowAsync(async () =>
         {
-            var user = await UserRepository.GetDetailsByIdAsync(FakeDataBuilder.UserAndersId);
+            var user = await UserRepository.GetByIdAsync(FakeDataBuilder.UserAndersId);
             await _userAuthenticationTokenStore.SetTokenAsync(
                 user,
                 loginProvider,
@@ -40,7 +40,7 @@ public class UserAuthenticationTokenStoreTests : UserStoreTestBase
     {
         await UseUowAsync(async () =>
         {
-            var user = await UserRepository.GetDetailsByIdAsync(FakeDataBuilder.UserAndersId);
+            var user = await UserRepository.GetByIdAsync(FakeDataBuilder.UserAndersId);
             var token = user.Tokens.First();
             await _userAuthenticationTokenStore.SetTokenAsync(
                 user,
@@ -61,7 +61,7 @@ public class UserAuthenticationTokenStoreTests : UserStoreTestBase
     {
         await UseUowAsync(async () =>
         {
-            var user = await UserRepository.GetDetailsByIdAsync(FakeDataBuilder.UserAndersId);
+            var user = await UserRepository.GetByIdAsync(FakeDataBuilder.UserAndersId);
             var token = user.Tokens.First();
             await _userAuthenticationTokenStore.RemoveTokenAsync(
                 user,
@@ -78,7 +78,7 @@ public class UserAuthenticationTokenStoreTests : UserStoreTestBase
     {
         await UseUowAsync(async () =>
         {
-            var user = await UserRepository.GetDetailsByIdAsync(FakeDataBuilder.UserAndersId);
+            var user = await UserRepository.GetByIdAsync(FakeDataBuilder.UserAndersId);
             var token = user.Tokens.First();
             var tokenValue = await _userAuthenticationTokenStore.GetTokenAsync(
                 user,

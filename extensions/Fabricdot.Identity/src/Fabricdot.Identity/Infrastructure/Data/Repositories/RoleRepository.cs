@@ -3,7 +3,6 @@ using Ardalis.GuardClauses;
 using Ardalis.Specification;
 using Fabricdot.Identity.Domain.Entities.RoleAggregate;
 using Fabricdot.Identity.Domain.Repositories;
-using Fabricdot.Identity.Domain.Specifications;
 using Fabricdot.Infrastructure.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
@@ -17,13 +16,12 @@ public class RoleRepository<TDbContext, TRole> : EfRepository<TDbContext, TRole,
     {
     }
 
+    [Obsolete("Use 'GetByIdAsync'")]
     public virtual async Task<TRole?> GetDetailsByIdAsync(
         Guid id,
         CancellationToken cancellationToken = default)
     {
-        var query = await GetQueryableAsync(true, cancellationToken: cancellationToken);
-        return await query.Where(v => v.Id == id)
-                          .SingleOrDefaultAsync(cancellationToken);
+        return await GetByIdAsync(id, cancellationToken: cancellationToken);
     }
 
     public virtual async Task<TRole?> GetByNormalizedNameAsync(
@@ -31,20 +29,22 @@ public class RoleRepository<TDbContext, TRole> : EfRepository<TDbContext, TRole,
         bool includeDetails = true,
         CancellationToken cancellationToken = default)
     {
-        var query = await GetQueryableAsync(includeDetails, cancellationToken: cancellationToken);
+        var query = await GetQueryableAsync(cancellationToken: cancellationToken);
+        if (includeDetails)
+            query = IncludeDetails(query);
         return await query.Where(v => v.NormalizedName == normalizedName)
                           .SingleOrDefaultAsync(cancellationToken);
     }
 
-    public virtual async Task<IReadOnlyCollection<TRole>> ListAsync(
-        ICollection<Guid> ids,
-        bool includeDetails = false,
-        CancellationToken cancellationToken = default)
-    {
-        var query = await GetQueryableAsync(includeDetails, cancellationToken: cancellationToken);
-        return await query.Where(v => ids.Contains(v.Id))
-                          .ToListAsync(cancellationToken);
-    }
+    //public virtual async Task<IReadOnlyCollection<TRole>> ListAsync(
+    //    ICollection<Guid> ids,
+    //    bool includeDetails = false,
+    //    CancellationToken cancellationToken = default)
+    //{
+    //    var query = await GetQueryableAsync(includeDetails, cancellationToken: cancellationToken);
+    //    return await query.Where(v => ids.Contains(v.Id))
+    //                      .ToListAsync(cancellationToken);
+    //}
 
     async Task ISupportExplicitLoading<TRole>.LoadReferenceAsync<TProperty>(
         TRole entity,
@@ -74,14 +74,19 @@ public class RoleRepository<TDbContext, TRole> : EfRepository<TDbContext, TRole,
                        .LoadAsync(cancellationToken);
     }
 
-    protected virtual async Task<IQueryable<TRole>> GetQueryableAsync(
-        bool includeDetails,
-        bool evaluateCriteriaOnly = false,
-        CancellationToken cancellationToken = default)
+    //protected virtual async Task<IQueryable<TRole>> GetQueryableAsync(
+    //    bool includeDetails,
+    //    bool evaluateCriteriaOnly = false,
+    //    CancellationToken cancellationToken = default)
+    //{
+    //    return await GetQueryableAsync(
+    //        new RoleWithDetailsSpecification<TRole>(includeDetails),
+    //        evaluateCriteriaOnly,
+    //        cancellationToken: cancellationToken);
+    //}
+
+    public override IQueryable<TRole> IncludeDetails(IQueryable<TRole> queryable)
     {
-        return await GetQueryableAsync(
-            new RoleWithDetailsSpecification<TRole>(includeDetails),
-            evaluateCriteriaOnly,
-            cancellationToken: cancellationToken);
+        return queryable.Include(v => v.Claims);
     }
 }

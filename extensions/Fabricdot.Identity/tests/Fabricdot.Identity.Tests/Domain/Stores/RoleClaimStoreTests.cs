@@ -19,7 +19,7 @@ public class RoleClaimStoreTests : RoleStoreTestBase
     {
         await UseUowAsync(async () =>
         {
-            var role = await RoleRepository.GetDetailsByIdAsync(FakeDataBuilder.RoleAuthorId);
+            var role = await RoleRepository.GetByIdAsync(FakeDataBuilder.RoleAuthorId);
 
             await _roleClaimStore.Awaiting(v => v.AddClaimAsync(role, null, default))
                                  .Should()
@@ -33,7 +33,7 @@ public class RoleClaimStoreTests : RoleStoreTestBase
     {
         await UseUowAsync(async () =>
         {
-            var role = await RoleRepository.GetDetailsByIdAsync(FakeDataBuilder.RoleAuthorId);
+            var role = await RoleRepository.GetByIdAsync(FakeDataBuilder.RoleAuthorId);
             await _roleClaimStore.AddClaimAsync(role, claim, default);
 
             role.Claims.Should().ContainSingle(v => v.ClaimType == claim.Type && v.ClaimValue == claim.Value);
@@ -45,7 +45,7 @@ public class RoleClaimStoreTests : RoleStoreTestBase
     {
         await UseUowAsync(async () =>
         {
-            var role = await RoleRepository.GetDetailsByIdAsync(FakeDataBuilder.RoleAuthorId);
+            var role = await RoleRepository.GetByIdAsync(FakeDataBuilder.RoleAuthorId);
 
             await _roleClaimStore.Awaiting(v => v.RemoveClaimAsync(role, null, default))
                                  .Should()
@@ -58,7 +58,7 @@ public class RoleClaimStoreTests : RoleStoreTestBase
     {
         await UseUowAsync(async () =>
         {
-            var role = await RoleRepository.GetDetailsByIdAsync(FakeDataBuilder.RoleAuthorId);
+            var role = await RoleRepository.GetByIdAsync(FakeDataBuilder.RoleAuthorId);
             var roleClaim = role.Claims.First();
             var claim = new Claim(roleClaim.ClaimType, roleClaim.ClaimValue);
             await _roleClaimStore.RemoveClaimAsync(role, claim, default);

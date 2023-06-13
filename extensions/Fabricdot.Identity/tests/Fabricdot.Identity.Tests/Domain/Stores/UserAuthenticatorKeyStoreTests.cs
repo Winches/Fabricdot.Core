@@ -21,7 +21,7 @@ public class UserAuthenticatorKeyStoreTests : UserStoreTestBase
     {
         await UseUowAsync(async () =>
         {
-            var user = await UserRepository.GetDetailsByIdAsync(FakeDataBuilder.UserAndersId);
+            var user = await UserRepository.GetByIdAsync(FakeDataBuilder.UserAndersId);
             await _userAuthenticatorKeyStore.SetAuthenticatorKeyAsync(user, key, default);
 
             user.Tokens.Should().ContainSingle(v => v.LoginProvider == UserStoreConstants.InternalLoginProvider
@@ -36,7 +36,7 @@ public class UserAuthenticatorKeyStoreTests : UserStoreTestBase
     {
         await UseUowAsync(async () =>
         {
-            var user = await UserRepository.GetDetailsByIdAsync(FakeDataBuilder.UserAndersId);
+            var user = await UserRepository.GetByIdAsync(FakeDataBuilder.UserAndersId);
             await _userAuthenticatorKeyStore.SetAuthenticatorKeyAsync(user, key, default);
             var actualKey = await _userAuthenticatorKeyStore.GetAuthenticatorKeyAsync(user, default);
 

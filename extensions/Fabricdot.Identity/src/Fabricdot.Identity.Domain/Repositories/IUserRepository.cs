@@ -6,6 +6,7 @@ namespace Fabricdot.Identity.Domain.Repositories;
 
 public interface IUserRepository<TUser> : IRepository<TUser, Guid> where TUser : IdentityUser
 {
+    [Obsolete("Use 'GetByIdAsync'")]
     Task<TUser?> GetDetailsByIdAsync(
         Guid id,
         CancellationToken cancellationToken = default);
@@ -29,11 +30,6 @@ public interface IUserRepository<TUser> : IRepository<TUser, Guid> where TUser :
     Task<IReadOnlyCollection<string>> ListRoleNamesAsync<TRole>(
         Guid id,
         CancellationToken cancellationToken = default) where TRole : IdentityRole;
-
-    Task<IReadOnlyCollection<TUser>> ListAsync(
-        ICollection<Guid> ids,
-        bool includeDetails = false,
-        CancellationToken cancellationToken = default);
 
     Task<IReadOnlyCollection<TUser>> ListByClaimAsync(
         string claimType,

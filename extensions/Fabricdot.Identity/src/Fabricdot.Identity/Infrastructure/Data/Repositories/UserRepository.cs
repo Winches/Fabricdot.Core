@@ -3,7 +3,6 @@ using Ardalis.GuardClauses;
 using Fabricdot.Identity.Domain.Entities.RoleAggregate;
 using Fabricdot.Identity.Domain.Entities.UserAggregate;
 using Fabricdot.Identity.Domain.Repositories;
-using Fabricdot.Identity.Domain.Specifications;
 using Fabricdot.Infrastructure.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
@@ -17,13 +16,12 @@ public class UserRepository<TDbContext, TUser> : EfRepository<TDbContext, TUser,
     {
     }
 
+    [Obsolete("Use 'GetByIdAsync'")]
     public virtual async Task<TUser?> GetDetailsByIdAsync(
         Guid id,
         CancellationToken cancellationToken = default)
     {
-        var query = await GetQueryableAsync(true, cancellationToken: cancellationToken);
-        return await query.Where(v => v.Id == id)
-                          .SingleOrDefaultAsync(cancellationToken);
+        return await GetByIdAsync(id, cancellationToken: cancellationToken);
     }
 
     public virtual async Task<TUser?> GetByLoginAsync(
@@ -32,7 +30,9 @@ public class UserRepository<TDbContext, TUser> : EfRepository<TDbContext, TUser,
         bool includeDetails = true,
         CancellationToken cancellationToken = default)
     {
-        var query = await GetQueryableAsync(includeDetails, cancellationToken: cancellationToken);
+        var query = await GetQueryableAsync(cancellationToken: cancellationToken);
+        if (includeDetails)
+            query = IncludeDetails(query);
         return await query.Where(v => v.Logins.Any(o => o.LoginProvider == loginProvider && o.ProviderKey == providerKey))
                           .SingleOrDefaultAsync(cancellationToken);
     }
@@ -42,7 +42,9 @@ public class UserRepository<TDbContext, TUser> : EfRepository<TDbContext, TUser,
         bool includeDetails = true,
         CancellationToken cancellationToken = default)
     {
-        var query = await GetQueryableAsync(includeDetails, cancellationToken: cancellationToken);
+        var query = await GetQueryableAsync(cancellationToken: cancellationToken);
+        if (includeDetails)
+            query = IncludeDetails(query);
         return await query.Where(v => v.NormalizedEmail == normalizedEmail)
                           .SingleOrDefaultAsync(cancellationToken);
     }
@@ -52,7 +54,9 @@ public class UserRepository<TDbContext, TUser> : EfRepository<TDbContext, TUser,
         bool includeDetails = true,
         CancellationToken cancellationToken = default)
     {
-        var query = await GetQueryableAsync(includeDetails, cancellationToken: cancellationToken);
+        var query = await GetQueryableAsync(cancellationToken: cancellationToken);
+        if (includeDetails)
+            query = IncludeDetails(query);
         return await query.Where(v => v.NormalizedUserName == normalizedUserName)
                           .SingleOrDefaultAsync(cancellationToken);
     }
@@ -69,15 +73,15 @@ public class UserRepository<TDbContext, TUser> : EfRepository<TDbContext, TUser,
         return await query.ToListAsync(cancellationToken: cancellationToken);
     }
 
-    public virtual async Task<IReadOnlyCollection<TUser>> ListAsync(
-        ICollection<Guid> ids,
-        bool includeDetails = false,
-        CancellationToken cancellationToken = default)
-    {
-        var query = await GetQueryableAsync(includeDetails, cancellationToken: cancellationToken);
-        return await query.Where(v => ids.Contains(v.Id))
-                          .ToListAsync(cancellationToken);
-    }
+    //public virtual async Task<IReadOnlyCollection<TUser>> ListAsync(
+    //    ICollection<Guid> ids,
+    //    bool includeDetails = false,
+    //    CancellationToken cancellationToken = default)
+    //{
+    //    var query = await GetQueryableAsync(includeDetails, cancellationToken: cancellationToken);
+    //    return await query.Where(v => ids.Contains(v.Id))
+    //                      .ToListAsync(cancellationToken);
+    //}
 
     public virtual async Task<IReadOnlyCollection<TUser>> ListByClaimAsync(
         string claimType,
@@ -85,7 +89,9 @@ public class UserRepository<TDbContext, TUser> : EfRepository<TDbContext, TUser,
         bool includeDetails = false,
         CancellationToken cancellationToken = default)
     {
-        var query = await GetQueryableAsync(includeDetails, cancellationToken: cancellationToken);
+        var query = await GetQueryableAsync(cancellationToken: cancellationToken);
+        if (includeDetails)
+            query = IncludeDetails(query);
         return await query.Where(v => v.Claims.Any(o => o.ClaimType == claimType && o.ClaimValue == claimValue))
                           .ToListAsync(cancellationToken);
     }
@@ -95,7 +101,9 @@ public class UserRepository<TDbContext, TUser> : EfRepository<TDbContext, TUser,
         bool includeDetails = false,
         CancellationToken cancellationToken = default)
     {
-        var query = await GetQueryableAsync(includeDetails, cancellationToken: cancellationToken);
+        var query = await GetQueryableAsync(cancellationToken: cancellationToken);
+        if (includeDetails)
+            query = IncludeDetails(query);
         return await query.Where(v => v.Roles.Any(o => o.RoleId == roleId))
                           .ToListAsync(cancellationToken);
     }
@@ -128,14 +136,27 @@ public class UserRepository<TDbContext, TUser> : EfRepository<TDbContext, TUser,
                        .LoadAsync(cancellationToken);
     }
 
-    protected virtual async Task<IQueryable<TUser>> GetQueryableAsync(
-        bool includeDetails,
-        bool evaluateCriteriaOnly = false,
-        CancellationToken cancellationToken = default)
+    //protected virtual async Task<IQueryable<TUser>> GetQueryableAsync(
+    //    bool includeDetails,
+    //    bool evaluateCriteriaOnly = false,
+    //    CancellationToken cancellationToken = default)
+    //{
+    //    return await base.GetQueryableAsync(
+    //        new UserWithDetailsSpecification<TUser>(includeDetails),
+    //        evaluateCriteriaOnly,
+    //        cancellationToken);
+    //}
+
+    /// <summary>
+    ///     Include claims,logins,tokens and roles.
+    /// </summary>
+    /// <param name="queryable"></param>
+    /// <returns></returns>
+    public override IQueryable<TUser> IncludeDetails(IQueryable<TUser> queryable)
     {
-        return await base.GetQueryableAsync(
-            new UserWithDetailsSpecification<TUser>(includeDetails),
-            evaluateCriteriaOnly,
-            cancellationToken);
+        return queryable.Include(v => v.Claims)
+                        .Include(v => v.Logins)
+                        .Include(v => v.Tokens)
+                        .Include(v => v.Roles);
     }
 }

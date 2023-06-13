@@ -60,7 +60,7 @@ public partial class RoleStore<TRole> : IdentityStoreBase, IRoleStore<TRole> whe
     {
         cancellationToken.ThrowIfCancellationRequested();
 
-        return (await RoleRepository.GetDetailsByIdAsync(ConvertIdFromString(roleId), cancellationToken))!;
+        return (await RoleRepository.GetByIdAsync(ConvertIdFromString(roleId), cancellationToken: cancellationToken))!;
     }
 
     public virtual async Task<TRole> FindByNameAsync(

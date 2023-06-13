@@ -5,6 +5,7 @@ namespace Fabricdot.Identity.Domain.Repositories;
 
 public interface IRoleRepository<TRole> : IRepository<TRole, Guid> where TRole : IdentityRole
 {
+    [Obsolete("Use 'GetByIdAsync'")]
     Task<TRole?> GetDetailsByIdAsync(
         Guid id,
         CancellationToken cancellationToken = default);
@@ -12,10 +13,5 @@ public interface IRoleRepository<TRole> : IRepository<TRole, Guid> where TRole :
     Task<TRole?> GetByNormalizedNameAsync(
         string nortmalizedName,
         bool includeDetails = true,
-        CancellationToken cancellationToken = default);
-
-    Task<IReadOnlyCollection<TRole>> ListAsync(
-        ICollection<Guid> ids,
-        bool includeDetails = false,
         CancellationToken cancellationToken = default);
 }

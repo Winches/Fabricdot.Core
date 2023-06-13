@@ -17,7 +17,7 @@ public class UserRoleStoreTests : UserStoreTestBase
     [Theory]
     public async Task AddToRoleAsync_GivenNotExistsRole_ThrowException(string roleName)
     {
-        var user = await UserRepository.GetDetailsByIdAsync(FakeDataBuilder.UserAndersId);
+        var user = await UserRepository.GetByIdAsync(FakeDataBuilder.UserAndersId);
 
         await _userRoleStore.Awaiting(v => v.AddToRoleAsync(user, roleName, default)).Should().ThrowAsync<InvalidOperationException>();
     }
@@ -29,7 +29,7 @@ public class UserRoleStoreTests : UserStoreTestBase
         {
             var roleId = FakeDataBuilder.RoleIdOfAnders;
             var roleName = LookupNormalizer.NormalizeName(FakeDataBuilder.RoleNameOfAnders);
-            var user = await UserRepository.GetDetailsByIdAsync(FakeDataBuilder.UserAndersId);
+            var user = await UserRepository.GetByIdAsync(FakeDataBuilder.UserAndersId);
 
             user.Roles.Should().ContainSingle(v => v.RoleId == roleId);
             await _userRoleStore.AddToRoleAsync(user, roleName, default);
@@ -44,7 +44,7 @@ public class UserRoleStoreTests : UserStoreTestBase
         {
             var roleId = FakeDataBuilder.RoleAuthorId;
             var roleName = LookupNormalizer.NormalizeName(FakeDataBuilder.RoleAuthor);
-            var user = await UserRepository.GetDetailsByIdAsync(FakeDataBuilder.UserAndersId);
+            var user = await UserRepository.GetByIdAsync(FakeDataBuilder.UserAndersId);
 
             user.Roles.Should().NotContain(v => v.RoleId == roleId);
             await _userRoleStore.AddToRoleAsync(user, roleName, default);
@@ -59,7 +59,7 @@ public class UserRoleStoreTests : UserStoreTestBase
         {
             var roleId = FakeDataBuilder.RoleIdOfAnders;
             var roleName = LookupNormalizer.NormalizeName(FakeDataBuilder.RoleNameOfAnders);
-            var user = await UserRepository.GetDetailsByIdAsync(FakeDataBuilder.UserAndersId);
+            var user = await UserRepository.GetByIdAsync(FakeDataBuilder.UserAndersId);
 
             user.Roles.Should().ContainSingle(v => v.RoleId == roleId);
             await _userRoleStore.RemoveFromRoleAsync(user, roleName, default);
@@ -73,7 +73,7 @@ public class UserRoleStoreTests : UserStoreTestBase
     {
         await UseUowAsync(async () =>
         {
-            var user = await UserRepository.GetDetailsByIdAsync(FakeDataBuilder.UserAndersId);
+            var user = await UserRepository.GetByIdAsync(FakeDataBuilder.UserAndersId);
 
             await _userRoleStore.Awaiting(v => v.RemoveFromRoleAsync(user, roleName, default))
                                 .Should()
@@ -88,7 +88,7 @@ public class UserRoleStoreTests : UserStoreTestBase
         {
             var roleId = FakeDataBuilder.RoleIdOfAnders;
             var roleName = LookupNormalizer.NormalizeName(FakeDataBuilder.RoleNameOfAnders);
-            var user = await UserRepository.GetDetailsByIdAsync(FakeDataBuilder.UserAndersId);
+            var user = await UserRepository.GetByIdAsync(FakeDataBuilder.UserAndersId);
 
             user.Roles.Should().ContainSingle(v => v.RoleId == roleId);
             (await _userRoleStore.IsInRoleAsync(user, roleName, default)).Should().BeTrue();
@@ -100,7 +100,7 @@ public class UserRoleStoreTests : UserStoreTestBase
     [Fact]
     public async Task GetRolesAsync_ReturnCorrectly()
     {
-        var user = await UserRepository.GetDetailsByIdAsync(FakeDataBuilder.UserAndersId);
+        var user = await UserRepository.GetByIdAsync(FakeDataBuilder.UserAndersId);
         var roleNames = await _userRoleStore.GetRolesAsync(user, default);
 
         roleNames.Should().Contain(FakeDataBuilder.RoleNameOfAnders);
