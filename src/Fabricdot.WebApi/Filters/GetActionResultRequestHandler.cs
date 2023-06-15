@@ -1,4 +1,4 @@
-﻿using Fabricdot.WebApi.Endpoint;
+using Fabricdot.WebApi.Endpoint;
 using JetBrains.Annotations;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
@@ -24,6 +24,7 @@ public class GetActionResultRequestHandler : IRequestHandler<GetActionResultRequ
         var originalResult = context.Result;
 
         var ret = new SuccessResponse(null, Options.SuccessCode);
+
         switch (originalResult)
         {
             //OkObjectResult, NotFoundObjectResult,BadRequestObjectResult CreatedResult
@@ -35,10 +36,20 @@ public class GetActionResultRequestHandler : IRequestHandler<GetActionResultRequ
                 if (objectResult.DeclaredType?.IsAssignableToGenericType(ResponseType) ?? false)
                     break;
 
-                ret.Data = resultValue;
+                if (resultValue is ProblemDetails problem)
+                {
+                    ret.Code = problem.Status ?? Options.DefaultErrorCode;
+                    ret.Message = problem.Title;
+                    ret.Success = false;
+                    ret.Data = problem.Detail;
+                }
+                else
+                {
+                    ret.Data = resultValue;
+                }
                 return Task.FromResult<IActionResult>(new ObjectResult(ret));
 
-            case EmptyResult _:
+            case EmptyResult:
                 return Task.FromResult<IActionResult>(new ObjectResult(ret));
         }
 
