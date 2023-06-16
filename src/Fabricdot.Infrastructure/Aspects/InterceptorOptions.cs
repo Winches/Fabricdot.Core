@@ -1,4 +1,4 @@
-﻿namespace Fabricdot.Infrastructure.Aspects;
+namespace Fabricdot.Infrastructure.Aspects;
 
 public class InterceptorOptions : IInterceptorOptions
 {

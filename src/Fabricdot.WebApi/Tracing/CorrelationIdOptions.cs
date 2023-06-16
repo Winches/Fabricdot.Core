@@ -1,4 +1,4 @@
-﻿namespace Fabricdot.WebApi.Tracing;
+namespace Fabricdot.WebApi.Tracing;
 
 public class CorrelationIdOptions
 {

@@ -1,4 +1,4 @@
-﻿using Fabricdot.Identity.Domain.Entities.UserAggregate;
+using Fabricdot.Identity.Domain.Entities.UserAggregate;
 
 namespace Fabricdot.Identity.Domain.Tests.Stores;
 

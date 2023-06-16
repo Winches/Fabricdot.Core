@@ -1,4 +1,4 @@
-﻿using System.Reflection;
+using System.Reflection;
 using System.Runtime.ExceptionServices;
 using Fabricdot.Domain.ValueObjects;
 using Microsoft.AspNetCore.Mvc.ModelBinding;

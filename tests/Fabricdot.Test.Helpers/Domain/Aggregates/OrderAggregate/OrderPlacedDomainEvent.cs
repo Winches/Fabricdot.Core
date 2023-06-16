@@ -1,4 +1,4 @@
-﻿using Fabricdot.Domain.Events;
+using Fabricdot.Domain.Events;
 
 namespace Fabricdot.Test.Helpers.Domain.Aggregates.OrderAggregate;
 

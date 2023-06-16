@@ -1,4 +1,4 @@
-﻿using Fabricdot.Domain.ValueObjects;
+using Fabricdot.Domain.ValueObjects;
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.SwaggerGen;
 

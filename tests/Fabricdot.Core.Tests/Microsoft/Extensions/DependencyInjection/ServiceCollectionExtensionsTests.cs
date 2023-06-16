@@ -1,4 +1,4 @@
-﻿using Fabricdot.Core.Tests.Modules.Exports.Core;
+using Fabricdot.Core.Tests.Modules.Exports.Core;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Fabricdot.Core.Tests.Microsoft.Extensions.DependencyInjection;

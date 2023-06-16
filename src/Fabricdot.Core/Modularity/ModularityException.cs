@@ -1,4 +1,4 @@
-﻿namespace Fabricdot.Core.Modularity;
+namespace Fabricdot.Core.Modularity;
 
 public class ModularityException : Exception
 {

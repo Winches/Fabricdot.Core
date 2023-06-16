@@ -1,4 +1,4 @@
-﻿using Fabricdot.Identity.Tests.Entities;
+using Fabricdot.Identity.Tests.Entities;
 using Fabricdot.Infrastructure.EntityFrameworkCore.Tests.Data;
 
 namespace Fabricdot.Identity.Tests.Domain.Stores;

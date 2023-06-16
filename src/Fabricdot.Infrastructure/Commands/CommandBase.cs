@@ -1,4 +1,4 @@
-﻿namespace Fabricdot.Infrastructure.Commands;
+namespace Fabricdot.Infrastructure.Commands;
 
 [Obsolete("Use Command", true)]
 public class CommandBase : ICommand

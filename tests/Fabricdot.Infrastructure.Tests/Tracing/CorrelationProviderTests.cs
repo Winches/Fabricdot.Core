@@ -1,4 +1,4 @@
-﻿using Fabricdot.Infrastructure.Tracing;
+using Fabricdot.Infrastructure.Tracing;
 
 namespace Fabricdot.Infrastructure.Tests.Tracing;
 

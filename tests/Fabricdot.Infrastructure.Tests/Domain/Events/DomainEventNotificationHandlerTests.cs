@@ -1,4 +1,4 @@
-﻿using Fabricdot.Domain.Events;
+using Fabricdot.Domain.Events;
 using Fabricdot.Infrastructure.Domain.Events;
 using Fabricdot.Test.Helpers.Domain.Aggregates.OrderAggregate;
 using MediatR;

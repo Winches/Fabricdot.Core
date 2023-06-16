@@ -1,4 +1,4 @@
-﻿using Fabricdot.Authorization.Permissions;
+using Fabricdot.Authorization.Permissions;
 
 namespace Fabricdot.Authorization.Tests.Permissions;
 

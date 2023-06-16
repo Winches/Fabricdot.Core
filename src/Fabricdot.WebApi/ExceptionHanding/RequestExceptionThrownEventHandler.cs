@@ -1,4 +1,4 @@
-﻿using Fabricdot.Core.ExceptionHandling;
+using Fabricdot.Core.ExceptionHandling;
 using Fabricdot.Infrastructure.ExceptionHanding;
 using Fabricdot.Infrastructure.Tracing;
 using Microsoft.AspNetCore.Http;

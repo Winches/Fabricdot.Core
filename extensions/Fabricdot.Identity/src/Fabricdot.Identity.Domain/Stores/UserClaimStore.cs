@@ -1,4 +1,4 @@
-﻿using System.Security.Claims;
+using System.Security.Claims;
 using Ardalis.GuardClauses;
 using Fabricdot.Identity.Domain.SharedKernel;
 using Microsoft.AspNetCore.Identity;

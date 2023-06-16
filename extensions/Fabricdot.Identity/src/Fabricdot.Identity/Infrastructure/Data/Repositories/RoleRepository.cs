@@ -1,4 +1,4 @@
-﻿using System.Linq.Expressions;
+using System.Linq.Expressions;
 using Ardalis.GuardClauses;
 using Ardalis.Specification;
 using Fabricdot.Identity.Domain.Entities.RoleAggregate;

@@ -1,4 +1,4 @@
-﻿namespace Fabricdot.Authorization;
+namespace Fabricdot.Authorization;
 
 public enum PermissionRequireBehavior
 {

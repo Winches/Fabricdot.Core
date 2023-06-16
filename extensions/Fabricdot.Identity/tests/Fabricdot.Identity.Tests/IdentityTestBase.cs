@@ -1,4 +1,4 @@
-﻿using Fabricdot.Infrastructure.DependencyInjection;
+using Fabricdot.Infrastructure.DependencyInjection;
 using Fabricdot.Infrastructure.EntityFrameworkCore.Tests.Data;
 using Fabricdot.Infrastructure.Uow.Abstractions;
 using Microsoft.Extensions.DependencyInjection;

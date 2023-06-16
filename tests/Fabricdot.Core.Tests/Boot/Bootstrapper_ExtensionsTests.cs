@@ -1,4 +1,4 @@
-﻿using Fabricdot.Core.Boot;
+using Fabricdot.Core.Boot;
 using Fabricdot.Core.Tests.Modules;
 using Fabricdot.Core.Tests.Modules.Exports;
 using Microsoft.Extensions.Configuration;

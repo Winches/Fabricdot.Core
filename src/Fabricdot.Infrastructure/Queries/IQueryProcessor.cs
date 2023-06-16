@@ -1,4 +1,4 @@
-﻿namespace Fabricdot.Infrastructure.Queries;
+namespace Fabricdot.Infrastructure.Queries;
 
 /// <summary>
 ///     query processor

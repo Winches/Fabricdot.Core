@@ -1,4 +1,4 @@
-﻿using Fabricdot.Authorization.Permissions;
+using Fabricdot.Authorization.Permissions;
 using Fabricdot.Core.DependencyInjection;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.DependencyInjection;

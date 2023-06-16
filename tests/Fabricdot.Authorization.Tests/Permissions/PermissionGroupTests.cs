@@ -1,4 +1,4 @@
-﻿using AutoFixture.Idioms;
+using AutoFixture.Idioms;
 using Fabricdot.Authorization.Permissions;
 
 namespace Fabricdot.Authorization.Tests.Permissions;

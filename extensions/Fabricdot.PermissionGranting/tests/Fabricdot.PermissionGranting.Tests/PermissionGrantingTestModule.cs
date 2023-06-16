@@ -1,4 +1,4 @@
-﻿using System.Data.Common;
+using System.Data.Common;
 using System.Diagnostics;
 using Fabricdot.Core.Modularity;
 using Fabricdot.Infrastructure.Data;

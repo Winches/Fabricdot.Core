@@ -1,4 +1,4 @@
-﻿using Ardalis.GuardClauses;
+using Ardalis.GuardClauses;
 using Ardalis.Specification;
 using Ardalis.Specification.EntityFrameworkCore;
 using Fabricdot.Core.DependencyInjection;

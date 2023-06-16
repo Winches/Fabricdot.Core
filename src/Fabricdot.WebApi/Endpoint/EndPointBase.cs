@@ -1,4 +1,4 @@
-﻿using AutoMapper;
+using AutoMapper;
 using Fabricdot.Infrastructure.Commands;
 using Fabricdot.Infrastructure.Queries;
 using Fabricdot.Infrastructure.Security;

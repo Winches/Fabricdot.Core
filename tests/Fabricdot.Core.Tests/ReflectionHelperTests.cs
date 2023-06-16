@@ -1,4 +1,4 @@
-﻿using Fabricdot.Core.Reflection;
+using Fabricdot.Core.Reflection;
 
 namespace Fabricdot.Core.Tests;
 

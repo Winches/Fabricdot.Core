@@ -1,4 +1,4 @@
-﻿namespace Fabricdot.Core.ExceptionHandling;
+namespace Fabricdot.Core.ExceptionHandling;
 
 public interface IHasErrorCode
 {

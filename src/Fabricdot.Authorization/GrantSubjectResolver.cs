@@ -1,4 +1,4 @@
-﻿using System.Security.Claims;
+using System.Security.Claims;
 using Ardalis.GuardClauses;
 using Fabricdot.Core.DependencyInjection;
 using Fabricdot.Core.Security;

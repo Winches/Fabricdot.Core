@@ -1,4 +1,4 @@
-﻿using Fabricdot.Domain.ValueObjects;
+using Fabricdot.Domain.ValueObjects;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 
 namespace Fabricdot.WebApi.ModelBinding;

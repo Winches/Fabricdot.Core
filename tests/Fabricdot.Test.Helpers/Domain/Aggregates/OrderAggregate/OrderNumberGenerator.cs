@@ -1,4 +1,4 @@
-﻿namespace Fabricdot.Test.Helpers.Domain.Aggregates.OrderAggregate;
+namespace Fabricdot.Test.Helpers.Domain.Aggregates.OrderAggregate;
 
 public class OrderNumberGenerator : IOrderNumberGenerator
 {

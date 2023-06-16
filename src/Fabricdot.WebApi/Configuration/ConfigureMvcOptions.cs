@@ -1,4 +1,4 @@
-﻿using Fabricdot.Core.DependencyInjection;
+using Fabricdot.Core.DependencyInjection;
 using Fabricdot.WebApi.ExceptionHanding;
 using Fabricdot.WebApi.Filters;
 using Fabricdot.WebApi.ModelBinding;

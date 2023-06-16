@@ -1,4 +1,4 @@
-﻿using Ardalis.GuardClauses;
+using Ardalis.GuardClauses;
 using Fabricdot.Core.Logging;
 using JetBrains.Annotations;
 using Microsoft.Extensions.Logging;

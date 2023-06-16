@@ -1,4 +1,4 @@
-﻿using AspectCore.DynamicProxy;
+using AspectCore.DynamicProxy;
 using Fabricdot.Core.Aspects;
 using IInterceptor = Fabricdot.Core.Aspects.IInterceptor;
 

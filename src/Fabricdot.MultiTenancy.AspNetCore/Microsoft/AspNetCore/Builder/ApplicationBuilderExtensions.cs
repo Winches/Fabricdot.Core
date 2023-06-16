@@ -1,4 +1,4 @@
-﻿using Ardalis.GuardClauses;
+using Ardalis.GuardClauses;
 using Fabricdot.MultiTenancy.AspNetCore;
 
 namespace Microsoft.AspNetCore.Builder;

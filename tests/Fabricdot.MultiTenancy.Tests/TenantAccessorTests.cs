@@ -1,4 +1,4 @@
-﻿namespace Fabricdot.MultiTenancy.Tests;
+namespace Fabricdot.MultiTenancy.Tests;
 
 public class TenantAccessorTests : TestFor<DefaultTenantAccessor>
 {

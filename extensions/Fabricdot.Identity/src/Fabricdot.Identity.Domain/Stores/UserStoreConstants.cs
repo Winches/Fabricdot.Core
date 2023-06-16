@@ -1,4 +1,4 @@
-﻿namespace Fabricdot.Identity.Domain.Stores;
+namespace Fabricdot.Identity.Domain.Stores;
 
 public static class UserStoreConstants
 {

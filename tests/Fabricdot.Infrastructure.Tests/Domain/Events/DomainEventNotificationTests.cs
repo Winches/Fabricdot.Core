@@ -1,4 +1,4 @@
-﻿using Fabricdot.Infrastructure.Domain.Events;
+using Fabricdot.Infrastructure.Domain.Events;
 
 namespace Fabricdot.Infrastructure.Tests.Domain.Events;
 

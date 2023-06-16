@@ -1,4 +1,4 @@
-﻿using Fabricdot.Core.Aspects;
+using Fabricdot.Core.Aspects;
 
 namespace Fabricdot.Infrastructure.Tests.Aspects.Interceptors;
 

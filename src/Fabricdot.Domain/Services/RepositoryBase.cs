@@ -1,4 +1,4 @@
-﻿using Ardalis.Specification;
+using Ardalis.Specification;
 using Fabricdot.Domain.Entities;
 
 namespace Fabricdot.Domain.Services;

@@ -1,4 +1,4 @@
-﻿using Fabricdot.Core.DependencyInjection;
+using Fabricdot.Core.DependencyInjection;
 using Fabricdot.Infrastructure.Tests.Aspects.Interceptors;
 
 namespace Fabricdot.Infrastructure.Tests.Aspects;

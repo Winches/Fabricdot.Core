@@ -1,4 +1,4 @@
-﻿using System.Data;
+using System.Data;
 using Fabricdot.Infrastructure.Data;
 using Moq;
 using Moq.Protected;

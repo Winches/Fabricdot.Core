@@ -1,4 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations;
 using Ardalis.GuardClauses;
 
 namespace Fabricdot.Infrastructure.Queries;

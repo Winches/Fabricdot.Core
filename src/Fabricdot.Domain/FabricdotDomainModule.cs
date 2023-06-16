@@ -1,4 +1,4 @@
-﻿using Fabricdot.Core.DependencyInjection;
+using Fabricdot.Core.DependencyInjection;
 using Fabricdot.Core.Modularity;
 using Fabricdot.Domain.DependencyInjection;
 

@@ -1,4 +1,4 @@
-﻿using Ardalis.GuardClauses;
+using Ardalis.GuardClauses;
 using Fabricdot.PermissionGranting.Domain;
 using Fabricdot.PermissionGranting.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;

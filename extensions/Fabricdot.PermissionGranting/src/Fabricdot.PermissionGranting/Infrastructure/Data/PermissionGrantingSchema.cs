@@ -1,4 +1,4 @@
-﻿namespace Fabricdot.PermissionGranting.Infrastructure.Data;
+namespace Fabricdot.PermissionGranting.Infrastructure.Data;
 
 public static class PermissionGrantingSchema
 {

@@ -1,4 +1,4 @@
-﻿using Fabricdot.Core.Validation;
+using Fabricdot.Core.Validation;
 
 namespace Fabricdot.Core.Tests.Validation;
 

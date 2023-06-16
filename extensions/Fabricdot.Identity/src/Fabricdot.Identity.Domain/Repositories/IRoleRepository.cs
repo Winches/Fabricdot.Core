@@ -1,4 +1,4 @@
-﻿using Fabricdot.Domain.Services;
+using Fabricdot.Domain.Services;
 using Fabricdot.Identity.Domain.Entities.RoleAggregate;
 
 namespace Fabricdot.Identity.Domain.Repositories;

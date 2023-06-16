@@ -1,4 +1,4 @@
-﻿using Fabricdot.Core.DependencyInjection;
+using Fabricdot.Core.DependencyInjection;
 using Fabricdot.Infrastructure.ExceptionHanding;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;

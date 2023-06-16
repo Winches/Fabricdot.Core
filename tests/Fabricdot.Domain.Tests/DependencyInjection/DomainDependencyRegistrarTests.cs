@@ -1,4 +1,4 @@
-﻿using Ardalis.Specification;
+using Ardalis.Specification;
 using Fabricdot.Domain.DependencyInjection;
 using Fabricdot.Domain.Events;
 using Fabricdot.Domain.Services;

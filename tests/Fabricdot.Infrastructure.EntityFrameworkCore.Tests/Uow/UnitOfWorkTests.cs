@@ -1,4 +1,4 @@
-﻿using Fabricdot.Infrastructure.Uow.Abstractions;
+using Fabricdot.Infrastructure.Uow.Abstractions;
 using Fabricdot.Test.Helpers.Domain.Aggregates.CustomerAggregate;
 using Fabricdot.Test.Helpers.Domain.Aggregates.OrderAggregate;
 using Microsoft.Extensions.DependencyInjection;

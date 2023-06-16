@@ -1,4 +1,4 @@
-﻿using System.Text.Json;
+using System.Text.Json;
 using Fabricdot.Domain.ValueObjects;
 using Fabricdot.Test.Helpers.Domain.Aggregates.OrderAggregate;
 

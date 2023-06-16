@@ -1,4 +1,4 @@
-﻿namespace Fabricdot.Identity.Infrastructure.Data;
+namespace Fabricdot.Identity.Infrastructure.Data;
 
 public static class IdentitySchema
 {

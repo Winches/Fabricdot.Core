@@ -1,4 +1,4 @@
-﻿using Fabricdot.Core.UniqueIdentifier;
+using Fabricdot.Core.UniqueIdentifier;
 using Fabricdot.Identity.Domain.Entities.RoleAggregate;
 using Fabricdot.Identity.Domain.Entities.UserAggregate;
 using Fabricdot.Identity.Domain.Repositories;

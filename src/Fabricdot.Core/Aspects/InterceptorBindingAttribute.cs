@@ -1,4 +1,4 @@
-﻿namespace Fabricdot.Core.Aspects;
+namespace Fabricdot.Core.Aspects;
 
 /// <summary>
 ///     Indicate that an attribute is interceptor binding type

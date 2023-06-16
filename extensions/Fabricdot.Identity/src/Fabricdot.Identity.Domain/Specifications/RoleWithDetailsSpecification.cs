@@ -1,4 +1,4 @@
-﻿using Ardalis.Specification;
+using Ardalis.Specification;
 using Fabricdot.Identity.Domain.Entities.RoleAggregate;
 
 namespace Fabricdot.Identity.Domain.Specifications;

@@ -1,4 +1,4 @@
-﻿using Fabricdot.Domain.Entities;
+using Fabricdot.Domain.Entities;
 using Fabricdot.Domain.SharedKernel;
 
 namespace Fabricdot.Infrastructure.Tests.Domain.Auditing;

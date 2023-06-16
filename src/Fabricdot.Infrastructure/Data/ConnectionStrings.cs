@@ -1,4 +1,4 @@
-﻿namespace Fabricdot.Infrastructure.Data;
+namespace Fabricdot.Infrastructure.Data;
 
 [Serializable]
 public class ConnectionStrings : Dictionary<string, string?>

@@ -1,4 +1,4 @@
-﻿namespace Fabricdot.Core.Tests.System.Collections.Generic;
+namespace Fabricdot.Core.Tests.System.Collections.Generic;
 
 public class CollectionExtensionsTests : TestBase
 {

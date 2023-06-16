@@ -1,4 +1,4 @@
-﻿using System.Security.Claims;
+using System.Security.Claims;
 using Fabricdot.Identity.Domain.Entities.RoleAggregate;
 
 namespace Fabricdot.Identity.Domain.Tests.Entities;

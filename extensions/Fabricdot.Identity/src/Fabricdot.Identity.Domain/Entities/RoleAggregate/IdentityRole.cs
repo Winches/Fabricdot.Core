@@ -1,4 +1,4 @@
-﻿using Ardalis.GuardClauses;
+using Ardalis.GuardClauses;
 using Fabricdot.Domain.Entities;
 
 namespace Fabricdot.Identity.Domain.Entities.RoleAggregate;

@@ -1,4 +1,4 @@
-﻿namespace Fabricdot.Domain.Auditing;
+namespace Fabricdot.Domain.Auditing;
 
 public enum EntityStatus : byte
 {

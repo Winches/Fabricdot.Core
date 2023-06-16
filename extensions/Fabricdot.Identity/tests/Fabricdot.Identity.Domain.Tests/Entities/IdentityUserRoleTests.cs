@@ -1,4 +1,4 @@
-﻿using Fabricdot.Identity.Domain.Entities.UserAggregate;
+using Fabricdot.Identity.Domain.Entities.UserAggregate;
 using Fabricdot.Testing.AutoFixture;
 
 namespace Fabricdot.Identity.Domain.Tests.Entities;

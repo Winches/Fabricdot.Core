@@ -1,4 +1,4 @@
-﻿using Ardalis.GuardClauses;
+using Ardalis.GuardClauses;
 using Fabricdot.Core.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 

@@ -1,4 +1,4 @@
-﻿using System.Security.Claims;
+using System.Security.Claims;
 using Fabricdot.Core.DependencyInjection;
 using Fabricdot.Identity.Domain.Repositories;
 using Fabricdot.Identity.Tests.Entities;

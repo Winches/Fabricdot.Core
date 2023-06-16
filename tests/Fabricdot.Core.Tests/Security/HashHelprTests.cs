@@ -1,4 +1,4 @@
-﻿using Fabricdot.Core.Security;
+using Fabricdot.Core.Security;
 
 namespace Fabricdot.Core.Tests.Security;
 

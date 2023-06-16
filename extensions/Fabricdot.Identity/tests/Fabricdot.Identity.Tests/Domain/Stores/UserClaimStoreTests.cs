@@ -1,4 +1,4 @@
-﻿using System.Security.Claims;
+using System.Security.Claims;
 using Fabricdot.Identity.Domain.Entities.UserAggregate;
 using Fabricdot.Identity.Domain.SharedKernel;
 using Fabricdot.Identity.Tests.Entities;

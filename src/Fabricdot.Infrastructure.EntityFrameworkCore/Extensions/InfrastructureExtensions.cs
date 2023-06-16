@@ -1,4 +1,4 @@
-﻿using Ardalis.GuardClauses;
+using Ardalis.GuardClauses;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 
 namespace Fabricdot.Infrastructure.EntityFrameworkCore.Extensions;

@@ -1,4 +1,4 @@
-﻿using Fabricdot.Domain.Entities;
+using Fabricdot.Domain.Entities;
 using Fabricdot.Domain.SharedKernel;
 
 namespace Fabricdot.Test.Helpers.Domain.Aggregates.CustomerAggregate;

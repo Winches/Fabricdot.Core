@@ -1,4 +1,4 @@
-﻿using Fabricdot.Domain.SharedKernel;
+using Fabricdot.Domain.SharedKernel;
 
 namespace Fabricdot.Domain.Tests.SharedKernel;
 

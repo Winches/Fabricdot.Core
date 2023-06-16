@@ -1,4 +1,4 @@
-﻿using System.Globalization;
+using System.Globalization;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Fabricdot.Core.Tests.System.Reflection;

@@ -1,4 +1,4 @@
-﻿using Ardalis.GuardClauses;
+using Ardalis.GuardClauses;
 
 namespace Fabricdot.Core.UniqueIdentifier.CombGuid;
 

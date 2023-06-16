@@ -1,4 +1,4 @@
-﻿namespace Fabricdot.WebApi.Filters;
+namespace Fabricdot.WebApi.Filters;
 
 public class ResultFilterOptions
 {

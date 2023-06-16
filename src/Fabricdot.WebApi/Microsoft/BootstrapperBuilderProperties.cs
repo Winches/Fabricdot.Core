@@ -1,4 +1,4 @@
-﻿namespace Microsoft;
+namespace Microsoft;
 
 internal static class BootstrapperBuilderProperties
 {

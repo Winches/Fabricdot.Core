@@ -1,4 +1,4 @@
-﻿namespace Fabricdot.Domain.SharedKernel;
+namespace Fabricdot.Domain.SharedKernel;
 
 public interface IMultiTenant
 {

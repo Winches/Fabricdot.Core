@@ -1,4 +1,4 @@
-﻿namespace Fabricdot.WebApi.Exceptions;
+namespace Fabricdot.WebApi.Exceptions;
 
 public class EndPointException : Exception
 {

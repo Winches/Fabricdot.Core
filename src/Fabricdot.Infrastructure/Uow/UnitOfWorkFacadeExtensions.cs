@@ -1,4 +1,4 @@
-﻿using Ardalis.GuardClauses;
+using Ardalis.GuardClauses;
 using Fabricdot.Infrastructure.Uow.Abstractions;
 
 namespace Fabricdot.Infrastructure.Uow;

@@ -1,4 +1,4 @@
-﻿using Fabricdot.Domain.SharedKernel;
+using Fabricdot.Domain.SharedKernel;
 using Fabricdot.Identity.Domain.Entities.UserAggregate;
 
 namespace Fabricdot.Identity.Tests.Entities;

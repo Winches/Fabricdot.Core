@@ -1,4 +1,4 @@
-﻿namespace Fabricdot.Core.Tests.System.Reflection;
+namespace Fabricdot.Core.Tests.System.Reflection;
 
 public class StringExtensionsTests : TestBase
 {

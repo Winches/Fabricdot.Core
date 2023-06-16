@@ -1,4 +1,4 @@
-﻿using Fabricdot.Infrastructure.Domain.Auditing;
+using Fabricdot.Infrastructure.Domain.Auditing;
 using Fabricdot.Infrastructure.Security;
 
 namespace Fabricdot.Infrastructure.Tests.Domain.Auditing;

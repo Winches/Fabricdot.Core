@@ -1,4 +1,4 @@
-﻿namespace Fabricdot.Core.DependencyInjection;
+namespace Fabricdot.Core.DependencyInjection;
 
 public enum RegistrationBehavior
 {

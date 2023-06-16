@@ -1,4 +1,4 @@
-﻿namespace Fabricdot.Core.UniqueIdentifier.CombGuid;
+namespace Fabricdot.Core.UniqueIdentifier.CombGuid;
 
 public sealed class SafetyCombGuidTimestampProvider : ITimestampProvider
 {

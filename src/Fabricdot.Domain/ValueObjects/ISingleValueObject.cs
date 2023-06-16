@@ -1,4 +1,4 @@
-﻿namespace Fabricdot.Domain.ValueObjects;
+namespace Fabricdot.Domain.ValueObjects;
 
 public interface ISingleValueObject
 {

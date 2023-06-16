@@ -1,4 +1,4 @@
-﻿namespace Fabricdot.WebApi.Tests.Boot;
+namespace Fabricdot.WebApi.Tests.Boot;
 
 public class BootstrapperTests : WebApplicationTestBase<WebApiTestModule>
 {

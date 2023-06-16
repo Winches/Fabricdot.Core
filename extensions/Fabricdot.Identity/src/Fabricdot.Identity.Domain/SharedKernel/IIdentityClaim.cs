@@ -1,4 +1,4 @@
-﻿namespace Fabricdot.Identity.Domain.SharedKernel;
+namespace Fabricdot.Identity.Domain.SharedKernel;
 
 public interface IIdentityClaim
 {

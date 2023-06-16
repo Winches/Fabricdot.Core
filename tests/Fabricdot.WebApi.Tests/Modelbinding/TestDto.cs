@@ -1,4 +1,4 @@
-﻿using Fabricdot.Test.Helpers.Domain.Aggregates.OrderAggregate;
+using Fabricdot.Test.Helpers.Domain.Aggregates.OrderAggregate;
 
 namespace Fabricdot.WebApi.Tests.Modelbinding;
 

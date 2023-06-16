@@ -1,4 +1,4 @@
-﻿using Fabricdot.Domain.Services;
+using Fabricdot.Domain.Services;
 
 namespace Fabricdot.Test.Helpers.Domain.Aggregates.OrderAggregate;
 

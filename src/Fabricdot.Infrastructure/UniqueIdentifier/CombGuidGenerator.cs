@@ -1,4 +1,4 @@
-﻿using Fabricdot.Core.DependencyInjection;
+using Fabricdot.Core.DependencyInjection;
 using Fabricdot.Core.UniqueIdentifier;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;

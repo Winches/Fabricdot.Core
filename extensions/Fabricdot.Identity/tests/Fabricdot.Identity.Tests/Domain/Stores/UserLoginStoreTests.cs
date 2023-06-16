@@ -1,4 +1,4 @@
-﻿using Fabricdot.Identity.Domain.Entities.UserAggregate;
+using Fabricdot.Identity.Domain.Entities.UserAggregate;
 using Fabricdot.Identity.Tests.Entities;
 using Fabricdot.Infrastructure.EntityFrameworkCore.Tests.Data;
 using Microsoft.AspNetCore.Identity;

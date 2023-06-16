@@ -1,4 +1,4 @@
-﻿using Fabricdot.Core.Modularity;
+using Fabricdot.Core.Modularity;
 using Fabricdot.Infrastructure;
 using Fabricdot.WebApi.Tracing;
 using Fabricdot.WebApi.Uow;

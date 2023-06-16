@@ -1,4 +1,4 @@
-﻿using System.Net;
+using System.Net;
 using System.Net.Http.Json;
 using Fabricdot.Test.Helpers.Domain.Aggregates.OrderAggregate;
 using Fabricdot.WebApi.Endpoint;

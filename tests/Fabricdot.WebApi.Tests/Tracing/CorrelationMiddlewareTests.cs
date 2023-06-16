@@ -1,4 +1,4 @@
-﻿using Fabricdot.AspNetCore.Testing;
+using Fabricdot.AspNetCore.Testing;
 using Fabricdot.WebApi.Tracing;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;

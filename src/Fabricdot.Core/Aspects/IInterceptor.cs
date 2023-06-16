@@ -1,4 +1,4 @@
-﻿namespace Fabricdot.Core.Aspects;
+namespace Fabricdot.Core.Aspects;
 
 [DisableAspect]
 public interface IInterceptor

@@ -1,4 +1,4 @@
-﻿using Fabricdot.Infrastructure.EntityFrameworkCore.Extensions;
+using Fabricdot.Infrastructure.EntityFrameworkCore.Extensions;
 using Fabricdot.PermissionGranting.Domain;
 using Microsoft.EntityFrameworkCore;
 

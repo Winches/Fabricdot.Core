@@ -1,4 +1,4 @@
-﻿using Fabricdot.Core.ExceptionHandling;
+using Fabricdot.Core.ExceptionHandling;
 using MediatR;
 
 namespace Fabricdot.Infrastructure.ExceptionHanding;

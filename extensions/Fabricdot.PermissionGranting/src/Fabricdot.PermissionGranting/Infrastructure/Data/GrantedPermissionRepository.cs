@@ -1,4 +1,4 @@
-﻿using System.Collections.Immutable;
+using System.Collections.Immutable;
 using System.Linq.Expressions;
 using Ardalis.GuardClauses;
 using Fabricdot.Authorization;

@@ -1,4 +1,4 @@
-﻿using Fabricdot.Core.Delegates;
+using Fabricdot.Core.Delegates;
 
 namespace Fabricdot.Core.Tests.Delegates;
 

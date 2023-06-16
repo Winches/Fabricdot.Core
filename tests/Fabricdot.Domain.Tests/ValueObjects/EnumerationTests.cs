@@ -1,4 +1,4 @@
-﻿using Fabricdot.Domain.ValueObjects;
+using Fabricdot.Domain.ValueObjects;
 using Fabricdot.Test.Helpers.Domain.Aggregates.OrderAggregate;
 
 namespace Fabricdot.Domain.Tests.ValueObjects;

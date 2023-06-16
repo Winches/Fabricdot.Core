@@ -1,4 +1,4 @@
-﻿using System.Reflection;
+using System.Reflection;
 using Fabricdot.Test.Helpers.Domain.Aggregates.OrderAggregate;
 using JetBrains.Annotations;
 using Microsoft.EntityFrameworkCore;

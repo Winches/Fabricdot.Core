@@ -1,4 +1,4 @@
-﻿using Fabricdot.Authorization.Permissions;
+using Fabricdot.Authorization.Permissions;
 using Microsoft.AspNetCore.Authorization;
 
 namespace Fabricdot.Authorization.Tests;

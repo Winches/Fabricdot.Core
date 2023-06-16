@@ -1,4 +1,4 @@
-﻿using Fabricdot.Domain.Auditing;
+using Fabricdot.Domain.Auditing;
 using Fabricdot.Infrastructure.Data.Filters;
 using Fabricdot.Infrastructure.EntityFrameworkCore.Tests.Data;
 using Fabricdot.Test.Helpers.Domain.Aggregates.OrderAggregate;

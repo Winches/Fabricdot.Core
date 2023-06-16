@@ -1,4 +1,4 @@
-﻿using System.Reflection;
+using System.Reflection;
 using Fabricdot.Core.DependencyInjection;
 using Fabricdot.Domain.Auditing;
 using Fabricdot.Domain.SharedKernel;

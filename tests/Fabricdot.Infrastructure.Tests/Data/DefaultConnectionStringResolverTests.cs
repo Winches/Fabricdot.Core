@@ -1,4 +1,4 @@
-﻿using Fabricdot.Infrastructure.Data;
+using Fabricdot.Infrastructure.Data;
 using Microsoft.Extensions.Options;
 
 namespace Fabricdot.Infrastructure.Tests.Data;

@@ -1,4 +1,4 @@
-﻿using Fabricdot.Authorization;
+using Fabricdot.Authorization;
 using Fabricdot.PermissionGranting.Tests.Data;
 using Microsoft.Extensions.DependencyInjection;
 

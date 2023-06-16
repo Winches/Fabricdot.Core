@@ -1,4 +1,4 @@
-﻿using Fabricdot.Infrastructure.Commands;
+using Fabricdot.Infrastructure.Commands;
 
 namespace Fabricdot.Infrastructure.Tests.Commands;
 

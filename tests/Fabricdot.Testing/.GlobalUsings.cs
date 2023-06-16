@@ -1,4 +1,4 @@
-﻿global using AutoFixture;
+global using AutoFixture;
 global using AutoFixture.AutoMoq;
 global using AutoFixture.Idioms;
 global using AutoFixture.Kernel;

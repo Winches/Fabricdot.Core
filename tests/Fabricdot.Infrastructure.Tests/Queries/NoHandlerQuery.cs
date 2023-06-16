@@ -1,4 +1,4 @@
-﻿using Fabricdot.Infrastructure.Queries;
+using Fabricdot.Infrastructure.Queries;
 
 namespace Fabricdot.Infrastructure.Tests.Queries;
 

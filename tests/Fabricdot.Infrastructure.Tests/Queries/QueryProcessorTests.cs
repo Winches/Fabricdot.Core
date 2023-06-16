@@ -1,4 +1,4 @@
-﻿using Fabricdot.Infrastructure.Queries;
+using Fabricdot.Infrastructure.Queries;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Fabricdot.Infrastructure.Tests.Queries;

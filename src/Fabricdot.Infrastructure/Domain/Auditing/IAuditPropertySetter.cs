@@ -1,4 +1,4 @@
-﻿namespace Fabricdot.Infrastructure.Domain.Auditing;
+namespace Fabricdot.Infrastructure.Domain.Auditing;
 
 public interface IAuditPropertySetter
 {

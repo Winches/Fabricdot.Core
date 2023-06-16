@@ -1,4 +1,4 @@
-﻿using System.Diagnostics;
+using System.Diagnostics;
 using Ardalis.GuardClauses;
 
 namespace Fabricdot.Core.Modularity;

@@ -1,4 +1,4 @@
-﻿namespace Fabricdot.Authorization.Permissions;
+namespace Fabricdot.Authorization.Permissions;
 
 public interface IPermissionManager
 {

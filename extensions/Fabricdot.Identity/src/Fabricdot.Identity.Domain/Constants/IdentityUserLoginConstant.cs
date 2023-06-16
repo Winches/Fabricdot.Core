@@ -1,4 +1,4 @@
-﻿namespace Fabricdot.Identity.Domain.Constants;
+namespace Fabricdot.Identity.Domain.Constants;
 
 public static class IdentityUserLoginConstant
 {

@@ -1,4 +1,4 @@
-﻿namespace Fabricdot.Authorization.Tests;
+namespace Fabricdot.Authorization.Tests;
 
 public class NullPermissionGrantingServiceTests : TestFor<NullPermissionGrantingService>
 {

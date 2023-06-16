@@ -1,4 +1,4 @@
-﻿using System.Security.Claims;
+using System.Security.Claims;
 using Fabricdot.Authorization;
 using Fabricdot.PermissionGranting.Domain;
 

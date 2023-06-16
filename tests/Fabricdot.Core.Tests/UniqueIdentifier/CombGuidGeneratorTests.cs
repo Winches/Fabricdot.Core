@@ -1,4 +1,4 @@
-﻿using Fabricdot.Core.UniqueIdentifier;
+using Fabricdot.Core.UniqueIdentifier;
 using Fabricdot.Core.UniqueIdentifier.CombGuid;
 
 namespace Fabricdot.Core.Tests.UniqueIdentifier;

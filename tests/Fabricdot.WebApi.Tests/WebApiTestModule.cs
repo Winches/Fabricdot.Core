@@ -1,4 +1,4 @@
-﻿using Fabricdot.AspNetCore.Testing.Middleware;
+using Fabricdot.AspNetCore.Testing.Middleware;
 using Fabricdot.Core.Boot;
 using Fabricdot.Core.Modularity;
 using Fabricdot.Infrastructure;

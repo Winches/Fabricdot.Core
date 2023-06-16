@@ -1,4 +1,4 @@
-﻿using AutoFixture;
+using AutoFixture;
 using Fabricdot.Core.DependencyInjection;
 using Fabricdot.Test.Helpers.Domain.Aggregates.CustomerAggregate;
 using Fabricdot.Test.Helpers.Domain.Aggregates.OrderAggregate;

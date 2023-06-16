@@ -1,4 +1,4 @@
-﻿using Fabricdot.Domain.Entities;
+using Fabricdot.Domain.Entities;
 
 namespace Fabricdot.Test.Helpers.Domain.Aggregates.OrderAggregate;
 

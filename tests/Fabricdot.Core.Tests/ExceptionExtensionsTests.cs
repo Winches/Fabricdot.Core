@@ -1,4 +1,4 @@
-﻿using System.Diagnostics.CodeAnalysis;
+using System.Diagnostics.CodeAnalysis;
 using Fabricdot.Core.Logging;
 using Microsoft.Extensions.Logging;
 

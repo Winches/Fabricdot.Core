@@ -1,4 +1,4 @@
-﻿using AspectCore.Configuration;
+using AspectCore.Configuration;
 
 namespace Fabricdot.Infrastructure.Aspects.AspectCore.Configuration;
 

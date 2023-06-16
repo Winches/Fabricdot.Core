@@ -1,4 +1,4 @@
-﻿using System.Reflection;
+using System.Reflection;
 using Ardalis.GuardClauses;
 using Fabricdot.Core.Aspects;
 using Microsoft.Extensions.DependencyInjection;

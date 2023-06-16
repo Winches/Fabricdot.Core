@@ -1,4 +1,4 @@
-﻿using Fabricdot.Core.Modularity;
+using Fabricdot.Core.Modularity;
 using Fabricdot.Domain.Internal;
 using Fabricdot.Infrastructure;
 using Fabricdot.MultiTenancy.Abstractions;

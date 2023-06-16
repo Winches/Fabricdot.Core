@@ -1,4 +1,4 @@
-﻿using Fabricdot.Domain.Auditing;
+using Fabricdot.Domain.Auditing;
 using Fabricdot.Domain.Entities;
 using Fabricdot.Domain.Events;
 using Fabricdot.Infrastructure.Domain.Events;

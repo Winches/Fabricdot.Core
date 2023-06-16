@@ -1,4 +1,4 @@
-﻿namespace Fabricdot.Testing;
+namespace Fabricdot.Testing;
 
 public abstract class TestFor<TSut> : TestBase
 {

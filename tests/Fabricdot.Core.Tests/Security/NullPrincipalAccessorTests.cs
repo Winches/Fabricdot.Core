@@ -1,4 +1,4 @@
-﻿using System.Security.Claims;
+using System.Security.Claims;
 using Fabricdot.Core.Security;
 
 namespace Fabricdot.Core.Tests.Security;

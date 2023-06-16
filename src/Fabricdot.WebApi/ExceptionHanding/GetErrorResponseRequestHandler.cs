@@ -1,4 +1,4 @@
-﻿using Fabricdot.Core.ExceptionHandling;
+using Fabricdot.Core.ExceptionHandling;
 using Fabricdot.Core.Validation;
 using Fabricdot.WebApi.Endpoint;
 using MediatR;

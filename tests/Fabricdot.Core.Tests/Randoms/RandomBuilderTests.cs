@@ -1,4 +1,4 @@
-﻿using Fabricdot.Core.Randoms;
+using Fabricdot.Core.Randoms;
 
 namespace Fabricdot.Core.Tests.Randoms;
 

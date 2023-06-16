@@ -1,4 +1,4 @@
-﻿using Fabricdot.Authorization;
+using Fabricdot.Authorization;
 using Fabricdot.Core.Modularity;
 using Fabricdot.Domain;
 using Fabricdot.Infrastructure.EntityFrameworkCore;

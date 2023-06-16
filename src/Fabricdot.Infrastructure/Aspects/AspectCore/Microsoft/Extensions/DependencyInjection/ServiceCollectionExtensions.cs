@@ -1,4 +1,4 @@
-﻿using System.Reflection;
+using System.Reflection;
 using Ardalis.GuardClauses;
 using AspectCore.Configuration;
 using AspectCore.Extensions.DependencyInjection;

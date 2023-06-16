@@ -1,4 +1,4 @@
-﻿using Fabricdot.Core.Configuration;
+using Fabricdot.Core.Configuration;
 using Microsoft.Extensions.Configuration;
 
 namespace Fabricdot.Core.Tests.Configuration;

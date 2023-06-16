@@ -1,4 +1,4 @@
-﻿using Fabricdot.Domain.SharedKernel;
+using Fabricdot.Domain.SharedKernel;
 using Fabricdot.Identity.Tests.Entities;
 using Fabricdot.Infrastructure.Data.Filters;
 using Fabricdot.Infrastructure.EntityFrameworkCore.Tests.Data;

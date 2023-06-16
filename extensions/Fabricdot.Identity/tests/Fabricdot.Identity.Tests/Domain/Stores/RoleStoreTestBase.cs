@@ -1,4 +1,4 @@
-﻿using Fabricdot.Identity.Domain.Repositories;
+using Fabricdot.Identity.Domain.Repositories;
 using Fabricdot.Identity.Tests.Entities;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;

@@ -1,4 +1,4 @@
-﻿using Ardalis.GuardClauses;
+using Ardalis.GuardClauses;
 using AspectCore.Configuration;
 using Fabricdot.Infrastructure.Aspects.AspectCore.Configuration;
 

@@ -1,4 +1,4 @@
-﻿using Fabricdot.Identity.Domain.Constants;
+using Fabricdot.Identity.Domain.Constants;
 using Fabricdot.Identity.Domain.Entities.RoleAggregate;
 using Fabricdot.Identity.Domain.Entities.UserAggregate;
 using Fabricdot.Infrastructure.EntityFrameworkCore.Extensions;

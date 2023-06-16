@@ -1,4 +1,4 @@
-﻿namespace Fabricdot.Core.Randoms;
+namespace Fabricdot.Core.Randoms;
 
 public interface IRandomProvider
 {

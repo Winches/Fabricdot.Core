@@ -1,4 +1,4 @@
-﻿using Ardalis.GuardClauses;
+using Ardalis.GuardClauses;
 using Microsoft.AspNetCore.Identity;
 
 namespace Fabricdot.Identity.Domain.Stores;

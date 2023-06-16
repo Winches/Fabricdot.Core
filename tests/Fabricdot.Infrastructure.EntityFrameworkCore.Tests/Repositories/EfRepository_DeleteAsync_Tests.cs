@@ -1,4 +1,4 @@
-﻿using AutoFixture.Xunit2;
+using AutoFixture.Xunit2;
 using Fabricdot.Infrastructure.EntityFrameworkCore.Tests.Data;
 using Fabricdot.Test.Helpers.Domain.Aggregates.OrderAggregate;
 using Microsoft.EntityFrameworkCore;

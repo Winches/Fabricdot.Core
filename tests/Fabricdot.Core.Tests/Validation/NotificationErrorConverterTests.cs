@@ -1,4 +1,4 @@
-﻿using System.Text.Json;
+using System.Text.Json;
 using Fabricdot.Core.Validation;
 
 namespace Fabricdot.Core.Tests.Validation;

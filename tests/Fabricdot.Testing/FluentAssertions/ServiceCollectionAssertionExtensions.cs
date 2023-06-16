@@ -1,4 +1,4 @@
-﻿using FluentAssertions.Collections;
+using FluentAssertions.Collections;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace FluentAssertions;

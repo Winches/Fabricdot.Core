@@ -1,4 +1,4 @@
-﻿using Fabricdot.Testing;
+using Fabricdot.Testing;
 
 namespace Xunit;
 public class AutoMockDataAttribute : AutoDataAttribute

@@ -1,4 +1,4 @@
-﻿using Ardalis.GuardClauses;
+using Ardalis.GuardClauses;
 using Fabricdot.Authorization;
 using Fabricdot.Domain.Entities;
 using Fabricdot.Domain.SharedKernel;

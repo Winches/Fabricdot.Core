@@ -1,4 +1,4 @@
-﻿using Fabricdot.Infrastructure.EntityFrameworkCore.Configurations;
+using Fabricdot.Infrastructure.EntityFrameworkCore.Configurations;
 using Fabricdot.Infrastructure.EntityFrameworkCore.Extensions;
 using Fabricdot.Test.Helpers.Domain.Aggregates.OrderAggregate;
 using Microsoft.EntityFrameworkCore;

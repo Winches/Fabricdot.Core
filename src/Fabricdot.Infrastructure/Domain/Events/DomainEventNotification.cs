@@ -1,4 +1,4 @@
-﻿using Ardalis.GuardClauses;
+using Ardalis.GuardClauses;
 using MediatR;
 
 namespace Fabricdot.Infrastructure.Domain.Events;

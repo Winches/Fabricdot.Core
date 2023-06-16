@@ -1,4 +1,4 @@
-﻿using Fabricdot.Testing.AutoFixture;
+using Fabricdot.Testing.AutoFixture;
 
 namespace Fabricdot.Testing;
 

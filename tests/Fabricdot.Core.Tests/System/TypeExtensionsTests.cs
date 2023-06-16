@@ -1,4 +1,4 @@
-﻿using System.Runtime.CompilerServices;
+using System.Runtime.CompilerServices;
 using TypeExtensions = System.TypeExtensions;
 
 namespace Fabricdot.Core.Tests.System;

@@ -1,4 +1,4 @@
-﻿using Fabricdot.Core.Boot;
+using Fabricdot.Core.Boot;
 using Fabricdot.Core.Modularity;
 using Fabricdot.Core.Tests.Modules;
 using Microsoft.Extensions.DependencyInjection;

@@ -1,4 +1,4 @@
-﻿using Fabricdot.MultiTenancy.Abstractions;
+using Fabricdot.MultiTenancy.Abstractions;
 
 namespace Fabricdot.MultiTenancy.Tests;
 

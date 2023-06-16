@@ -1,4 +1,4 @@
-﻿using System.Net;
+using System.Net;
 using Fabricdot.Core.DependencyInjection;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;

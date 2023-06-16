@@ -1,4 +1,4 @@
-﻿using Ardalis.Specification;
+using Ardalis.Specification;
 using Fabricdot.Domain.Services;
 using Fabricdot.Test.Helpers.Domain.Aggregates.OrderAggregate;
 

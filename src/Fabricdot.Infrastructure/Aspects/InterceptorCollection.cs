@@ -1,4 +1,4 @@
-﻿using Fabricdot.Core.Aspects;
+using Fabricdot.Core.Aspects;
 using JetBrains.Annotations;
 
 namespace Fabricdot.Infrastructure.Aspects;

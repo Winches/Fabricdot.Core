@@ -1,4 +1,4 @@
-﻿namespace Fabricdot.Core.Validation;
+namespace Fabricdot.Core.Validation;
 
 public interface IHasNotification
 {

@@ -1,4 +1,4 @@
-﻿namespace Fabricdot.Infrastructure.Data;
+namespace Fabricdot.Infrastructure.Data;
 
 public class ConnectionOptions
 {

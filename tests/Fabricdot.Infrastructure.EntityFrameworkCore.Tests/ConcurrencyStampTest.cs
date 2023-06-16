@@ -1,4 +1,4 @@
-﻿using Fabricdot.Infrastructure.Domain.Services;
+using Fabricdot.Infrastructure.Domain.Services;
 using Fabricdot.Infrastructure.EntityFrameworkCore.Tests.Data;
 using Fabricdot.Test.Helpers.Domain.Aggregates.OrderAggregate;
 using Fabricdot.Test.Helpers.Domain.Specifications;

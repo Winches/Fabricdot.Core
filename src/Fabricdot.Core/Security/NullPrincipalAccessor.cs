@@ -1,4 +1,4 @@
-﻿using System.Security.Claims;
+using System.Security.Claims;
 using Fabricdot.Core.DependencyInjection;
 
 namespace Fabricdot.Core.Security;

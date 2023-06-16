@@ -1,4 +1,4 @@
-﻿using Fabricdot.Authorization.Permissions;
+using Fabricdot.Authorization.Permissions;
 using Fabricdot.Core.Boot;
 using Fabricdot.Core.Modularity;
 using Fabricdot.PermissionGranting.AspNetCore.Tests.Authoriation;

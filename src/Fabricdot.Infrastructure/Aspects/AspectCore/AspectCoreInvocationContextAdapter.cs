@@ -1,4 +1,4 @@
-﻿using System.Reflection;
+using System.Reflection;
 using AspectCore.DynamicProxy;
 using Fabricdot.Core.Aspects;
 using JetBrains.Annotations;

@@ -1,4 +1,4 @@
-﻿namespace Fabricdot.WebApi.Models;
+namespace Fabricdot.WebApi.Models;
 
 public interface IHasTotalCount
 {

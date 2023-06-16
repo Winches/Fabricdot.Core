@@ -1,4 +1,4 @@
-﻿using Fabricdot.Core.Modularity;
+using Fabricdot.Core.Modularity;
 using Fabricdot.MultiTenancy.AspNetCore.Strategies;
 using Microsoft.Extensions.DependencyInjection;
 

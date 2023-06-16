@@ -1,4 +1,4 @@
-﻿namespace Fabricdot.Testing.AutoFixture;
+namespace Fabricdot.Testing.AutoFixture;
 
 public class CommonGuardClauseAssertion : GuardClauseAssertion
 {

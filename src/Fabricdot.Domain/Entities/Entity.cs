@@ -1,4 +1,4 @@
-﻿using Fabricdot.Domain.Internal;
+using Fabricdot.Domain.Internal;
 
 namespace Fabricdot.Domain.Entities;
 

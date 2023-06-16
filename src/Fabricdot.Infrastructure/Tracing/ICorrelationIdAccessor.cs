@@ -1,4 +1,4 @@
-﻿namespace Fabricdot.Infrastructure.Tracing;
+namespace Fabricdot.Infrastructure.Tracing;
 
 public interface ICorrelationIdAccessor
 {

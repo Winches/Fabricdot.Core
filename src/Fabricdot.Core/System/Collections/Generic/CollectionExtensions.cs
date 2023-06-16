@@ -1,4 +1,4 @@
-﻿using Ardalis.GuardClauses;
+using Ardalis.GuardClauses;
 
 // ReSharper disable once CheckNamespace
 namespace System.Collections.Generic;

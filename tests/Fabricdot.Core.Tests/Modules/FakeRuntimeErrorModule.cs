@@ -1,4 +1,4 @@
-﻿using Fabricdot.Core.Boot;
+using Fabricdot.Core.Boot;
 using Fabricdot.Core.Modularity;
 
 namespace Fabricdot.Core.Tests.Modules;

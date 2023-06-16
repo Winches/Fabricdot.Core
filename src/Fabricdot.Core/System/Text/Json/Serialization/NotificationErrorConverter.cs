@@ -1,4 +1,4 @@
-﻿using Fabricdot.Core.Validation;
+using Fabricdot.Core.Validation;
 
 // ReSharper disable once CheckNamespace
 namespace System.Text.Json.Serialization;

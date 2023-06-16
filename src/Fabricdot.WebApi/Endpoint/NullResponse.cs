@@ -1,4 +1,4 @@
-﻿namespace Fabricdot.WebApi.Endpoint;
+namespace Fabricdot.WebApi.Endpoint;
 
 public sealed class NullResponse : Response<object>
 {

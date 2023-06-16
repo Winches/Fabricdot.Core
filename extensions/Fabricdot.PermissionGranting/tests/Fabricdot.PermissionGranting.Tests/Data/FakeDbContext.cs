@@ -1,4 +1,4 @@
-﻿using System.Reflection;
+using System.Reflection;
 using Fabricdot.Infrastructure.EntityFrameworkCore;
 using Fabricdot.PermissionGranting.Domain;
 using Fabricdot.PermissionGranting.Infrastructure.Data;

@@ -1,4 +1,4 @@
-﻿using System.Net;
+using System.Net;
 using Fabricdot.PermissionGranting.Tests;
 
 namespace Fabricdot.PermissionGranting.AspNetCore.Tests.Authoriation;

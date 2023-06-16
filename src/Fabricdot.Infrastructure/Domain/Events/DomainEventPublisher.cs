@@ -1,4 +1,4 @@
-﻿using Fabricdot.Core.DependencyInjection;
+using Fabricdot.Core.DependencyInjection;
 using Fabricdot.Domain.Events;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;

@@ -1,4 +1,4 @@
-﻿using AutoFixture;
+using AutoFixture;
 using Fabricdot.Domain.Events;
 using Fabricdot.Domain.SharedKernel;
 using Fabricdot.Infrastructure.EntityFrameworkCore.Tests.Data;

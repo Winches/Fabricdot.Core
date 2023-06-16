@@ -1,4 +1,4 @@
-﻿namespace Fabricdot.PermissionGranting.Domain;
+namespace Fabricdot.PermissionGranting.Domain;
 
 public static class GrantPermissionConstant
 {

@@ -1,4 +1,4 @@
-﻿using Fabricdot.Infrastructure.Commands;
+using Fabricdot.Infrastructure.Commands;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Fabricdot.Infrastructure.Tests.Commands;

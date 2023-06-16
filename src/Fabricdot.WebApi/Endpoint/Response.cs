@@ -1,4 +1,4 @@
-﻿namespace Fabricdot.WebApi.Endpoint;
+namespace Fabricdot.WebApi.Endpoint;
 
 public class Response<T>
 {
