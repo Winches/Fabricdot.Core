@@ -1,7 +1,6 @@
 using Fabricdot.Core.Modularity;
 using Fabricdot.Domain;
 using Fabricdot.Infrastructure.Data.Filters;
-using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Fabricdot.Infrastructure;
@@ -20,7 +19,7 @@ public class FabricdotInfrastructureModule : ModuleBase
         //var assemblies = new TypeFinder().GetAssemblies().ToArray();
         // TODO: Refactor it
         var assemblies = services.GetRequiredSingletonInstance<IModuleCollection>().Select(v => v.Assembly).ToArray();
-        services.AddMediatR(assemblies) //mediator
+        services.AddMediatR(opts => opts.RegisterServicesFromAssemblies(assemblies)) //mediator
             .AddAutoMapper(assemblies); //mapper
     }
 }
