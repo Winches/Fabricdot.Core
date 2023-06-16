@@ -4,7 +4,7 @@
     <NoWarn>$(NoWarn);CS1591</NoWarn>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
-    <Version>0.7.0</Version>
+    <Version>0.7.1</Version>
     <Authors>Cyan</Authors>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageTags>fabricdot;ddd;aspnetcore;entity-framework-core</PackageTags>
