@@ -30,13 +30,8 @@ public class ModuleCollection : Collection<IModuleMetadata>, IModuleCollection
     {
         foreach (var dependentModuleType in module.GetDependentModuleTypes())
         {
-            var dependedModule = this.FirstOrDefault(m => m.Type == dependentModuleType);
-            if (dependedModule == null)
-            {
-                throw new ModularityException(
+            var dependedModule = this.FirstOrDefault(m => m.Type == dependentModuleType) ?? throw new ModularityException(
                     $"Could not find a dependent module {dependentModuleType.AssemblyQualifiedName} for {module.Type.AssemblyQualifiedName}");
-            }
-
             module.AddDependency(dependedModule);
         }
     }

@@ -42,7 +42,7 @@ public class PermissionEvaluator : IPermissionEvaluator
             permissions,
             cancellationToken);
 
-        Logger.LogDebug($"Evaluate permissions: {authorizationContext.ToJson()}");
+        Logger.LogDebug("Evaluate permissions: {authorizationContext}", authorizationContext.ToJson());
 
         foreach (var subject in authorizationContext.Subjects)
         {
@@ -60,7 +60,7 @@ public class PermissionEvaluator : IPermissionEvaluator
             if (grantResults.Any(v => v.Object == StandardPermissions.Superuser && v.IsGranted))
             {
                 authorizationContext.Succeed();
-                Logger.LogDebug($"{subject} is super user.");
+                Logger.LogDebug("{subject} is super user.", subject);
                 break;
             }
 
@@ -74,9 +74,7 @@ public class PermissionEvaluator : IPermissionEvaluator
     {
         await permissions.ForEachAsync(async (v, _) =>
         {
-            var permission = await PermissionManager.GetByNameAsync(v);
-            if (permission is null)
-                throw new PermissionNotDefinedException(v);
+            var permission = await PermissionManager.GetByNameAsync(v) ?? throw new PermissionNotDefinedException(v);
         });
     }
 }

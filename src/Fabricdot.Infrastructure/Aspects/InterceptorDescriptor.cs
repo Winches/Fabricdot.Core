@@ -41,7 +41,7 @@ public class InterceptorDescriptor
         var attributes = interceptorType.GetCustomAttributes(true).ToArray();
         var interceptorAttribute = attributes.OfType<InterceptorAttribute>().SingleOrDefault();
         var bindingAttribute =
-            attributes.FirstOrDefault(v => v.GetType().IsDefined(typeof(InterceptorBindingAttribute), true));
+            Array.Find(attributes, v => v.GetType().IsDefined(typeof(InterceptorBindingAttribute), true));
 
         var order = interceptorAttribute?.Order ?? 0;
         return new InterceptorDescriptor(

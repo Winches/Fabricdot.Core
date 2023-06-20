@@ -81,7 +81,7 @@ public class UnitOfWork : IUnitOfWork
     /// <inheritdoc />
     public virtual async Task CommitChangesAsync(CancellationToken cancellationToken)
     {
-        _logger.LogTrace($"{this} :Committing");
+        _logger.LogTrace("{this} :Committing", this);
 
         if (_pending || State == UnitOfWorkState.Performed || State == UnitOfWorkState.Disposed)
             throw new InvalidOperationException("UnitOfWork is already performed.");
@@ -91,13 +91,13 @@ public class UnitOfWork : IUnitOfWork
         await Facade.CommitAsync(cancellationToken);
         State = UnitOfWorkState.Performed;
 
-        _logger.LogTrace($"{this} :Committed");
+        _logger.LogTrace("{this} :Committed", this);
     }
 
     /// <inheritdoc />
     public virtual void Dispose()
     {
-        _logger.LogTrace($"{this} :Disposing");
+        _logger.LogTrace("{this} :Disposing", this);
 
         if (State == UnitOfWorkState.Disposed)
             return;
@@ -110,7 +110,8 @@ public class UnitOfWork : IUnitOfWork
         Facade.Dispose();
         Disposed?.Invoke(this, EventArgs.Empty);
 
-        _logger.LogTrace($"{this} :Disposed");
+        _logger.LogTrace("{this} :Disposed", this);
+        GC.SuppressFinalize(this);
     }
 
     /// <inheritdoc />

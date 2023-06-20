@@ -4,7 +4,7 @@ namespace System.Text.Json;
 
 public static class JsonExtensions
 {
-    private static readonly JsonSerializerOptions _options = new(JsonSerializerDefaults.General);
+    private static readonly JsonSerializerOptions s_options = new(JsonSerializerDefaults.General);
 
     public static T? FromJson<T>(
         this string json,
@@ -12,7 +12,7 @@ public static class JsonExtensions
     {
         Guard.Against.Null(json, nameof(json));
 
-        return JsonSerializer.Deserialize<T>(json, options ?? _options);
+        return JsonSerializer.Deserialize<T>(json, options ?? s_options);
     }
 
     public static T? FromJson<T>(
@@ -30,6 +30,6 @@ public static class JsonExtensions
     {
         Guard.Against.Null(obj, nameof(obj));
 
-        return JsonSerializer.Serialize(obj, options ?? _options);
+        return JsonSerializer.Serialize(obj, options ?? s_options);
     }
 }

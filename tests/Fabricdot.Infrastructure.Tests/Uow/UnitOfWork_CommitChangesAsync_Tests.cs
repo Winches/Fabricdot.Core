@@ -39,20 +39,18 @@ public class UnitOfWork_CommitChangesAsync_Tests : IntegrationTestBase<Infrastru
     [InlineData(false)]
     public async Task CommitChangesAsync_GivenNestedUow_CorrectlyState(bool requireNew)
     {
-        using (var uow = _unitOfWorkManager.Begin())
+        using var uow = _unitOfWorkManager.Begin();
+        using (var nestUow = _unitOfWorkManager.Begin(requireNew: requireNew))
         {
-            using (var nestUow = _unitOfWorkManager.Begin(requireNew: requireNew))
-            {
-                nestUow.IsActive.Should().BeTrue();
-                await nestUow.CommitChangesAsync();
-                //child unit of work commit nothing
-                nestUow.IsActive.Should().Be(!requireNew);
-            }
-
-            uow.IsActive.Should().BeTrue();
-            await uow.CommitChangesAsync();
-            uow.IsActive.Should().BeFalse();
+            nestUow.IsActive.Should().BeTrue();
+            await nestUow.CommitChangesAsync();
+            //child unit of work commit nothing
+            nestUow.IsActive.Should().Be(!requireNew);
         }
+
+        uow.IsActive.Should().BeTrue();
+        await uow.CommitChangesAsync();
+        uow.IsActive.Should().BeFalse();
     }
 
     [Fact]

@@ -18,7 +18,7 @@ public class ModelStateValidator : IModelStateValidator
             throw new ValidationFailedException("ModelState is not valid!", notification);
     }
 
-    public Notification CreateNotification(ModelStateDictionary modelState)
+    public static Notification CreateNotification(ModelStateDictionary modelState)
     {
         var notification = new Notification();
         foreach (var (key, value) in modelState)

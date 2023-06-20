@@ -14,6 +14,7 @@ public abstract class IdentityStoreBase : IDisposable
 
     public virtual void Dispose()
     {
+        GC.SuppressFinalize(this);
     }
 
     public virtual Guid ConvertIdFromString(string id) => Guid.Parse(id);

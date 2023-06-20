@@ -13,18 +13,24 @@ public class ValidationFailedException : Exception, IHasNotification, IHasLogLev
     /// <inheritdoc />
     public LogLevel LogLevel { get; set; } = LogLevel.Warning;
 
-    /// <inheritdoc />
+    public ValidationFailedException()
+    {
+    }
+
     public ValidationFailedException([CanBeNull] string message) : base(message)
     {
     }
 
-    /// <inheritdoc />
-    public ValidationFailedException([CanBeNull] string message, [CanBeNull] Exception innerException) : base(
+    public ValidationFailedException(
+        [CanBeNull] string message,
+        [CanBeNull] Exception innerException) : base(
         message, innerException)
     {
     }
 
-    public ValidationFailedException([CanBeNull] string message, Notification notification) : base(message)
+    public ValidationFailedException(
+        [CanBeNull] string message,
+        Notification notification) : base(message)
     {
         Guard.Against.Null(notification, nameof(notification));
         Notification = notification;

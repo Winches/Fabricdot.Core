@@ -2,7 +2,7 @@ using Ardalis.GuardClauses;
 
 namespace Fabricdot.Authorization.Permissions;
 
-public struct PermissionName
+public readonly struct PermissionName
 {
     public string Value { get; }
 

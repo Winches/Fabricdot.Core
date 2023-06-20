@@ -6,7 +6,7 @@ public abstract class EntityEventBase<TEntity> : DomainEventBase where TEntity :
 {
     public TEntity Entity { get; }
 
-    public EntityEventBase(TEntity entity)
+    protected EntityEventBase(TEntity entity)
     {
         Entity = entity;
     }

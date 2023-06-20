@@ -24,10 +24,7 @@ public class TenantContextProvider : ITenantContextProvider
         if (string.IsNullOrEmpty(res.Identifier))
             return null;
 
-        var tenantContext = await _tenantStore.GetAsync(res.Identifier);
-        if (tenantContext == null)
-            throw new TenantNotFoundException("Tenant not found.");
-
-        return tenantContext;
+        var tenantContext = await _tenantStore.GetAsync(res.Identifier, cancellationToken);
+        return tenantContext ?? throw new TenantNotFoundException("Tenant not found.");
     }
 }

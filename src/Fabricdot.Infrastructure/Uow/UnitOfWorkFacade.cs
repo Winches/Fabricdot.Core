@@ -67,6 +67,7 @@ public class UnitOfWorkFacade : IUnitOfWorkFacade, ISupportSaveChanges
                 _logger.LogError(e, "Disposing transaction failed");
             }
         }
+        GC.SuppressFinalize(this);
     }
 
     public virtual async Task SaveChangesAsync(CancellationToken cancellationToken)
@@ -102,6 +103,7 @@ public class UnitOfWorkFacade : IUnitOfWorkFacade, ISupportSaveChanges
     public virtual async Task RollbackAsync(CancellationToken cancellationToken)
     {
         foreach (var transaction in Transactions)
+        {
             try
             {
                 await transaction.RollbackAsync(cancellationToken);
@@ -110,5 +112,6 @@ public class UnitOfWorkFacade : IUnitOfWorkFacade, ISupportSaveChanges
             {
                 _logger.LogError(e, "Rollback transaction failed");
             }
+        }
     }
 }

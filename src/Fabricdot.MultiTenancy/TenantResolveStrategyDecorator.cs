@@ -31,11 +31,17 @@ public class TenantResolveStrategyDecorator : ITenantResolveStrategy
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, $"Execute strategy failed: {_strategy.GetType().PrettyPrint()}.");
+            _logger.LogError(ex, "Execute strategy failed: {Strategy}.", _strategy.GetType().PrettyPrint());
         }
 
-        var message = identifier == null ? "Tenant identifier not found." : "Found tenant identifier: {Identifier}";
-        _logger.LogDebug(message, identifier);
+        if (identifier == null)
+        {
+            _logger.LogDebug("Tenant identifier not found.");
+        }
+        else
+        {
+            _logger.LogDebug("Found tenant identifier: {Identifier}", identifier);
+        }
 
         return identifier;
     }

@@ -32,9 +32,6 @@ public class ResultFilter : IAsyncResultFilter
 
     protected virtual bool ShouldHandleResult(ResultExecutingContext context)
     {
-        if (context.ActionDescriptor is ControllerActionDescriptor)
-            return true;
-
-        return false;
+        return context.ActionDescriptor is ControllerActionDescriptor;
     }
 }

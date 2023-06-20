@@ -9,7 +9,7 @@ namespace Fabricdot.Domain.ValueObjects;
 /// </summary>
 public abstract class Enumeration : IComparable
 {
-    private static readonly ConcurrentDictionary<Type, IReadOnlyCollection<object>> _fields = new();
+    private static readonly ConcurrentDictionary<Type, IReadOnlyCollection<object>> s_fields = new();
 
     public string Name { get; }
 
@@ -25,7 +25,7 @@ public abstract class Enumeration : IComparable
 
     public static IEnumerable<T> GetAll<T>() where T : Enumeration
     {
-        var values = _fields.GetOrAdd(
+        var values = s_fields.GetOrAdd(
             typeof(T),
             t => t.GetFields(BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly)
                   .Select(v => v.GetValue(null))

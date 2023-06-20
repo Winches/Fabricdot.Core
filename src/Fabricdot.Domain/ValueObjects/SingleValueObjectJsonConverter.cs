@@ -7,7 +7,7 @@ namespace Fabricdot.Domain.ValueObjects;
 
 public class SingleValueObjectJsonConverter<T> : JsonConverter<T> where T : ISingleValueObject
 {
-    private static readonly ConcurrentDictionary<Type, Type> _constructorArgumentTypes = new();
+    private static readonly ConcurrentDictionary<Type, Type> s_constructorArgumentTypes = new();
 
     public override bool CanConvert(Type typeToConvert) => typeToConvert.IsAssignableToGenericType(typeof(SingleValueObject<>));
 
@@ -16,7 +16,7 @@ public class SingleValueObjectJsonConverter<T> : JsonConverter<T> where T : ISin
         Type typeToConvert,
         JsonSerializerOptions options)
     {
-        var valueType = _constructorArgumentTypes.GetOrAdd(
+        var valueType = s_constructorArgumentTypes.GetOrAdd(
             typeToConvert,
             _ =>
             {

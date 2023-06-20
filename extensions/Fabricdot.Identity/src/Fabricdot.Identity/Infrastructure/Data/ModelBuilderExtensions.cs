@@ -8,16 +8,16 @@ namespace Fabricdot.Identity.Infrastructure.Data;
 
 public static class ModelBuilderExtensions
 {
-    private static string? _tablePerfix;
-    private static string? _schema;
+    private static string? s_tablePerfix;
+    private static string? s_schema;
 
     public static void ConfigureIdentity<TUser, TRole>(
         this ModelBuilder modelBuilder,
         string tablePrefix = "Identity",
         string? schema = null) where TUser : IdentityUser where TRole : IdentityRole
     {
-        _tablePerfix = tablePrefix;
-        _schema = schema;
+        s_tablePerfix = tablePrefix;
+        s_schema = schema;
         ConfigureIdentityUser<TUser>(modelBuilder);
         ConfigureIdentityUserClaim(modelBuilder);
         ConfigureIdentityUserLogin(modelBuilder);
@@ -32,7 +32,7 @@ public static class ModelBuilderExtensions
     {
         modelBuilder.Entity<TUser>(b =>
         {
-            b.ToTable(_tablePerfix + IdentitySchema.IdentityUser, _schema);
+            b.ToTable(s_tablePerfix + IdentitySchema.IdentityUser, s_schema);
             b.TryConfigure();
 
             b.Property(v => v.UserName)
@@ -138,7 +138,7 @@ public static class ModelBuilderExtensions
     {
         modelBuilder.Entity<IdentityUserClaim>(b =>
         {
-            b.ToTable(_tablePerfix + IdentitySchema.IdentityUserClaim, _schema);
+            b.ToTable(s_tablePerfix + IdentitySchema.IdentityUserClaim, s_schema);
             b.TryConfigure();
 
             b.Property(v => v.Id)
@@ -165,7 +165,7 @@ public static class ModelBuilderExtensions
     {
         modelBuilder.Entity<IdentityUserLogin>(b =>
         {
-            b.ToTable(_tablePerfix + IdentitySchema.IdentityUserLogin, _schema);
+            b.ToTable(s_tablePerfix + IdentitySchema.IdentityUserLogin, s_schema);
             b.TryConfigure();
 
             b.HasKey(v => new { v.UserId, v.LoginProvider });
@@ -196,7 +196,7 @@ public static class ModelBuilderExtensions
     {
         modelBuilder.Entity<IdentityUserToken>(b =>
         {
-            b.ToTable(_tablePerfix + IdentitySchema.IdentityUserToken, _schema);
+            b.ToTable(s_tablePerfix + IdentitySchema.IdentityUserToken, s_schema);
             b.TryConfigure();
 
             b.HasKey(v => new { v.UserId, v.LoginProvider, v.Name });
@@ -226,7 +226,7 @@ public static class ModelBuilderExtensions
     {
         modelBuilder.Entity<IdentityUserRole>(b =>
         {
-            b.ToTable(_tablePerfix + IdentitySchema.IdentityUserRole, _schema);
+            b.ToTable(s_tablePerfix + IdentitySchema.IdentityUserRole, s_schema);
             b.TryConfigure();
 
             b.HasKey(v => new { v.UserId, v.RoleId });
@@ -252,7 +252,7 @@ public static class ModelBuilderExtensions
     {
         modelBuilder.Entity<TRole>(b =>
         {
-            b.ToTable(_tablePerfix + IdentitySchema.IdentityRole, _schema);
+            b.ToTable(s_tablePerfix + IdentitySchema.IdentityRole, s_schema);
             b.TryConfigure();
 
             b.Property(v => v.Name)
@@ -282,7 +282,7 @@ public static class ModelBuilderExtensions
     {
         modelBuilder.Entity<IdentityRoleClaim>(b =>
         {
-            b.ToTable(_tablePerfix + IdentitySchema.IdentityRoleClaim, _schema);
+            b.ToTable(s_tablePerfix + IdentitySchema.IdentityRoleClaim, s_schema);
             b.TryConfigure();
 
             b.Property(v => v.Id)

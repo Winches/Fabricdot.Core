@@ -46,7 +46,7 @@ public class UnitOfWorkActionFilter : IAsyncActionFilter
             return;
         }
 
-        bool IsSucceed(ActionExecutedContext res) => res.Exception == null || res.ExceptionHandled;
+        static bool IsSucceed(ActionExecutedContext res) => res.Exception == null || res.ExceptionHandled;
         var options = CreateOptions(method, unitOfWorkAttribute);
         if (_unitOfWorkManager.TryBeginReserved(UnitOfWorkManager.RESERVATION_NAME, options))
         {

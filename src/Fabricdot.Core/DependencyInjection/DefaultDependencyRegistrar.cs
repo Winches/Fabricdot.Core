@@ -28,19 +28,19 @@ public class DefaultDependencyRegistrar : IDependencyRegistrar
                           .ForEach(serviceDescriptor => services.Add(serviceDescriptor, dependencyRegistry.RegisterBehavior));
     }
 
-    protected static ICollection<Type> GetDefaultServiceTypes(Type ImplementationType)
+    protected static ICollection<Type> GetDefaultServiceTypes(Type implementationType)
     {
-        Guard.Against.Null(ImplementationType, nameof(ImplementationType));
+        Guard.Against.Null(implementationType, nameof(implementationType));
 
         var ret = new List<Type>()
         {
-            ImplementationType
+            implementationType
         };
         // Add default contracts by name.
-        foreach (var @interface in ImplementationType.GetTypeInfo().ImplementedInterfaces)
+        foreach (var @interface in implementationType.GetTypeInfo().ImplementedInterfaces)
         {
             var interfaceName = @interface.IsGenericType ? @interface.Name.Split('`').First() : @interface.Name;
-            if (ImplementationType.Name.EndsWith(interfaceName.TrimStart('I')))
+            if (implementationType.Name.EndsWith(interfaceName.TrimStart('I')))
                 ret.Add(@interface);
         }
 

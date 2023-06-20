@@ -30,10 +30,7 @@ public class PermissionGrantingAspNetCoreTestModule : ModuleBase
 
         app.UseRouting();
         app.UseAuthorization();
-        app.UseEndpoints(endpoints =>
-        {
-            endpoints.MapControllers();
-        });
+        app.UseEndpoints(endpoints => endpoints.MapControllers());
 
         return Task.CompletedTask;
     }

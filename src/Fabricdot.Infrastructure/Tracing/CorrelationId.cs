@@ -42,8 +42,5 @@ public readonly struct CorrelationId
     }
 
     /// <inheritdoc />
-    public override int GetHashCode()
-    {
-        return Value != null ? Value.GetHashCode() : 0;
-    }
+    public override int GetHashCode() => Value.GetHashCode();
 }

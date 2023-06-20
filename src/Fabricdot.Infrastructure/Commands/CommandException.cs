@@ -11,9 +11,17 @@ public class CommandException : Exception, IHasErrorCode
     {
     }
 
-    public CommandException(string message, int code) : base(message)
+    public CommandException(
+        string message,
+        int code) : base(message)
     {
         Code = code;
+    }
+
+    public CommandException(
+        string? message,
+        Exception? innerException) : base(message, innerException)
+    {
     }
 
     public CommandException(
@@ -22,5 +30,9 @@ public class CommandException : Exception, IHasErrorCode
         Exception exception) : base(message, exception)
     {
         Code = code;
+    }
+
+    public CommandException()
+    {
     }
 }

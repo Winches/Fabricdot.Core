@@ -6,7 +6,7 @@ public class PermissionCustomization : ICustomization
 {
     public void Customize(IFixture fixture)
     {
-        Permission factory() => new(fixture.Create<PermissionName>(), fixture.Create<string>(), fixture.Create<string>());
-        fixture.Customize<Permission>(v => v.FromFactory(factory));
+        Permission Factory() => new(fixture.Create<PermissionName>(), fixture.Create<string>(), fixture.Create<string>());
+        fixture.Customize<Permission>(v => v.FromFactory(Factory));
     }
 }

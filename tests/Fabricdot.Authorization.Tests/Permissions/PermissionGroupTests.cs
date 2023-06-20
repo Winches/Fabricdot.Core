@@ -1,4 +1,3 @@
-using AutoFixture.Idioms;
 using Fabricdot.Authorization.Permissions;
 
 namespace Fabricdot.Authorization.Tests.Permissions;
@@ -20,7 +19,6 @@ public class PermissionGroupTests : TestFor<PermissionGroup, PermissionCustomiza
 
         Create<ConstructorInitializedMemberAssertion>().Verify(sut);
     }
-
 
     [Fact]
     public void AddPermission_GivenInput_Correctly()

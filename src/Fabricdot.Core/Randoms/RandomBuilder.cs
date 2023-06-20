@@ -8,8 +8,8 @@ namespace Fabricdot.Core.Randoms;
 [Dependency(ServiceLifetime.Singleton)]
 public class RandomBuilder : IRandomBuilder
 {
-    private const string NUMBER = "0123456789";
-    private const string LETTER = "abcdefghijklmnopqrstuvwxyz";
+    private const string Number = "0123456789";
+    private const string Letter = "abcdefghijklmnopqrstuvwxyz";
     private readonly IRandomProvider _randomProvider;
 
     public RandomBuilder(IRandomProvider randomProvider)
@@ -29,12 +29,12 @@ public class RandomBuilder : IRandomBuilder
 
     public string GetRandomNumbers(int length)
     {
-        return GetRandomString(NUMBER, length);
+        return GetRandomString(Number, length);
     }
 
     public string GetRandomLetters(int length)
     {
-        return GetRandomString(LETTER, length);
+        return GetRandomString(Letter, length);
     }
 
     private char GetRandomChar(string source)

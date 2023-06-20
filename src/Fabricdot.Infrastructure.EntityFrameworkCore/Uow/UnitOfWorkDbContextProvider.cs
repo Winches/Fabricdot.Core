@@ -24,10 +24,7 @@ public class UnitOfWorkDbContextProvider<TDbContext> : IDbContextProvider<TDbCon
     /// <inheritdoc />
     public virtual async Task<TDbContext> GetDbContextAsync(CancellationToken cancellationToken = default)
     {
-        var unitOfWork = UnitOfWorkManager.Available;
-        if (unitOfWork == null)
-            throw new InvalidOperationException("There is no available unit-of-work");
-
+        var unitOfWork = UnitOfWorkManager.Available ?? throw new InvalidOperationException("There is no available unit-of-work");
         var databaseKey = GetFacadeKey(false);
         var database = unitOfWork.Facade.GetDatabase(databaseKey); //find by dbContext type and connection string
 

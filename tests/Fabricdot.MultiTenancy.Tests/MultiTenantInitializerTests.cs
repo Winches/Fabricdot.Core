@@ -18,19 +18,15 @@ public class MultiTenantInitializerTests : TestBase
     [Theory]
     internal void Construct_Entity_SetTenantId(TenantInfo tenant)
     {
-        using (var scope1 = _tenantAccessor.Change(tenant))
-        {
-            var entity1 = Create<Customer>();
+        using var scope1 = _tenantAccessor.Change(tenant);
+        var entity1 = Create<Customer>();
 
-            entity1.TenantId.Should().Be(tenant.Id);
+        entity1.TenantId.Should().Be(tenant.Id);
 
-            using (var scope2 = _tenantAccessor.Change(null))
-            {
-                var entity2 = Create<Customer>();
+        using var scope2 = _tenantAccessor.Change(null);
+        var entity2 = Create<Customer>();
 
-                entity2.TenantId.Should().BeNull();
-            }
-        }
+        entity2.TenantId.Should().BeNull();
     }
 
     [AutoData]

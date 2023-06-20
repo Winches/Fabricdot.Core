@@ -2,15 +2,15 @@ namespace Fabricdot.Domain.ValueObjects;
 
 public abstract class SingleValueObject<T> : ValueObject, ISingleValueObject, IComparable where T : IComparable
 {
-    private static readonly Type _type = typeof(T);
+    private static readonly Type s_type = typeof(T);
 
     public virtual T Value { get; protected set; }
 
     protected SingleValueObject(T value)
     {
-        if (value is Enum && !Enum.IsDefined(_type, value))
+        if (value is Enum && !Enum.IsDefined(s_type, value))
         {
-            throw new ArgumentException($"The value '{value}' isn't defined in enum '{_type.PrettyPrint()}'");
+            throw new ArgumentException($"The value '{value}' isn't defined in enum '{s_type.PrettyPrint()}'");
         }
         Value = value;
     }

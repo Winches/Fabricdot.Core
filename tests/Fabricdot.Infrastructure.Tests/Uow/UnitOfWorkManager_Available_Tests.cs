@@ -23,22 +23,20 @@ public class UnitOfWorkManager_Available_Tests : IntegrationTestBase<Infrastruct
     [InlineData(false)]
     public async Task Available_BeginNestedUow_ReturnCorrectUow(bool requireNew)
     {
-        using (var rootUow = _unitOfWorkManager.Begin())
+        using var rootUow = _unitOfWorkManager.Begin();
+        _unitOfWorkManager.Available.Should().BeSameAs(rootUow);
+
+        using (var nestedUow = _unitOfWorkManager.Begin(requireNew: requireNew))
         {
-            _unitOfWorkManager.Available.Should().BeSameAs(rootUow);
+            //ignore child unit of work
+            _unitOfWorkManager.Available.Should().BeSameAs(requireNew ? nestedUow : rootUow);
 
-            using (var nestedUow = _unitOfWorkManager.Begin(requireNew: requireNew))
-            {
-                //ignore child unit of work
-                _unitOfWorkManager.Available.Should().BeSameAs(requireNew ? nestedUow : rootUow);
-
-                await nestedUow.CommitChangesAsync();
-            }
-
-            _unitOfWorkManager.Available.Should().BeSameAs(rootUow);
-
-            await rootUow.CommitChangesAsync();
+            await nestedUow.CommitChangesAsync();
         }
+
+        _unitOfWorkManager.Available.Should().BeSameAs(rootUow);
+
+        await rootUow.CommitChangesAsync();
     }
 
     [Theory]
@@ -46,19 +44,17 @@ public class UnitOfWorkManager_Available_Tests : IntegrationTestBase<Infrastruct
     [InlineData(false)]
     public async Task Available_CommitChanges_ReturnOuterUow(bool requireNew)
     {
-        using (var rootUow = _unitOfWorkManager.Begin())
+        using var rootUow = _unitOfWorkManager.Begin();
+        using (var nestedUow = _unitOfWorkManager.Begin(requireNew: requireNew))
         {
-            using (var nestedUow = _unitOfWorkManager.Begin(requireNew: requireNew))
-            {
-                await nestedUow.CommitChangesAsync();
+            await nestedUow.CommitChangesAsync();
 
-                _unitOfWorkManager.Available.Should().BeSameAs(rootUow);
-            }
-
-            await rootUow.CommitChangesAsync();
-
-            _unitOfWorkManager.Available.Should().BeNull();
+            _unitOfWorkManager.Available.Should().BeSameAs(rootUow);
         }
+
+        await rootUow.CommitChangesAsync();
+
+        _unitOfWorkManager.Available.Should().BeNull();
     }
 
     [Theory]

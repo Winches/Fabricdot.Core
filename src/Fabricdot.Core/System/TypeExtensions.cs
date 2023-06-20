@@ -8,15 +8,15 @@ namespace System;
 
 public static class TypeExtensions
 {
-    private static readonly ConcurrentDictionary<Type, string> _prettyPrintCache = new();
+    private static readonly ConcurrentDictionary<Type, string> s_prettyPrintCache = new();
 
-    private static readonly ConcurrentDictionary<Type, string> _typeCacheKeys = new();
+    private static readonly ConcurrentDictionary<Type, string> s_typeCacheKeys = new();
 
     public static string PrettyPrint(this Type type)
     {
         Guard.Against.Null(type, nameof(type));
 
-        return _prettyPrintCache.GetOrAdd(
+        return s_prettyPrintCache.GetOrAdd(
             type,
             t =>
             {
@@ -35,7 +35,7 @@ public static class TypeExtensions
     {
         Guard.Against.Null(type, nameof(type));
 
-        return _typeCacheKeys.GetOrAdd(
+        return s_typeCacheKeys.GetOrAdd(
             type,
             t => $"{t.PrettyPrint()}[hash: {t.GetHashCode()}]");
     }

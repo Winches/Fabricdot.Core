@@ -6,10 +6,10 @@ namespace Fabricdot.Core.Tests.System.Reflection;
 public class AttributeExtensionsTests : TestBase
 {
     [Description]
-    private class Foo
+    private static class Foo
     {
         [Description]
-        public void Print([Description] string text)
+        public static void Print([Description] string text)
         {
             Console.WriteLine(text);
         }

@@ -7,7 +7,7 @@ namespace Fabricdot.Domain.ValueObjects;
 
 public abstract class ValueObject
 {
-    private static readonly ConcurrentDictionary<Type, IReadOnlyCollection<PropertyInfo>> _properties = new();
+    private static readonly ConcurrentDictionary<Type, IReadOnlyCollection<PropertyInfo>> s_properties = new();
 
     public static bool operator ==(ValueObject? left, ValueObject? right)
     {
@@ -41,7 +41,7 @@ public abstract class ValueObject
 
     protected virtual IEnumerable<PropertyInfo> GetProperties()
     {
-        return _properties.GetOrAdd(
+        return s_properties.GetOrAdd(
             GetType(),
             t => t
                 .GetTypeInfo()

@@ -6,7 +6,7 @@ public class GrantResult
 {
     public string Object { get; }
 
-    public bool IsGranted { get; private set; }
+    public bool IsGranted { get; }
 
     public GrantResult(
         string @object,

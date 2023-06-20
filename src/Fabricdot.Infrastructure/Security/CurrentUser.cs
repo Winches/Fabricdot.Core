@@ -8,7 +8,7 @@ namespace Fabricdot.Infrastructure.Security;
 [Dependency(ServiceLifetime.Transient)]
 public class CurrentUser : ICurrentUser
 {
-    private static readonly Claim[] _emptyClaimsArray = Array.Empty<Claim>();
+    private static readonly Claim[] s_emptyClaimsArray = Array.Empty<Claim>();
 
     private readonly IPrincipalAccessor _principalAccessor;
 
@@ -34,12 +34,12 @@ public class CurrentUser : ICurrentUser
 
     public virtual Claim[] FindClaims(string claimType)
     {
-        return _principalAccessor.Principal?.Claims.Where(c => c.Type == claimType).ToArray() ?? _emptyClaimsArray;
+        return _principalAccessor.Principal?.Claims.Where(c => c.Type == claimType).ToArray() ?? s_emptyClaimsArray;
     }
 
     public virtual Claim[] GetAllClaims()
     {
-        return _principalAccessor.Principal?.Claims.ToArray() ?? _emptyClaimsArray;
+        return _principalAccessor.Principal?.Claims.ToArray() ?? s_emptyClaimsArray;
     }
 
     public virtual bool IsInRole(string roleName)

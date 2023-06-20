@@ -61,7 +61,7 @@ public class UnitOfWorkManager : IUnitOfWorkManager, ISingletonDependency
         Guard.Against.NullOrEmpty(name, nameof(name));
 
         var uow = _ambientUnitOfWork.UnitOfWork;
-        if (!requireNew && uow != null && uow.IsReservedFor(name))
+        if (!requireNew && uow?.IsReservedFor(name) == true)
         {
             return new ChildUnitOfWork(uow);
         }

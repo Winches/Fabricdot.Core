@@ -3,7 +3,7 @@ using Ardalis.GuardClauses;
 
 namespace Fabricdot.Authorization;
 
-public struct GrantSubject
+public readonly struct GrantSubject
 {
     public string Type { get; }
 

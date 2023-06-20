@@ -27,7 +27,7 @@ public class AuthorizationPolicyProvider : DefaultAuthorizationPolicyProvider
         var policy = await base.GetPolicyAsync(policyName);
         if (policy != null)
         {
-            _logger.LogDebug($"Find authorization policy:{policyName}");
+            _logger.LogDebug("Find authorization policy:{policyName}", policyName);
             return policy;
         }
 
@@ -36,7 +36,7 @@ public class AuthorizationPolicyProvider : DefaultAuthorizationPolicyProvider
 
         //cache policy
         _options.AddPolicy(policyName, policy);
-        _logger.LogDebug($"Build authorization policy:{policyName}");
+        _logger.LogDebug("Build authorization policy:{policyName}", policyName);
 
         return policy;
     }

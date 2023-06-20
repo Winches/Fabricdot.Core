@@ -21,10 +21,8 @@ public static class RepositoryExtensions
             throw new InvalidOperationException($"{repository.GetType().PrettyPrint()} do not implement interface {typeof(IUnitOfWorkManagerAccessor).PrettyPrint()}");
         }
 
-        var unitOfWorkManager = unitOfWorkManagerAccessor.UnitOfWorkManager;
-        if (unitOfWorkManager == null)
-            throw new InvalidOperationException("There is no available unit-of-work manager.");
-
+        var unitOfWorkManager = unitOfWorkManagerAccessor.UnitOfWorkManager
+                                ?? throw new InvalidOperationException("There is no available unit-of-work manager.");
         if (unitOfWorkManager.Available != null)
         {
             unitOfWorkManager.Available.MarkHardDeletedEntity(entity);

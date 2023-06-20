@@ -7,13 +7,25 @@ public class DomainException : Exception, IHasErrorCode
     /// <inheritdoc />
     public int Code { get; }
 
+    public DomainException()
+    {
+    }
+
     public DomainException(string message) : base(message)
     {
     }
 
-    public DomainException(string message, int code) : base(message)
+    public DomainException(
+        string message,
+        int code) : base(message)
     {
         Code = code;
+    }
+
+    public DomainException(
+        string? message,
+        Exception? innerException) : base(message, innerException)
+    {
     }
 
     public DomainException(

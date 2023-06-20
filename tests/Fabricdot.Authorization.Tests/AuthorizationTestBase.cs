@@ -36,13 +36,13 @@ public class AuthorizationTestBase : IntegrationTestBase<AuthorizationTestModule
         permissionManager.AddGroupAsync(group).GetAwaiter().GetResult();
 
         PermissionGrantingServiceMock = Mock<IPermissionGrantingService>();
-        Func<GrantSubject, IEnumerable<string>, CancellationToken, IReadOnlySet<GrantResult>> valueFunction = (subject, objects, _) =>
+        IReadOnlySet<GrantResult> ValueFunction(GrantSubject subject, IEnumerable<string> objects, CancellationToken _) =>
                                         objects.Select(v => new GrantResult(v, GrantedPermissions.Contains(v)
                                         || subject.Value == Superrole.Value
                                         || subject.Value == Superuser.Value))
                                                .ToHashSet();
         PermissionGrantingServiceMock.Setup(v => v.IsGrantedAsync(It.IsAny<GrantSubject>(), It.IsAny<IEnumerable<string>>(), default))
-                           .ReturnsAsync(valueFunction);
+                           .ReturnsAsync((Func<GrantSubject, IEnumerable<string>, CancellationToken, IReadOnlySet<GrantResult>>)ValueFunction);
     }
 
     protected override void ConfigureServices(IServiceCollection serviceCollection)

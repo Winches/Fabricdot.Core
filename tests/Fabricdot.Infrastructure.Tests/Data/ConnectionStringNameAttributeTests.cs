@@ -4,7 +4,7 @@ namespace Fabricdot.Infrastructure.Tests.Data;
 
 public class ConnectionStringNameAttributeTests : TestBase
 {
-    [ConnectionStringName(_name)]
+    [ConnectionStringName(Name)]
     private class Foo
     {
     }
@@ -13,7 +13,7 @@ public class ConnectionStringNameAttributeTests : TestBase
     {
     }
 
-    private const string _name = nameof(Foo);
+    private const string Name = nameof(Foo);
 
     [Fact]
     public void Constructor_GivenInvalidInput_Throw()
@@ -28,7 +28,7 @@ public class ConnectionStringNameAttributeTests : TestBase
     {
         ConnectionStringNameAttribute.GetConnStringName<Foo>()
                                      .Should()
-                                     .Be(_name);
+                                     .Be(Name);
     }
 
     [Fact]

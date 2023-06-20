@@ -6,7 +6,7 @@ namespace Fabricdot.Core.Modularity;
 
 internal static class ModuleMetadataExtensions
 {
-    private static readonly ConcurrentDictionary<Type, IReadOnlySet<Type>> _dependentTypeCache = new();
+    private static readonly ConcurrentDictionary<Type, IReadOnlySet<Type>> s_dependentTypeCache = new();
 
     internal static IReadOnlySet<Type> GetDependentModuleTypes(this IModuleMetadata module)
     {
@@ -19,16 +19,16 @@ internal static class ModuleMetadataExtensions
     {
         Guard.Against.Null(moduleType, nameof(moduleType));
 
-        if (_dependentTypeCache.ContainsKey(moduleType))
+        if (s_dependentTypeCache.ContainsKey(moduleType))
         {
-            return _dependentTypeCache[moduleType];
+            return s_dependentTypeCache[moduleType];
         }
         else
         {
             var types = moduleType.GetCustomAttributes<RequiresAttribute>()
                                   .SelectMany(v => v.Requires)
                                   .ToHashSet();
-            _dependentTypeCache.TryAdd(moduleType, types);
+            s_dependentTypeCache.TryAdd(moduleType, types);
             return types;
         }
     }

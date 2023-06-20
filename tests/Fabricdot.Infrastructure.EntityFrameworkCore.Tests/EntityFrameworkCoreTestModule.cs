@@ -20,20 +20,14 @@ public class EntityFrameworkCoreTestModule : ModuleBase
         var dbconnection = InMemoryDatabaseHelper.CreateConnection();
         CreateInMemoryDatabase(dbconnection);
 
-        services.Configure<ConnectionOptions>(options =>
-        {
-            options.ConnectionStrings.Default = dbconnection.ConnectionString;
-        });
+        services.Configure<ConnectionOptions>(options => options.ConnectionStrings.Default = dbconnection.ConnectionString);
         services.AddEfDbContext<FakeDbContext>((_, opts) =>
         {
             opts.UseSqlite(dbconnection);
             opts.LogTo(v => Debug.Print(v))
                 .EnableSensitiveDataLogging();
         });
-        services.AddEfDbContext<FakeSecondDbContext>((_, opts) =>
-        {
-            opts.UseSqlite(dbconnection);
-        });
+        services.AddEfDbContext<FakeSecondDbContext>((_, opts) => opts.UseSqlite(dbconnection));
     }
 
     private static DbConnection CreateInMemoryDatabase(DbConnection connection)

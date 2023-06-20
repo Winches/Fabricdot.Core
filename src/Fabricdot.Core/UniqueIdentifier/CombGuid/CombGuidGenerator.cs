@@ -30,7 +30,7 @@ public class CombGuidGenerator
                 timestamp.CopyTo(low);
                 if (BitConverter.IsLittleEndian)
                 {
-                    low.Slice(0, 4).Reverse();
+                    low[..4].Reverse();
                     low.Slice(4, 2).Reverse();
                 }
 
@@ -72,8 +72,8 @@ public class CombGuidGenerator
         out Span<byte> high)
     {
         var guidBytes = Guid.NewGuid().ToByteArray().AsSpan();
-        low = guidBytes.Slice(0, partition);
-        high = guidBytes.Slice(partition);
+        low = guidBytes[..partition];
+        high = guidBytes[partition..];
 
         return guidBytes;
     }

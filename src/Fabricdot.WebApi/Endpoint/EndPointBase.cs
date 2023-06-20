@@ -13,7 +13,7 @@ namespace Fabricdot.WebApi.Endpoint;
 [ApiController]
 public abstract class EndPointBase : ControllerBase
 {
-    protected readonly object ServiceProviderLock = new object();
+    protected readonly object ServiceProviderLock = new();
 
     private IMapper _mapper = null!;
     private ICurrentUser _currentUser = null!;

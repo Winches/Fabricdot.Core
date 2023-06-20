@@ -49,11 +49,14 @@ public static class EntityTypeBuilderExtensions
     public static EntityTypeBuilder TryConfigureConcurrencyStamp([NotNull] this EntityTypeBuilder builder)
     {
         if (typeof(IHasConcurrencyStamp).IsAssignableFrom(builder.GetClrType()))
+        {
             builder.Property(nameof(IHasConcurrencyStamp.ConcurrencyStamp))
                 .IsConcurrencyToken()
                 .IsRequired()
                 .HasMaxLength(AggregateRootConstants.ConcurrencyStampLength)
                 .HasColumnName(nameof(IHasConcurrencyStamp.ConcurrencyStamp));
+        }
+
         return builder;
     }
 
@@ -64,9 +67,12 @@ public static class EntityTypeBuilderExtensions
     public static EntityTypeBuilder TryConfigureCreationTime([NotNull] this EntityTypeBuilder builder)
     {
         if (typeof(IHasCreationTime).IsAssignableFrom(builder.GetClrType()))
+        {
             builder.Property(nameof(IHasCreationTime.CreationTime))
                 .IsRequired()
                 .HasColumnName(nameof(IHasCreationTime.CreationTime));
+        }
+
         return builder;
     }
 
@@ -77,10 +83,13 @@ public static class EntityTypeBuilderExtensions
     public static EntityTypeBuilder TryConfigureCreatorId([NotNull] this EntityTypeBuilder builder)
     {
         if (typeof(IHasCreatorId).IsAssignableFrom(builder.GetClrType()))
+        {
             builder.Property(nameof(IHasCreatorId.CreatorId))
                 .IsRequired(false)
                 .HasColumnName(nameof(IHasCreatorId.CreatorId))
                 .HasMaxLength(AuditConstant.UserIdLength);
+        }
+
         return builder;
     }
 
@@ -91,9 +100,12 @@ public static class EntityTypeBuilderExtensions
     public static EntityTypeBuilder TryConfigureModificationTime([NotNull] this EntityTypeBuilder builder)
     {
         if (typeof(IHasModificationTime).IsAssignableFrom(builder.GetClrType()))
+        {
             builder.Property(nameof(IHasModificationTime.LastModificationTime))
                 .IsRequired(false)
                 .HasColumnName(nameof(IHasModificationTime.LastModificationTime));
+        }
+
         return builder;
     }
 
@@ -104,10 +116,13 @@ public static class EntityTypeBuilderExtensions
     public static EntityTypeBuilder TryConfigureModifierId([NotNull] this EntityTypeBuilder builder)
     {
         if (typeof(IHasModifierId).IsAssignableFrom(builder.GetClrType()))
+        {
             builder.Property(nameof(IHasModifierId.LastModifierId))
                 .IsRequired(false)
                 .HasColumnName(nameof(IHasModifierId.LastModifierId))
                 .HasMaxLength(AuditConstant.UserIdLength);
+        }
+
         return builder;
     }
 

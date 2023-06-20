@@ -19,7 +19,7 @@ public class UnitOfWork_Events_Tests : IntegrationTestBase<InfrastructureTestMod
         var mock = Mock<Action>();
         using (var uow = _unitOfWorkManager.Begin())
         {
-            uow.Disposed += (_, __) => mock.Object();
+            uow.Disposed += (_, _) => mock.Object();
             mock.Verify(v => v(), Times.Never);
         }
         mock.Verify(v => v(), Times.Once);
@@ -33,7 +33,7 @@ public class UnitOfWork_Events_Tests : IntegrationTestBase<InfrastructureTestMod
         {
             using (var uow2 = _unitOfWorkManager.Begin())
             {
-                uow1.Disposed += (_, __) => mock.Object();
+                uow1.Disposed += (_, _) => mock.Object();
             }
             mock.Verify(v => v(), Times.Never);
         }

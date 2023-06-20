@@ -16,42 +16,38 @@ public class UnitOfWorkManager_Reserve_Tests : IntegrationTestBase<Infrastructur
     public async Task Reserve_NoExistedUow_Correctly()
     {
         var reservationName = Create<string>();
-        using (var reservedUow = _unitOfWorkManager.Reserve(reservationName))
+        using var reservedUow = _unitOfWorkManager.Reserve(reservationName);
+        AssertReservedUow(reservationName, reservedUow);
+
+        using (var nestedUow = _unitOfWorkManager.Begin())
         {
-            AssertReservedUow(reservationName, reservedUow);
+            _unitOfWorkManager.Available.Should().Be(nestedUow);
+            nestedUow.Id.Should().NotBe(reservedUow.Id);
 
-            using (var nestedUow = _unitOfWorkManager.Begin())
-            {
-                _unitOfWorkManager.Available.Should().Be(nestedUow);
-                nestedUow.Id.Should().NotBe(reservedUow.Id);
-
-                await nestedUow.CommitChangesAsync();
-            }
-
-            await reservedUow.CommitChangesAsync();
+            await nestedUow.CommitChangesAsync();
         }
+
+        await reservedUow.CommitChangesAsync();
     }
 
     [Fact]
     public async Task BeginReserve_WithReservedUow_Correctly()
     {
         var reservationName = Create<string>();
-        using (var reservedUow = _unitOfWorkManager.Reserve(reservationName))
+        using var reservedUow = _unitOfWorkManager.Reserve(reservationName);
+        AssertReservedUow(reservationName, reservedUow);
+
+        using (var uow = _unitOfWorkManager.Begin())
         {
-            AssertReservedUow(reservationName, reservedUow);
+            _unitOfWorkManager.Available.Should().Be(uow);
 
-            using (var uow = _unitOfWorkManager.Begin())
-            {
-                _unitOfWorkManager.Available.Should().Be(uow);
-
-                await uow.CommitChangesAsync();
-            }
-
-            _unitOfWorkManager.BeginReserved(reservationName);
-            _unitOfWorkManager.Available.Should().Be(reservedUow);
-
-            await reservedUow.CommitChangesAsync();
+            await uow.CommitChangesAsync();
         }
+
+        _unitOfWorkManager.BeginReserved(reservationName);
+        _unitOfWorkManager.Available.Should().Be(reservedUow);
+
+        await reservedUow.CommitChangesAsync();
     }
 
     [Fact]

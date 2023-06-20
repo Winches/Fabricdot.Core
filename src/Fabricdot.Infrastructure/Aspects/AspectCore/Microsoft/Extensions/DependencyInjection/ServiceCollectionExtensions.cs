@@ -63,12 +63,9 @@ public static class ServiceCollectionExtensions
 
     private static IEnumerable<Type> GetInterceptorTypes(IServiceCollection serviceCollection)
     {
-        var interceptorTypes = serviceCollection
-                               .Where(v => v.ServiceType.IsAssignableTo(typeof(IInterceptor)))
-                               .Where(v => v.ServiceType.IsInterface || v.ServiceType.IsClass)
-                               .Select(v => v.ServiceType)
-                               .Distinct();
-        return interceptorTypes;
+        return serviceCollection.Where(v => v.ServiceType.IsAssignableTo(typeof(IInterceptor)) && (v.ServiceType.IsInterface || v.ServiceType.IsClass))
+                                .Select(v => v.ServiceType)
+                                .Distinct();
     }
 
     [CanBeNull]

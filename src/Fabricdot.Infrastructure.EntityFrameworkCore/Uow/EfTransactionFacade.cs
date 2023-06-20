@@ -34,7 +34,11 @@ public class EfTransactionFacade : ITransactionFacade
     }
 
     /// <inheritdoc />
-    public virtual void Dispose() => DbContextTransaction.Dispose();
+    public virtual void Dispose()
+    {
+        DbContextTransaction.Dispose();
+        GC.SuppressFinalize(this);
+    }
 
     protected virtual IEnumerable<DbContext> IgnoreSharedTransaction()
     {

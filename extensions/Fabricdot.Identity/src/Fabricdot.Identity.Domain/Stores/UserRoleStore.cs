@@ -20,10 +20,7 @@ public partial class UserStore<TUser, TRole> : IUserRoleStore<TUser>//Parameter 
         var role = await RoleRepository.GetByNormalizedNameAsync(
             normalizedRoleName,
             false,
-            cancellationToken);
-        if (role == null)
-            throw new InvalidOperationException($"Role name '{normalizedRoleName}' does not exist.");
-
+            cancellationToken) ?? throw new InvalidOperationException($"Role name '{normalizedRoleName}' does not exist.");
         await LoadCollectionAsync(user, v => v.Roles, cancellationToken);
         user.AddRole(role.Id);
     }

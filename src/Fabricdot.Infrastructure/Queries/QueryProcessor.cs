@@ -18,7 +18,7 @@ public class QueryProcessor : IQueryProcessor
         IQuery<TResult> query,
         CancellationToken cancellationToken = default)
     {
-        var ret = await _sender.Send(query);
+        var ret = await _sender.Send(query, cancellationToken);
         return (TResult)ret!;
     }
 }

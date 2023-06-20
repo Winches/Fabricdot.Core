@@ -6,7 +6,7 @@ namespace Fabricdot.Domain.ValueObjects;
 
 public class EnumerationJsonConverter<T> : JsonConverter<T> where T : Enumeration
 {
-    private static readonly MethodInfo _factoryMethodInfo = typeof(Enumeration).GetMethod(
+    private static readonly MethodInfo s_factoryMethodInfo = typeof(Enumeration).GetMethod(
         nameof(Enumeration.FromValue),
         BindingFlags.Static | BindingFlags.Public)!;
 
@@ -17,7 +17,7 @@ public class EnumerationJsonConverter<T> : JsonConverter<T> where T : Enumeratio
         Type typeToConvert,
         JsonSerializerOptions options)
     {
-        var factory = _factoryMethodInfo.MakeGenericMethod(typeToConvert);
+        var factory = s_factoryMethodInfo.MakeGenericMethod(typeToConvert);
         return (T?)factory.Invoke(null, new object[] { reader.GetInt32() });
     }
 

@@ -54,5 +54,6 @@ public class ChildUnitOfWork : IUnitOfWork
     /// <inheritdoc />
     public void Dispose()
     {
+        GC.SuppressFinalize(this);
     }
 }

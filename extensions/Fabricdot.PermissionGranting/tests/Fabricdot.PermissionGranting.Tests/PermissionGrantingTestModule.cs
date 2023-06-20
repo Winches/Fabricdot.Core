@@ -20,10 +20,7 @@ public class PermissionGrantingTestModule : ModuleBase
         var dbconnection = InMemoryDatabaseHelper.CreateConnection();
         CreateInMemoryDatabase(dbconnection);
 
-        services.Configure<ConnectionOptions>(options =>
-        {
-            options.ConnectionStrings.Default = dbconnection.ConnectionString;
-        });
+        services.Configure<ConnectionOptions>(options => options.ConnectionStrings.Default = dbconnection.ConnectionString);
         services.AddEfDbContext<FakeDbContext>((_, opts) =>
         {
             opts.UseSqlite(dbconnection);

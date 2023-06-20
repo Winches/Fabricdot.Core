@@ -6,7 +6,7 @@ namespace Fabricdot.Infrastructure.Aspects.AspectCore;
 
 public static class AspectPredicateUtil
 {
-    private static readonly AspectPredicate _nonPredicate = _ => false;
+    private static readonly AspectPredicate s_nonPredicate = _ => false;
 
     public static AspectPredicate IsDefined<TAttribute>(bool inherit) where TAttribute : Attribute =>
         IsDefined(typeof(TAttribute), inherit);
@@ -17,14 +17,8 @@ public static class AspectPredicateUtil
         if (!attributeType.IsAssignableTo(typeof(Attribute)))
             throw new ArgumentException("The target type must be an attribute.");
 
-        return method =>
-        {
-            var declaringType = method.DeclaringType;
-            if (declaringType is not null && declaringType.IsDefined(attributeType, inherit))
-                return true;
-
-            return method.IsDefined(attributeType, inherit);
-        };
+        return method => method.DeclaringType?.IsDefined(attributeType, inherit) == true
+            || method.IsDefined(attributeType, inherit);
     }
 
     public static AspectPredicate IsAssignableTo(Type targetType)
@@ -54,12 +48,12 @@ public static class AspectPredicateUtil
 
         var targetPredicate = interceptorDescriptor.TargetType != null
             ? IsAssignableTo(interceptorDescriptor.TargetType)
-            : _nonPredicate;
+            : s_nonPredicate;
         var attributePredicate = interceptorDescriptor.BindingType != null
             ? IsDefined(
                 interceptorDescriptor.BindingType,
                 true)
-            : _nonPredicate;
+            : s_nonPredicate;
 
         //return predicate.And(targetPredicate.Or(attributePredicate));
 

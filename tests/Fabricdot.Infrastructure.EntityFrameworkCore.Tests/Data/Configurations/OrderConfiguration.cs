@@ -14,10 +14,7 @@ internal class OrderConfiguration : EntityTypeConfigurationBase<Order>, IDbConte
 
         builder.ConfigureEnumeration<OrderStatus>(nameof(Order.OrderStatus));
 
-        builder.OwnsOne(v => v.ShippingAddress, b =>
-        {
-            b.WithOwner();
-        });
+        builder.OwnsOne(v => v.ShippingAddress, b => b.WithOwner());
 
         builder.Navigation(v => v.OrderLines)
                .UsePropertyAccessMode(PropertyAccessMode.Field);

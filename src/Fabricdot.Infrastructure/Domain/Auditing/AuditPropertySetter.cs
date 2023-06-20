@@ -44,19 +44,41 @@ public class AuditPropertySetter : IAuditPropertySetter, ITransientDependency
             ?.SetValue(targetObject, val, BindingFlags.Public | BindingFlags.Instance, null, null, null);
     }
 
-    private void SetCreationTime(object targetObject)
+    private static void SetCreationTime(object targetObject)
     {
-        if (!(targetObject is IHasCreationTime objectWithCreationTime))
+        if (targetObject is not IHasCreationTime objectWithCreationTime)
             return;
 
         if (objectWithCreationTime.CreationTime == default)
             Setter(targetObject, nameof(IHasCreationTime.CreationTime), SystemClock.Now);
     }
 
+    private static void SetLastModificationTime(object targetObject)
+    {
+        if (targetObject is IHasModificationTime objectWithModificationTime)
+            Setter(objectWithModificationTime, nameof(IHasModificationTime.LastModificationTime), SystemClock.Now);
+    }
+
+    private static void SetIsDeleted(object targetObject)
+    {
+        if (targetObject is ISoftDelete softDeleteObject && !softDeleteObject.IsDeleted)
+        {
+            Setter(targetObject, nameof(ISoftDelete.IsDeleted), true);
+        }
+    }
+
+    private static void SetDeletionTime(object targetObject)
+    {
+        if (targetObject is IHasDeletionTime objectWithDeletionTime && objectWithDeletionTime.DeletionTime == null)
+        {
+            Setter(targetObject, nameof(IHasDeletionTime.DeletionTime), SystemClock.Now);
+        }
+    }
+
     private void SetCreatorId(object targetObject)
     {
         if (string.IsNullOrWhiteSpace(CurrentUser.Id) ||
-            !(targetObject is IHasCreatorId objectWithCreationId))
+            targetObject is not IHasCreatorId objectWithCreationId)
         {
             return;
         }
@@ -65,15 +87,9 @@ public class AuditPropertySetter : IAuditPropertySetter, ITransientDependency
             Setter(targetObject, nameof(IHasCreatorId.CreatorId), CurrentUser.Id);
     }
 
-    private void SetLastModificationTime(object targetObject)
-    {
-        if (targetObject is IHasModificationTime objectWithModificationTime)
-            Setter(objectWithModificationTime, nameof(IHasModificationTime.LastModificationTime), SystemClock.Now);
-    }
-
     private void SetLastModifierId(object targetObject)
     {
-        if (!(targetObject is IHasModifierId))
+        if (targetObject is not IHasModifierId)
             return;
 
         if (string.IsNullOrWhiteSpace(CurrentUser.Id))
@@ -85,25 +101,9 @@ public class AuditPropertySetter : IAuditPropertySetter, ITransientDependency
         Setter(targetObject, nameof(IHasModifierId.LastModifierId), CurrentUser.Id);
     }
 
-    private void SetIsDeleted(object targetObject)
-    {
-        if (targetObject is ISoftDelete softDeleteObject && !softDeleteObject.IsDeleted)
-        {
-            Setter(targetObject, nameof(ISoftDelete.IsDeleted), true);
-        }
-    }
-
-    private void SetDeletionTime(object targetObject)
-    {
-        if (targetObject is IHasDeletionTime objectWithDeletionTime && objectWithDeletionTime.DeletionTime == null)
-        {
-            Setter(targetObject, nameof(IHasDeletionTime.DeletionTime), SystemClock.Now);
-        }
-    }
-
     private void SetDeleterId(object targetObject)
     {
-        if (!(targetObject is IHasDeleterId objectWithDeleterId) ||
+        if (targetObject is not IHasDeleterId objectWithDeleterId ||
             !string.IsNullOrWhiteSpace(objectWithDeleterId.DeleterId))
         {
             return;

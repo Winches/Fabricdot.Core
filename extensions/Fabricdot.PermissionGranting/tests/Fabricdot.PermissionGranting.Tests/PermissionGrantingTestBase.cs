@@ -6,7 +6,7 @@ namespace Fabricdot.PermissionGranting.Tests;
 
 public abstract class PermissionGrantingTestBase : IntegrationTestBase<PermissionGrantingTestModule>
 {
-    public PermissionGrantingTestBase()
+    protected PermissionGrantingTestBase()
     {
         ServiceProvider.GetRequiredService<FakeDataBuilder>()
                .BuildAsync()

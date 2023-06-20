@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using Fabricdot.WebApi.Endpoint;
 using Microsoft.AspNetCore.Mvc;
 
@@ -14,6 +15,7 @@ public class FakeResultFilterController : Controller
     }
 
     [HttpGet("raw-type")]
+    [SuppressMessage("Performance", "CA1822:Mark members as static", Justification = "<Pending>")]
     public Response<object> ReturnResponse(
         int value,
         int code)
