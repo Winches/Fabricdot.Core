@@ -9,7 +9,7 @@
       ]
     },
     "dotnet-format": {
-      "version": "6.4.422704",
+      "version": "6.0.240501",
       "commands": [
         "dotnet-format"
       ]
