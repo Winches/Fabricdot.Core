@@ -3,6 +3,7 @@ using Swashbuckle.AspNetCore.SwaggerGen;
 
 namespace Fabricdot.WebApi.Swagger;
 
+[Obsolete("Use 'RouteOptions' to configure lowercase urls.")]
 public class LowercaseDocumentFilter : IDocumentFilter
 {
     public void Apply(OpenApiDocument swaggerDoc, DocumentFilterContext context)
