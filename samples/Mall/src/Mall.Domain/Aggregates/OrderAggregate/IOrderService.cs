@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using Fabricdot.Domain.Services;
 
 namespace Mall.Domain.Aggregates.OrderAggregate;

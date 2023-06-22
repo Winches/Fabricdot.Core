@@ -1,4 +1,4 @@
-﻿using Fabricdot.Core.Modularity;
+using Fabricdot.Core.Modularity;
 using Fabricdot.Domain;
 using Mall.Domain.Shared;
 

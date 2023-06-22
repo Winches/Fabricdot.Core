@@ -1,4 +1,4 @@
-﻿using Fabricdot.Core.Modularity;
+using Fabricdot.Core.Modularity;
 using Fabricdot.Infrastructure;
 using Fabricdot.Infrastructure.Data;
 using Fabricdot.Infrastructure.EntityFrameworkCore;
@@ -18,7 +18,7 @@ namespace Mall.Infrastructure;
 [Exports]
 public class MallInfrastructureModule : ModuleBase
 {
-    private static readonly ILoggerFactory _dbLoggerFactory = LoggerFactory.Create(builder => builder.AddConsole());
+    private static readonly ILoggerFactory s_dbLoggerFactory = LoggerFactory.Create(builder => builder.AddConsole());
 
     public override void ConfigureServices(ConfigureServiceContext context)
     {
@@ -31,7 +31,7 @@ public class MallInfrastructureModule : ModuleBase
         {
             opts.UseSqlServer(connectionString);
 #if DEBUG
-            opts.UseLoggerFactory(_dbLoggerFactory)
+            opts.UseLoggerFactory(s_dbLoggerFactory)
                 .EnableSensitiveDataLogging();
 #endif
         });

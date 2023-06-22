@@ -1,4 +1,4 @@
-﻿namespace Mall.Domain.Shared.Constants;
+namespace Mall.Domain.Shared.Constants;
 
 public static class MonyConstant
 {

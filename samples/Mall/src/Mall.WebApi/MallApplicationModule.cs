@@ -39,15 +39,22 @@ public class MallApplicationModule : ModuleBase
 
         app.UseStaticFiles();
 
+        app.UseCorrelationId();
+
         app.UseRouting();
 
         app.UseAuthorization();
 
-        app.UserSwagger();
+        app.UseSwagger();
 
         app.UseEndpoints(endpoints =>
         {
             endpoints.MapControllers();
+            endpoints.MapGet("/", http =>
+            {
+                http.Response.Redirect("swagger");
+                return Task.CompletedTask;
+            });
         });
 
         return Task.CompletedTask;

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using Ardalis.Specification;
 using Mall.Domain.Aggregates.OrderAggregate;
 

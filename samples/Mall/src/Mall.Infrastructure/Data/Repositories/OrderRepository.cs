@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using Fabricdot.Infrastructure.EntityFrameworkCore;
 using Mall.Domain.Aggregates.OrderAggregate;
 using Mall.Domain.Repositories;

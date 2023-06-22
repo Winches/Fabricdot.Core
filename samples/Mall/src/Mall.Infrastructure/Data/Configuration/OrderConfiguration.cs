@@ -1,4 +1,4 @@
-﻿using Fabricdot.Infrastructure.EntityFrameworkCore.Configurations;
+using Fabricdot.Infrastructure.EntityFrameworkCore.Configurations;
 using Fabricdot.Infrastructure.EntityFrameworkCore.Extensions;
 using Mall.Domain.Aggregates.OrderAggregate;
 using Mall.Domain.Shared.Constants;

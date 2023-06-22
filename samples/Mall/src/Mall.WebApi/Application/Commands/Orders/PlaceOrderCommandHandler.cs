@@ -1,4 +1,4 @@
-﻿using Fabricdot.Infrastructure.Commands;
+using Fabricdot.Infrastructure.Commands;
 using Mall.Domain.Aggregates.OrderAggregate;
 using Mall.Domain.Repositories;
 
@@ -30,7 +30,7 @@ public class PlaceOrderCommandHandler : CommandHandler<PlaceOrderCommand, Guid>
         var order = _orderService.Create(address, command.CustomerId);
         command.OrderLines.ForEach(v => order.AddOrderLine(v.ProductId, v.Quantity, v.Price));
 
-        await _orderRepository.AddAsync(order);
+        await _orderRepository.AddAsync(order, cancellationToken);
         return order.Id;
     }
 }

@@ -1,4 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations;
 using Fabricdot.Infrastructure.Commands;
 
 namespace Mall.WebApi.Application.Commands.Orders;

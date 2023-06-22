@@ -1,10 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
 using System.Reflection;
 using Fabricdot.WebApi.Swagger;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.OpenApi.Models;
 
 namespace Mall.WebApi.Configuration;
@@ -20,7 +15,7 @@ public static class ConfigurationSwagger
             c.EnableAnnotations();
             c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
             {
-                Description = @"JWT Authorization:'Bearer token'",
+                Description = "JWT Authorization:'Bearer token'",
                 Name = "Authorization",
                 In = ParameterLocation.Header,
                 Type = SecuritySchemeType.ApiKey,
@@ -52,9 +47,9 @@ public static class ConfigurationSwagger
         return services;
     }
 
-    public static IApplicationBuilder UserSwagger(this IApplicationBuilder app)
+    public static IApplicationBuilder UseSwagger(this IApplicationBuilder app)
     {
-        app.UseSwagger();
+        SwaggerBuilderExtensions.UseSwagger(app);
 
         // swagger endpoint.
         app.UseSwaggerUI(c =>

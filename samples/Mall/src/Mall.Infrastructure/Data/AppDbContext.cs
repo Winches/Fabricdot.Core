@@ -1,4 +1,4 @@
-﻿using System.Reflection;
+using System.Reflection;
 using Fabricdot.Infrastructure.EntityFrameworkCore;
 using Mall.Domain.Aggregates.OrderAggregate;
 using Microsoft.EntityFrameworkCore;

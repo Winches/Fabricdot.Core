@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using Fabricdot.Core.UniqueIdentifier;
 
 namespace Mall.Domain.Aggregates.OrderAggregate;

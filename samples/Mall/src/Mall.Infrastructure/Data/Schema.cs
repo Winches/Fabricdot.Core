@@ -1,4 +1,4 @@
-﻿namespace Mall.Infrastructure.Data;
+namespace Mall.Infrastructure.Data;
 
 internal static class Schema
 {

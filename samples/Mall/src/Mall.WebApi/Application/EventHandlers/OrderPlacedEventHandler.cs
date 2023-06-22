@@ -1,8 +1,5 @@
-﻿using System.Threading;
-using System.Threading.Tasks;
 using Fabricdot.Domain.Events;
 using Mall.Domain.Events;
-using Microsoft.Extensions.Logging;
 
 namespace Mall.WebApi.Application.EventHandlers;
 
@@ -20,7 +17,7 @@ internal class OrderPlacedEventHandler : IDomainEventHandler<OrderPlacedEvent>
         CancellationToken cancellationToken)
     {
         var order = domainEvent.Entity;
-        _logger.LogInformation($"Do something after order placed.OrderId:{order.Id}");
+        _logger.LogInformation("Do something after order placed.OrderId:{orderId}", order.Id);
         return Task.CompletedTask;
     }
 }

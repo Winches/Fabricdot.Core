@@ -1,4 +1,4 @@
-﻿using System.Data;
+using System.Data;
 using Fabricdot.Core.DependencyInjection;
 using Fabricdot.Infrastructure.Data;
 using Microsoft.Data.SqlClient;

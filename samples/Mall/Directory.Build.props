@@ -1,0 +1,9 @@
+<Project>
+  <PropertyGroup>
+    <NoWarn>$(NoWarn);CS1591</NoWarn>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <PackageVersion>0.7.1</PackageVersion>
+  </PropertyGroup>
+
+</Project>

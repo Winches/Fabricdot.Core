@@ -1,4 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations;
 using Mall.Domain.Shared.Constants;
 
 namespace Mall.WebApi.Application.Commands.Orders;

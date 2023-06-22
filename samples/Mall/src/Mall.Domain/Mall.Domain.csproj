@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
@@ -6,10 +6,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Mall.Domain.Shared\Mall.Domain.Shared.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <PackageReference Include="Fabricdot.Domain" Version="0.7.0" />
   </ItemGroup>
 
 </Project>

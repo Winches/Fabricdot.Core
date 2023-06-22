@@ -1,4 +1,4 @@
-﻿using Fabricdot.Infrastructure.Queries;
+using Fabricdot.Infrastructure.Queries;
 
 namespace Mall.WebApi.Application.Queries.Orders;
 
