@@ -20,8 +20,9 @@ public class HttpContextCorrelationIdAccessor : ICorrelationIdAccessor
             var context = _httpContextAccessor.HttpContext;
             if (context == null)
                 return null;
-            context.Request.Headers.TryGetValue(_options.HeaderKey, out var correlationId);
-            return correlationId.ToString();
+            if (context.Request.Headers.TryGetValue(_options.HeaderKey, out var correlationId))
+                return correlationId.ToString();
+            return null;
         }
     }
 
