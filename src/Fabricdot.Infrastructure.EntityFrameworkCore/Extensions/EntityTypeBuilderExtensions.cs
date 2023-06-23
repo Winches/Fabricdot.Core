@@ -151,7 +151,6 @@ public static class EntityTypeBuilderExtensions
                 .IsRequired(false)
                 .HasColumnName(nameof(IHasDeleterId.DeleterId))
                 .HasMaxLength(AuditConstant.UserIdLength);
-            //todo:consider use strong type user id,maybe GUID.
 
             ConfigureSoftDelete(builder);
         }
