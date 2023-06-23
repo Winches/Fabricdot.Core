@@ -1,5 +1,4 @@
 using Fabricdot.Core.Aspects;
-using JetBrains.Annotations;
 
 namespace Fabricdot.Infrastructure.Aspects;
 
@@ -14,10 +13,10 @@ public class InterceptorDescriptor
     public int Order { get; }
 
     public InterceptorDescriptor(
-        [NotNull] Type interceptorType,
+        Type interceptorType,
         int order,
-        [CanBeNull] Type? targetType,
-        [CanBeNull] Type? bindingType)
+        Type? targetType,
+        Type? bindingType)
     {
         if (interceptorType == null)
             throw new ArgumentNullException(nameof(interceptorType));
@@ -36,7 +35,7 @@ public class InterceptorDescriptor
         BindingType = bindingType;
     }
 
-    public static InterceptorDescriptor Create([NotNull] Type interceptorType)
+    public static InterceptorDescriptor Create(Type interceptorType)
     {
         var attributes = interceptorType.GetCustomAttributes(true).ToArray();
         var interceptorAttribute = attributes.OfType<InterceptorAttribute>().SingleOrDefault();

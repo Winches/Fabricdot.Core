@@ -9,7 +9,6 @@ using Fabricdot.Infrastructure.EntityFrameworkCore.Extensions;
 using Fabricdot.Infrastructure.Uow;
 using Fabricdot.Infrastructure.Uow.Abstractions;
 using Fabricdot.MultiTenancy.Abstractions;
-using JetBrains.Annotations;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.EntityFrameworkCore.Metadata;
@@ -42,7 +41,7 @@ public abstract class DbContextBase : DbContext
     }
 
     /// <inheritdoc />
-    protected DbContextBase([NotNull] DbContextOptions options) : base(options)
+    protected DbContextBase(DbContextOptions options) : base(options)
     {
         Initialize();
     }

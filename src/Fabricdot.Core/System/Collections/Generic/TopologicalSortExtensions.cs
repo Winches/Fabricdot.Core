@@ -1,4 +1,3 @@
-// ReSharper disable once CheckNamespace
 using Ardalis.GuardClauses;
 
 namespace System.Collections.Generic;
@@ -13,8 +12,8 @@ public static class TopologicalSortExtensions
     /// <param name="dependenciesSelector">Function to resolve the dependencies</param>
     /// <param name="comparer">Equality comparer for dependencies</param>
     /// <returns>
-    ///     Returns a new list ordered by dependencies. If A depends on B, then B will come
-    ///     before than A in the resulting list.
+    ///     Returns a new list ordered by dependencies. If A depends on B, then B will come before
+    ///     than A in the resulting list.
     /// </returns>
     public static ICollection<T> TopologicalSort<T>(
         this IEnumerable<T> source,

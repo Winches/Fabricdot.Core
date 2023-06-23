@@ -83,7 +83,6 @@ public class UnitOfWorkManager : IUnitOfWorkManager, ISingletonDependency
             uow.Disposed += (_, _) =>
              {
                  _ambientUnitOfWork.DropCurrent();
-                 // ReSharper disable once AccessToDisposedClosure
                  serviceScope.Dispose();
              };
             return uow;

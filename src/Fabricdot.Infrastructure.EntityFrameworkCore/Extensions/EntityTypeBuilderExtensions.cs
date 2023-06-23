@@ -2,7 +2,6 @@ using Fabricdot.Domain.Auditing;
 using Fabricdot.Domain.Entities;
 using Fabricdot.Domain.SharedKernel;
 using Fabricdot.Domain.ValueObjects;
-using JetBrains.Annotations;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
@@ -16,7 +15,7 @@ public static class EntityTypeBuilderExtensions
     /// </summary>
     /// <param name="builder"></param>
     /// <returns></returns>
-    public static Type GetClrType([NotNull] this EntityTypeBuilder builder)
+    public static Type GetClrType(this EntityTypeBuilder builder)
     {
         return builder.Metadata.ClrType;
     }
@@ -25,7 +24,7 @@ public static class EntityTypeBuilderExtensions
     ///     try configure entity by convention
     /// </summary>
     /// <param name="builder"></param>
-    public static void TryConfigure([NotNull] this EntityTypeBuilder builder)
+    public static void TryConfigure(this EntityTypeBuilder builder)
     {
         builder.TryConfigureConcurrencyStamp();
 
@@ -46,7 +45,7 @@ public static class EntityTypeBuilderExtensions
     ///     try configure concurrency token
     /// </summary>
     /// <param name="builder"></param>
-    public static EntityTypeBuilder TryConfigureConcurrencyStamp([NotNull] this EntityTypeBuilder builder)
+    public static EntityTypeBuilder TryConfigureConcurrencyStamp(this EntityTypeBuilder builder)
     {
         if (typeof(IHasConcurrencyStamp).IsAssignableFrom(builder.GetClrType()))
         {
@@ -64,7 +63,7 @@ public static class EntityTypeBuilderExtensions
     ///     try configure creation time
     /// </summary>
     /// <param name="builder"></param>
-    public static EntityTypeBuilder TryConfigureCreationTime([NotNull] this EntityTypeBuilder builder)
+    public static EntityTypeBuilder TryConfigureCreationTime(this EntityTypeBuilder builder)
     {
         if (typeof(IHasCreationTime).IsAssignableFrom(builder.GetClrType()))
         {
@@ -80,7 +79,7 @@ public static class EntityTypeBuilderExtensions
     ///     try configure creator id
     /// </summary>
     /// <param name="builder"></param>
-    public static EntityTypeBuilder TryConfigureCreatorId([NotNull] this EntityTypeBuilder builder)
+    public static EntityTypeBuilder TryConfigureCreatorId(this EntityTypeBuilder builder)
     {
         if (typeof(IHasCreatorId).IsAssignableFrom(builder.GetClrType()))
         {
@@ -97,7 +96,7 @@ public static class EntityTypeBuilderExtensions
     ///     try configure modification time
     /// </summary>
     /// <param name="builder"></param>
-    public static EntityTypeBuilder TryConfigureModificationTime([NotNull] this EntityTypeBuilder builder)
+    public static EntityTypeBuilder TryConfigureModificationTime(this EntityTypeBuilder builder)
     {
         if (typeof(IHasModificationTime).IsAssignableFrom(builder.GetClrType()))
         {
@@ -113,7 +112,7 @@ public static class EntityTypeBuilderExtensions
     ///     try configure modifier id
     /// </summary>
     /// <param name="builder"></param>
-    public static EntityTypeBuilder TryConfigureModifierId([NotNull] this EntityTypeBuilder builder)
+    public static EntityTypeBuilder TryConfigureModifierId(this EntityTypeBuilder builder)
     {
         if (typeof(IHasModifierId).IsAssignableFrom(builder.GetClrType()))
         {
@@ -132,7 +131,7 @@ public static class EntityTypeBuilderExtensions
     ///     try configure soft-delete
     /// </summary>
     /// <param name="builder"></param>
-    public static EntityTypeBuilder TryConfigureSoftDelete([NotNull] this EntityTypeBuilder builder)
+    public static EntityTypeBuilder TryConfigureSoftDelete(this EntityTypeBuilder builder)
     {
         if (typeof(ISoftDelete).IsAssignableFrom(builder.GetClrType()))
             ConfigureSoftDelete(builder);
@@ -144,7 +143,7 @@ public static class EntityTypeBuilderExtensions
     ///     try configure deleter id
     /// </summary>
     /// <param name="builder"></param>
-    public static EntityTypeBuilder TryConfigureDeleterId([NotNull] this EntityTypeBuilder builder)
+    public static EntityTypeBuilder TryConfigureDeleterId(this EntityTypeBuilder builder)
     {
         if (typeof(IHasDeleterId).IsAssignableFrom(builder.GetClrType()))
         {
@@ -164,7 +163,7 @@ public static class EntityTypeBuilderExtensions
     ///     try configure deletion time
     /// </summary>
     /// <param name="builder"></param>
-    public static EntityTypeBuilder TryConfigureDeletionTime([NotNull] this EntityTypeBuilder builder)
+    public static EntityTypeBuilder TryConfigureDeletionTime(this EntityTypeBuilder builder)
     {
         if (typeof(IHasDeletionTime).IsAssignableFrom(builder.GetClrType()))
         {
@@ -178,7 +177,7 @@ public static class EntityTypeBuilderExtensions
         return builder;
     }
 
-    private static void ConfigureSoftDelete([NotNull] EntityTypeBuilder builder)
+    private static void ConfigureSoftDelete(EntityTypeBuilder builder)
     {
         builder.Property(nameof(ISoftDelete.IsDeleted))
             .IsRequired()
@@ -188,7 +187,7 @@ public static class EntityTypeBuilderExtensions
 
     #endregion soft-delete
 
-    public static void TryConfigureMultiTenant([NotNull] this EntityTypeBuilder builder)
+    public static void TryConfigureMultiTenant(this EntityTypeBuilder builder)
     {
         if (!typeof(IMultiTenant).IsAssignableFrom(builder.GetClrType()))
             return;
@@ -205,8 +204,8 @@ public static class EntityTypeBuilderExtensions
     /// <param name="propertyName"></param>
     /// <param name="propertyAccessMode"></param>
     public static void TryConfigureNavigationProperty(
-        [NotNull] this EntityTypeBuilder builder,
-        [NotNull] string propertyName,
+        this EntityTypeBuilder builder,
+        string propertyName,
         PropertyAccessMode propertyAccessMode)
     {
         var navigation = builder.Metadata.FindNavigation(propertyName);
@@ -221,8 +220,8 @@ public static class EntityTypeBuilderExtensions
     /// <param name="propertyName"></param>
     /// <exception cref="ArgumentException"></exception>
     public static PropertyBuilder ConfigureEnumeration<TEnumeration>(
-        [NotNull] this EntityTypeBuilder builder,
-        [NotNull] string propertyName)
+        this EntityTypeBuilder builder,
+        string propertyName)
         where TEnumeration : Enumeration
     {
         var prop = builder.Property(propertyName);
@@ -237,8 +236,8 @@ public static class EntityTypeBuilderExtensions
     /// <param name="propertyName"></param>
     /// <exception cref="ArgumentException"></exception>
     public static PropertyBuilder ConfigureEnumeration<TEnumeration>(
-        [NotNull] this OwnedNavigationBuilder builder,
-        [NotNull] string propertyName)
+        this OwnedNavigationBuilder builder,
+        string propertyName)
         where TEnumeration : Enumeration
     {
         var prop = builder.Property(propertyName);

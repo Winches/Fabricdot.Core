@@ -1,12 +1,10 @@
 using Fabricdot.WebApi.Endpoint;
-using JetBrains.Annotations;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 
 namespace Fabricdot.WebApi.Filters;
 
-[UsedImplicitly]
 public class GetActionResultRequestHandler : IRequestHandler<GetActionResultRequest, IActionResult>
 {
     protected static Type ResponseType => typeof(Response<>);

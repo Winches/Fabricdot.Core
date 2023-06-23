@@ -1,6 +1,5 @@
 using Fabricdot.Core.Validation;
 
-// ReSharper disable once CheckNamespace
 namespace System.Text.Json.Serialization;
 
 public class NotificationErrorConverter : JsonConverter<Notification.Error>

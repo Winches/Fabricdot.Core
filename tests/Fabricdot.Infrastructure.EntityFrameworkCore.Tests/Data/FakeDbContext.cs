@@ -1,6 +1,5 @@
 using System.Reflection;
 using Fabricdot.Test.Helpers.Domain.Aggregates.OrderAggregate;
-using JetBrains.Annotations;
 using Microsoft.EntityFrameworkCore;
 
 namespace Fabricdot.Infrastructure.EntityFrameworkCore.Tests.Data;
@@ -14,7 +13,7 @@ public class FakeDbContext : DbContextBase
     public DbSet<OrderDetails> OrderDetails => Set<OrderDetails>();
 
     /// <inheritdoc />
-    public FakeDbContext([NotNull] DbContextOptions<FakeDbContext> options) : base(options)
+    public FakeDbContext(DbContextOptions<FakeDbContext> options) : base(options)
     {
     }
 

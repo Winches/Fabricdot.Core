@@ -1,6 +1,5 @@
 using Ardalis.GuardClauses;
 using Fabricdot.Core.Logging;
-using JetBrains.Annotations;
 using Microsoft.Extensions.Logging;
 
 namespace Fabricdot.Core.Validation;
@@ -17,19 +16,19 @@ public class ValidationFailedException : Exception, IHasNotification, IHasLogLev
     {
     }
 
-    public ValidationFailedException([CanBeNull] string message) : base(message)
+    public ValidationFailedException(string message) : base(message)
     {
     }
 
     public ValidationFailedException(
-        [CanBeNull] string message,
-        [CanBeNull] Exception innerException) : base(
+        string message,
+        Exception innerException) : base(
         message, innerException)
     {
     }
 
     public ValidationFailedException(
-        [CanBeNull] string message,
+        string message,
         Notification notification) : base(message)
     {
         Guard.Against.Null(notification, nameof(notification));

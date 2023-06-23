@@ -5,13 +5,9 @@ using AspectCore.Extensions.DependencyInjection;
 using Fabricdot.Core.Aspects;
 using Fabricdot.Infrastructure.Aspects;
 using Fabricdot.Infrastructure.Aspects.AspectCore;
-using JetBrains.Annotations;
-
-// ReSharper disable CheckNamespace
 
 namespace Microsoft.Extensions.DependencyInjection;
 
-[UsedImplicitly]
 public static class ServiceCollectionExtensions
 {
     public static IServiceCollection AddInterceptors(
@@ -68,7 +64,6 @@ public static class ServiceCollectionExtensions
                                 .Distinct();
     }
 
-    [CanBeNull]
     private static Type? AdaptInterceptorType(Type interceptorType)
     {
         return interceptorType.IsAssignableTo(typeof(IInterceptor))

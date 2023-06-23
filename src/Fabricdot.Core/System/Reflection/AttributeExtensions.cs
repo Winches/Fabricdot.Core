@@ -1,5 +1,3 @@
-// ReSharper disable once CheckNamespace
-
 namespace System.Reflection;
 
 public static class AttributeExtensions

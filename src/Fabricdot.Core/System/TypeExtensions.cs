@@ -3,7 +3,6 @@ using System.Reflection;
 using System.Runtime.CompilerServices;
 using Ardalis.GuardClauses;
 
-// ReSharper disable once CheckNamespace
 namespace System;
 
 public static class TypeExtensions

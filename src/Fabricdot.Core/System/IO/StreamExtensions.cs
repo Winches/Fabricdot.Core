@@ -1,7 +1,6 @@
 using System.Text;
 using Ardalis.GuardClauses;
 
-// ReSharper disable once CheckNamespace
 namespace System.IO;
 
 public static class StreamExtensions

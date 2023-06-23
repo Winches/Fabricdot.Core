@@ -1,17 +1,14 @@
 using System.Reflection;
 using AspectCore.DynamicProxy;
 using Fabricdot.Core.Aspects;
-using JetBrains.Annotations;
 
 namespace Fabricdot.Infrastructure.Aspects.AspectCore;
 
 [DisableAspect]
 public class AspectCoreInvocationContextAdapter : IInvocationContext
 {
-    [NotNull]
     private readonly AspectContext _context;
 
-    [NotNull]
     private readonly AspectDelegate _next;
 
     /// <inheritdoc />
@@ -29,7 +26,7 @@ public class AspectCoreInvocationContextAdapter : IInvocationContext
     /// <inheritdoc />
     public IDictionary<object, object> Properties { get; }
 
-    public AspectCoreInvocationContextAdapter([NotNull] AspectContext context, [NotNull] AspectDelegate next)
+    public AspectCoreInvocationContextAdapter(AspectContext context, AspectDelegate next)
     {
         _context = context ?? throw new ArgumentNullException(nameof(context));
         _next = next ?? throw new ArgumentNullException(nameof(next));

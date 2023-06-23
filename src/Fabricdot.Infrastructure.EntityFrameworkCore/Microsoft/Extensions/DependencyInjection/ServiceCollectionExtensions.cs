@@ -4,8 +4,6 @@ using Fabricdot.Infrastructure.EntityFrameworkCore.Uow;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 
-// ReSharper disable CheckNamespace
-
 namespace Microsoft.Extensions.DependencyInjection;
 
 public static class ServiceCollectionExtensions

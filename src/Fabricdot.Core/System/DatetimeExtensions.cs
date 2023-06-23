@@ -1,5 +1,3 @@
-// ReSharper disable once CheckNamespace
-
 using Ardalis.GuardClauses;
 
 namespace System;

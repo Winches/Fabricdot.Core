@@ -1,11 +1,10 @@
 using Fabricdot.Core.Aspects;
-using JetBrains.Annotations;
 
 namespace Fabricdot.Infrastructure.Aspects;
 
 public class InterceptorCollection : HashSet<InterceptorDescriptor>
 {
-    public void Add([NotNull] Type interceptorType)
+    public void Add(Type interceptorType)
     {
         if (interceptorType == null)
             throw new ArgumentNullException(nameof(interceptorType));
