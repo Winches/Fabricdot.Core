@@ -31,9 +31,13 @@ public class DependencyRegistry : IDependencyRegistry
         {
             // Redirect service to self.
             ServiceTypes.AddIfNotContains(ImplementationType);
-            return ServiceTypes.Select(v => v == ImplementationType
+            // HACK: The dynamic proxying is only working for visible type when service type is class.
+            var redirectType = ImplementationType.IsVisible
+                ? ImplementationType
+                : ServiceTypes.First(v => (v.IsClass && v.IsVisible) || v.IsInterface);
+            return ServiceTypes.Select(v => v == redirectType
                 ? ServiceDescriptor.Describe(v, ImplementationType, ServiceLifetime)
-                : ServiceDescriptor.Describe(v, s => s.GetRequiredService(ImplementationType), ServiceLifetime))
+                : ServiceDescriptor.Describe(v, s => s.GetRequiredService(redirectType), ServiceLifetime))
                                .ToList();
         }
 

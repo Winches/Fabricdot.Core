@@ -24,8 +24,7 @@ public class DomainDependencyRegistrar : DefaultDependencyRegistrar
 
     protected override ServiceLifetime? GetDefaultLifetime(Type type)
     {
-        // TODO:Intereceptor is not working when respository services is scoped.
-        return type.IsAssignableTo(RepositoryType) ? ServiceLifetime.Transient : ServiceLifetime.Transient;
+        return type.IsAssignableTo(RepositoryType) ? ServiceLifetime.Scoped : ServiceLifetime.Transient;
     }
 
     protected override ICollection<Type> GetServiceTypes(Type implementationType)

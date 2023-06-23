@@ -109,16 +109,21 @@ public class DomainDependencyRegistrarTests : TestFor<DomainDependencyRegistrar>
     public void Register_GivenRepository_RegisterType(ServiceCollection services)
     {
         var implementationType = typeof(OrderRepository);
-        var serviceTypes = new[] { typeof(IOrderRepository), typeof(IReadOnlyRepository<Order, Guid>) };
+        var serviceTypes = new[] { implementationType, typeof(IOrderRepository), typeof(IReadOnlyRepository<Order, Guid>) };
 
         Sut.Register(services, implementationType);
-        serviceTypes.ForEach(v =>
+        var serviceProvider = services.BuildServiceProvider();
+
+        serviceTypes.ForEach(serviceType =>
         {
             services.Should()
-                    .ContainSingle(v).Which.ImplementationType
-                    .Should()
-                    .Be(implementationType);
+                    .Contain(serviceType, ServiceLifetime.Scoped);
         });
-        services.Should().NotContain<IRepository>();
+        serviceTypes.ForEach(serviceType =>
+        {
+            serviceProvider.GetService(serviceType)
+                           .Should()
+                           .BeOfType(implementationType);
+        });
     }
 }
