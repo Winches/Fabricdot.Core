@@ -1,3 +1,4 @@
+using System.Reflection;
 using Ardalis.GuardClauses;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -19,5 +20,17 @@ public class ConfigureServiceContext
 
         Services = services;
         Configuration = configuration;
+    }
+
+    /// <summary>
+    ///     Get assemblies of all modules.
+    /// </summary>
+    /// <returns></returns>
+    public Assembly[] GetAssemblies()
+    {
+        return Services.GetRequiredSingletonInstance<IModuleCollection>()
+                       .Select(v => v.Assembly)
+                       .Distinct()
+                       .ToArray();
     }
 }

@@ -12,14 +12,13 @@ public class FabricdotInfrastructureModule : ModuleBase
     public override void ConfigureServices(ConfigureServiceContext context)
     {
         var services = context.Services;
+        var assemblies = context.GetAssemblies();
 
-        //repository filter
+        // repository filter
         services.AddSingleton(typeof(IDataFilter<>), typeof(DataFilter<>));
-
-        //var assemblies = new TypeFinder().GetAssemblies().ToArray();
-        // TODO: Refactor it
-        var assemblies = services.GetRequiredSingletonInstance<IModuleCollection>().Select(v => v.Assembly).ToArray();
-        services.AddMediatR(opts => opts.RegisterServicesFromAssemblies(assemblies)) //mediator
-            .AddAutoMapper(assemblies); //mapper
+        // mediator
+        services.AddMediatR(opts => opts.RegisterServicesFromAssemblies(assemblies));
+        // mapper
+        services.AddAutoMapper(assemblies);
     }
 }
