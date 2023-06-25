@@ -64,4 +64,28 @@ public class StringExtensionsTests : TestBase
                      .Should()
                      .Throw<ArgumentException>();
     }
+
+    [InlineData(null)]
+    [InlineData("")]
+    [Theory]
+    public void Truncate_GivenNullOrEmpty_ReturnEmpty(string text)
+    {
+        text.Truncate(Create<int>()).Should().BeEmpty();
+    }
+
+    [AutoData]
+    [Theory]
+    public void Truncate_GivenLessLength_ReturnCorrectly(string text)
+    {
+        var expected = text.Length - 1;
+        text.Truncate(expected).Should().HaveLength(expected);
+    }
+
+    [AutoData]
+    [Theory]
+    public void Truncate_GivenGreaterLength_ReturnCorrectly(string text)
+    {
+        var expected = text.Length;
+        text.Truncate(text.Length + 1).Should().HaveLength(expected);
+    }
 }
