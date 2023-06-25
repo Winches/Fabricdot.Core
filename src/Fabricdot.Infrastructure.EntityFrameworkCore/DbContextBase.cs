@@ -8,7 +8,7 @@ using Fabricdot.Infrastructure.Domain.Auditing;
 using Fabricdot.Infrastructure.EntityFrameworkCore.Extensions;
 using Fabricdot.Infrastructure.Uow;
 using Fabricdot.Infrastructure.Uow.Abstractions;
-using Fabricdot.MultiTenancy.Abstractions;
+using Fabricdot.MultiTenancy;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.EntityFrameworkCore.Metadata;

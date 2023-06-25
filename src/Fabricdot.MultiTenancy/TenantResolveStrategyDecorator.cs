@@ -1,5 +1,4 @@
 using Ardalis.GuardClauses;
-using Fabricdot.MultiTenancy.Abstractions;
 using Microsoft.Extensions.Logging;
 
 namespace Fabricdot.MultiTenancy;

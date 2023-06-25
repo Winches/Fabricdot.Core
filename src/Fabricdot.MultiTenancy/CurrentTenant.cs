@@ -1,5 +1,4 @@
 using Fabricdot.Core.DependencyInjection;
-using Fabricdot.MultiTenancy.Abstractions;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Fabricdot.MultiTenancy;

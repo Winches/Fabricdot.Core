@@ -1,6 +1,6 @@
 using Ardalis.GuardClauses;
 
-namespace Fabricdot.MultiTenancy.Abstractions;
+namespace Fabricdot.MultiTenancy;
 
 public class TenantContext : ITenant
 {

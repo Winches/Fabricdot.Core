@@ -1,4 +1,4 @@
-namespace Fabricdot.MultiTenancy.Abstractions;
+namespace Fabricdot.MultiTenancy;
 
 public interface ITenantAccessor
 {

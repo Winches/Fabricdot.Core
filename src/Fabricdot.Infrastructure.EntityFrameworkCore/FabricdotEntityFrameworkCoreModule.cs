@@ -1,5 +1,5 @@
 using Fabricdot.Core.Modularity;
-using Fabricdot.MultiTenancy.Abstractions;
+using Fabricdot.MultiTenancy;
 
 namespace Fabricdot.Infrastructure.EntityFrameworkCore;
 

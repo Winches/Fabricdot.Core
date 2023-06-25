@@ -1,6 +1,5 @@
 using Fabricdot.Core.DependencyInjection;
 using Fabricdot.Infrastructure.Uow.Abstractions;
-using Fabricdot.MultiTenancy.Abstractions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 

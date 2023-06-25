@@ -1,4 +1,4 @@
-namespace Fabricdot.MultiTenancy.Abstractions;
+namespace Fabricdot.MultiTenancy;
 
 // TODO：Implement the infrastructure
 [Flags]

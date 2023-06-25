@@ -1,7 +1,7 @@
 using Fabricdot.Core.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Fabricdot.MultiTenancy.Abstractions;
+namespace Fabricdot.MultiTenancy;
 
 [Dependency(ServiceLifetime.Singleton)]
 internal class NullCurrentTenant : ICurrentTenant

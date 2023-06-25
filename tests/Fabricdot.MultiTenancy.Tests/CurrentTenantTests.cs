@@ -1,5 +1,3 @@
-using Fabricdot.MultiTenancy.Abstractions;
-
 namespace Fabricdot.MultiTenancy.Tests;
 
 public class CurrentTenantTests : TestFor<CurrentTenant>

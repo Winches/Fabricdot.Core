@@ -1,6 +1,5 @@
 using System.Security.Claims;
 using Fabricdot.Core.Security;
-using Fabricdot.MultiTenancy.Abstractions;
 using Fabricdot.MultiTenancy.Strategies;
 using Microsoft.Extensions.DependencyInjection;
 

@@ -1,5 +1,5 @@
 using Ardalis.GuardClauses;
-using Fabricdot.MultiTenancy.Abstractions;
+using Fabricdot.MultiTenancy;
 
 namespace Fabricdot.Infrastructure.Security;
 

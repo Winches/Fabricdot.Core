@@ -1,4 +1,3 @@
-using Fabricdot.MultiTenancy.Abstractions;
 using Microsoft.AspNetCore.Http;
 
 namespace Fabricdot.MultiTenancy.AspNetCore.Strategies;

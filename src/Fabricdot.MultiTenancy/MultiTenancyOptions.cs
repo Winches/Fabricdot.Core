@@ -1,4 +1,3 @@
-using Fabricdot.MultiTenancy.Abstractions;
 using Fabricdot.MultiTenancy.Strategies;
 
 namespace Fabricdot.MultiTenancy;

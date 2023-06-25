@@ -1,7 +1,6 @@
 using Fabricdot.Core.Modularity;
 using Fabricdot.Domain.Internal;
 using Fabricdot.Infrastructure;
-using Fabricdot.MultiTenancy.Abstractions;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Fabricdot.MultiTenancy;

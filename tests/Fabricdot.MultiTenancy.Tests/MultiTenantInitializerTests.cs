@@ -1,5 +1,4 @@
 using Fabricdot.Domain.Internal;
-using Fabricdot.MultiTenancy.Abstractions;
 using Fabricdot.Test.Helpers.Domain.Aggregates.CustomerAggregate;
 
 namespace Fabricdot.MultiTenancy.Tests;

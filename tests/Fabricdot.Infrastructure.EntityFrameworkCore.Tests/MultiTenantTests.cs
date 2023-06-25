@@ -1,7 +1,7 @@
 using Fabricdot.Domain.SharedKernel;
 using Fabricdot.Infrastructure.Data.Filters;
 using Fabricdot.Infrastructure.EntityFrameworkCore.Tests.Data;
-using Fabricdot.MultiTenancy.Abstractions;
+using Fabricdot.MultiTenancy;
 using Fabricdot.Test.Helpers.Domain.Aggregates.CustomerAggregate;
 using Microsoft.Extensions.DependencyInjection;
 
