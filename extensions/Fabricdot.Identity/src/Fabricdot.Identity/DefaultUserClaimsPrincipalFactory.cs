@@ -3,7 +3,7 @@ using Fabricdot.Core.Security;
 using Fabricdot.Domain.SharedKernel;
 using Fabricdot.Identity.Domain.Entities.RoleAggregate;
 using Fabricdot.Identity.Domain.Entities.UserAggregate;
-using Fabricdot.MultiTenancy.Abstractions;
+using Fabricdot.MultiTenancy;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;
 

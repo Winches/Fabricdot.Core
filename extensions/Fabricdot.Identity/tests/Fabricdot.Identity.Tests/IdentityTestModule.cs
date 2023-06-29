@@ -4,7 +4,7 @@ using Fabricdot.Core.Modularity;
 using Fabricdot.Identity.Tests.Data;
 using Fabricdot.Identity.Tests.Entities;
 using Fabricdot.Infrastructure.Data;
-using Fabricdot.MultiTenancy.Abstractions;
+using Fabricdot.MultiTenancy;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
