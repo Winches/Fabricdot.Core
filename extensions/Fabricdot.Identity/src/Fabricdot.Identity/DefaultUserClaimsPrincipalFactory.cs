@@ -1,11 +1,11 @@
 using System.Security.Claims;
 using Fabricdot.Core.Security;
 using Fabricdot.Domain.SharedKernel;
-using Fabricdot.Identity.Domain.Entities.RoleAggregate;
-using Fabricdot.Identity.Domain.Entities.UserAggregate;
 using Fabricdot.MultiTenancy;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;
+using IdentityRole = Fabricdot.Identity.Domain.Entities.RoleAggregate.IdentityRole;
+using IdentityUser = Fabricdot.Identity.Domain.Entities.UserAggregate.IdentityUser;
 
 namespace Fabricdot.Identity;
 
