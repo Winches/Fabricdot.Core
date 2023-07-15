@@ -1,6 +1,6 @@
-using Fabricdot.Infrastructure.EntityFrameworkCore.Extensions;
 using Fabricdot.PermissionGranting.Domain;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Fabricdot.PermissionGranting.Infrastructure.Data;
 
