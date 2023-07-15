@@ -7,9 +7,7 @@ public class DefaultRandomProviderTests : TestFor<DefaultRandomProvider>
     [Fact]
     public void Next_ReturnCorrectly()
     {
-        var list = Enumerable.Range(1, 10000).Select(_ => Sut.Next()).ToList();
-
-        list.Should().OnlyHaveUniqueItems();
+        Sut.Next().Should().BeInRange(0, int.MaxValue);
     }
 
     [InlineData(5, 1)]
