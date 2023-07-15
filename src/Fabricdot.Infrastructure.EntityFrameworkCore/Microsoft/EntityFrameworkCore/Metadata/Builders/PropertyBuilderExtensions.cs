@@ -10,7 +10,11 @@ public static class PropertyBuilderExtensions
     /// </summary>
     /// <param name="builder"></param>
     /// <returns></returns>
-    public static PropertyBuilder<T> IsTypedKey<T>(this PropertyBuilder<T> builder) => builder.IsTypedKey();
+    public static PropertyBuilder<T> IsTypedKey<T>(this PropertyBuilder<T> builder)
+    {
+        ((PropertyBuilder)builder).IsTypedKey();
+        return builder;
+    }
 
     /// <summary>
     ///     Configures the property that the property is a typed key
@@ -38,7 +42,11 @@ public static class PropertyBuilderExtensions
     /// <typeparam name="T"></typeparam>
     /// <param name="builder"></param>
     /// <returns></returns>
-    public static PropertyBuilder IsEnumeration<T>(this PropertyBuilder<T> builder) => builder.IsEnumeration();
+    public static PropertyBuilder<T> IsEnumeration<T>(this PropertyBuilder<T> builder)
+    {
+        ((PropertyBuilder)builder).IsEnumeration();
+        return builder;
+    }
 
     /// <summary>
     ///     Configures the property that the property is an enumeration type
@@ -49,7 +57,7 @@ public static class PropertyBuilderExtensions
     public static PropertyBuilder IsEnumeration(this PropertyBuilder builder)
     {
         var clrType = builder.Metadata.ClrType;
-        if (!clrType.IsAssignableToGenericType(typeof(Enumeration)))
+        if (!clrType.IsAssignableTo(typeof(Enumeration)))
         {
             throw new InvalidOperationException($"The '{clrType.PrettyPrint()}' is not a enumeration type.");
         }

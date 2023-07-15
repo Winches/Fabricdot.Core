@@ -48,11 +48,15 @@ public static class EntityTypeBuilderExtensions
     public static EntityTypeBuilder TryConfigureTypedKey(this EntityTypeBuilder builder)
     {
         var type = builder.GetClrType();
-        if (type.IsAssignableToGenericType(typeof(IEntity<>)) && type.IsAssignableToGenericType(typeof(IIdentity<>)))
+        if (type.IsAssignableToGenericType(typeof(IEntity<>)))
         {
             const string name = nameof(IEntity<object>.Id);
-            builder.HasKey(name);
-            builder.Property(name).IsTypedKey();
+            var propertyBuilder = builder.Property(name);
+            if (propertyBuilder.Metadata.ClrType.IsAssignableToGenericType(typeof(IIdentity<>)))
+            {
+                builder.HasKey(name);
+                propertyBuilder.IsTypedKey();
+            }
         }
         return builder;
     }
