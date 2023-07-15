@@ -5,12 +5,12 @@ using Fabricdot.Domain.Events;
 using Fabricdot.Domain.SharedKernel;
 using Fabricdot.Infrastructure.Data.Filters;
 using Fabricdot.Infrastructure.Domain.Auditing;
-using Fabricdot.Infrastructure.EntityFrameworkCore.Extensions;
 using Fabricdot.Infrastructure.Uow;
 using Fabricdot.Infrastructure.Uow.Abstractions;
 using Fabricdot.MultiTenancy;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
+using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Query;
 

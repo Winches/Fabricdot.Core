@@ -1,4 +1,3 @@
-using Fabricdot.Infrastructure.EntityFrameworkCore.Extensions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 

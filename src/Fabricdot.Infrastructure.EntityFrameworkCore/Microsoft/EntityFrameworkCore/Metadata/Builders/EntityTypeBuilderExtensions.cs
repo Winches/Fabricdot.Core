@@ -2,11 +2,9 @@ using Fabricdot.Domain.Auditing;
 using Fabricdot.Domain.Entities;
 using Fabricdot.Domain.SharedKernel;
 using Fabricdot.Domain.ValueObjects;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
-namespace Fabricdot.Infrastructure.EntityFrameworkCore.Extensions;
+namespace Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 public static class EntityTypeBuilderExtensions
 {

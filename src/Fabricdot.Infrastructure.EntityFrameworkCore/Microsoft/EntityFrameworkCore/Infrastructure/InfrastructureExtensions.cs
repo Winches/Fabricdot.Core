@@ -1,7 +1,6 @@
 using Ardalis.GuardClauses;
-using Microsoft.EntityFrameworkCore.Infrastructure;
 
-namespace Fabricdot.Infrastructure.EntityFrameworkCore.Extensions;
+namespace Microsoft.EntityFrameworkCore.Infrastructure;
 
 public static class InfrastructureExtensions
 {
