@@ -15,7 +15,7 @@ public static class ServiceCollectionExtensions
         serviceCollection.AddEfDbContext<TDbContext>((_, builder) => optionsAction?.Invoke(builder));
     }
 
-    public static void AddEfDbContext<TDbContext>(
+    public static FabricdotDbContextOptionsBuilder AddEfDbContext<TDbContext>(
         this IServiceCollection serviceCollection,
         Action<IServiceProvider, DbContextOptionsBuilder>? optionsAction = null) where TDbContext : DbContextBase
     {
@@ -23,5 +23,7 @@ public static class ServiceCollectionExtensions
 
         serviceCollection.AddDbContext<TDbContext>((provider, opts) => optionsAction?.Invoke(provider, opts));
         serviceCollection.TryAddTransient(typeof(IDbContextProvider<>), typeof(UnitOfWorkDbContextProvider<>));
+
+        return new FabricdotDbContextOptionsBuilder(serviceCollection, typeof(TDbContext));
     }
 }

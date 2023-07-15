@@ -12,6 +12,8 @@ public class FakeDbContext : DbContextBase
 
     public DbSet<OrderDetails> OrderDetails => Set<OrderDetails>();
 
+    public DbSet<DummyEntity> DummyEntities => Set<DummyEntity>();
+
     /// <inheritdoc />
     public FakeDbContext(DbContextOptions<FakeDbContext> options) : base(options)
     {

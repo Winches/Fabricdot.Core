@@ -26,7 +26,7 @@ public class EntityFrameworkCoreTestModule : ModuleBase
             opts.UseSqlite(dbconnection);
             opts.LogTo(v => Debug.Print(v))
                 .EnableSensitiveDataLogging();
-        });
+        }).AddDefaultRepositories();
         services.AddEfDbContext<FakeSecondDbContext>((_, opts) => opts.UseSqlite(dbconnection));
     }
 
