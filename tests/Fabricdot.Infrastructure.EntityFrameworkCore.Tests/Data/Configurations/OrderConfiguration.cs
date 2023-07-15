@@ -11,7 +11,9 @@ internal class OrderConfiguration : EntityTypeConfigurationBase<Order>, IDbConte
     {
         base.Configure(builder);
 
-        builder.ConfigureEnumeration<OrderStatus>(nameof(Order.OrderStatus));
+        builder.Property(v => v.OrderStatus)
+               .IsEnumeration()
+               .IsRequired();
 
         builder.OwnsOne(v => v.ShippingAddress, b => b.WithOwner());
 

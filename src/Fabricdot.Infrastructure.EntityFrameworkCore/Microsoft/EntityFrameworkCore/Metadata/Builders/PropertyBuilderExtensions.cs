@@ -31,4 +31,31 @@ public static class PropertyBuilderExtensions
 
         return builder;
     }
+
+    /// <summary>
+    ///     Configures the property that the property is an enumeration type
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <param name="builder"></param>
+    /// <returns></returns>
+    public static PropertyBuilder IsEnumeration<T>(this PropertyBuilder<T> builder) => builder.IsEnumeration();
+
+    /// <summary>
+    ///     Configures the property that the property is an enumeration type
+    /// </summary>
+    /// <param name="builder"></param>
+    /// <returns></returns>
+    /// <exception cref="InvalidOperationException"></exception>
+    public static PropertyBuilder IsEnumeration(this PropertyBuilder builder)
+    {
+        var clrType = builder.Metadata.ClrType;
+        if (!clrType.IsAssignableToGenericType(typeof(Enumeration)))
+        {
+            throw new InvalidOperationException($"The '{clrType.PrettyPrint()}' is not a enumeration type.");
+        }
+
+        builder.HasConversion(typeof(EnumerationConverter<>).MakeGenericType(clrType));
+
+        return builder;
+    }
 }

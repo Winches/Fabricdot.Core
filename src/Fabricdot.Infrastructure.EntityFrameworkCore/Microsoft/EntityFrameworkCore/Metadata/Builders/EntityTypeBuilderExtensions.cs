@@ -2,7 +2,6 @@ using Fabricdot.Domain.Auditing;
 using Fabricdot.Domain.Entities;
 using Fabricdot.Domain.SharedKernel;
 using Fabricdot.Domain.ValueObjects;
-using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -219,6 +218,7 @@ public static class EntityTypeBuilderExtensions
     /// <param name="builder"></param>
     /// <param name="propertyName"></param>
     /// <param name="propertyAccessMode"></param>
+    [Obsolete("Use property builder")]
     public static void TryConfigureNavigationProperty(
         this EntityTypeBuilder builder,
         string propertyName,
@@ -235,13 +235,14 @@ public static class EntityTypeBuilderExtensions
     /// <param name="builder"></param>
     /// <param name="propertyName"></param>
     /// <exception cref="ArgumentException"></exception>
+    [Obsolete("Use 'IsEnumeration' method from property builder")]
     public static PropertyBuilder ConfigureEnumeration<TEnumeration>(
         this EntityTypeBuilder builder,
         string propertyName)
         where TEnumeration : Enumeration
     {
-        var prop = builder.Property(propertyName);
-        return ConfigureEnumeration<TEnumeration>(prop);
+        return builder.Property(propertyName).IsEnumeration();
+        //return ConfigureEnumeration<TEnumeration>(prop);
     }
 
     /// <summary>
@@ -251,23 +252,13 @@ public static class EntityTypeBuilderExtensions
     /// <param name="builder"></param>
     /// <param name="propertyName"></param>
     /// <exception cref="ArgumentException"></exception>
+    [Obsolete("Use 'IsEnumeration' method from property builder")]
     public static PropertyBuilder ConfigureEnumeration<TEnumeration>(
         this OwnedNavigationBuilder builder,
         string propertyName)
         where TEnumeration : Enumeration
     {
-        var prop = builder.Property(propertyName);
-        return ConfigureEnumeration<TEnumeration>(prop);
-    }
-
-    private static PropertyBuilder ConfigureEnumeration<TEnumeration>(PropertyBuilder prop) where TEnumeration : Enumeration
-    {
-        var clrType = prop.Metadata.ClrType;
-        if (!typeof(Enumeration).IsAssignableFrom(clrType))
-            throw new ArgumentException($"{clrType.Name} is not an enumeration type.");
-
-        var converter = new ValueConverter<TEnumeration, int>(v => v.Value,
-            v => Enumeration.FromValue<TEnumeration>(v));
-        return prop.HasConversion(converter);
+        return builder.Property(propertyName).IsEnumeration();
+        //return ConfigureEnumeration<TEnumeration>(prop);
     }
 }
