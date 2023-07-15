@@ -2,6 +2,7 @@ using Ardalis.GuardClauses;
 using AutoFixture;
 using Fabricdot.Domain.Entities;
 using Fabricdot.Domain.SharedKernel;
+using Fabricdot.Test.Helpers.Domain.Aggregates.CustomerAggregate;
 
 namespace Fabricdot.Test.Helpers.Domain.Aggregates.OrderAggregate;
 
@@ -19,19 +20,19 @@ public class Order : FullAuditAggregateRoot<Guid>
 
     public Address ShippingAddress { get; private set; } = null!;
 
-    public string CustomerId { get; private set; } = null!;
+    public CustomerId CustomerId { get; private set; } = null!;
 
     public OrderDetails? Details { get; set; }
 
     public Order(
         Guid id,
         Address shippingAddress,
-        string customerId,
+        CustomerId customerId,
         OrderDetails? details)
     {
         Id = Guard.Against.Default(id, nameof(id));
         ShippingAddress = Guard.Against.Null(shippingAddress, nameof(shippingAddress));
-        CustomerId = Guard.Against.NullOrEmpty(customerId, nameof(customerId));
+        CustomerId = Guard.Against.Null(customerId, nameof(customerId));
         OrderTime = SystemClock.Now;
         OrderStatus = OrderStatus.Placed;
         Details = details;

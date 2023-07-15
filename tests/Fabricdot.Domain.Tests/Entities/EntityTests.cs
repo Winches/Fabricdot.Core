@@ -1,3 +1,4 @@
+using Fabricdot.Test.Helpers.Domain.Aggregates.CustomerAggregate;
 using Fabricdot.Test.Helpers.Domain.Aggregates.OrderAggregate;
 
 namespace Fabricdot.Domain.Tests.Entities;
@@ -7,7 +8,7 @@ public class EntityTests : TestFor<Order>
     [Fact]
     public void Equals_GivenInstanceWithSameId_ReturnTrue()
     {
-        var order = new Order(Sut.Id, Create<Address>(), Create<string>(), null);
+        var order = new Order(Sut.Id, Create<Address>(), Create<CustomerId>(), null);
 
         Sut.Should().Be(order);
     }

@@ -52,7 +52,7 @@ public class FakeDataBuilder : ITransientDependency
         _dbContext.Remove(orders.Find(v => v.Id == DeletedOrderId)!);
         await _dbContext.SaveChangesAsync();
 
-        Order Factory(Guid id) => new(id, _fixture.Create<Address>(), _fixture.Create<string>(), _fixture.Create<OrderDetails>());
+        Order Factory(Guid id) => new(id, _fixture.Create<Address>(), _fixture.Create<CustomerId>(), _fixture.Create<OrderDetails>());
     }
 
     private async Task AddCustomersAsync()
@@ -64,6 +64,6 @@ public class FakeDataBuilder : ITransientDependency
         await _secondDbContext.AddRangeAsync(customers);
         await _secondDbContext.SaveChangesAsync();
 
-        Customer Factory() => new(_fixture.Create<Guid>(), _fixture.Create<string>(), TenantId);
+        Customer Factory() => new(_fixture.Create<CustomerId>(), _fixture.Create<string>(), TenantId);
     }
 }

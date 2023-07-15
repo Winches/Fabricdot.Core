@@ -24,6 +24,8 @@ public static class EntityTypeBuilderExtensions
     /// <param name="builder"></param>
     public static void TryConfigure(this EntityTypeBuilder builder)
     {
+        builder.TryConfigureTypedKey();
+
         builder.TryConfigureConcurrencyStamp();
 
         builder.TryConfigureCreationTime();
@@ -37,6 +39,23 @@ public static class EntityTypeBuilderExtensions
         builder.TryConfigureDeleterId();
 
         builder.TryConfigureMultiTenant();
+    }
+
+    /// <summary>
+    ///     Try configure typed key which is derived from <see cref="IIdentity{T}" />
+    /// </summary>
+    /// <param name="builder"></param>
+    /// <returns></returns>
+    public static EntityTypeBuilder TryConfigureTypedKey(this EntityTypeBuilder builder)
+    {
+        var type = builder.GetClrType();
+        if (type.IsAssignableToGenericType(typeof(IEntity<>)) && type.IsAssignableToGenericType(typeof(IIdentity<>)))
+        {
+            const string name = nameof(IEntity<object>.Id);
+            builder.HasKey(name);
+            builder.Property(name).IsTypedKey();
+        }
+        return builder;
     }
 
     /// <summary>

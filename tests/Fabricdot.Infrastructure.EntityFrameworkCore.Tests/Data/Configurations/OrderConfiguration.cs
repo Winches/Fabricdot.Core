@@ -18,6 +18,8 @@ internal class OrderConfiguration : EntityTypeConfigurationBase<Order>, IDbConte
         builder.Navigation(v => v.OrderLines)
                .UsePropertyAccessMode(PropertyAccessMode.Field);
 
+        builder.Property(v => v.CustomerId).IsTypedKey();
+
         builder.HasMany(v => v.OrderLines)
                .WithOne()
                .HasForeignKey(v => v.OrderId)
