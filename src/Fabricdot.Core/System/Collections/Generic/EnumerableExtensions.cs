@@ -42,6 +42,20 @@ public static class EnumerableExtensions
 
     public static async Task ForEachAsync<T>(
         this IEnumerable<T> source,
+        Func<T, Task> func)
+    {
+        Guard.Against.Null(source, nameof(source));
+        Guard.Against.Null(func, nameof(func));
+
+        foreach (var item in source)
+        {
+            var task = func.Invoke(item);
+            await task.ConfigureAwait(false);
+        }
+    }
+
+    public static async Task ForEachAsync<T>(
+        this IEnumerable<T> source,
         Func<T, int, Task> func)
     {
         Guard.Against.Null(source, nameof(source));
