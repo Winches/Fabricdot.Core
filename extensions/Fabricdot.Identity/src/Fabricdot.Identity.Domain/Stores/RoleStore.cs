@@ -54,7 +54,7 @@ public partial class RoleStore<TRole> : IdentityStoreBase, IRoleStore<TRole> whe
         return IdentityResult.Success;
     }
 
-    public virtual async Task<TRole> FindByIdAsync(
+    public virtual async Task<TRole?> FindByIdAsync(
         string roleId,
         CancellationToken cancellationToken)
     {
@@ -63,7 +63,7 @@ public partial class RoleStore<TRole> : IdentityStoreBase, IRoleStore<TRole> whe
         return (await RoleRepository.GetByIdAsync(ConvertIdFromString(roleId), cancellationToken: cancellationToken))!;
     }
 
-    public virtual async Task<TRole> FindByNameAsync(
+    public virtual async Task<TRole?> FindByNameAsync(
         string normalizedRoleName,
         CancellationToken cancellationToken)
     {
@@ -74,43 +74,44 @@ public partial class RoleStore<TRole> : IdentityStoreBase, IRoleStore<TRole> whe
             cancellationToken: cancellationToken))!;
     }
 
-    public virtual Task<string> GetNormalizedRoleNameAsync(
+    public virtual Task<string?> GetNormalizedRoleNameAsync(
         TRole role,
         CancellationToken cancellationToken)
     {
         cancellationToken.ThrowIfCancellationRequested();
         Guard.Against.Null(role, nameof(role));
 
-        return Task.FromResult(role.NormalizedName);
+        return Task.FromResult<string?>(role.NormalizedName);
     }
 
-    public virtual Task<string?> GetRoleIdAsync(
+    public virtual Task<string> GetRoleIdAsync(
         TRole role,
         CancellationToken cancellationToken)
     {
         cancellationToken.ThrowIfCancellationRequested();
         Guard.Against.Null(role, nameof(role));
 
-        return Task.FromResult(ConvertIdToString(role.Id));
+        return Task.FromResult(ConvertIdToString(role.Id)!);
     }
 
-    public virtual Task<string> GetRoleNameAsync(
+    public virtual Task<string?> GetRoleNameAsync(
         TRole role,
         CancellationToken cancellationToken)
     {
         cancellationToken.ThrowIfCancellationRequested();
         Guard.Against.Null(role, nameof(role));
 
-        return Task.FromResult(role.Name);
+        return Task.FromResult<string?>(role.Name);
     }
 
     public virtual Task SetNormalizedRoleNameAsync(
         TRole role,
-        string normalizedName,
+        string? normalizedName,
         CancellationToken cancellationToken)
     {
         cancellationToken.ThrowIfCancellationRequested();
         Guard.Against.Null(role, nameof(role));
+        Guard.Against.NullOrEmpty(normalizedName, nameof(normalizedName));
 
         role.NormalizedName = normalizedName;
         return Task.CompletedTask;
@@ -118,11 +119,12 @@ public partial class RoleStore<TRole> : IdentityStoreBase, IRoleStore<TRole> whe
 
     public virtual Task SetRoleNameAsync(
         TRole role,
-        string roleName,
+        string? roleName,
         CancellationToken cancellationToken)
     {
         cancellationToken.ThrowIfCancellationRequested();
         Guard.Against.Null(role, nameof(role));
+        Guard.Against.NullOrEmpty(roleName, nameof(roleName));
 
         role.Name = roleName;
         return Task.CompletedTask;

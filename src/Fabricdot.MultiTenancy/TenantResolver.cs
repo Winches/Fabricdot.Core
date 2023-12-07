@@ -37,7 +37,7 @@ public class TenantResolver : ITenantResolver
         return ret;
     }
 
-    private ITenantResolveStrategy DecorateStrategy(ITenantResolveStrategy strategy)
+    private TenantResolveStrategyDecorator DecorateStrategy(ITenantResolveStrategy strategy)
     {
         var loggerFactory = _serviceProvider.GetRequiredService<ILoggerFactory>();
         return new TenantResolveStrategyDecorator(

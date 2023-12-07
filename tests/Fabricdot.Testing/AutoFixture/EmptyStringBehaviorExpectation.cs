@@ -6,8 +6,7 @@ public class EmptyStringBehaviorExpectation : IBehaviorExpectation
 {
     public void Verify(IGuardClauseCommand command)
     {
-        if (command == null)
-            throw new ArgumentNullException(nameof(command));
+        ArgumentNullException.ThrowIfNull(command);
         if (command.RequestedType != typeof(string))
             return;
 

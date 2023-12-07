@@ -15,7 +15,7 @@ public class EfRepository<TDbContext, T, TKey> : RepositoryBase<T, TKey>, IEfCor
     where T : class, IAggregateRoot, Fabricdot.Domain.Entities.IEntity<TKey>
     where TKey : notnull
 {
-    private readonly ISpecificationEvaluator _specificationEvaluator;
+    private readonly SpecificationEvaluator _specificationEvaluator;
 
     public IUnitOfWorkManager UnitOfWorkManager => DbContextProvider.UnitOfWorkManager;
 

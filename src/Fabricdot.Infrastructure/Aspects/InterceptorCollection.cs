@@ -6,8 +6,7 @@ public class InterceptorCollection : HashSet<InterceptorDescriptor>
 {
     public void Add(Type interceptorType)
     {
-        if (interceptorType == null)
-            throw new ArgumentNullException(nameof(interceptorType));
+        ArgumentNullException.ThrowIfNull(interceptorType);
 
         var descriptor = InterceptorDescriptor.Create(interceptorType);
         if (!Add(descriptor))

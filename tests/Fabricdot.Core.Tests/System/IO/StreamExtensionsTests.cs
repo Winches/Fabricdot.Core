@@ -16,7 +16,7 @@ public class StreamExtensionsTests : TestBase
     public async Task GetBytesAsync_GivenStream_ReadAsBytes()
     {
         var expected = Create<byte[]>();
-        using var sm = new MemoryStream(expected);
+        await using var sm = new MemoryStream(expected);
         var bytes = await sm.GetBytesAsync();
 
         bytes.Should().BeEquivalentTo(expected);
@@ -35,7 +35,7 @@ public class StreamExtensionsTests : TestBase
     {
         var expected = Create<string>();
         var encoding = Create<Encoding>();
-        using var sm = new MemoryStream(encoding.GetBytes(expected));
+        await using var sm = new MemoryStream(encoding.GetBytes(expected));
         var text = await sm.GetStringAsync(encoding);
 
         text.Should().BeEquivalentTo(expected);
@@ -46,7 +46,7 @@ public class StreamExtensionsTests : TestBase
     {
         var expected = Create<string>();
         var encoding = Create<Encoding>();
-        using var sm = new MemoryStream(encoding.GetBytes(expected));
+        await using var sm = new MemoryStream(encoding.GetBytes(expected));
         var text = await sm.GetStringAsync();
 
         text.Should().BeEquivalentTo(expected);

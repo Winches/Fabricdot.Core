@@ -19,9 +19,9 @@ internal static class ModuleMetadataExtensions
     {
         Guard.Against.Null(moduleType, nameof(moduleType));
 
-        if (s_dependentTypeCache.ContainsKey(moduleType))
+        if (s_dependentTypeCache.TryGetValue(moduleType, out var value))
         {
-            return s_dependentTypeCache[moduleType];
+            return value;
         }
         else
         {

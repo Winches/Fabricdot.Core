@@ -26,9 +26,9 @@ public class IdentityRoleTests : TestFor<IdentityRole>
     [InlineData("")]
     [InlineData(" ")]
     [Theory]
-    public void Constructor_GivenInvalidName_ThrowException(string roleName)
+    public void Constructor_GivenInvalidName_ThrowException(string? roleName)
     {
-        Invoking(() => new IdentityRole(Guid.NewGuid(), roleName)).Should().Throw<ArgumentException>();
+        Invoking(() => new IdentityRole(Guid.NewGuid(), roleName!)).Should().Throw<ArgumentException>();
     }
 
     [AutoMockData]

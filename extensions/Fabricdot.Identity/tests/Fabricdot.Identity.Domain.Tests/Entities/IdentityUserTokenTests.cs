@@ -10,10 +10,10 @@ public class IdentityUserTokenTests : TestFor<IdentityUserToken>
     [InlineData(null, "name2")]
     [Theory]
     public void Constructor_GivenInvalidInput_ThrowException(
-        string loginProvider,
-        string tokeName)
+        string? loginProvider,
+        string? tokeName)
     {
-        Invoking(() => new IdentityUserToken(loginProvider, tokeName, null)).Should().Throw<ArgumentException>();
+        Invoking(() => new IdentityUserToken(loginProvider!, tokeName!, null)).Should().Throw<ArgumentException>();
     }
 
     [AutoData]

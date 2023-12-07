@@ -70,7 +70,7 @@ public class RoleStoreTests : RoleStoreTestBase
         var role = await RoleStore.FindByIdAsync(roleId.ToString(), default);
 
         role.Should().NotBeNull();
-        role.Id.Should().Be(roleId);
+        role!.Id.Should().Be(roleId);
     }
 
     [Fact]
@@ -80,7 +80,7 @@ public class RoleStoreTests : RoleStoreTestBase
         var role = await RoleStore.FindByNameAsync(normalizedRoleName, default);
 
         role.Should().NotBeNull();
-        role.NormalizedName.Should().Be(normalizedRoleName);
+        role!.NormalizedName.Should().Be(normalizedRoleName);
     }
 
     [AutoData]

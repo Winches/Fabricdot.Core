@@ -56,7 +56,7 @@ public static class ReflectionHelper
         return result.Distinct().ToList();
     }
 
-    private static IEnumerable<Type> FindTypes(Type findType, Assembly assembly)
+    private static List<Type> FindTypes(Type findType, Assembly assembly)
     {
         var result = new List<Type>();
         if (assembly == null)

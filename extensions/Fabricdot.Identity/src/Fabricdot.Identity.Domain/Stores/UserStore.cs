@@ -66,7 +66,7 @@ public partial class UserStore<TUser, TRole> : IdentityStoreBase, IUserStore<TUs
         return IdentityResult.Success;
     }
 
-    public virtual async Task<TUser> FindByIdAsync(
+    public virtual async Task<TUser?> FindByIdAsync(
         string userId,
         CancellationToken cancellationToken)
     {
@@ -77,7 +77,7 @@ public partial class UserStore<TUser, TRole> : IdentityStoreBase, IUserStore<TUs
             cancellationToken: cancellationToken))!;
     }
 
-    public virtual async Task<TUser> FindByNameAsync(
+    public virtual async Task<TUser?> FindByNameAsync(
         string normalizedUserName,
         CancellationToken cancellationToken)
     {
@@ -88,43 +88,44 @@ public partial class UserStore<TUser, TRole> : IdentityStoreBase, IUserStore<TUs
             cancellationToken: cancellationToken))!;
     }
 
-    public virtual Task<string> GetNormalizedUserNameAsync(
+    public virtual Task<string?> GetNormalizedUserNameAsync(
         TUser user,
         CancellationToken cancellationToken)
     {
         cancellationToken.ThrowIfCancellationRequested();
         Guard.Against.Null(user, nameof(user));
 
-        return Task.FromResult(user.NormalizedUserName);
+        return Task.FromResult<string?>(user.NormalizedUserName);
     }
 
-    public virtual Task<string?> GetUserIdAsync(
+    public virtual Task<string> GetUserIdAsync(
         TUser user,
         CancellationToken cancellationToken)
     {
         cancellationToken.ThrowIfCancellationRequested();
         Guard.Against.Null(user, nameof(user));
 
-        return Task.FromResult(ConvertIdToString(user.Id));
+        return Task.FromResult(ConvertIdToString(user.Id)!);
     }
 
-    public virtual Task<string> GetUserNameAsync(
+    public virtual Task<string?> GetUserNameAsync(
         TUser user,
         CancellationToken cancellationToken)
     {
         cancellationToken.ThrowIfCancellationRequested();
         Guard.Against.Null(user, nameof(user));
 
-        return Task.FromResult(user.UserName);
+        return Task.FromResult<string?>(user.UserName);
     }
 
     public virtual Task SetNormalizedUserNameAsync(
         TUser user,
-        string normalizedName,
+        string? normalizedName,
         CancellationToken cancellationToken)
     {
         cancellationToken.ThrowIfCancellationRequested();
         Guard.Against.Null(user, nameof(user));
+        Guard.Against.NullOrEmpty(normalizedName, nameof(normalizedName));
 
         user.NormalizedUserName = normalizedName;
         return Task.CompletedTask;
@@ -132,11 +133,12 @@ public partial class UserStore<TUser, TRole> : IdentityStoreBase, IUserStore<TUs
 
     public virtual Task SetUserNameAsync(
         TUser user,
-        string userName,
+        string? userName,
         CancellationToken cancellationToken)
     {
         cancellationToken.ThrowIfCancellationRequested();
         Guard.Against.Null(user, nameof(user));
+        Guard.Against.NullOrEmpty(userName, nameof(userName));
 
         user.UserName = userName;
         return Task.CompletedTask;

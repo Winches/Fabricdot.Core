@@ -26,11 +26,11 @@ public class CorrelationMiddleware : IMiddleware
         var correlationId = _correlationIdProvider.Get().ToString();
         var headerKey = _idOptions.HeaderKey;
 
-        context.Request.Headers.Add(headerKey, correlationId);
+        context.Request.Headers.Append(headerKey, correlationId);
         context.Response.OnStarting(() =>
         {
             if (_idOptions.IncludeResponse)
-                context.Response.Headers.Add(headerKey, correlationId);
+                context.Response.Headers.Append(headerKey, correlationId);
             return Task.CompletedTask;
         });
 

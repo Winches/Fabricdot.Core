@@ -22,7 +22,7 @@ public class UserPasswordStoreTests : UserStoreTestsBase
     [InlineData(null)]
     [InlineAutoData]
     [Theory]
-    public async Task HasPasswordAsync_Should_ReturnCorrectly(string passwordHash)
+    public async Task HasPasswordAsync_Should_ReturnCorrectly(string? passwordHash)
     {
         var user = Fixture.Build<IdentityUser>()
                   .WithAutoProperties()
@@ -37,7 +37,7 @@ public class UserPasswordStoreTests : UserStoreTestsBase
     [InlineData(null)]
     [InlineAutoData]
     [Theory]
-    public async Task SetPasswordHashAsync_GivenInput_Correctly(string passwordHash)
+    public async Task SetPasswordHashAsync_GivenInput_Correctly(string? passwordHash)
     {
         var user = Create<IdentityUser>();
         await Sut.SetPasswordHashAsync(user, passwordHash, default);

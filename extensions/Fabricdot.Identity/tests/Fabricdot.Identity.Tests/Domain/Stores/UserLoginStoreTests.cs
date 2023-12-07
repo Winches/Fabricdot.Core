@@ -19,9 +19,9 @@ public class UserLoginStoreTests : UserStoreTestBase
     {
         await UseUowAsync(async () =>
         {
-            var user = await UserRepository.GetByIdAsync(FakeDataBuilder.UserAndersId);
+            var user = (await UserRepository.GetByIdAsync(FakeDataBuilder.UserAndersId))!;
 
-            await _userLoginStore.Awaiting(v => v.AddLoginAsync(user!, null, default))
+            await _userLoginStore.Awaiting(v => v.AddLoginAsync(user, null!, default))
                                  .Should()
                                  .ThrowAsync<ArgumentNullException>();
         });
@@ -85,6 +85,6 @@ public class UserLoginStoreTests : UserStoreTestBase
             default);
 
         user.Should().NotBeNull();
-        user.Id.Should().Be(FakeDataBuilder.UserAndersId);
+        user!.Id.Should().Be(FakeDataBuilder.UserAndersId);
     }
 }

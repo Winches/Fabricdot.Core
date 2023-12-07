@@ -13,7 +13,7 @@ public static class ConfigurationFactory
             ? Directory.GetCurrentDirectory()
             : options.BasePath;
 
-        var builder = new ConfigurationBuilder().SetBasePath(basePath)
+        var builder = new ConfigurationBuilder().SetBasePath(basePath!)
                                                 .AddJsonFile($"{options.FileName}.json", optional: true, reloadOnChange: true)
                                                 .AddEnvironmentVariables(options.EnvironmentVariablesPrefix);
 

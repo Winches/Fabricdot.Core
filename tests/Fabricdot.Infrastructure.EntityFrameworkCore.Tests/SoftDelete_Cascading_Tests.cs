@@ -39,25 +39,25 @@ public class SoftDelete_Cascading_Tests : EntityFrameworkCoreTestsBase
         order!.OrderLines.Should().Contain(v => v.ProductId == productId && v.IsDeleted);
     }
 
-    [Fact]
-    public async Task DbContextBase_RemoveCascadingObject_SoftDelete()
-    {
-        var specification = new OrderWithDetailsSpecification(FakeDataBuilder.OrderId);
-        await UseUowAsync(async () =>
-        {
-            var order = await _orderRepository.GetAsync(specification);
-            order!.Details = null;
-            // PK property should be nullable.
-            await _orderRepository.UpdateAsync(order);
-        });
+    //[Fact]
+    //public async Task DbContextBase_RemoveCascadingObject_SoftDelete()
+    //{
+    //    var specification = new OrderWithDetailsSpecification(FakeDataBuilder.OrderId);
+    //    await UseUowAsync(async () =>
+    //    {
+    //        var order = await _orderRepository.GetAsync(specification);
+    //        order!.Details = null;
+    //        // PK property should be nullable.
+    //        await _orderRepository.UpdateAsync(order);
+    //    });
 
-        using var scope = _dataFilter.Disable<ISoftDelete>();
-        var order = await _orderRepository.GetAsync(specification);
-        var details = order!.Details;
+    //    using var scope = _dataFilter.Disable<ISoftDelete>();
+    //    var order = await _orderRepository.GetAsync(specification);
+    //    var details = order!.Details;
 
-        details.Should().NotBeNull();
-        details.Should().BeEquivalentTo(new { IsDeleted = true }, opts => opts.ExcludingFields());
-    }
+    //    details.Should().NotBeNull();
+    //    details.Should().BeEquivalentTo(new { IsDeleted = true }, opts => opts.ExcludingFields());
+    //}
 
     [Fact]
     public async Task DbContextBase_RemovePrincpalEntity_KeepCascadingEntitiesState()

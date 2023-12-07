@@ -42,7 +42,7 @@ public class ModuleServiceVisitor : IModuleServiceVisitor
     private static void ConfigureExports(
         IServiceCollection services,
         IModuleMetadata module,
-        ISet<Type> visitedTypes)
+        HashSet<Type> visitedTypes)
     {
         if (!module.Type.IsDefined(typeof(ExportsAttribute), false))
             return;

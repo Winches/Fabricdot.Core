@@ -28,10 +28,10 @@ public class StringExtensionsTests : TestBase
     [InlineData("", "-")]
     [InlineData("test", null)]
     [Theory]
-    public void RepeatString_GivenInput_RepeatString(string text, string separator)
+    public void RepeatString_GivenInput_RepeatString(string? text, string? separator)
     {
         var times = Create<int>();
-        var repeatedText = text.Repeat(times, separator);
+        var repeatedText = text!.Repeat(times, separator);
         var expected = string.Join(separator, Enumerable.Repeat(text, times));
 
         repeatedText.Should().Be(expected);
@@ -48,7 +48,7 @@ public class StringExtensionsTests : TestBase
     [InlineData('t', null)]
     [InlineData('e', "-")]
     [Theory]
-    public void RepeatChar_GivenInput_RepeatChar(char @char, string separator)
+    public void RepeatChar_GivenInput_RepeatChar(char @char, string? separator)
     {
         var times = Create<int>();
         var repeatedText = @char.Repeat(times, separator);
@@ -68,9 +68,9 @@ public class StringExtensionsTests : TestBase
     [InlineData(null)]
     [InlineData("")]
     [Theory]
-    public void Truncate_GivenNullOrEmpty_ReturnEmpty(string text)
+    public void Truncate_GivenNullOrEmpty_ReturnEmpty(string? text)
     {
-        text.Truncate(Create<int>()).Should().BeEmpty();
+        text!.Truncate(Create<int>()).Should().BeEmpty();
     }
 
     [AutoData]

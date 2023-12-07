@@ -28,7 +28,7 @@ public class DefaultUserClaimsPrincipalFactory_MultiTenancy_Tests : IdentityTest
         await UseUowAsync(async () =>
         {
             var userId = FakeDataBuilder.TenantUserId.ToString();
-            var user = await _userStore.FindByIdAsync(userId, default);
+            var user = (await _userStore.FindByIdAsync(userId, default))!;
             var claimsPrincipal = await _factory.CreateAsync(user);
 
             claimsPrincipal.Should().NotBeNull();

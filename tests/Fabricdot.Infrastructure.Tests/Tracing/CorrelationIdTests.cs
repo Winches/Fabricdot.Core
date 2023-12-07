@@ -8,9 +8,9 @@ public class CorrelationIdTests : TestFor<CorrelationId>
     [InlineData(" ")]
     [InlineData("")]
     [InlineData(null)]
-    public void ImplicitOperator_GivenNullOrEmptyValue_ThrowException(string value)
+    public void ImplicitOperator_GivenNullOrEmptyValue_ThrowException(string? value)
     {
-        Invoking(() => (CorrelationId)value)
+        Invoking(() => (CorrelationId)value!)
                      .Should()
                      .Throw<ArgumentException>();
     }

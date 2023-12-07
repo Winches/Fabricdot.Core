@@ -7,9 +7,9 @@ public class IdentityUserClaimTests : TestFor<IdentityUserClaim>
     [InlineData(null)]
     [InlineData("")]
     [Theory]
-    public void Constructor_GivenInvalidClaimType_ThrowException(string claimType)
+    public void Constructor_GivenInvalidClaimType_ThrowException(string? claimType)
     {
-        Invoking(() => new IdentityUserClaim(Guid.NewGuid(), claimType, null)).Should().Throw<ArgumentException>();
+        Invoking(() => new IdentityUserClaim(Guid.NewGuid(), claimType!, null)).Should().Throw<ArgumentException>();
     }
 
     [Fact]
@@ -37,8 +37,8 @@ public class IdentityUserClaimTests : TestFor<IdentityUserClaim>
     [InlineData(null)]
     [InlineData("")]
     [Theory]
-    public void SetClaim_GivenInvalidInput_ThrowException(string claimType)
+    public void SetClaim_GivenInvalidInput_ThrowException(string? claimType)
     {
-        Invoking(() => new IdentityUserClaim(Create<Guid>(), claimType, Create<string>())).Should().Throw<ArgumentException>();
+        Invoking(() => new IdentityUserClaim(Create<Guid>(), claimType!, Create<string>())).Should().Throw<ArgumentException>();
     }
 }

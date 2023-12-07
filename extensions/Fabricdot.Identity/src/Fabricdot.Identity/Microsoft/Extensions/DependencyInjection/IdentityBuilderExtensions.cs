@@ -23,6 +23,7 @@ public static class IdentityBuilderExtensions
     public static IdentityBuilder AddUserRepository<TDbContext>(this IdentityBuilder builder) where TDbContext : DbContextBase
     {
         Guard.Against.Null(builder, nameof(builder));
+        Guard.Against.Null(builder.RoleType, nameof(builder.RoleType));
 
         var (services, userType, roleType) = (builder.Services, builder.UserType, builder.RoleType);
         var repositoryImplType = typeof(UserRepository<,>).MakeGenericType(typeof(TDbContext), userType);
@@ -42,6 +43,7 @@ public static class IdentityBuilderExtensions
     public static IdentityBuilder AddRoleRepository<TDbContext>(this IdentityBuilder builder) where TDbContext : DbContextBase
     {
         Guard.Against.Null(builder, nameof(builder));
+        Guard.Against.Null(builder.RoleType, nameof(builder.RoleType));
 
         var (services, roleType) = (builder.Services, builder.RoleType);
         var repositoryImplType = typeof(RoleRepository<,>).MakeGenericType(typeof(TDbContext), roleType);
@@ -62,6 +64,7 @@ public static class IdentityBuilderExtensions
     public static IdentityBuilder AddDefaultClaimsPrincipalFactory(this IdentityBuilder builder)
     {
         Guard.Against.Null(builder, nameof(builder));
+        Guard.Against.Null(builder.RoleType, nameof(builder.RoleType));
 
         var (services, userType, roleType) = (builder.Services, builder.UserType, builder.RoleType);
         services.AddScoped(

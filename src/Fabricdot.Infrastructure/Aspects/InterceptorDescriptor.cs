@@ -18,8 +18,7 @@ public class InterceptorDescriptor
         Type? targetType,
         Type? bindingType)
     {
-        if (interceptorType == null)
-            throw new ArgumentNullException(nameof(interceptorType));
+        ArgumentNullException.ThrowIfNull(interceptorType);
         if (!interceptorType.IsAssignableTo(typeof(IInterceptor)))
         {
             throw new ArgumentException(

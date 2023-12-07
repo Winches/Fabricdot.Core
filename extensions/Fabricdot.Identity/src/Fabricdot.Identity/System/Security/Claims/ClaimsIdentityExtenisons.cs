@@ -7,8 +7,7 @@ public static class ClaimsIdentityExtenisons
         string claimType,
         string claimValue)
     {
-        if (claimsIdentity == null)
-            throw new ArgumentNullException(nameof(claimsIdentity));
+        ArgumentNullException.ThrowIfNull(claimsIdentity);
 
         var claim = claimsIdentity.FindFirst(claimType);
         if (claim == null)
@@ -23,8 +22,7 @@ public static class ClaimsIdentityExtenisons
         this ClaimsIdentity claimsIdentity,
         Claim claim)
     {
-        if (claimsIdentity == null)
-            throw new ArgumentNullException(nameof(claimsIdentity));
+        ArgumentNullException.ThrowIfNull(claimsIdentity);
 
         return claimsIdentity.GetOrAdd(claim.Type, claim.Value);
     }

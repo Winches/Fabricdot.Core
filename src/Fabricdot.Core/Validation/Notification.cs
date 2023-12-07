@@ -28,7 +28,7 @@ public sealed class Notification
     /// <summary>
     ///     Error.
     /// </summary>
-    private readonly IDictionary<string, IList<Error>> _errors = new Dictionary<string, IList<Error>>();
+    private readonly Dictionary<string, IList<Error>> _errors = new();
 
     public IReadOnlyDictionary<string, Error[]> Errors
     {

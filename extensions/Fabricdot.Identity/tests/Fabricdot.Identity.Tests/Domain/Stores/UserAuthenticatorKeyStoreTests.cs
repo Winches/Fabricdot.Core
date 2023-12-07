@@ -17,12 +17,12 @@ public class UserAuthenticatorKeyStoreTests : UserStoreTestBase
     [InlineAutoData]
     [InlineData(null)]
     [Theory]
-    public async Task SetAuthenticatorKeyAsync_GivenKey_Correctly(string key)
+    public async Task SetAuthenticatorKeyAsync_GivenKey_Correctly(string? key)
     {
         await UseUowAsync(async () =>
         {
             var user = (await UserRepository.GetByIdAsync(FakeDataBuilder.UserAndersId))!;
-            await _userAuthenticatorKeyStore.SetAuthenticatorKeyAsync(user, key, default);
+            await _userAuthenticatorKeyStore.SetAuthenticatorKeyAsync(user, key!, default);
 
             user.Tokens.Should().ContainSingle(v => v.LoginProvider == UserStoreConstants.InternalLoginProvider
                                                     && v.Name == UserStoreConstants.AuthenticatorKeyTokenName

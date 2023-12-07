@@ -29,7 +29,7 @@ public class AmbientUnitOfWork : IAmbientUnitOfWork, ISingletonDependency
     /// <inheritdoc />
     public void DropCurrent()
     {
-        if (UowChain?.Any() != true)
+        if (!(UowChain?.Count > 0))
             throw new InvalidOperationException("There is no existed unit of work.");
         UowChain.RemoveLast();
     }

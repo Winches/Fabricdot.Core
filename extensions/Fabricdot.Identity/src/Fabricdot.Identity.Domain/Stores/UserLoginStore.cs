@@ -49,7 +49,7 @@ public partial class UserStore<TUser, TRole> : IUserLoginStore<TUser>
                          .ToList();
     }
 
-    public virtual async Task<TUser> FindByLoginAsync(
+    public virtual async Task<TUser?> FindByLoginAsync(
         string loginProvider,
         string providerKey,
         CancellationToken cancellationToken)

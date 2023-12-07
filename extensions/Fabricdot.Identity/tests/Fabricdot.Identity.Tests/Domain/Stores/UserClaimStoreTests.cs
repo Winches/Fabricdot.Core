@@ -22,7 +22,7 @@ public class UserClaimStoreTests : UserStoreTestBase
         await UseUowAsync(async () =>
         {
             var user = (await UserRepository.GetByIdAsync(FakeDataBuilder.UserAndersId))!;
-            Task TestCode1() => _userClaimStore.AddClaimsAsync(user, null, default);
+            Task TestCode1() => _userClaimStore.AddClaimsAsync(user, null!, default);
             Task TestCode2() => _userClaimStore.AddClaimsAsync(user, Array.Empty<Claim>(), default);
 
             await Awaiting(TestCode1).Should().ThrowAsync<ArgumentNullException>();
@@ -52,7 +52,7 @@ public class UserClaimStoreTests : UserStoreTestBase
         await UseUowAsync(async () =>
         {
             var user = (await UserRepository.GetByIdAsync(FakeDataBuilder.UserAndersId))!;
-            Task TestCode1() => _userClaimStore.RemoveClaimsAsync(user, null, default);
+            Task TestCode1() => _userClaimStore.RemoveClaimsAsync(user, null!, default);
             Task TestCode2() => _userClaimStore.RemoveClaimsAsync(user, Array.Empty<Claim>(), default);
 
             await Awaiting(TestCode1).Should().ThrowAsync<ArgumentNullException>();
@@ -85,8 +85,8 @@ public class UserClaimStoreTests : UserStoreTestBase
             var userClaim = user.Claims.First();
             var originClaim = new Claim(userClaim.ClaimType, userClaim.ClaimValue!);
             var newClaim = new Claim(userClaim.ClaimType, Create<string>());
-            Task TestCode1() => _userClaimStore.ReplaceClaimAsync(user, originClaim, null, default);
-            Task TestCode2() => _userClaimStore.ReplaceClaimAsync(user, null, newClaim, default);
+            Task TestCode1() => _userClaimStore.ReplaceClaimAsync(user, originClaim, null!, default);
+            Task TestCode2() => _userClaimStore.ReplaceClaimAsync(user, null!, newClaim, default);
 
             await Awaiting(TestCode1).Should().ThrowAsync<ArgumentNullException>();
             await Awaiting(TestCode2).Should().ThrowAsync<ArgumentNullException>();

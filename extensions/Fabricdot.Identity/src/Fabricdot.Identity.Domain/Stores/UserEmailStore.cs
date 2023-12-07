@@ -8,7 +8,7 @@ namespace Fabricdot.Identity.Domain.Stores;
 /// </summary>
 public partial class UserStore<TUser, TRole> : IUserEmailStore<TUser>
 {
-    public virtual async Task<TUser> FindByEmailAsync(
+    public virtual async Task<TUser?> FindByEmailAsync(
         string normalizedEmail,
         CancellationToken cancellationToken)
     {
@@ -53,7 +53,7 @@ public partial class UserStore<TUser, TRole> : IUserEmailStore<TUser>
 
     public virtual Task SetEmailAsync(
         TUser user,
-        string email,
+        string? email,
         CancellationToken cancellationToken)
     {
         cancellationToken.ThrowIfCancellationRequested();
@@ -77,7 +77,7 @@ public partial class UserStore<TUser, TRole> : IUserEmailStore<TUser>
 
     public virtual Task SetNormalizedEmailAsync(
         TUser user,
-        string normalizedEmail,
+        string? normalizedEmail,
         CancellationToken cancellationToken)
     {
         cancellationToken.ThrowIfCancellationRequested();

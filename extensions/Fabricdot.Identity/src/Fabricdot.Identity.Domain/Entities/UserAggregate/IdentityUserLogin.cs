@@ -11,12 +11,12 @@ public class IdentityUserLogin : ValueObject
 
     public string ProviderKey { get; private set; } = null!;
 
-    public string ProviderDisplayName { get; private set; } = null!;
+    public string? ProviderDisplayName { get; private set; }
 
     public IdentityUserLogin(
         string loginProvider,
         string providerKey,
-        string providerDisplayName)
+        string? providerDisplayName)
     {
         LoginProvider = Guard.Against.NullOrEmpty(loginProvider, nameof(loginProvider));
         ProviderKey = Guard.Against.NullOrEmpty(providerKey, nameof(providerKey));
@@ -27,7 +27,7 @@ public class IdentityUserLogin : ValueObject
     {
     }
 
-    protected override IEnumerable<object> GetAtomicValues()
+    protected override IEnumerable<object?> GetAtomicValues()
     {
         yield return UserId;
         yield return LoginProvider;

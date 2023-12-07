@@ -10,10 +10,10 @@ public class RandomBuilderTests : TestFor<RandomBuilder>
     [InlineData("abc", -1)]
     [Theory]
     public void GetRandomString_GivenInvalidInput_ThrowException(
-        string source,
+        string? source,
         int length)
     {
-        Invoking(() => Sut.GetRandomString(source, length))
+        Invoking(() => Sut.GetRandomString(source!, length))
                      .Should()
                      .Throw<ArgumentException>();
     }

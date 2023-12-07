@@ -19,9 +19,9 @@ public class Base64ExtensionsTests : TestBase
     [InlineData(null)]
     [InlineData("")]
     [Theory]
-    public void ToBase64_GivenNullOrEmpty_ReturnEmpty(string text)
+    public void ToBase64_GivenNullOrEmpty_ReturnEmpty(string? text)
     {
-        text.ToBase64().Should().BeEmpty();
+        text!.ToBase64().Should().BeEmpty();
     }
 
     [MemberData(nameof(GetData))]
@@ -36,9 +36,9 @@ public class Base64ExtensionsTests : TestBase
     [InlineData(null)]
     [InlineData("")]
     [Theory]
-    public void FromBase64_GivenNullOrEmpty_ReturnEmpty(string text)
+    public void FromBase64_GivenNullOrEmpty_ReturnEmpty(string? text)
     {
-        text.FromBase64().Should().BeEmpty();
+        text!.FromBase64().Should().BeEmpty();
     }
 
     [InlineData("aGVsbG8sIHdvcmxk=")]

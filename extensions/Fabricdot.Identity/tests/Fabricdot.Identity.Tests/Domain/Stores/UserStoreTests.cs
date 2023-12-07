@@ -64,7 +64,7 @@ public class UserStoreTests : UserStoreTestBase
         var user = await UserStore.FindByIdAsync(userId.ToString(), default);
 
         user.Should().NotBeNull();
-        user.Id.Should().Be(userId);
+        user!.Id.Should().Be(userId);
         user.Roles.Should().NotBeEmpty();
     }
 
@@ -75,7 +75,7 @@ public class UserStoreTests : UserStoreTestBase
         var user = await UserStore.FindByNameAsync(normalizedUserName, default);
 
         user.Should().NotBeNull();
-        user.NormalizedUserName.Should().Be(normalizedUserName);
+        user!.NormalizedUserName.Should().Be(normalizedUserName);
         user.Roles.Should().NotBeEmpty();
     }
 }

@@ -23,7 +23,7 @@ public class DefaultUserClaimsPrincipalFactoryTests : IdentityTestBase
         await UseUowAsync(async () =>
         {
             var userId = FakeDataBuilder.UserAndersId.ToString();
-            var user = await _userStore.FindByIdAsync(userId, default);
+            var user = (await _userStore.FindByIdAsync(userId, default))!;
             var userRoles = await ((IUserRoleStore<User>)_userStore).GetRolesAsync(user, default);
             var claimsPrincipal = await _factory.CreateAsync(user);
 

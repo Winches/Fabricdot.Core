@@ -6,7 +6,7 @@ namespace Fabricdot.Infrastructure.DependencyInjection;
 
 public class FabricdotServiceProviderFactory : IServiceProviderFactory<IServiceCollection>
 {
-    private readonly IServiceProviderFactory<IServiceCollection> _subject = new DynamicProxyServiceProviderFactory();
+    private readonly DynamicProxyServiceProviderFactory _subject = new();
 
     public IServiceCollection CreateBuilder(IServiceCollection services)
     {

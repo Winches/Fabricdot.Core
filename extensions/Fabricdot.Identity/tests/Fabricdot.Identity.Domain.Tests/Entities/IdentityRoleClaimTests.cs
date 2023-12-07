@@ -9,9 +9,9 @@ public class IdentityRoleClaimTests : TestBase
     [InlineData(null)]
     [InlineData("")]
     [Theory]
-    public void Constructor_GivenInvalidClaimType_ThrowException(string claimType)
+    public void Constructor_GivenInvalidClaimType_ThrowException(string? claimType)
     {
-        Invoking(() => new IdentityRoleClaim(Guid.NewGuid(), claimType, null)).Should().Throw<ArgumentException>();
+        Invoking(() => new IdentityRoleClaim(Guid.NewGuid(), claimType!, null)).Should().Throw<ArgumentException>();
     }
 
     [Fact]

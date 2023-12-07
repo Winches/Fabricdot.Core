@@ -30,7 +30,7 @@ public partial class UserStore<TUser, TRole> : IUserPasswordStore<TUser>
 
     public virtual Task SetPasswordHashAsync(
         TUser user,
-        string passwordHash,
+        string? passwordHash,
         CancellationToken cancellationToken)
     {
         cancellationToken.ThrowIfCancellationRequested();

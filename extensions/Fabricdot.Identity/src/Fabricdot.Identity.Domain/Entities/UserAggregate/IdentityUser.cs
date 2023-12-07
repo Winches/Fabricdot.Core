@@ -158,7 +158,7 @@ public class IdentityUser : FullAuditAggregateRoot<Guid>
     public virtual void AddLogin(
         string loginProvider,
         string providerKey,
-        string providerDisplayName)
+        string? providerDisplayName)
     {
         var login = new IdentityUserLogin(
             loginProvider,

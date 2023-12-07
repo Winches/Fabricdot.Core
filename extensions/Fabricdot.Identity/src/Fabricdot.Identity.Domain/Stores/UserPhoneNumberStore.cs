@@ -30,7 +30,7 @@ public partial class UserStore<TUser, TRole> : IUserPhoneNumberStore<TUser>
 
     public virtual Task SetPhoneNumberAsync(
         TUser user,
-        string phoneNumber,
+        string? phoneNumber,
         CancellationToken cancellationToken)
     {
         cancellationToken.ThrowIfCancellationRequested();

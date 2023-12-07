@@ -11,10 +11,10 @@ public class IdentityUserLoginTests : TestBase
     [InlineData(null, "key2")]
     [Theory]
     public void Constructor_GivenInvalidInput_ThrowException(
-        string loginProvider,
-        string providerKey)
+        string? loginProvider,
+        string? providerKey)
     {
-        Invoking(() => new IdentityUserLogin(loginProvider, providerKey, null!)).Should().Throw<ArgumentException>();
+        Invoking(() => new IdentityUserLogin(loginProvider!, providerKey!, null)).Should().Throw<ArgumentException>();
     }
 
     [Fact]

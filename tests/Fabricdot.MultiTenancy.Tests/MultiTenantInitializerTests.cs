@@ -5,7 +5,7 @@ namespace Fabricdot.MultiTenancy.Tests;
 
 public class MultiTenantInitializerTests : TestBase
 {
-    private readonly ITenantAccessor _tenantAccessor;
+    private readonly DefaultTenantAccessor _tenantAccessor;
 
     public MultiTenantInitializerTests()
     {

@@ -9,8 +9,7 @@ internal static class GuardClausesExtensions
         Type input,
         string parameterName)
     {
-        if (guard is null)
-            throw new ArgumentNullException(nameof(guard));
+        ArgumentNullException.ThrowIfNull(guard);
 
         _ = guard.Null(input, parameterName);
         return typeof(IModule).IsAssignableFrom(input)

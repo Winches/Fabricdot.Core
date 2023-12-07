@@ -21,7 +21,7 @@ public class RoleClaimStoreTests : RoleStoreTestBase
         {
             var role = await RoleRepository.GetByIdAsync(FakeDataBuilder.RoleAuthorId);
 
-            await _roleClaimStore.Awaiting(v => v.AddClaimAsync(role!, null, default))
+            await _roleClaimStore.Awaiting(v => v.AddClaimAsync(role!, null!, default))
                                  .Should()
                                  .ThrowAsync<ArgumentNullException>();
         });
@@ -47,7 +47,7 @@ public class RoleClaimStoreTests : RoleStoreTestBase
         {
             var role = await RoleRepository.GetByIdAsync(FakeDataBuilder.RoleAuthorId);
 
-            await _roleClaimStore.Awaiting(v => v.RemoveClaimAsync(role!, null, default))
+            await _roleClaimStore.Awaiting(v => v.RemoveClaimAsync(role!, null!, default))
                                  .Should()
                                  .ThrowAsync<ArgumentNullException>();
         });
