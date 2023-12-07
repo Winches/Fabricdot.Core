@@ -1,14 +1,11 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-
   <PropertyGroup>
-    <TargetFramework>net6.0</TargetFramework>
+    <TargetFramework>net8.0</TargetFramework>
   </PropertyGroup>
-
   <ItemGroup>
     <ProjectReference Include="..\..\src\Fabricdot.Core\Fabricdot.Core.csproj" />
     <ProjectReference Include="..\Fabricdot.Testing\Fabricdot.Testing.csproj" />
   </ItemGroup>
-
   <ItemGroup>
     <None Update="appsettings.Production.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
@@ -20,5 +17,4 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>
-
 </Project>

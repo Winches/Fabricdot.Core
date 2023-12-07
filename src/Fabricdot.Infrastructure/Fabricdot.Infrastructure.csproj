@@ -1,20 +1,16 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-
   <PropertyGroup>
-    <TargetFramework>net6.0</TargetFramework>
+    <TargetFramework>net8.0</TargetFramework>
     <PackageId>Fabricdot.Infrastructure</PackageId>
     <Description>Build DDD infrastructure layer in a simple way</Description>
   </PropertyGroup>
-
   <ItemGroup>
     <ProjectReference Include="..\Fabricdot.Domain\Fabricdot.Domain.csproj" />
   </ItemGroup>
-
   <ItemGroup>
     <PackageReference Include="AspectCore.Extensions.DependencyInjection" Version="2.4.0" />
     <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="12.0.1" />
-    <PackageReference Include="MediatR" Version="12.0.1" />
-    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="6.0.1" />
+    <PackageReference Include="MediatR" Version="12.1.1" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="8.0.0" />
   </ItemGroup>
-
 </Project>

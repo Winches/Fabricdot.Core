@@ -1,13 +1,10 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-
   <PropertyGroup>
-    <TargetFramework>net6.0</TargetFramework>
+    <TargetFramework>net8.0</TargetFramework>
     <PackageId>Fabricdot.MultiTenancy</PackageId>
   </PropertyGroup>
-
   <ItemGroup>
     <ProjectReference Include="..\Fabricdot.Infrastructure\Fabricdot.Infrastructure.csproj" />
     <ProjectReference Include="..\Fabricdot.MultiTenancy.Abstractions\Fabricdot.MultiTenancy.Abstractions.csproj" />
   </ItemGroup>
-
 </Project>

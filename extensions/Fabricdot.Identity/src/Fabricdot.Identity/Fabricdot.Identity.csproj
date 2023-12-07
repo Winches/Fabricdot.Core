@@ -1,17 +1,13 @@
 <Project Sdk="Microsoft.NET.Sdk">
-
   <PropertyGroup>
-    <TargetFramework>net6.0</TargetFramework>
+    <TargetFramework>net8.0</TargetFramework>
     <PackageId>Fabricdot.Identity</PackageId>
   </PropertyGroup>
-
   <ItemGroup>
-    <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="6.0.19" />
+    <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="8.0.0" />
   </ItemGroup>
-
   <ItemGroup>
     <ProjectReference Include="..\..\..\..\src\Fabricdot.Infrastructure.EntityFrameworkCore\Fabricdot.Infrastructure.EntityFrameworkCore.csproj" />
     <ProjectReference Include="..\Fabricdot.Identity.Domain\Fabricdot.Identity.Domain.csproj" />
   </ItemGroup>
-  
 </Project>

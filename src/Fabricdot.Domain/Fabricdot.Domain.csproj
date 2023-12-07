@@ -1,17 +1,13 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-
   <PropertyGroup>
-    <TargetFramework>net6.0</TargetFramework>
+    <TargetFramework>net8.0</TargetFramework>
     <PackageId>Fabricdot.Domain</PackageId>
     <Description>Build DDD domain layer in a simple way</Description>
   </PropertyGroup>
-
   <ItemGroup>
     <PackageReference Include="Ardalis.Specification" Version="7.0.0" />
   </ItemGroup>
-
   <ItemGroup>
     <ProjectReference Include="..\Fabricdot.Core\Fabricdot.Core.csproj" />
   </ItemGroup>
-
 </Project>

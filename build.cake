@@ -102,7 +102,8 @@ Task("Test")
     .IsDependentOn("Build")
     .DoesForEach(()=> GetFiles("**/*.Tests.csproj"), project=>
     {
-        foreach(var framework in new [] { "net6.0" })
+        var sdk = XmlPeek(project, "/Project/PropertyGroup/TargetFramework/text()");
+        foreach(var framework in new [] { sdk })
         {
             // var testResultsPath = System.IO.Path.Combine(reportDir,$"{project.GetFilenameWithoutExtension()}_TestResults.xml");
             var testResultName = $"{project.GetFilenameWithoutExtension()}_{framework}_TestResults.xml";

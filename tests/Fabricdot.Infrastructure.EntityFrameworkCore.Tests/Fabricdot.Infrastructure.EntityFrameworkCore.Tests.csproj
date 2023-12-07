@@ -1,13 +1,10 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-
   <PropertyGroup>
-    <TargetFramework>net6.0</TargetFramework>
+    <TargetFramework>net8.0</TargetFramework>
   </PropertyGroup>
-
   <ItemGroup>
     <ProjectReference Include="..\..\src\Fabricdot.Infrastructure.EntityFrameworkCore\Fabricdot.Infrastructure.EntityFrameworkCore.csproj" />
     <ProjectReference Include="..\Fabricdot.Test.Helpers\Fabricdot.Test.Helpers.csproj" />
     <ProjectReference Include="..\Fabricdot.Testing\Fabricdot.Testing.csproj" />
   </ItemGroup>
-
 </Project>

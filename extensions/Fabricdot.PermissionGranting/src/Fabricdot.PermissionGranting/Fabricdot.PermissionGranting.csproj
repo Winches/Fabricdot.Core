@@ -1,14 +1,11 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-
   <PropertyGroup>
-    <TargetFramework>net6.0</TargetFramework>
+    <TargetFramework>net8.0</TargetFramework>
     <PackageId>Fabricdot.PermissionGranting</PackageId>
   </PropertyGroup>
-
   <ItemGroup>
     <ProjectReference Include="..\..\..\..\src\Fabricdot.Authorization\Fabricdot.Authorization.csproj" />
     <ProjectReference Include="..\..\..\..\src\Fabricdot.Domain\Fabricdot.Domain.csproj" />
     <ProjectReference Include="..\..\..\..\src\Fabricdot.Infrastructure.EntityFrameworkCore\Fabricdot.Infrastructure.EntityFrameworkCore.csproj" />
   </ItemGroup>
-
 </Project>

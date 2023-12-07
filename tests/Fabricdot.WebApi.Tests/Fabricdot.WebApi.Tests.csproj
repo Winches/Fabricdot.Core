@@ -1,13 +1,10 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-
   <PropertyGroup>
-    <TargetFramework>net6.0</TargetFramework>
+    <TargetFramework>net8.0</TargetFramework>
   </PropertyGroup>
-
   <ItemGroup>
     <ProjectReference Include="..\..\src\Fabricdot.WebApi\Fabricdot.WebApi.csproj" />
     <ProjectReference Include="..\Fabricdot.AspNetCore.Testing\Fabricdot.AspNetCore.Testing.csproj" />
     <ProjectReference Include="..\Fabricdot.Infrastructure.EntityFrameworkCore.Tests\Fabricdot.Infrastructure.EntityFrameworkCore.Tests.csproj" />
   </ItemGroup>
-
 </Project>
