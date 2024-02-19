@@ -1,5 +1,4 @@
 using Fabricdot.Infrastructure.EntityFrameworkCore.Configurations;
-using Fabricdot.Infrastructure.EntityFrameworkCore.Extensions;
 using Mall.Domain.Aggregates.OrderAggregate;
 using Mall.Domain.Shared.Constants;
 using Microsoft.EntityFrameworkCore;
@@ -23,7 +22,11 @@ internal class OrderConfiguration : EntityTypeConfigurationBase<Order>
         builder.Property(v => v.OrderTime)
             .IsRequired();
 
-        builder.ConfigureEnumeration<OrderStatus>(nameof(Order.OrderStatus))
+        //builder.ConfigureEnumeration<OrderStatus>(nameof(Order.OrderStatus))
+        //    .IsRequired();
+        builder
+            .Property(v => v.OrderStatus)
+            .IsEnumeration()
             .IsRequired();
 
         builder.OwnsOne(v => v.ShippingAddress, b =>
@@ -49,7 +52,8 @@ internal class OrderConfiguration : EntityTypeConfigurationBase<Order>
         builder.Navigation(v => v.ShippingAddress)
             .IsRequired();
 
-        builder.TryConfigureNavigationProperty(nameof(OrderLine), PropertyAccessMode.Field);
+        //builder.TryConfigureNavigationProperty(nameof(OrderLine), PropertyAccessMode.Field);
+        builder.Navigation(v=>v.OrderLines).UsePropertyAccessMode(PropertyAccessMode.Field);
         builder.HasMany(v => v.OrderLines)
                .WithOne()
                .OnDelete(DeleteBehavior.Cascade);

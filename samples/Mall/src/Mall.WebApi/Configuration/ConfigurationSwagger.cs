@@ -11,7 +11,7 @@ public static class ConfigurationSwagger
         services.AddSwaggerGen(c =>
         {
             c.SwaggerDoc("v1", new OpenApiInfo { Title = "Mall API", Version = "v1" });
-            c.DocumentFilter<LowercaseDocumentFilter>();
+            //c.DocumentFilter<LowercaseDocumentFilter>();
             c.EnableAnnotations();
             c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
             {

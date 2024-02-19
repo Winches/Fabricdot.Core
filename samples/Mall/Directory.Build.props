@@ -3,7 +3,8 @@
     <NoWarn>$(NoWarn);CS1591</NoWarn>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
-    <PackageVersion>0.7.1</PackageVersion>
+    <PackageVersion>0.8.0</PackageVersion>
+    <TargetFramework>net8.0</TargetFramework>
   </PropertyGroup>
 
 </Project>

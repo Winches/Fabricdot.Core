@@ -6,8 +6,8 @@ services:
     env_file: .env
     environment:
       - ASPNETCORE_ENVIRONMENT=Production
-      - ASPNETCORE_URLS=http://+:80
+      - ASPNETCORE_HTTP_PORTS=8080
       - ConnectionStrings__Default=${CONNECTIONSTRINGS_DEFAULT}
       - TZ=${TZ}
     ports:
-      - "${WEBAPI_PORT}:80"
+      - "${WEBAPI_PORT}:8080"

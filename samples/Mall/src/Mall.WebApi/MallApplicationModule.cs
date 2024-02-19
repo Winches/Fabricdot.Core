@@ -2,6 +2,7 @@ using Fabricdot.Core.Boot;
 using Fabricdot.Core.Modularity;
 using Fabricdot.Domain.SharedKernel;
 using Fabricdot.WebApi;
+using Fabricdot.WebApi.Tracing;
 using Mall.Domain;
 using Mall.Infrastructure;
 using Mall.WebApi.Configuration;

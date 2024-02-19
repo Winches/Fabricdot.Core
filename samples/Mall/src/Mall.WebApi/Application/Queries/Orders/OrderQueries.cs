@@ -47,7 +47,7 @@ internal class OrderQueries : IOrderQueries, ITransientDependency
     public async Task<OrderDetailsDto> GetDetailsAsync(Guid orderId)
     {
         var spec = new OrderWithLinesSpec(orderId);
-        var order = await _orderRepository.GetBySpecAsync(spec);
+        var order = await _orderRepository.GetAsync(spec);
         return _mapper.Map<OrderDetailsDto>(order);
     }
 }

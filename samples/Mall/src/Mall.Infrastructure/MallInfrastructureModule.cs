@@ -26,7 +26,7 @@ public class MallInfrastructureModule : ModuleBase
 
         #region database
 
-        var connectionString = context.Configuration.GetConnectionString("Default");
+        var connectionString = context.Configuration.GetConnectionString("Default")!;
         services.AddEfDbContext<AppDbContext>(opts =>
         {
             opts.UseSqlServer(connectionString);
