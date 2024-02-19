@@ -1,13 +1,13 @@
-name: CI
+name: Release
 
 on:
   push:
-    branches: [dev]
-  pull_request:
-    branches: [dev]
+    branches: ['release/**']
+  release:
+    types: [published]
 
 jobs:
-  build:
+  publish:
     runs-on: ubuntu-latest
     env:
       NUGET_API_KEY: ${{secrets.NUGET_API_KEY}}
@@ -21,7 +21,7 @@ jobs:
         global-json-file: ./global.json
 
     - name: Build and Test
-      run: ./build.sh --target=test
+      run: ./build.sh --target=package
 
-    - name: Codecov
-      uses: codecov/codecov-action@v4
+    - name: Push Nuget
+      run: ./build.sh --target=publishnuget
